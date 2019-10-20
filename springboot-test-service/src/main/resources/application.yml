@@ -1,0 +1,63 @@
+# 主配置文件主要用来存放公共设置，不受环境配置影响
+server:
+  port: 80
+  servlet:
+    context-path: /springboot-test-service
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: Biyu5YzU+6sxDRbmWEa3B2uUcImzDo0BuXjTlL505+/pTb+/0Oqd3ou1R6J8+9Fy3CYrM18nBDqf6wAaPgUGOg==
+    driver-class-name: com.mysql.jdbc.Driver
+ #   publicKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAI6bIZ2P/Xj1krMxzLKvMXv0ZfNcDa5JAOUSwFSn0wzOVNbgEk951j7o5vHcQv0GDLXfdID2K37rluh1NeCtK+MCAwEAAQ==
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database: mysql
+    show-sql: true
+  jmx:
+    default-domain: springboot
+ds:
+  maxActive: 200
+  initialSize: 10
+  minIdle: 10
+  maxWait: 60000
+  testWhileIdle: true
+  removeAbandoned: true
+  removeAbandonedTimeout: 180
+  logAbandoned: false
+  minEvictableIdleTimeMillis: 60000
+  timeBetweenEvictionRunsMillis: 60000
+  testOnBorrow: false
+  validationQuery: select 1 from dual
+  poolPreparedStatements: true
+  maxPoolPreparedStatementPerConnectionSize: 200
+  monitor: false # 是否启用数据库连接池监控，开启后损失部分性能
+  driverClass: ${spring.datasource.driver-class-name}
+  url: ${spring.datasource.url}
+  username: ${spring.datasource.username}
+  password: ${spring.datasource.password}
+#  filters: config"
+  # 与加密的密码相同，用于解密使用
+  connectionProperties: password=Biyu5YzU+6sxDRbmWEa3B2uUcImzDo0BuXjTlL505+/pTb+/0Oqd3ou1R6J8+9Fy3CYrM18nBDqf6wAaPgUGOg==
+# dubbo配置
+dubbo:
+  application:
+    name: provider
+  registry:
+    protocol: dubbo  #dubbo/zookeeper 协议
+    #address: 127.0.0.1:2182  # zookeeper协议配置方式
+    address: zookeeper://127.0.0.1:2181  # dubbo协议配置方式
+    #address: zookeeper://127.0.0.1:2183?backup=127.0.0.1:2184,127.0.0.1:2185  # dubbo协议配置集群-zk主从配置方法
+    #address: 127.0.0.1:2183,127.0.0.1:2184,127.0.0.1:2185  # zookeeper协议配置集群-zk非主从配置方法
+  protocol:
+    port: 30103
+  annotation:
+    package: com.dist.server
+  provider:
+    version: 1.0.0 #dubbo默认版本号，在url显示为default.version=xxx
+
+debug: false

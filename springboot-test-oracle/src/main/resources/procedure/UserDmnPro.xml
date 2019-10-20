@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<procedures xmlns="http://www.dist.com.cn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.dist.com.cn distprocedure.xsd">
+
+	<procedure id="getUserProcedure">
+		<proName>PRO_USER.PRO_T_USER</proName>
+		<desc>获取所有用户信息</desc>
+		<parameters>
+			<!--返回类型：定义游标类型-->
+			<parameter name="P_DATA" type="out" dataType="cursor"
+					   vo="com.dist.entity.UserEntity"/>
+		</parameters>
+	</procedure>
+
+	<procedure id="getUsersByAge">
+		<proName>PRO_USER.pro_age_user</proName>
+		<desc>按年龄获取用户</desc>
+		<parameters>
+			<!--参数值-->
+			<parameter name="P_AGE" type="in" dataType="varchar"/>
+			<!--返回类型：定义游标类型-->
+			<parameter name="P_DATA" type="out" dataType="cursor"
+					   vo="com.dist.entity.UserEntity"/>
+		</parameters>
+	</procedure>
+</procedures>
+

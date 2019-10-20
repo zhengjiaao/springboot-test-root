@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>H5-TestWebSocket2</title>
+    <script src="js/jquery.js"></script>
+</head>
+<body>
+
+<br name="#" method="post">
+    <!--YOUR DATA AREA-->
+    <label id="a">当前用户</label>
+    <select id="loginsel">
+        <option value="2">李四</option>
+        <option value="3">张三</option>
+        <option value="4">王二</option>
+    </select>
+    <input type="button" value="连接" id="btnconnection" onclick="connectionAction()"/>
+    <input type="button" value="断开" id="btndisconnect" onclick="disconnectAction()"/></br></br>
+    <label id="b">发送对象</label>
+    <select id="sel">
+        <option value="1" selected>all</option>
+        <option value="2">李四</option>
+        <option value="3">张三</option>
+        <option value="4">王二</option>
+    </select>
+    <label id="msg">要发送的信息</label><input type="text" id="message">
+    <input type="button" id="btnsendMessage" value="发送消息" onclick="sendMessageAction()">
+</form>
+
+<script language="javascript"type="text/javascript">
+    var wsUri ="ws://192.168.12.193:8887";
+    var output;
+    var message;
+    var userToMessage;
+    var websocket;
+
+    function connectionAction() {
+        output = document.getElementById("output");
+        //websocket的房间
+        websocket = new WebSocket(wsUri);
+        //打开连接
+        websocket.onopen = function(evt) {
+            var loginuser = $('#loginsel option:selected').text();
+            websocket.send("online,"+loginuser);
+        };
+        websocket.onmessage = function(evt) {
+            onMessage(evt)
+        };
+        websocket.onerror = function(evt) {
+            onError(evt)
+        };
+        $("#loginsel").attr("disabled","disabled");
+        $("#btnconnection").attr("disabled","disabled");
+
+        $("#btndisconnect").removeAttr("disabled");
+        $("#sel").removeAttr("disabled");
+        $("#msg").removeAttr("disabled");
+        $("#btnsendMessage").removeAttr("disabled");
+    }
+
+    //给指定用户发送消息
+    function sendMessageAction() {
+        var sendTouser = $('#sel option:selected').text();
+        message =document.getElementById("message").value;
+        userToMessage = sendTouser +"@"+message;
+        websocket.send(userToMessage);
+    }
+
+    //断开连接
+    function disconnectAction() {
+        websocket.close();
+        writeToScreen("您已断开连接");
+
+        $("#loginsel").removeAttr("disabled");
+        $("#btnconnection").removeAttr("disabled");
+
+        $("#btndisconnect").attr("disabled","disabled");
+        $("#sel").attr("disabled","disabled");
+        $("#msg").attr("disabled","disabled");
+        $("#btnsendMessage").attr("disabled","disabled");
+    }
+
+  /*  server init() {
+        output = document.getElementById("output");
+        testWebSocket();
+    }
+    server testWebSocket() {
+        Appwebsocket = new WebSocket(wsUri);
+        Appwebsocket.onopen = server(evt) {
+            onOpen(evt)
+        };
+        Appwebsocket.onmessage = server(evt) {
+            onMessage(evt)
+        };
+        Appwebsocket.onerror = server(evt) {
+            onError(evt)
+        };
+        Appwebsocket.onclose = server(evt) {
+            onClose(evt)
+        };
+    }*/
+
+    function onOpen(evt) {
+        writeToScreen("CONNECTED");
+        doSend("Zhansna");
+    }
+
+    function onClose(evt) {
+        writeToScreen("您已断开连接");
+        websocket.close();
+    }
+
+    //接收消息
+    function onMessage(evt) {
+        writeToScreen('<span style="color: blue;">RESPONSE: '+ evt.data+'</span>');
+    }
+
+    function onError(evt) {
+        writeToScreen('<span style="color: red;">ERROR:</span> '+ evt.data);
+    }
+
+    function doSend(message) {
+        writeToScreen("SENT: " + message);
+        websocket.send(message);
+    }
+
+    function writeToScreen(message) {
+        var pre = document.createElement("p");
+        pre.style.wordWrap = "break-word";
+        pre.innerHTML = message;
+        output.appendChild(pre);
+    }
+
+    window.addEventListener("load", init, false);
+</script>
+<h2>WebSocket Test2</h2>
+<div id="output"></div>
+</body>
+</html>

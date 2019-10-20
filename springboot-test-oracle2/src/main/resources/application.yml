@@ -1,0 +1,69 @@
+# 主要用来存放不同环境差异化配置，包括ftp地址、数据库连接等
+spring:
+  jpa:
+    primary:
+      properties:
+        hibernate:
+          hbm2ddl:
+            auto: update
+          default_schema: duke
+          current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+    second:
+      show-sql: true
+      properties:
+        hibernate:
+          hbm2ddl:
+            auto: update
+          default_schema: gxtz
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show_sql: true
+  aop:
+    auto: true
+    proxy-target-class: true # 默认设置为false,使用的是标准Java动态代理的实现（接口），而不是cglib（类）
+  jmx:
+    default-domain: service2 # 指定JMX define name
+  datasource:
+    sql-script-encoding: utf-8  # 解决中文乱码
+    first:
+      username: duke
+      password: duke
+      jdbc-url: jdbc:oracle:thin:@127.0.0.1/orcl
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      maxActive: 200
+      initialSize: 10
+      minIdle: 10
+      maxWait: 60000
+      testWhileIdle: true
+      removeAbandoned: true
+      removeAbandonedTimeout: 1800
+      logAbandoned: false
+      minEvictableIdleTimeMillis: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      testOnBorrow: false
+      validationQuery: select 1 from dual
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 200
+      monitor: false
+    second:
+      enabled: true
+      username: gxtz
+      password: pass
+      jdbc-url: jdbc:oracle:thin:@127.0.0.1/orcl
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      maxActive: 200
+      initialSize: 10
+      minIdle: 10
+      maxWait: 60000
+      testWhileIdle: true
+      removeAbandoned: true
+      removeAbandonedTimeout: 1800
+      logAbandoned: false
+      minEvictableIdleTimeMillis: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      testOnBorrow: false
+      validationQuery: select 1 from dual
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 200
+      monitor: false # 是否启用数据库连接池监控，开启后损失部分性能

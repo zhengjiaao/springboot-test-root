@@ -1,0 +1,34 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /springboot-test-ftp
+ftp:
+  # 支持多个ftp配置（比如有时候可能会把文件放到不同的ftp上面）
+  default:
+    server: 127.0.0.1 #可以配置ftp绑定ip，用ip也可以
+    port: 21
+    userName: distftp
+    userPwd: 123456
+    # 配置 ftp 环境的 内核 {Windows_NT，UNIX}
+    ftpsystemType: Windows_NT
+    encoding: GBK
+    # 如果前端不能知道具体的server home 可以在下面通过具体的业务进行指定，但是不提倡
+    # 支持多个ftp配置（比如有时候可能会把文件放到不同的ftp上面）
+  cad:
+    enabled: true
+    server: 127.0.0.1
+    port: 21
+    userName: distftp
+    userPwd: 123456
+    ftpSystemType: Windows_NT
+    encoding: GBK
+    serverPath: CAD  # 由于代码逻辑问题，配置暂时无效
+  topic:
+    enabled: true
+    server: 127.0.0.1
+    port: 21
+    userName: distftp
+    userPwd: 123456
+    ftpSystemType: Windows_NT
+    encoding: GBK
+    serverPath: topic # 由于代码逻辑问题，配置暂时无效

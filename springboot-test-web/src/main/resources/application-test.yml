@@ -1,0 +1,14 @@
+# dubbo配置
+dubbo:
+  application:
+    name: consumer
+  registry:
+    address: zookeeper://127.0.0.1:2181
+  interface:
+    version: 1.0.0
+  annotation:
+    package: com.dist
+  consumer:
+    timeout: 50000
+    check: false
+    version: 1.0.0 #dubbo默认版本号，在url显示为default.version=xxx

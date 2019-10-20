@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  servlet:
+  servlet.context-path: /springboot-test-oracle
+spring:
+  datasource:
+    username: duke
+    password: duke
+    url: jdbc:oracle:thin:@127.0.0.1/orcl
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: update # 数据库的操作模式
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true # 是否在控制台打印SQL语句
+    properties:
+      hibernate:
+         default_schema: duke
+         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+  jmx:
+    default-domain: dukes # 指定JMX define name
+  thymeleaf:
+    prefix: classpath:/static/
+  data:
+      solr:  # 全文检索
+        # 后面这个core就是core文件夹的名称，这里也可以不用写这个，如果这里不指定core，那么在代码中使用的时候，就需要指定core。
+        # 代码中可以指定core的地方有注释可以看
+        #host: http://127.0.0.1:8983/solr/core
+        #host: http://127.0.0.1:8983/solr
+        # solr加上了用户名密码访问条件，参数中并没有地方设置username和password，那应该怎么办?
+        host: http://user:pass@127.0.0.1:8983/solr
+#  freemarker:
+#    cache: false #页面不加载缓存,修改即时生效
+ds:
+  maxActive: 200
+  initialSize: 10
+  minIdle: 10
+  maxWait: 60000
+  testWhileIdle: true
+  removeAbandoned: true
+  removeAbandonedTimeout: 180
+  logAbandoned: false
+  minEvictableIdleTimeMillis: 60000
+  timeBetweenEvictionRunsMillis: 60000
+  testOnBorrow: false
+  validationQuery: select 1 from dual
+  poolPreparedStatements: true
+  maxPoolPreparedStatementPerConnectionSize: 200
+  monitor: false # 是否启用数据库连接池监控，开启后损失部分性能
+  driverClass: ${spring.datasource.driver-class-name}
+  url: ${spring.datasource.url}
+  username: ${spring.datasource.username}
+  password: ${spring.datasource.password}
+debug: false

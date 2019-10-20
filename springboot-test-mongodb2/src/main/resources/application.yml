@@ -1,0 +1,42 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /springboot-test-mongodb2
+spring:
+  data:
+    mongodb:
+      first:  # 无认证连接
+        host: 127.0.0.1
+        port: 27017
+        database: testMongo  #若没有此库，调用时，自动创建
+        username: test
+      second:  # 有认证连接
+        enabled: true # true # 是否开启第二数据源
+        host: 52.82.72.141  #52.82.72.141 ,测试可以用127.0.0.1，反正database不一样就行
+        port: 28018   #28018
+        authentication-database: admin # 需要上授权的数据库，不然连接不上
+        database: distdoc
+        username: distdoc
+        password: dist2019
+  servlet:
+    multipart:
+      max-file-size: 500MB  # 上传的是单个文件大小
+      max-request-size: 2000MB # 是设置总上传的数据大小
+#  data:
+#    mongodb:
+#      first:  # 无认证连接
+#        host: 127.0.0.1
+#        port: 27017
+#        database: test1Mongo  #若没有此库，调用时，自动创建
+#        username: test1
+#      second:  # 有认证连接
+#        enabled: true #  是否开启第二数据源
+#        host: 127.0.0.1
+#        port: 27017
+#        authentication-database: admin # 需要上授权的数据库，不然连接不上
+#        database: test2Mongo  #若没有此库，调用时，自动创建
+#        username: test2
+#        password: test
+
+## 用户上传zip缓存路径
+report_tmp_zip_dir: /rest/public/zip

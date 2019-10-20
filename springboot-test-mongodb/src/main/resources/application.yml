@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  servlet:
+   context-path: /springboot-test-mongodb
+spring:
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: testMongoLibrary  #若没有此库，调用时，自动创建
+      username: test
+     # password: admin
+  tomcat_file_temp: /rest/resource # 图片保存路径
+  #静态图片服务器上传文件接口
+  #file_server_url=http://127.0.0.1:8080/gxtz-server-file/rest/public/resource
+  file_server_url: http://127.0.0.1:8080/springboot-test-mongodb/rest/public/resource
+dist:
+  cors:
+    allow: true # 是否允许跨域请求
+    mapping: "/**" # 限定的跨域资源
+    method: "*" # 允许的跨域请求方式，* 需要以单引号'
+    origin: "*" # 允许的请求域

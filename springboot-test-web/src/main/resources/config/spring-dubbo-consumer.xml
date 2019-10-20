@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--加载 application*.yml 资源-->
+    <context:property-placeholder location="classpath:application*.yml" ignore-unresolvable="true"/>
+    <!--消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样-->
+    <dubbo:application name="${dubbo.application.name}"/>
+    <!--zk address注册中心暴露服务地址，protocol协议，group 设置zk根节点,username="admin" password="123456" :设置zookeeper登录信息-->
+    <dubbo:registry id="zk" address="${dubbo.registry.address}" protocol="${dubbo.registry.protocol}" group="dubbo"/>
+    <!--<dubbo:registry id="dasczk" protocol="zookeeper" address="${dist.dasc.ip}" port="${dist.dasc.port}"/>-->
+    <!--dubbo 扫描包位置-->
+    <dubbo:annotation package="${dubbo.annotation.package}"/>
+    <!--dubbo 版本，超时，check校验：关闭所有服务的启动时检查-->
+    <dubbo:consumer version="${dubbo.consumer.version}" timeout="${dubbo.consumer.timeout}" check="${dubbo.consumer.check}"/>
+</beans>

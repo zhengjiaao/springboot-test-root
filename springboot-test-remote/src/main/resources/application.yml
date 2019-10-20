@@ -1,0 +1,35 @@
+
+server:
+  port: 80 # tomcat端口
+  servlet:
+    context-path: /springboot-test-remote # 服务名称
+
+spring:
+  server_url:
+    get_url_userdto: http://localhost:8080/springboot-test-remoteservice/rest/v1/get/userdto
+    get_url_userdto2: http://localhost:8080/springboot-test-remoteservice/rest/v1/get/userdto2
+    get_url_userdtolist: http://localhost:8080/springboot-test-remoteservice/rest/v1/get/userdtolsit
+    post_url_userdto: http://localhost:8080/springboot-test-remoteservice/rest/v1/post/userdto
+    post_url_userdto2: http://localhost:8080/springboot-test-remoteservice/rest/v1/post/userdto2
+    post_url_userdto3: http://localhost:8080/springboot-test-remoteservice/rest/v1/post/userdto3
+    put_url_userdto: http://localhost:8080/springboot-test-remoteservice/rest/v1/put/userdto
+    put_url_userdto2: http://localhost:8080/springboot-test-remoteservice/rest/v1/put/userdto2
+    delete_url_userdto: http://localhost:8080/springboot-test-remoteservice/rest/v1/delete/userdto
+    delete_url_userdto2: http://localhost:8080/springboot-test-remoteservice/rest/v1/delete/userdto2
+  web_url:
+    file_url_getFileInfo: http://192.168.2.42:8084/springboot-test-file/file/split/v1/getFileInfo
+    file_url_downloadSplitFile: http://192.168.2.42:8084/springboot-test-file/file/split/v1/downloadLocalFile
+    file_url_getFileInfo2: http://localhost:8080/dgp-dubbo-server-web/rest/ommb/v1/getFileInfo
+    file_url_downloadSplitFile2: http://localhost:8080/dgp-dubbo-server-web/rest/ommb/v2/offlinepackage/downloadSplitFile
+
+dist:
+  rest-api:
+    package-scan: com.dist.server.rest
+  rest:
+    url:
+      remoteservice: http://localhost:8080/springboot-test-remoteservice/rest/v1
+debug: false
+
+
+
+

@@ -1,0 +1,7 @@
+spring:
+  mail:
+    host: smtp.qq.com
+    username: 1263598336@qq.com
+    # password不是邮箱或qq的密码，是邮箱的授权码 获取授权码参考：https://www.jianshu.com/p/9efaff9e9437
+    password: yoypgcyowgofieda
+    default-encoding: UTF-8
