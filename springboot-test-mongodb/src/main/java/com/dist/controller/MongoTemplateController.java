@@ -106,7 +106,8 @@ public class MongoTemplateController {
 
         map.put("集合users",mongoTemplate.getCollection("users"));
         map.put("List<UserDTO>",mongoTemplate.findAll(UserDTO.class));
-
+        List<UserDTO> userDTOList = mongoTemplate.findAll(UserDTO.class);
+        System.out.println("userDTOList: "+userDTOList);
         return map;
     }
 

@@ -19,6 +19,7 @@
 	</properties>
 
 	<dependencies>
+		<!--只会影响 MongoController 接口-->
 		<dependency>
 			<groupId>com.dist</groupId>
 			<artifactId>springboot-test-base</artifactId>

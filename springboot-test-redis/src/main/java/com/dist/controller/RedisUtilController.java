@@ -1,5 +1,6 @@
 package com.dist.controller;
 
+import com.dist.service.RedisMethodsCacheService;
 import com.dist.utils.RedisUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

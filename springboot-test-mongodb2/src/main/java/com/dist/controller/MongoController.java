@@ -32,7 +32,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "/mongo/v1")
-@Api(tags = {"MongoController"},description = "mogondb双数据源测试")
+@Api(tags = {"MongoController"},value = "mogondb双数据源测试")
 public class MongoController {
 
     @Autowired
