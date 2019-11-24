@@ -42,6 +42,7 @@
         <module>springboot-test-cache</module>
         <module>springboot-test-utils</module>
         <module>springboot-test-email</module>
+        <module>springboot-test-dist</module>
     </modules>
     <!--  <dependencies>
         <dependency>

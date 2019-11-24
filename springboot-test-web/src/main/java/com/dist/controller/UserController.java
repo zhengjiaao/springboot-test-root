@@ -12,7 +12,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -68,8 +67,9 @@ public class UserController extends  BaseController{
 
     @ApiOperation(value = "分页获取用户信息",notes = "UserService",httpMethod = "GET")
     @RequestMapping(value = "getPageUserList",method = RequestMethod.GET)
-    public Page<UserEntity> getPageUserList(){
-        return userService.getPageUserList();
+    public Object getPageUserList(){
+        //org.springframework.data.domain.Page<UserEntity> pageUserList = userService.getPageUserList();
+        return null;
     }
 
     @ApiOperation(value = "根据id删除用户信息",notes = "UserService",httpMethod = "GET")
@@ -87,7 +87,7 @@ public class UserController extends  BaseController{
 
     @ApiOperation(value="用户登录", httpMethod = "POST")
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public ResponseData loginWithDevice(@ApiParam(value = "参考 Moble",required = true) @RequestBody UserDTO userDTO){
+    public com.dist.response.ResponseData loginWithDevice(@ApiParam(value = "参考 Moble",required = true) @RequestBody UserDTO userDTO){
         HttpSession session = this.request.getSession(true);
         log.info("sessionId(): "+session.getId());
         session.setAttribute(Constants.SESSION_USER, userDTO);

@@ -1,6 +1,6 @@
-package com.dist.util;
+package com.dist.util.mongo;
 
-import com.dist.utils.file.FileUtil;
+import com.dist.util.file.FileUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.GridFSBucket;

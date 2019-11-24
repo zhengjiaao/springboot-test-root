@@ -1,6 +1,7 @@
 package com.dist.model.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -18,9 +19,14 @@ import java.util.Date;
 @Table(name="t_user")
 @Data
 public class UserEntity implements Serializable {
-    @Id
-    @GeneratedValue
+    /*@Id
     @Column(name = "ID",nullable = true)
+    @GeneratedValue*/
+
+    @Id
+    @Column(name = "ID",nullable = true)
+    @GenericGenerator(name = "MyId", strategy = "com.dist.utils.MyIdGenerator" )
+    @GeneratedValue(generator = "MyId")
     private Long id;
     @Column(name="GUID")
     private String guid;

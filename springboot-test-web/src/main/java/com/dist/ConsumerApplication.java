@@ -1,13 +1,11 @@
 package com.dist;
 
 import com.dist.server.EmbeddedZooKeeper;
-import com.dist.utils.CacheFile;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.scheduling.annotation.EnableAsync;
 
@@ -30,8 +28,8 @@ public class ConsumerApplication {
         SpringApplication.run(ConsumerApplication.class, args);
     }
 
-    @Bean
+    /*@Bean
     public CacheFile cacheFile(){
         return new CacheFile();
-    }
+    }*/
 }

@@ -1,6 +1,6 @@
 package com.dist.controller;
 
-import com.dist.utils.office.OfficeToPdfUtil;
+import com.dist.util.office.OfficeToPdfUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.LoggerFactory;

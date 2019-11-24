@@ -3,10 +3,9 @@ dubbo:
   application:
     name: consumer
   registry:
-    protocol: dubbo   #dubbo/zookeeper 协议
-    address: 127.0.0.1:2181    # zookeeper协议配置
-    #address: 127.0.0.1:2182    # zookeeper协议配置 测试ip连接，zk是否支持远程调用，默认zk支持ip
-    #address: zookeeper://127.0.0.1:2183  # dubbo协议配置
+    protocol: zookeeper   #dubbo/zookeeper 协议
+    address: 127.0.0.1:2181    # zookeeper协议配置,默认zk支持ip
+    #address: zookeeper://127.0.0.1:2183  # dubbo协议配置,默认zk支持ip
     #address: zookeeper://127.0.0.1:2183?backup=127.0.0.1:2184,127.0.0.1:2185  # dubbo协议配置集群-zk主从配置方法
     #address: 127.0.0.1:2183,127.0.0.1:2184,127.0.0.1:2185  # zookeeper协议配置集群-zk非主从配置方法
   interface:

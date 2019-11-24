@@ -1,164 +1,277 @@
-package com.dist.controller;
+package com.dist.util.excel;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.dist.utils.UUIDUtil;
-import com.dist.utils.context.ContextPathUtil;
-import com.dist.utils.cookie.CookieUtil;
-import com.dist.utils.dayu.DayuSendMessage;
-import com.dist.utils.excel.ExportExcel;
-import com.dist.utils.string.ReplaceUtil;
-import com.dist.utils.voice.SpeechRecognitionUtil;
-import com.dist.utils.voice.SpeechSynthesisUtil;
-import com.dist.utils.voice.dto.SpeechRecognitionDto;
-import com.dist.utils.voice.dto.SpeechSynthesisDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Workbook;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/7/26 13:12
+ * @author wsw
+ * @Date 2019/6/28
  */
-@Api(tags = {"UtilsController"},description = "util工具类-测试")
-@RestController
-@RequestMapping(value = "rest/utils")
-@Slf4j
-public class WebUtilsController extends BaseController {
+public class ExportExcel {
 
-    @Autowired
-    DayuSendMessage sendMessage;
+    // 工作簿
+    private HSSFWorkbook wkb = null;
+    // sheet 页
+    private HSSFSheet sheet = null;
+    // 单元格样式
+    private CellStyle style = null;
+    // 字体
+    private Font font = null;
+    // 层级
+    private int level = 0;
+    // 当前行
+    private int currentRow = 0;
+    // 最大列
+    private int maxCol = 0;
+    // 树目录的 key
+    private final String childrenKey = "children";
+    // 保存数据的 key
+    private final static String dataKey = "data";
 
-    @Autowired
-    ReplaceUtil replaceUtil;
 
-    @Autowired
-    SpeechSynthesisUtil speechSynthesisUtil;
-
-    @Autowired
-    SpeechRecognitionUtil speechRecognitionUtil;
-
-    @ApiOperation(value = "项目地址工具",httpMethod = "GET",notes = "ContextPathUtil")
-    @RequestMapping(value = "contextPathUtil",method = RequestMethod.GET)
-    public Object contextPathUtil(@ApiParam(value = "相对路径",defaultValue = "rest/filePath") @RequestParam String relativePath){
-        Map<String,Object>  result  = new HashMap<>();
-        result.put("获取请求的父级URL: ",ContextPathUtil.getBaseURL(request));
-        result.put("获取上下文物理路径: ",ContextPathUtil.getContextPath(relativePath,request));
-       return result;
+    // 创建 sheet
+    public void initSheet(String sheetName) {
+        wkb = new HSSFWorkbook();
+        sheet = wkb.createSheet(sheetName);
+        style = wkb.createCellStyle();
+        font = wkb.createFont();
+        font.setFontName("宋体");
+        font.setFontHeightInPoints((short) 16);
+        style.setFont(font);
     }
 
-    @ApiOperation(value = "cookie操作-要调用2次",httpMethod = "GET",notes = "CookieUtil")
-    @RequestMapping(value = "addCookie",method = RequestMethod.GET)
-    public Object addCookie(@ApiParam(value = "name",defaultValue = "name") @RequestParam String name,
-                          @ApiParam(value = "vtan'jiaalue",defaultValue = "value") @RequestParam String value){
-        log.info("cookie添加前："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-        //添加cookie
-        CookieUtil.addCookie(response,name,value);
-        log.info("cookie添加后："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-        return "操作成功-请看打印日志";
-    }
 
-    @ApiOperation(value = "cookie操作2",httpMethod = "GET",notes = "CookieUtil")
-    @RequestMapping(value = "deleteCookieByName",method = RequestMethod.GET)
-    public Object deleteCookieByName(@ApiParam(value = "name",defaultValue = "name") @RequestParam String name,
-                                     @ApiParam(value = "value",defaultValue = "value2") @RequestParam String value,
-                                     @ApiParam(value = "confirm 0 删除 1更新",defaultValue = "1") @RequestParam String confirm){
-        if (confirm.equals("1")){
-            log.info("cookie更新前："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-            CookieUtil.updateCookie(request,response,name,value);
-            log.info("cookie更新后："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-        }else if (confirm.equals("0")){
-            log.info("cookie删除前："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-            CookieUtil.deleteCookieByName(request,response,name);
-            log.info("cookie删除后："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
+    // 设置单元格样式
+    public void setExcelCellStyle() {
+        int rowNum = sheet.getLastRowNum();
+        for (int k = 1; k < rowNum; k++) {
+            HSSFRow row = sheet.getRow(k);
+            int colNum = row.getLastCellNum();
+            for (int i = 0; i < colNum; i++) {
+                HSSFCell cell = row.getCell(i);
+                if (cell != null) {
+                    cell.setCellStyle(style);
+                }
+            }
         }
-
-        return "操作成功-请看打印日志";
     }
 
-    @ApiOperation(value = "发送手机验证码",httpMethod = "GET",notes = "DayuSendMessage")
-    @RequestMapping(value = "taobaoSendMoblieMessage",method = RequestMethod.GET)
-    public Object taobaoSendMoblieMessage(@ApiParam(value = "手机号",required = true) @RequestParam(value = "phone") String phone){
-        // 发送验证码
-        String code = UUIDUtil.uuid6();
-        boolean sendSuccess = sendMessage.taobaoSendMoblieMessage(phone, code);
-        return sendSuccess;
+
+    // 填充表头信息
+    public HSSFSheet setExcelTitle(List<String> headerList) {
+        CellStyle style = wkb.createCellStyle();
+        HSSFRow titleRow = sheet.createRow(0);
+        int size = headerList.size();
+        for (int i = 0; i < size; i++) {
+            titleRow.createCell(i).setCellValue(headerList.get(i));
+            titleRow.getCell(i).setCellStyle(style);
+        }
+        return sheet;
+    }
+
+
+    // 填充数据
+    public void setExcelData(JSONArray tableData, List<String> header) {
+        Workbook wkb = sheet.getWorkbook();
+        CellStyle style = wkb.createCellStyle();
+        int current = 1;
+        for (Object aTableData : tableData) {
+            JSONObject jsObj = (JSONObject) aTableData;
+            HSSFRow headRow = sheet.createRow(current++);
+            for (int j = 0; j < header.size(); j++) {
+                String value = jsObj.getString(header.get(j));
+                headRow.createCell(j).setCellValue(value);
+                headRow.getCell(j).setCellStyle(style);
+            }
+        }
+    }
+
+    // 填充数据
+    public void setExcelData(Map map) {
+        Workbook wkb = sheet.getWorkbook();
+        CellStyle style = wkb.createCellStyle();
+        int current = 1;
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            //JSONObject jsObj = (JSONObject) aTableData;
+            Map.Entry entry = (Map.Entry) it.next();
+            HSSFRow headRow = sheet.createRow(current++);
+            /* String value = jsObj.getString(header.get(j)); */
+            headRow.createCell(0).setCellValue(String.valueOf(entry.getKey()));
+            headRow.createCell(1).setCellValue(String.valueOf(entry.getValue()));
+            headRow.getCell(0).setCellStyle(style);
+            headRow.getCell(1).setCellStyle(style);
+
+        }
+    }
+
+
+    // 高级
+    public void title(List<String> headerList, JSONObject jsonStr, String sheetName) {
+        JSONArray jsonArray = jsonStr.getJSONArray(dataKey);
+        sheetLevel(headerList, jsonArray);
+    }
+
+
+    public void sheetLevel(List<String> headerList, JSONArray jsonArray) {
+        for (Object jsonArr : jsonArray) {
+            currentRow++;
+            JSONObject jsObj = (JSONObject) jsonArr;
+            setRowValue(headerList, jsObj);
+            JSONArray children = jsObj.getJSONArray(childrenKey);
+            if (children != null && children.size() > 0) {
+                level++;
+                sheetLevel(headerList, children);
+                level--;
+            }
+        }
+    }
+
+
+    // 设置一行数据
+    private void setRowValue(List<String> headerList, JSONObject jsObj) {
+        HSSFRow headRow = sheet.createRow(currentRow);
+        int index = 0;
+        for (String header : headerList) {
+            String value = jsObj.getString(header);
+            headRow.createCell(level + index).setCellValue(value);
+            index++;
+        }
+    }
+
+    // 自适应单元格长度，可以在填充数据时记录每一行的长度
+    public void autoSheet() {
+        // 最后一行
+        int rowNum = sheet.getLastRowNum();
+        for (int i = 0; i < maxCol; i++) {
+            int maxLen = 0;
+            for (int j = 0; j < rowNum; j++) {
+                HSSFCell cell = sheet.getRow(j).getCell(i);
+                if (cell != null) {
+                    int len = cell.getStringCellValue().getBytes().length;
+                    if (len > maxLen) {
+                        maxLen = len;
+                    }
+                }
+            }
+            sheet.setColumnWidth((short) i, (short) (maxLen * 400));
+        }
+    }
+
+    //自适应单元格长度
+    public void autoSheet2() {
+        for (int i = 0; i < maxCol; i++) {
+            sheet.autoSizeColumn(i, true);
+        }
+    }
+
+
+    private void sort() {
+        // 有效列
+        int startIndex = maxCol - 6;
+        int endIndex = 2;
+        // 总记录行数
+        int rowNum = sheet.getLastRowNum();
+        for (int i = startIndex - 1; i > endIndex - 1; i--) {
+            for (int j = 1; j <= rowNum; j++) {
+                String cellValue = sheet.getRow(j).getCell(i).getStringCellValue();
+                if (!"".equals(cellValue)) {
+                    String s = sheet.getRow(j - 1).getCell(i - 1).getStringCellValue();
+                    HSSFCell cell = sheet.getRow(j).getCell(i - 1);
+                    if (null == cell) {
+                        sheet.getRow(j).createCell(i - 1).setCellValue(s);
+                    } else {
+                        cell.setCellValue(s);
+                    }
+                }
+            }
+        }
+    }
+
+    // 保存 Excel 文件到 path 路径下
+    public Boolean saveToPath(String path) {
+        OutputStream output = null;
+        try {
+            output = new FileOutputStream(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            wkb.write(output);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**
-     * url转换，针对内网和外网环境
-     * 针对现场内网无法访问外网，需要将外网url替换成内网url
-     * @param url
-     * @return
+     * 获取最大的列
+     * @param sheet
      */
-    @ApiOperation(value = "外网替换成内网",httpMethod = "GET",notes = "ReplaceUtil")
-    @RequestMapping(value = "v1/publicReplaceToPrivate",method = RequestMethod.GET)
-    public Object publicReplaceToPrivate(@ApiParam(value = "外网图片地址",defaultValue = "http://gx.gh.taizhou.gov.cn/gxtz-server-file/rest/resource/123.jpg") @RequestParam String url){
-        urlStr(url);
-        return replaceUtil.publicReplaceToPrivate(url);
+    public void getMaxCol(HSSFSheet sheet){
+        //得到最后一行
+        int rowNum = sheet.getLastRowNum();
+        //遍历行数
+        for (int k = 1; k < rowNum; k++) {
+            //当前行
+            HSSFRow row = sheet.getRow(k);
+            //得到每一行的最后的列数号
+            int colNum = row.getLastCellNum();
+            if (colNum > maxCol) {
+                //得到所有行中列数最多的列号
+                maxCol = colNum;
+            }
+        }
     }
 
-    @ApiOperation(value = "内网替换成外网",httpMethod = "GET",notes = "ReplaceUtil")
-    @RequestMapping(value = "v1/privateReplaceToPublic",method = RequestMethod.GET)
-    public Object privateReplaceToPublic(@ApiParam(value = "内网图片地址",defaultValue = "http://192.168.1.220/gxtz-server-file/rest/resource/123.jpg") @RequestParam String url){
-        urlStr(url);
-        return replaceUtil.privateReplaceToPublic(url);
+    /**数据右移位-与最大列位置保持一直
+     * @param diff 需要移动几位 diff+1
+     */
+    public void dataShiftPosition(int diff){
+        //得到最大列数号
+        getMaxCol(sheet);
+        int rowNum = sheet.getLastRowNum();
+        System.out.println("rowNum:" + rowNum + ";colNum:" + maxCol);
+        for (int i = 1; i < rowNum+ 1; i++) {
+            //当前行
+            HSSFRow currentRow = sheet.getRow(i);
+            int colNum = currentRow.getLastCellNum();
+            if (colNum < maxCol && maxCol>0){
+                //距离maxCol，需转移多少个表格
+                int shiftNumber = maxCol-colNum;
+                for (int j=0;j<diff;j++){
+                    HSSFCell cellSelectBefore = currentRow.getCell(colNum-j);
+                    HSSFCell cellSelect = currentRow.createCell(colNum+shiftNumber);
+                    if (cellSelectBefore != null){
+                        cellSelect.setCellValue(String.valueOf(cellSelectBefore.getRichStringCellValue()));
+                        cellSelectBefore.setCellValue("");
+                        shiftNumber--;
+                    }
+                }
+            }
+        }
     }
 
-    @ApiOperation(value = "百度语音合成工具类",httpMethod = "POST",notes = "SpeechSynthesisUtil")
-    @RequestMapping(value = "nextStr",method = RequestMethod.POST)
-    public Object nextStr(@ApiParam(value = "参考 Moble") @RequestBody SpeechSynthesisDto speechSynthesisDto){
-        return speechSynthesisUtil.nextStr(speechSynthesisDto);
-    }
-
-    @ApiOperation(value = "百度语音识别工具类",httpMethod = "POST",notes = "SpeechRecognitionUtil")
-    @RequestMapping(value = "run",method = RequestMethod.POST)
-    public Object run(@ApiParam(value = "参考 Moble") @RequestBody SpeechRecognitionDto speechRecognitionDto) throws Exception {
-        return speechRecognitionUtil.run(speechRecognitionDto);
-    }
-
-    @ApiOperation(value = "生成excel",httpMethod = "GET",notes = "ExportExcel")
-    @RequestMapping(value = "v1/excel",method = RequestMethod.GET)
-    public Object excel(){
-
-        Map<String,Integer> map = new HashMap();
-        map.put("李四",1);
-        map.put("政治零",5);
-        map.put("张三",10);
-        map.put("欧阳丽娜",15);
-
-        List<String> headListCN = Arrays.asList("用户名", "登录次数");
-
-        //创建excel对象
-        ExportExcel excel = new ExportExcel();
-        //设置页名称
-        excel.initSheet("系统访客量");
-        //设置文档第一标题行
-        excel.setExcelTitle(headListCN);
-        //给表格赋值
-        excel.setExcelData(map);
-        //表格移动，改变格式
-        //excel.dataShiftPosition(3);
-        //设置表格样式
-        excel.setExcelCellStyle();
-        //自适应表格的长度，
-        excel.autoSheet();
-        String uuid = UUID.randomUUID().toString();
-        String path = "c:/DIST/" + uuid + ".xls";
-        excel.saveToPath(path);
-        System.out.println(path);
-        return path;
-    }
-
-    @ApiOperation(value = "生成excel2",httpMethod = "GET",notes = "ExportExcel")
-    @RequestMapping(value = "v2/excel",method = RequestMethod.GET)
-    public Object excel2(){
-
+    public static void main(String[] args) {
         String json = "{\n" +
                 "\t\"data\": [{\n" +
                 "\t\t\"Code\": \"R\",\n" +
@@ -1258,26 +1371,12 @@ public class WebUtilsController extends BaseController {
         List<String> headList = Arrays.asList("Code", "Name", "Count", "Area", "Ratio", "CountRatio");
 
         excel.initSheet("testSheet");
-        JSONArray jsonArray = jsonObject.getJSONArray("data");
+        JSONArray jsonArray = jsonObject.getJSONArray(dataKey);
         excel.sheetLevel(headList, jsonArray);
 
         excel.dataShiftPosition(5);
         String uuid = UUID.randomUUID().toString();
-        String path = "c:/DIST/" + uuid + ".xls";
+        String path = "c:/wsw/" + uuid + ".xls";
         excel.saveToPath(path);
-        return path;
-    }
-
-
-    /**
-     * url 不能null
-     * @param url
-     * @return
-     */
-    private String urlStr(String url){
-        if (url == null){
-            return "url 不能null";
-        }
-        return url;
     }
 }

@@ -1,7 +1,7 @@
 package com.dist.controller;
 
-import com.dist.response.ResponseData;
-import com.dist.response.ResponseUtil;
+import com.dist.utils.response.ResponseData;
+import com.dist.utils.response.ResponseUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * @author zhengja@dist.com.cn

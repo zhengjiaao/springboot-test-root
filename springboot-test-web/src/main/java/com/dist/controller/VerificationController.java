@@ -3,7 +3,7 @@ package com.dist.controller;
 import com.dist.constant.Constants;
 import com.dist.util.exception.IllegalRequestException;
 import com.dist.model.dto.RegisterDto;
-import com.dist.utils.IdUtil;
+import com.dist.utils.UUIDUtil;
 import com.dist.utils.ObjectUtil;
 import com.dist.utils.ValidatorUtil;
 import com.dist.utils.dayu.DayuSendMessage;
@@ -65,7 +65,7 @@ public class VerificationController extends BaseController {
         }
 
         // 发送验证码
-        String code = IdUtil.uuid6();
+        String code = UUIDUtil.uuid6();
         boolean sendSuccess = sendMessage.taobaoSendMoblieMessage(phone, code);
         if (sendSuccess) {
             // 最近一次成功访问时间
@@ -105,7 +105,7 @@ public class VerificationController extends BaseController {
         }
 
         // 发送验证码
-        String code = IdUtil.uuid6();
+        String code = UUIDUtil.uuid6();
         Map<String, String> sms = sendSms.sendSms(phone, code);
         boolean sendSuccess = false;
         if (sms.containsKey("success")) {

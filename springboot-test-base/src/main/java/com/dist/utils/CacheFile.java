@@ -82,7 +82,4 @@ public class CacheFile {
             return null;
         return new NamedFile(gridFSDBFile.getFilename(),gridFSDBFile.getInputStream());
     }
-
-
-
 }

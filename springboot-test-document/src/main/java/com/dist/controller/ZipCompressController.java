@@ -1,7 +1,7 @@
 package com.dist.controller;
 
-import com.dist.utils.zip.ZipCompressUtil;
-import com.dist.utils.zip.ZipDeCompressUtil;
+import com.dist.util.zip.ZipCompressUtil;
+import com.dist.util.zip.ZipDeCompressUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

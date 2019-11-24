@@ -2,22 +2,12 @@ package com.dist.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.dist.utils.UUIDUtil;
-import com.dist.utils.context.ContextPathUtil;
-import com.dist.utils.cookie.CookieUtil;
-import com.dist.utils.dayu.DayuSendMessage;
-import com.dist.utils.excel.ExportExcel;
-import com.dist.utils.string.ReplaceUtil;
-import com.dist.utils.voice.SpeechRecognitionUtil;
-import com.dist.utils.voice.SpeechSynthesisUtil;
-import com.dist.utils.voice.dto.SpeechRecognitionDto;
-import com.dist.utils.voice.dto.SpeechSynthesisDto;
+import com.dist.util.excel.ExportExcel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
@@ -25,102 +15,10 @@ import java.util.*;
  * @author zhengja@dist.com.cn
  * @data 2019/7/26 13:12
  */
-@Api(tags = {"UtilsController"},description = "util工具类-测试")
+@Api(tags = {"ExcelController"},description = "生成excel测试")
 @RestController
-@RequestMapping(value = "rest/utils")
-@Slf4j
-public class WebUtilsController extends BaseController {
-
-    @Autowired
-    DayuSendMessage sendMessage;
-
-    @Autowired
-    ReplaceUtil replaceUtil;
-
-    @Autowired
-    SpeechSynthesisUtil speechSynthesisUtil;
-
-    @Autowired
-    SpeechRecognitionUtil speechRecognitionUtil;
-
-    @ApiOperation(value = "项目地址工具",httpMethod = "GET",notes = "ContextPathUtil")
-    @RequestMapping(value = "contextPathUtil",method = RequestMethod.GET)
-    public Object contextPathUtil(@ApiParam(value = "相对路径",defaultValue = "rest/filePath") @RequestParam String relativePath){
-        Map<String,Object>  result  = new HashMap<>();
-        result.put("获取请求的父级URL: ",ContextPathUtil.getBaseURL(request));
-        result.put("获取上下文物理路径: ",ContextPathUtil.getContextPath(relativePath,request));
-       return result;
-    }
-
-    @ApiOperation(value = "cookie操作-要调用2次",httpMethod = "GET",notes = "CookieUtil")
-    @RequestMapping(value = "addCookie",method = RequestMethod.GET)
-    public Object addCookie(@ApiParam(value = "name",defaultValue = "name") @RequestParam String name,
-                          @ApiParam(value = "vtan'jiaalue",defaultValue = "value") @RequestParam String value){
-        log.info("cookie添加前："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-        //添加cookie
-        CookieUtil.addCookie(response,name,value);
-        log.info("cookie添加后："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-        return "操作成功-请看打印日志";
-    }
-
-    @ApiOperation(value = "cookie操作2",httpMethod = "GET",notes = "CookieUtil")
-    @RequestMapping(value = "deleteCookieByName",method = RequestMethod.GET)
-    public Object deleteCookieByName(@ApiParam(value = "name",defaultValue = "name") @RequestParam String name,
-                                     @ApiParam(value = "value",defaultValue = "value2") @RequestParam String value,
-                                     @ApiParam(value = "confirm 0 删除 1更新",defaultValue = "1") @RequestParam String confirm){
-        if (confirm.equals("1")){
-            log.info("cookie更新前："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-            CookieUtil.updateCookie(request,response,name,value);
-            log.info("cookie更新后："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-        }else if (confirm.equals("0")){
-            log.info("cookie删除前："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-            CookieUtil.deleteCookieByName(request,response,name);
-            log.info("cookie删除后："+"name:"+name+", value:"+CookieUtil.getCookieValueByName(request,name));
-        }
-
-        return "操作成功-请看打印日志";
-    }
-
-    @ApiOperation(value = "发送手机验证码",httpMethod = "GET",notes = "DayuSendMessage")
-    @RequestMapping(value = "taobaoSendMoblieMessage",method = RequestMethod.GET)
-    public Object taobaoSendMoblieMessage(@ApiParam(value = "手机号",required = true) @RequestParam(value = "phone") String phone){
-        // 发送验证码
-        String code = UUIDUtil.uuid6();
-        boolean sendSuccess = sendMessage.taobaoSendMoblieMessage(phone, code);
-        return sendSuccess;
-    }
-
-    /**
-     * url转换，针对内网和外网环境
-     * 针对现场内网无法访问外网，需要将外网url替换成内网url
-     * @param url
-     * @return
-     */
-    @ApiOperation(value = "外网替换成内网",httpMethod = "GET",notes = "ReplaceUtil")
-    @RequestMapping(value = "v1/publicReplaceToPrivate",method = RequestMethod.GET)
-    public Object publicReplaceToPrivate(@ApiParam(value = "外网图片地址",defaultValue = "http://gx.gh.taizhou.gov.cn/gxtz-server-file/rest/resource/123.jpg") @RequestParam String url){
-        urlStr(url);
-        return replaceUtil.publicReplaceToPrivate(url);
-    }
-
-    @ApiOperation(value = "内网替换成外网",httpMethod = "GET",notes = "ReplaceUtil")
-    @RequestMapping(value = "v1/privateReplaceToPublic",method = RequestMethod.GET)
-    public Object privateReplaceToPublic(@ApiParam(value = "内网图片地址",defaultValue = "http://192.168.1.220/gxtz-server-file/rest/resource/123.jpg") @RequestParam String url){
-        urlStr(url);
-        return replaceUtil.privateReplaceToPublic(url);
-    }
-
-    @ApiOperation(value = "百度语音合成工具类",httpMethod = "POST",notes = "SpeechSynthesisUtil")
-    @RequestMapping(value = "nextStr",method = RequestMethod.POST)
-    public Object nextStr(@ApiParam(value = "参考 Moble") @RequestBody SpeechSynthesisDto speechSynthesisDto){
-        return speechSynthesisUtil.nextStr(speechSynthesisDto);
-    }
-
-    @ApiOperation(value = "百度语音识别工具类",httpMethod = "POST",notes = "SpeechRecognitionUtil")
-    @RequestMapping(value = "run",method = RequestMethod.POST)
-    public Object run(@ApiParam(value = "参考 Moble") @RequestBody SpeechRecognitionDto speechRecognitionDto) throws Exception {
-        return speechRecognitionUtil.run(speechRecognitionDto);
-    }
+@RequestMapping(value = "rest/excel")
+public class ExcelController {
 
     @ApiOperation(value = "生成excel",httpMethod = "GET",notes = "ExportExcel")
     @RequestMapping(value = "v1/excel",method = RequestMethod.GET)

@@ -4,14 +4,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.dist.utils.DBPasswordCallbackUtil;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -27,7 +23,7 @@ import java.util.Properties;
 @Data
 public class DBConfig {
 
-    Logger logger = LoggerFactory.getLogger(DBConfig.class);
+    //Logger logger = LoggerFactory.getLogger(DBConfig.class);
 
     /*@Autowired
     DBPasswordCallbackUtil dbPasswordCallback;
@@ -83,7 +79,7 @@ public class DBConfig {
             try {
                 ds.setFilters("stat");
             } catch (SQLException e) {
-                logger.error(e.getMessage());
+                //logger.error(e.getMessage());
             }
         }
         return ds;

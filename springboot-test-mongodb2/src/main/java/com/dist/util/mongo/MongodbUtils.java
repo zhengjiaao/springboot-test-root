@@ -1,4 +1,4 @@
-package com.dist.util;
+package com.dist.util.mongo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;

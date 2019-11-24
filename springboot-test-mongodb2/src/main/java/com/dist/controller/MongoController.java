@@ -1,14 +1,13 @@
 package com.dist.controller;
 
 import com.dist.config.mongo.demo.UserDao;
-import com.dist.util.exception.ResourceException;
-import com.dist.pojo.FolderStructure;
-import com.dist.util.MongoResourceStorageUtil;
-import com.dist.utils.ContextPathUtil;
-import com.dist.utils.IdUtil;
-import com.dist.utils.file.FileUtil;
-import com.dist.utils.file.FolderStructureUtil;
-import com.dist.utils.zip.ZipDeCompressUtil;
+import com.dist.util.ContextPathUtil;
+import com.dist.util.IdUtil;
+import com.dist.util.file.FileUtil;
+import com.dist.util.file.FolderStructure;
+import com.dist.util.file.FolderStructureUtil;
+import com.dist.util.mongo.MongoResourceStorageUtil;
+import com.dist.util.zip.ZipDeCompressUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -88,7 +87,7 @@ public class MongoController {
 
         // 将文件上传到mongo中
         if (!mongoResourceStorageUtil.uploadFile(temporarySavePath, path)) {
-            throw new ResourceException("文件上传mongo失败！");
+            throw new RuntimeException("文件上传mongo失败！");
         }
 
         dirTree.setGuid(path);
