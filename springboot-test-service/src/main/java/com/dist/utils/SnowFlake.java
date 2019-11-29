@@ -6,7 +6,7 @@ package com.dist.utils;
  * Date: 2019-11-22 13:44
  * Author: zhengja
  * Email: zhengja@dist.com.cn
- * Desc：雪花算法：分布式自增ID雪花算法snowflake (Java版)
+ * Desc：雪花算法：分布式自增ID(是递增趋势，非递增)雪花算法snowflake (Java版)
  */
 public class SnowFlake {
     /**
