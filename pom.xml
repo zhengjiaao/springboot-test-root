@@ -25,6 +25,7 @@
         <module>springboot-test-web</module>
         <module>springboot-test-redis</module>
         <module>springboot-test-redis2</module>
+        <module>springboot-test-redis-session</module>
         <module>springboot-test-encrypt</module>
         <module>springboot-test-mongodb</module>
         <module>springboot-test-mongodb2</module>

@@ -1,8 +1,6 @@
 package com.dist.utils;
 
 /**
- * Company: 上海数慧系统技术有限公司
- * Department: 数据中心
  * Date: 2019-11-22 13:44
  * Author: zhengja
  * Email: zhengja@dist.com.cn

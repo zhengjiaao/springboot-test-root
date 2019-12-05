@@ -13,7 +13,8 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: update
+      # ddl-auto: update
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     database: mysql
@@ -61,3 +62,7 @@ dubbo:
     version: 1.0.0 #dubbo默认版本号，在url显示为default.version=xxx
 
 debug: false
+
+# 项目启动是否启动执行sql文件 true/false ,建议首次创建后false关闭，避免数据丢失!
+jdbc:
+  isStartSql: true

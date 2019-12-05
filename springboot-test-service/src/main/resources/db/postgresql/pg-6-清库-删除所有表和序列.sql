@@ -1,0 +1,6 @@
+--删除所有序列
+drop SEQUENCE if exists SEQ_MY_HIBERNATE;
+
+-- 删表所有表语句
+DROP TABLE USERENTITY;
+COMMIT;

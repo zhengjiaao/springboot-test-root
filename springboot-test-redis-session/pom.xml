@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>springboot-test-redis</artifactId>
+    <artifactId>springboot-test-redis-session</artifactId>
     <packaging>war</packaging>
 
-    <name>springboot-test-redis</name>
+    <name>springboot-test-redis-session</name>
     <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 
@@ -43,10 +43,16 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--加入redis的启动器-->
+        <!--redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!--redisSession-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
         <!--junit单元测试-->
@@ -88,7 +94,7 @@
     </dependencies>
 
     <build>
-        <finalName>springboot-test-redis</finalName>
+        <finalName>springboot-test-redis-session</finalName>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <plugin>
