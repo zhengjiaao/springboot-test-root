@@ -1,17 +1,19 @@
 package com.dist.controller;
 
+
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dist.define.Constants;
 import com.dist.interfaces.UserService;
 import com.dist.model.dto.UserDTO;
 import com.dist.model.dto.UserVo;
 import com.dist.model.entity.UserEntity;
-import com.dist.response.ResponseData;
-import com.dist.response.ResponseUtil;
+import com.dist.utils.response.ResponseData;
+import com.dist.utils.response.ResponseUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -68,8 +70,8 @@ public class UserController extends  BaseController{
     @ApiOperation(value = "分页获取用户信息",notes = "UserService",httpMethod = "GET")
     @RequestMapping(value = "getPageUserList",method = RequestMethod.GET)
     public Object getPageUserList(){
-        //org.springframework.data.domain.Page<UserEntity> pageUserList = userService.getPageUserList();
-        return null;
+        Page<UserEntity> pageUserList = userService.getPageUserList();
+        return pageUserList;
     }
 
     @ApiOperation(value = "根据id删除用户信息",notes = "UserService",httpMethod = "GET")
@@ -87,7 +89,7 @@ public class UserController extends  BaseController{
 
     @ApiOperation(value="用户登录", httpMethod = "POST")
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public com.dist.response.ResponseData loginWithDevice(@ApiParam(value = "参考 Moble",required = true) @RequestBody UserDTO userDTO){
+    public ResponseData loginWithDevice(@ApiParam(value = "参考 Moble",required = true) @RequestBody UserDTO userDTO){
         HttpSession session = this.request.getSession(true);
         log.info("sessionId(): "+session.getId());
         session.setAttribute(Constants.SESSION_USER, userDTO);
