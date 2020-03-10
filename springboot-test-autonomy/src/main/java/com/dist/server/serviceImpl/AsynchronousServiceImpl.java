@@ -91,9 +91,4 @@ public class AsynchronousServiceImpl implements AsynchronousService {
         Thread.sleep(100); //测试30s=30000超时异常
         return new AsyncResult<>("异步方法返回值");
     }
-
-
-
-
-
 }
