@@ -98,7 +98,7 @@
 		</dependency>
 
 		<!--dist存储过程-->
-		<dependency>
+		<!--<dependency>
 			<groupId>dist.xdata.product</groupId>
 			<artifactId>distprocedure</artifactId>
 			<version>${dist.procedure.version}</version>
@@ -111,13 +111,13 @@
 					<artifactId>druid</artifactId>
 					<groupId>com.alibaba</groupId>
 				</exclusion>
-				<!--一定要去掉ojdbc14，否者会跑异常：oracle.jdbc.driver.T4CConnection.createClob()-->
+				&lt;!&ndash;一定要去掉ojdbc14，否者会跑异常：oracle.jdbc.driver.T4CConnection.createClob()&ndash;&gt;
 				<exclusion>
 					<groupId>com.oracle</groupId>
 					<artifactId>ojdbc14</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency>-->
 		<!-- 文件上传依赖包 -->
 		<dependency>
 			<groupId>commons-io</groupId>

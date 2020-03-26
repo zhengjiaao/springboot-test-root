@@ -140,7 +140,7 @@
 
         <!--*****dist公司依赖统一管理******-->
         <!--dist-存储过程-->
-        <dependency>
+        <!--<dependency>
             <groupId>dist.xdata.product</groupId>
             <artifactId>distprocedure</artifactId>
             <exclusions>
@@ -157,7 +157,7 @@
                     <artifactId>ojdbc14</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
         <!-- dist-Excel 插件 -->
         <!--<dependency>
             <groupId>com.dist</groupId>
