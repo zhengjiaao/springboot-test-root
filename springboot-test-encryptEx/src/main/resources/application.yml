@@ -1,0 +1,9 @@
+
+
+# 通过keytool和openssl生成密钥对
+jsencrypt:
+  rsa:
+    PRIVATE_KEY_PWD: dist2018 # 密钥库口令, 通过keytool和openssl生成密钥对时候设置
+    ALIAS: dist   # 密钥别名, 通过keytool和openssl生成密钥对时候设置
+    PUBLIC_KYE_FILE: key/dist_public.pem  # 公钥文件位置，明文
+    PRIVATE_KYE_FILE: key/dist.jks   # 私钥文件位置，密文
