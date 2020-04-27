@@ -111,6 +111,14 @@
         <!--<geotools.version>18.0</geotools.version>-->
     </properties>
 
+    <!--阿里镜像库：加速jar依赖下载-->
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
