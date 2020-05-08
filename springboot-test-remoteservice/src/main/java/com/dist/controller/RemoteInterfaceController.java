@@ -152,4 +152,24 @@ public class RemoteInterfaceController {
         userDTO.setDate(new Date());
         return userDTO;
     }
+
+    @ApiOperation(value ="提供服务降级测试",httpMethod = "GET")
+    @RequestMapping(value = "/get/hystrix",method = RequestMethod.GET)
+    public ResponseData getHystrix(){
+        String msg= "调用成功！";
+        System.out.println("service: "+msg);
+
+        //模拟出异常
+        //int age = 10/0;
+
+        //模拟请求超时
+        /*try {
+            TimeUnit.MILLISECONDS.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
+        return ResponseUtil.success((Object) msg);
+    }
+
 }

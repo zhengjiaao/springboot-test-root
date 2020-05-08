@@ -14,19 +14,18 @@ import org.springframework.context.annotation.Configuration;
  * @data 2019/6/27 11:34
  */
 @Configuration
-public class FeignService {
+public class FeignConfig {
 
     /**
      * 配置bean，Feign-HTTP调用远程服务器接口，Feign仅与本地接口配置有关，与远程接口无关
-     * @return
      */
     @Bean
     FeignTestService feignTest(){
         FeignTestService service = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
-                .options(new Request.Options(1000, 3500))
-                .retryer(new Retryer.Default(5000, 5000, 3))
+                .options(new Request.Options(5000, 5000))
+                .retryer(new Retryer.Default(5000, 5000, 1))
                 .target(FeignTestService.class, "http://localhost:8080/springboot-test-remoteservice/");
         return service;
     }

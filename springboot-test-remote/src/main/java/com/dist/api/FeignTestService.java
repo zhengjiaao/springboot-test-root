@@ -76,4 +76,9 @@ public interface FeignTestService {
      }
      }
      */
+
+    @ApiOperation(value ="提供服务降级测试",httpMethod = "GET")
+    @RequestLine("GET /rest/v1/get/hystrix")
+    Object getHystrix();
+
 }

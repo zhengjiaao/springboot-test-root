@@ -2,6 +2,8 @@ package com.dist.controller;
 
 import com.dist.api.FeignTestService;
 import com.dist.dto.UserDTO;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -11,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
-/**Feign方式请求http接口
+/**
+ * Feign方式请求http接口
+ *
  * @author zhengja@dist.com.cn
  * @data 2019/6/27 13:27
  */
-@Api(tags = "FeignController",description = "Feign调用远程接口")
+@Api(tags = "FeignController", description = "Feign调用远程接口")
 @RestController
 @RequestMapping(value = "rest/material/v2")
 public class FeignController {
@@ -23,52 +27,52 @@ public class FeignController {
     @Autowired
     FeignTestService service;
 
-    @ApiOperation(value ="提供get方法测试-不传参数",notes = "不传参数",httpMethod = "GET")
-    @RequestMapping(value = "/get/userdto",method = RequestMethod.GET)
-    public Object getUserDTO(){
-        System.out.println("remote:"+"进入调用方法");
+    @ApiOperation(value = "提供get方法测试-不传参数", notes = "不传参数", httpMethod = "GET")
+    @RequestMapping(value = "/get/userdto", method = RequestMethod.GET)
+    public Object getUserDTO() {
+        System.out.println("remote:" + "进入调用方法");
         return service.getUserDTO();
     }
 
-    @ApiOperation(value ="提供get方法测试-传参数",notes = "带传参数",httpMethod = "GET")
-    @RequestMapping(value = "/get/userdto2",method = RequestMethod.GET)
-    public Object getUserDTO(@ApiParam(value = "传参值：默认",defaultValue = "调用成功",required = true) @RequestParam String param){
-        System.out.println("remote:param=="+param);
+    @ApiOperation(value = "提供get方法测试-传参数", notes = "带传参数", httpMethod = "GET")
+    @RequestMapping(value = "/get/userdto2", method = RequestMethod.GET)
+    public Object getUserDTO(@ApiParam(value = "传参值：默认", defaultValue = "调用成功", required = true) @RequestParam String param) {
+        System.out.println("remote:param==" + param);
         return service.getUserDTO(param);
     }
 
-    @ApiOperation(value ="提供post方法测试",httpMethod = "POST")
-    @RequestMapping(value = "/post/userdto",method = RequestMethod.POST)
-    public Object postUserDTO(@ApiParam(value = "传参值：userDto",required = true) @RequestBody UserDTO userDto){
-        System.out.println("remote:userDto=="+userDto);
+    @ApiOperation(value = "提供post方法测试", httpMethod = "POST")
+    @RequestMapping(value = "/post/userdto", method = RequestMethod.POST)
+    public Object postUserDTO(@ApiParam(value = "传参值：userDto", required = true) @RequestBody UserDTO userDto) {
+        System.out.println("remote:userDto==" + userDto);
         userDto.setDate(new Date());
         return service.postUserDTO(userDto);
     }
 
-    @ApiOperation(value ="提供put方法测试",httpMethod = "PUT")
-    @RequestMapping(value = "/put/userdto",method = RequestMethod.PUT)
-    public Object putUserDTO(@ApiParam(value = "传参值：userDto",required = true) @RequestBody UserDTO userDto){
-        System.out.println("remote:userDto=="+userDto);
+    @ApiOperation(value = "提供put方法测试", httpMethod = "PUT")
+    @RequestMapping(value = "/put/userdto", method = RequestMethod.PUT)
+    public Object putUserDTO(@ApiParam(value = "传参值：userDto", required = true) @RequestBody UserDTO userDto) {
+        System.out.println("remote:userDto==" + userDto);
         userDto.setDate(new Date());
         return service.putUserDTO(userDto);
     }
 
-    @ApiOperation(value ="提供delete方法测试",httpMethod = "DELETE")
-    @RequestMapping(value = "/delete/userdto",method = RequestMethod.DELETE)
-    public Object deleteUserDTO(){
-        System.out.println("remote:"+"进入删除方法");
+    @ApiOperation(value = "提供delete方法测试", httpMethod = "DELETE")
+    @RequestMapping(value = "/delete/userdto", method = RequestMethod.DELETE)
+    public Object deleteUserDTO() {
+        System.out.println("remote:" + "进入删除方法");
         return service.deleteUserDTO();
     }
 
-    @ApiOperation(value ="提供lsit<UserDTO>方法测试",httpMethod = "GET")
-    @RequestMapping(value = "/get/userdtos",method = RequestMethod.GET)
-    public List<UserDTO> getUserDTOS(){
+    @ApiOperation(value = "提供lsit<UserDTO>方法测试", httpMethod = "GET")
+    @RequestMapping(value = "/get/userdtos", method = RequestMethod.GET)
+    public List<UserDTO> getUserDTOS() {
         return service.getUserDTOS();
     }
 
-    @ApiOperation(value ="提供listobject方法测试",httpMethod = "GET")
-    @RequestMapping(value = "/get/userdtolsit",method = RequestMethod.GET)
-    public Object getUserDTOList(){
+    @ApiOperation(value = "提供listobject方法测试", httpMethod = "GET")
+    @RequestMapping(value = "/get/userdtolsit", method = RequestMethod.GET)
+    public Object getUserDTOList() {
         return service.getUserDTOList();
     }
 
@@ -84,5 +88,29 @@ public class FeignController {
     }*/
 
 
+    /*********************服务降级-start**********************/
+    @HystrixCommand(fallbackMethod = "provider_TimeOut_Handler", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+    })
+    @ApiOperation(value = "提供服务降级测试", httpMethod = "GET")
+    @RequestMapping(value = "/get/hystrix", method = RequestMethod.GET)
+    public Object getHystrix() {
+        return service.getHystrix();
+    }
+
+    private String provider_TimeOut_Handler() {
+        return "线程池:  " + Thread.currentThread().getName() + ", 当前系统繁忙或者运行报错，请稍后再试！！！"+ " o(╥﹏╥)o";
+    }
+
+    /*********************服务降级-end**********************/
+
+
+
+
+
+    /*####################服务熔断-start###################*/
+
+
+    /*####################服务熔断-start###################*/
 
 }

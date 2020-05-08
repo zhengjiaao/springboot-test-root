@@ -1,6 +1,6 @@
 
 server:
-  port: 80 # tomcat端口
+  port: 8082 # tomcat端口
   servlet:
     context-path: /springboot-test-remote # 服务名称
 
