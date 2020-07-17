@@ -28,6 +28,13 @@ dist:
   rest:
     url:
       remoteservice: http://localhost:8080/springboot-test-remoteservice/rest/v1
+
+# 远程服务调用地址
+feign:
+  telihui:
+    enable: true  # 是否启用 第三方特力惠 登录验证
+    url: http://10.18.130.240/   # 第三方-特力惠
+
 debug: false
 
 

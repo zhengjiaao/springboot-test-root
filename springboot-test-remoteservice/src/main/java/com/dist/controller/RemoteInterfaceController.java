@@ -1,5 +1,6 @@
 package com.dist.controller;
 
+import com.dist.dto.As;
 import com.dist.dto.EpoitParamsDTO;
 import com.dist.dto.UserDTO;
 import com.dist.response.ResponseData;
@@ -172,4 +173,22 @@ public class RemoteInterfaceController {
         return ResponseUtil.success((Object) msg);
     }
 
+
+    @ApiOperation(value ="get测试-传多个参数",notes = "带传参数",httpMethod = "GET")
+    @RequestMapping(value = "/get/login",method = RequestMethod.GET)
+    public Object checkTelihuiLogin(@ApiParam(value = "loginName",required = true) @RequestParam String loginName,
+                             @ApiParam(value = "casCookie",required = true) @RequestParam String casCookie){
+        System.out.println("service:loginName: "+loginName);
+        System.out.println("service:casCookie: "+casCookie);
+        return loginName;
+    }
+
+    @ApiOperation(value ="get测试-传参数",notes = "带传参数",httpMethod = "GET")
+    @RequestMapping(value = "/get/login/ex",method = RequestMethod.GET)
+    public Object checkTelihuiLogin(@ApiParam(value = "loginName",required = true) @RequestParam String loginName){
+        System.out.println("service:loginName: "+loginName);
+        As as=new As();
+        as.setAuthenticated(false);
+        return as;
+    }
 }

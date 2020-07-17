@@ -158,4 +158,21 @@ public class RestTemplateTest {
 
     }
 
+    @Test
+    public void tets4(){
+
+        String s1 = "false";
+        String s2 = "true";
+        String s3 = "fAlSe";
+        String s4 = "TrUe";
+        String s5 = "true_a";
+
+        System.out.println(Boolean.parseBoolean(s1));
+        System.out.println(Boolean.parseBoolean(s2));
+        System.out.println(Boolean.parseBoolean(s3));
+        System.out.println(Boolean.parseBoolean(s4));
+        System.out.println(Boolean.parseBoolean(s5));
+
+    }
+
 }

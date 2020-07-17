@@ -47,7 +47,10 @@
         <module>springboot-test-utils</module>
         <module>springboot-test-email</module>
         <module>springboot-test-dist</module>
+        <module>springboot-test-elasticsearch</module>
     </modules>
+
+
     <!--  <dependencies>
         <dependency>
           <groupId>org.springframework.boot</groupId>

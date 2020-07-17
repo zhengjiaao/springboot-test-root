@@ -1,6 +1,9 @@
 package com.dist.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dist.api.FeignTestService;
+import com.dist.api.TelihuiService;
 import com.dist.dto.UserDTO;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
@@ -26,6 +29,34 @@ public class FeignController {
 
     @Autowired
     FeignTestService service;
+
+    @Autowired
+    TelihuiService telihuiService;
+
+    @ApiOperation(value = "特力惠用户登录验证-传多参数", notes = "带传参数", httpMethod = "GET")
+    @RequestMapping(value = "checkTelihuiLogin", method = RequestMethod.GET)
+    public Object checkTelihuiLogin(@ApiParam(value = "loginName",required = true) @RequestParam String loginName,
+                                    @ApiParam(value = "casCookie",required = true) @RequestParam String casCookie) {
+        System.out.println("remote:loginName==" + loginName);
+        System.out.println("remote:casCookie==" + casCookie);
+        return telihuiService.checkTelihuiLogin(loginName, casCookie);
+    }
+
+    @ApiOperation(value = "特力惠用户登录验证-传参数", notes = "带传参数", httpMethod = "GET")
+    @RequestMapping(value = "checkTelihuiLogin/ex", method = RequestMethod.GET)
+    public Object checkTelihuiLogin(@ApiParam(value = "loginName",required = true) @RequestParam String loginName) {
+        System.out.println("remote:loginName==" + loginName);
+        Object o = telihuiService.checkTelihuiLogin(loginName);
+        System.out.println(o);
+        JSONObject jsonObj = (JSONObject) JSON.toJSON(o);
+        System.out.println("jsonObj"+jsonObj);
+        String authenticated = jsonObj.get("authenticated").toString();
+        System.out.println(authenticated);
+        if (authenticated.equals("false")){
+            System.out.println("用户未登录第三方特力惠平台");
+        }
+        return o;
+    }
 
     @ApiOperation(value = "提供get方法测试-不传参数", notes = "不传参数", httpMethod = "GET")
     @RequestMapping(value = "/get/userdto", method = RequestMethod.GET)

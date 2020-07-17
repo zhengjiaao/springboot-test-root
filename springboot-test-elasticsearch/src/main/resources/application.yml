@@ -1,0 +1,21 @@
+# 主配置文件主要用来存放公共设置，不受环境配置影响
+server:
+  port: 8080
+  servlet:
+    context-path: /springboot-test-elasticsearch
+
+spring:
+  web:
+    isopenurl: true # 是否要启动时打开浏览器
+    googleexcute: explorer  # 本地浏览器地址
+    loginurl: http://localhost:${server.port}/${server.servlet.context-path}/swagger-ui.html  # 要打开的网址
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true # 启用 ElasticsearchTemplate
+      properties:
+        path:
+          logs: ./elasticsearch/log   # ES日志存储目录
+          data: ./elasticsearch/data  # ES数据存储目录
+      cluster-name: my-cluster        # ES集群名称，在elasticsearch.yml中配置 默 elasticsearch
+      cluster-nodes: 127.0.0.1:9300   # ES集群节点 用逗号分隔 , java连接默9300，http连接默9200
