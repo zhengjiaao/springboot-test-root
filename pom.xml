@@ -48,6 +48,8 @@
         <module>springboot-test-email</module>
         <module>springboot-test-dist</module>
         <module>springboot-test-elasticsearch</module>
+        <module>springboot-test-jdbc</module>
+        <module>springboot-test-yml</module>
     </modules>
 
 

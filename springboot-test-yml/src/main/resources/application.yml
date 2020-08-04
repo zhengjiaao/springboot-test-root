@@ -1,0 +1,61 @@
+# 主配置文件主要用来存放公共设置，不受环境配置影响
+server:
+  port: 8080
+  servlet:
+    context-path: /springboot-test-yml
+
+spring:
+  web:
+    isopenurl: true # 是否要启动时打开浏览器
+    googleexcute: explorer  # 本地浏览器地址
+    loginurl: http://localhost:${server.port}/${server.servlet.context-path}/swagger-ui.html  # 要打开的网址
+
+# 动态修改
+isOne: true
+
+dynamicvalue:
+  data: asd
+  value: 123
+
+# yml 映射单个属性、数组、list、map、list<map>，List<User>，User等
+my-attributes:
+  # 单个值
+  value: 345
+  # 数组
+  valueArray: 1,2,3,4,5,6,7,8,9
+  # list
+  valueList:
+    - 13579
+    - 246810
+  # map
+  valueMap:
+    name: 张三
+    age: 20
+    sex: female
+  # list<map>
+  valueMapList:
+    - name: 李四
+      age: 21
+    - name: caven
+      age: 31
+  valueUserList:
+    - name: 李四
+      age: 24
+    - name: 张三
+      age: 22
+  valueUser:
+    name: 安其拉
+    age: 18
+
+# properties
+#nrsc.unions.partII.age=10
+#nrsc.security.app.loginPage=android
+
+# yml
+nrsc:
+  unions:
+    partII:
+      age: 10
+  security:
+    app:
+      loginPage: android
