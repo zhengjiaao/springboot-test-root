@@ -19,10 +19,6 @@
     <name>springboot-test-root</name>
 
     <modules>
-        <module>springboot-dubbo-base</module>
-        <module>springboot-dubbo-api</module>
-        <module>springboot-dubbo-service</module>
-        <module>springboot-dubbo-web</module>
         <module>springboot-test</module>
         <module>springboot-test-autonomy</module>
         <module>springboot-test-redis</module>
