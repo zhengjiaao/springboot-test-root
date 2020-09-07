@@ -62,11 +62,26 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
-        <!--二维码依赖  成功-->
+        <!--qrgen 二维码依赖 方式一-->
         <dependency>
             <groupId>net.glxn.qrgen</groupId>
             <artifactId>javase</artifactId>
+            <version>2.0</version>
         </dependency>
+
+        <!--zxing二维码依赖 方式二(推荐)-->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+
         <!--计算文件MD5  成功-->
         <dependency>
             <groupId>commons-codec</groupId>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>选择显示JSON数据</title>
+		<script type="text/javascript" src="jquery-2.0.0.min.js"></script>
+	</head>
+	<body>
+		<h1 style="text-align: center;">
+			选择显示JSON数据2
+		</h1>
+		<!--设置一个按钮组点击切换数据-->
+		<div>
+			<ul class="buttongroup" style="list-style: none;">
+				<li style="float: left;width: 33%;text-align: center;">
+					<button id="bt1" onclick="btClickChangeYmlContent(this)">切换</button>
+				</li>
+				<li style="float: left;width: 33%;text-align: center;">
+					<button id="bt2" onclick="btClickChangeYmlContent(this)">切换</button>
+				</li>
+				<li style="float: left;width: 33%;text-align: center;">
+					<button id="bt3" onclick="btClickChangeYmlContent(this)">切换</button>
+				</li>
+			</ul>
+		</div>
+		<div style="margin-top: 20px;">
+			<textarea id="textareaText" rows="50" cols="50" style="margin-top: 20px;width: 100%;height: 450px;"></textarea>
+		</div>
+		<div id="showMessage" style="margin-top: 20px;text-align: center;">
+			<button onclick="formatJsonData()">格式化显示</button>
+			<button onclick="submitFix()">提交修改</button>
+		</div>
+	</body>
+	
+	
+<script>
+    var currentBtn;
+	function submitFix() {
+		alert($("#textareaText").val())
+        var msgp=$("#textareaText").val().trim()
+		$.ajax({
+			ansyc: false,//是否异步发送
+			type: "POST",
+			url: "/setYmlInfo",
+			data: {
+			    "ymlInfoAfterChangingContent" : msgp,
+				"ymlFilename"     : currentBtn
+			},
+			dataType: "json",
+			success: function (data) {
+				alert("成功")
+			},
+			error: function (data) {
+				alert("错误")
+			}
+		})
+	}
+	function btClickChangeYmlContent(event){
+		var text=event.innerText.trim()
+        currentBtn=text;
+		var sendText=text.substring(text.indexOf("application")).trim()
+		alert(sendText)
+		$.ajax({
+			ansyc: false,//是否异步发送
+			type: "GET",
+			url: "/getYmlInfo",
+			data: {
+				"ymlFilename"     : sendText
+			},
+			dataType: "json",
+			success: function (data) {
+				alert(data.msg)
+				if (sendText=="application.yml") {
+					$("#textareaText").text(JSON.stringify(data['application']));
+				}
+				else if (sendText=="application-dev.yml") {
+					$("#textareaText").text(JSON.stringify(data['application-dev']));
+				}
+				else if (sendText=="application-prod.yml") {
+					$("#textareaText").text(JSON.stringify(data['application-prod']));
+				}
+			},
+			error: function (data) {
+				alert("错误")
+			}
+		})
+	}
+
+	window.onload=function (){
+		$.ajax({
+			ansyc: false,//是否异步发送
+			type: "GET",
+			url: "/getYmlInfo",
+			data: {
+				"ymlFilename"     : "application.yml"
+			},
+			dataType: "json",
+			success: function (data) {
+				$("#bt1").text(data.ymlFilenamePath[0])
+				$("#bt2").text(data.ymlFilenamePath[1])
+				$("#bt3").text(data.ymlFilenamePath[2])
+				//$("#textareaText").val(JSON.stringify(data.application))
+			},
+			error: function (data) {
+				alert("错误")
+			}
+		})
+	}
+
+	function formatJsonData(){//将json数据格式化显示
+		var input;
+		try {//非空判断
+			if ($('#textareaText').val().length == 0) {
+				return;
+			}
+
+			input = eval('(' + $('#textareaText').val() + ')');
+		} catch (error) {
+			return alert("Input data is not valid JSON, please check. Error: " + error);
+		}
+
+		$('#textareaText').val(JSON.stringify(input, null, 4));
+	}
+</script>
+</html>

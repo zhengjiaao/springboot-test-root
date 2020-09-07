@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>选择显示JSON数据</title>
+    <script type="text/javascript" src="jquery-2.0.0.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.15.9/languages/yaml.min.js"></script>
+    <script src="https://cdn.bootcss.com/js-yaml/3.13.1/js-yaml.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.15.9/highlight.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.15.9/languages/json.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.15.9/languages/yaml.min.js"></script>
+    <link href="https://cdn.bootcss.com/highlight.js/9.15.9/styles/idea.min.css" rel="stylesheet">
+</head>
+<style>
+    pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+            .string { color: green; }
+            .number { color: darkorange; }
+            .boolean { color: blue; }
+            .null { color: magenta; }
+            .key { color: black; }
+    li{
+
+    }
+</style>
+<body>
+<h1 style="text-align: center;">
+    选择显示yml数据
+</h1>
+<!--leftpart采用pre标签然后在js里动态生成内容-->
+<div style="float: left">
+    <div id="leftpart" style="margin: 0px"></div>
+        <!--h4 id="h1">无操作提供</h4>
+        <ul>
+            <li id="bt1" onclick="btClickChangeYmlContent(this)">
+                无操作提供
+            </li>
+            <li id="bt2" onclick="btClickChangeYmlContent(this)">
+                无操作提供
+            </li>
+            <li id="bt3" onclick="btClickChangeYmlContent(this)">
+                无操作提供
+            </li>
+            <li id="bt4" onclick="btClickChangeYmlContent(this)">
+                无操作提供
+            </li>
+        </ul-->
+</div>
+<div contenteditable="true" style="width: 40%;margin-top: 20px;float: left">
+    <pre id="prehtml"></pre>
+</div>
+<!--设置一个按钮组点击切换数据-->
+<div style="margin-bottom: 50px;float: left">
+    <ul class="buttongroup" style="list-style: none;">
+        <li style="text-align: center;">
+            <button id="bt7" onclick="submitFix()">提交修改</button>
+        </li>
+        <li style="text-align: center;margin-top: 20px;">
+            <button id="bt8" onclick="btClickChangeYmlContent(this)">判断json数据是否规范</button>
+        </li>
+        <li style="text-align: center;margin-top: 20px;">
+            <button id="bt9" onclick="json2yml()">json转yml</button>
+        </li>
+        <li style="text-align: center;margin-top: 20px;">
+            <button id="bt10" onclick="yml2json()">yml转json</button>
+        </li>
+        <li style="text-align: center;margin-top: 20px;">
+            <button id="bt11" onclick="btClickChangeYmlContent(this)">未定义操作</button>
+        </li>
+        <li style="text-align: center;margin-top: 20px;">
+            <button id="bt12" onclick="btClickChangeYmlContent(this)">注意事项</button>
+        </li>
+    </ul>
+</div>
+</body>
+
+
+<script>
+    function formatBeautyJson(obj){
+        function output(inp) {
+            document.getElementById("prehtml").innerHTML = inp;
+        }
+        //var obj=getJson()
+        var str = JSON.stringify(obj, undefined, 4);
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+                function (match) {
+                    var cls = 'number';
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'key';
+                        } else {
+                            cls = 'string';
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'boolean';
+                    } else if (/null/.test(match)) {
+                        cls = 'null';
+                    }
+                    return '<span class="' + cls + '">' + match + '</span>';
+                });
+        }
+        output(syntaxHighlight(str));//将美化格式化后的json数据写入到pre标签
+    }
+
+    var currentBtn;
+    var currentBtnId;
+    function submitFix() {
+        //禁止提交json数据
+        if (!isJSON($("#prehtml").text())){
+            $.ajax({
+                ansyc: false,//是否异步发送
+                type: "POST",
+                url: "/setYmlInfo",
+                data: {
+                    "ymlInfoAfterChangingContent" : $("#prehtml").text(),
+                    "ymlFilename"                 : currentBtn,
+                    "modulename"                  : $("#h"+((Number)(currentBtnId.substring(2)))).text()
+                },
+                dataType: "json",
+                success: function (data) {
+                    alert("修改成功")
+                },
+                error: function (data) {
+                    alert("错误")
+                }
+            })
+        }
+        else
+            alert("非法json数据，请检查格式,操作终止")
+    }
+    function btClickChangeYmlContent(event){
+        var text=event.innerText.trim()
+        currentBtn=text;
+        currentBtnId=event.id
+        var sendText=text.substring(text.indexOf("application")).trim()
+        $.ajax({
+            ansyc: false,//是否异步发送
+            type: "GET",
+            url: "/getYmlInfo",
+            data: {
+                "ymlFilename"     : sendText,
+                "modulename"      : $("#h"+((Number)(currentBtnId.substring(2)))).text()
+            },
+            dataType: "json",
+            success: function (data) {
+                if (sendText=="application.yml") {
+                    json2ymloverride(data['application'])
+                }
+                else if (sendText=="application-dev.yml") {
+                    json2ymloverride(data['application-dev'])
+                }
+                else if (sendText=="application-prod.yml") {
+                    json2ymloverride(data['application-prod'])
+                }
+                else if (sendText=="application-test.yml") {
+                    json2ymloverride(data['application-test'])
+                }
+            },
+            error: function (data) {
+                alert("错误")
+            }
+        })
+    }
+    window.onload=function (){
+        $.ajax({
+            ansyc: false,//是否异步发送
+            type: "GET",
+            url: "/getYmlInfoBase",
+            dataType: "json",
+            success: function (data) {
+                //因为append方法不允许单次添加内容时存在未闭合标签，所以只能先把待添加内容存进变量
+                for (var i = 0; i < data.moduleName.length; i++) {
+                    var appendHTML=
+                        "<h2 id=\"h"+i+"\">"+data.moduleName[i]+"</h2>\n"+
+                        "<ul style='list-style: none;margin-bottom: 5px'>"
+                    for (var j = 0; j < data[data.moduleName[i]].length; j++) {
+                        appendHTML+=
+                                    "<li id=\"bt"+i+"\" onclick=\"btClickChangeYmlContent(this)\">\n" +
+                                        data[data.moduleName[i]][j]+"\n" +
+                                    "</li>"
+                    }
+                    $("#leftpart").append(appendHTML+"</ul>")
+                }
+            },
+            error: function (data) {
+                alert("错误")
+            }
+        })
+    }
+
+    //检查json数据是否合法
+    function isJSON(str) {
+        if (typeof str == 'string') {
+            try {
+                var obj=JSON.parse(str);
+                if(typeof obj == 'object' && obj ){
+                    return true;
+                }else{
+                    return false;
+                }
+            } catch(e) {
+                console.log('error：'+str+'!!!'+e);
+                return false;
+            }
+        }
+        console.log('It is not a string!')
+    }
+    //json转yml
+    function json2ymloverride(jsontext) {
+        $("#prehtml").html(hljs.highlight("yaml", jsyaml.dump(jsontext)).value)
+    }
+    //json转yml
+    function json2yml() {
+        let json = $("#prehtml").text()
+        if (json) {
+            try {
+                let jsonObj = JSON.parse(json);
+                $("#prehtml").html(hljs.highlight("yaml", jsyaml.dump(jsonObj)).value)
+            } catch (e) {
+                alert(e)
+            }
+        }
+    }
+
+    //json转yml
+    function yml2json() {
+        let yaml = $("#prehtml").text()
+        if (yaml) {
+            try {
+                let json = JSON.stringify(jsyaml.load(yaml), null, 2);
+                $("#prehtml").html(hljs.highlight("json", json).value)
+            } catch (e) {
+                alert(e)
+            }
+        }
+    }
+</script>
+</html>

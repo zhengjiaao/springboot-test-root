@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>选择显示JSON数据</title>
+		<script type="text/javascript" src="jquery-2.0.0.min.js"></script>
+	</head>
+	<body>
+		<h1 style="text-align: center;">
+			选择显示JSON数据2
+		</h1>
+		<!--设置一个按钮组点击切换数据-->
+		<div>
+			<ul class="buttongroup" style="list-style: none;">
+				<li style="float: left;width: 33%;text-align: center;">
+					<button id="bt1">切换</button>
+				</li>
+				<li style="float: left;width: 33%;text-align: center;">
+					<button id="bt2">切换</button>
+				</li>
+				<li style="float: left;width: 33%;text-align: center;">
+					<button id="bt3">切换</button>
+				</li>
+			</ul>
+		</div>
+		<div style="margin-top: 20px;">
+			<textarea id="textareaText" rows="50" cols="50" style="margin-top: 20px;width: 100%;height: 100%;">
+				
+			</textarea>
+		</div>
+	</body>
+	
+	
+<script>
+
+
+	window.onload=function (){
+		alert("woca")
+		$.ajax({
+			ansyc: false,//是否异步发送
+			type: "GET",
+			url: "/getYmlInfo",//指向loginCheck处理器
+			data: {
+				//"textareaText"     : $("#textareaText").val(),
+				//"receviedCommentID":receviedCommentID
+			},
+			dataType: "json",
+			success: function (data) {
+				//alert("woca2")
+				//alert("信息："+data.ymlFilenamePath)
+				//清除文本框内容
+				alert(data.ymlFilenamePath[0])
+				$('#bt1').val(data.ymlFilenamePath[0])
+
+				$('#textareaText').val(data.ymlFilename)
+				alert("Woca")
+				//操作完成后显示这个，比较好看
+			},
+			error: function (data) {
+				//alert("woca3")
+				//alert(data.msg)
+			}
+		})
+	}
+
+</script>
+</html>

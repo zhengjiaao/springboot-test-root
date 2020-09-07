@@ -19,12 +19,12 @@
     <name>springboot-test-root</name>
 
     <modules>
+        <module>springboot-dubbo-base</module>
+        <module>springboot-dubbo-api</module>
+        <module>springboot-dubbo-service</module>
+        <module>springboot-dubbo-web</module>
         <module>springboot-test</module>
         <module>springboot-test-autonomy</module>
-        <module>springboot-test-base</module>
-        <module>springboot-test-api</module>
-        <module>springboot-test-service</module>
-        <module>springboot-test-web</module>
         <module>springboot-test-redis</module>
         <module>springboot-test-redis2</module>
         <module>springboot-test-redis-session</module>
@@ -159,12 +159,25 @@
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
-            <!--二维码依赖-->
+            <!--qrgen 二维码依赖 方式一-->
             <dependency>
                 <groupId>net.glxn.qrgen</groupId>
                 <artifactId>javase</artifactId>
                 <version>${javase.version}</version>
             </dependency>
+
+            <!--zxing二维码依赖 方式二(推荐)-->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+
             <!--计算文件MD5  成功-->
             <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
             <dependency>

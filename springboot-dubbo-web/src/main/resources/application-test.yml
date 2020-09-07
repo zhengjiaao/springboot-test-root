@@ -1,0 +1,80 @@
+# dubbo配置
+dubbo:
+  application:
+    name: consumer
+  registry:
+    protocol: zookeeper   #dubbo/zookeeper 协议
+    address: 127.0.0.1:2181    # zookeeper协议配置,默认zk支持ip
+    #address: zookeeper://127.0.0.1:2183  # dubbo协议配置,默认zk支持ip
+    #address: zookeeper://127.0.0.1:2183?backup=127.0.0.1:2184,127.0.0.1:2185  # dubbo协议配置集群-zk主从配置方法
+    #address: 127.0.0.1:2183,127.0.0.1:2184,127.0.0.1:2185  # zookeeper协议配置集群-zk非主从配置方法
+  interface:
+    version: 1.0.0
+  annotation:
+    package: com.dist  # 扫描包
+  consumer:
+    timeout: 50000
+    check: false
+    version: 1.0.0 #dubbo默认版本号，在url显示为default.version=xxx
+
+# 大鱼短信验证码
+dayu:
+  appKey: 24745628        # 注册后生成的appkey
+  appSecret: ca6d640c32c0e4c46f9be9fffa801b35  # 注册后生成的secret
+  userId: dist            # 公共回传参数
+  smsType: normal         #  短信类型
+  signName: 共想泰州       # 短信签名 （与申请一致）
+  templateCode: SMS_142384257   # 短信模板ID
+
+# 阿里短信验证码
+ali:
+  app_key: LTAIpum0PoLhna6i                   # 注册后生成的appkey
+  app_secret: vKVLpMtQxnhJtkbbknoO5e3ikLMwYs  # 注册后生成的secret
+  user_id: dist                               # 公共回传参数
+  sms_type: normal                            # 短信类型
+  sign_name: 临沧一张图                        # 短信签名
+  template_code: SMS_171116496                # 短信模板ID
+
+# spring 相关配置
+spring:
+  http:
+    encoding:
+      force: true
+      charset: utf-8 # 解决返回给前端中文乱码
+      enabled: true
+  # springboot 发送邮件配置
+  mail:
+    host: smtp.qq.com
+    username: 1263598336@qq.com
+    # password不是邮箱或qq的密码，是邮箱的授权码 获取授权码参考：https://www.jianshu.com/p/9efaff9e9437
+    password: yoypgcyowgofieda
+    default-encoding: UTF-8
+
+# url转换
+file:
+  separate: true #静态图片预览路径相互独立，公众端和管理端各部相同
+  public:
+    path: http://gx.gh.taizhou.gov.cn/gxtz-server-file/rest/resource  #公众端静态图片预览路径,修改成公网地址
+  private:
+    path: http://192.168.1.220/gxtz-server-file/rest/resource  #管理端静态图片预览路径，修改成内网地址
+
+# 模拟单点登录
+sso:
+  ticket:
+    timeout: 30
+
+config-attributes:
+  value: 345                          #对应单个值
+  valueArray: 1,2,3,4,5,6,7,8,9      #对应数组
+  valueList:                         #对应list
+    - 13579
+    - 246810
+  valueMap:                          #对应map
+    name: lili
+    age: 20
+    sex: female
+  valueMapList:                      #对应list<map>
+    - name: bob
+      age: 21
+    - name: caven
+      age: 31

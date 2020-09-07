@@ -1,12 +1,15 @@
 package com.dist.controller;
 
 
-import com.dist.util.YamlUtils;
 import io.swagger.annotations.Api;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -24,21 +27,37 @@ public class YamlController {
     @GetMapping("v1/get/yml")
     public Object getYml() throws Exception {
         //"" 则表示从当前class类文件所在目录开始搜索
-        System.out.println("Resource"+YamlController.class.getResource("").getPath());
+        System.out.println("Resource" + YamlController.class.getResource("").getPath());
         // "/"  则表示从根目录../../target/classes/ 目录开始搜索
-        System.out.println("Resource2"+YamlController.class.getResource("/").getPath());
+        System.out.println("Resource2" + YamlController.class.getResource("/").getPath());
         // ""  则表示从根目录../../target/classes/ 目录开始搜索
-        System.out.println("ClassLoader"+YamlController.class.getClassLoader().getResource("").getPath());
+        System.out.println("ClassLoader" + YamlController.class.getClassLoader().getResource("").getPath());
 
-        Map<String, Object> map = YamlUtils.yamlHandler(new ClassPathResource("application.yml"));
+        //Map<String, Object> map = YamlUtils.yamlHandler(new ClassPathResource("application.yml"));
 
-        //URL url = getClassLoader().getResource("application.yml");
-        /*DumperOptions dumperOptions = new DumperOptions();
+        URL url = YamlController.class.getClassLoader().getResource("application.yml");
+        DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         dumperOptions.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN);
         dumperOptions.setPrettyFlow(false);
         Yaml yaml = new Yaml(dumperOptions);
-        Map map =(Map)yaml.load(new FileInputStream(url.getFile()));*/
+        Map map = yaml.load(new FileInputStream(url.getFile()));
         return map;
     }
+
+    @PutMapping("v1/update/yml")
+    public Object updateYml(@RequestBody Object mapvalue) throws Exception {
+        URL url = YamlController.class.getClassLoader().getResource("application.yml");
+        DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        dumperOptions.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN);
+        dumperOptions.setPrettyFlow(false);
+        Yaml yaml = new Yaml(dumperOptions);
+        //yaml.load(new FileInputStream(url.getFile()));
+
+        yaml.dump(mapvalue, new OutputStreamWriter(new FileOutputStream(url.getFile())));
+
+        return mapvalue;
+    }
+
 }
