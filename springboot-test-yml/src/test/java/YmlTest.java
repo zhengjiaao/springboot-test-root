@@ -1,6 +1,6 @@
-import com.dist.YmlApplication;
-import com.dist.dto.DynamicValue;
-import com.dist.dto.MyAttributes;
+import com.zja.YmlApplication;
+import com.zja.dto.DynamicValue;
+import com.zja.dto.MyAttributes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

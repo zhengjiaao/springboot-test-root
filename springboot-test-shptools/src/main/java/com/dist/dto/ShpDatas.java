@@ -1,4 +1,4 @@
-package com.dist.dto;
+package com.zja.dto;
 
 import java.util.ArrayList;
 import java.util.List;

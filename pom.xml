@@ -37,10 +37,12 @@
         <module>springboot-test-file</module>
         <module>springboot-test-ftp</module>
         <module>springboot-test-document</module>
+        <module>springboot-test-jpa</module>
         <module>springboot-test-jpaextention</module>
         <module>springboot-test-timedtask</module>
         <module>springboot-test-cache</module>
         <module>springboot-test-utils</module>
+        <module>springboot-test-validation</module>
         <module>springboot-test-email</module>
         <module>springboot-test-dist</module>
         <module>springboot-test-elasticsearch</module>
@@ -79,10 +81,11 @@
         <swagger.version>1.5.21</swagger.version>
         <javassist.version>3.18.2-GA</javassist.version>
         <springfox.version>2.9.2</springfox.version>
+        <swagger-ui.version>1.9.6</swagger-ui.version>
         <!--end集成swagger-API-->
         <dozer.version>5.4.0</dozer.version>
         <lang3.version>3.5</lang3.version>
-        <fastjson.version>1.2.4</fastjson.version>
+        <fastjson.version>1.2.70</fastjson.version>
         <taobao-sdk-java-auto.version>1.0</taobao-sdk-java-auto.version>
         <javase.version>2.0</javase.version>
         <commons-codec.version>1.11</commons-codec.version>
@@ -181,6 +184,7 @@
                 <artifactId>commons-codec</artifactId>
                 <version>${commons-codec.version}</version>
             </dependency>
+
             <!--========Start集成swagger-API========-->
             <dependency>
                 <groupId>org.javassist</groupId>
@@ -219,6 +223,14 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
+            <!--swagger 高级ui页面-->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>swagger-bootstrap-ui</artifactId>
+                <version>${swagger-ui.version}</version>
+            </dependency>
+
             <!--========End 集成swagger-API========-->
             <!--word转xml：先参考笔记再进行配置-->
             <dependency>

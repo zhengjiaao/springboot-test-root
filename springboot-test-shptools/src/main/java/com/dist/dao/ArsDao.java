@@ -1,6 +1,6 @@
-package com.dist.dao;
+package com.zja.dao;
 
-import com.dist.entity.ArsModel;
+import com.zja.entity.ArsModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

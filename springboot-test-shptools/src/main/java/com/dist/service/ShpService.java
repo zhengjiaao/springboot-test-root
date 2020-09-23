@@ -1,10 +1,10 @@
-package com.dist.service;
+package com.zja.service;
 
-import com.dist.dto.ShpDatas;
-import com.dist.dto.ShpInfo;
-import com.dist.util.geotools.ShpTools;
-import com.dist.util.result.ResponseMessage;
-import com.dist.util.result.ResponseResult;
+import com.zja.dto.ShpDatas;
+import com.zja.dto.ShpInfo;
+import com.zja.util.geotools.ShpTools;
+import com.zja.util.result.ResponseMessage;
+import com.zja.util.result.ResponseResult;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;

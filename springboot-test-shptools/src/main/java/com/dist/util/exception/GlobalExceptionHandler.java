@@ -1,7 +1,7 @@
-package com.dist.util.exception;
+package com.zja.util.exception;
 
 
-import com.dist.util.result.ResponseResult;
+import com.zja.util.result.ResponseResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

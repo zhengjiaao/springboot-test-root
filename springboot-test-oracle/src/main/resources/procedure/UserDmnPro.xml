@@ -8,7 +8,7 @@
 		<parameters>
 			<!--返回类型：定义游标类型-->
 			<parameter name="P_DATA" type="out" dataType="cursor"
-					   vo="com.dist.entity.UserEntity"/>
+					   vo="com.zja.entity.UserEntity"/>
 		</parameters>
 	</procedure>
 
@@ -20,7 +20,7 @@
 			<parameter name="P_AGE" type="in" dataType="varchar"/>
 			<!--返回类型：定义游标类型-->
 			<parameter name="P_DATA" type="out" dataType="cursor"
-					   vo="com.dist.entity.UserEntity"/>
+					   vo="com.zja.entity.UserEntity"/>
 		</parameters>
 	</procedure>
 </procedures>

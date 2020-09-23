@@ -1,8 +1,8 @@
-package com.dist.controller;
+package com.zja.controller;
 
-import com.dist.dto.ShpInfo;
-import com.dist.service.ShpService;
-import com.dist.util.result.ResponseResult;
+import com.zja.dto.ShpInfo;
+import com.zja.service.ShpService;
+import com.zja.util.result.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

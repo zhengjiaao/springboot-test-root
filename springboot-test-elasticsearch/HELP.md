@@ -92,10 +92,10 @@ public interface BookRepository extends ElasticsearchRepository<BookEntity, Stri
 ```
 controller层
 ```java
-package com.dist.controller;
+package com.zja.controller;
 
-import com.dist.dao.BookRepository;
-import com.dist.entity.BookEntity;
+import com.zja.dao.BookRepository;
+import com.zja.entity.BookEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

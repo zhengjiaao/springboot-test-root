@@ -1,13 +1,13 @@
-package com.dist.util.geotools;
+package com.zja.util.geotools;
 
 
 import com.alibaba.fastjson.JSON;
-import com.dist.dto.PolygonObject;
-import com.dist.dto.ShpDatas;
-import com.dist.dto.ShpInfo;
-import com.dist.util.IO.StringTokenReader;
-import com.dist.util.result.ResponseMessage;
-import com.dist.util.result.ResponseResult;
+import com.zja.dto.PolygonObject;
+import com.zja.dto.ShpDatas;
+import com.zja.dto.ShpInfo;
+import com.zja.util.IO.StringTokenReader;
+import com.zja.util.result.ResponseMessage;
+import com.zja.util.result.ResponseResult;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;

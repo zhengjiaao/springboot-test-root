@@ -1,4 +1,4 @@
-package com.dist.util.result;
+package com.zja.util.result;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

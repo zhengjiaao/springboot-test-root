@@ -1,4 +1,4 @@
-package com.dist.util.shpFile;
+package com.zja.util.shpFile;
 
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;

@@ -1,7 +1,7 @@
-package com.dist.service;
+package com.zja.service;
 
-import com.dist.dao.ArsDao;
-import com.dist.entity.ArsModel;
+import com.zja.dao.ArsDao;
+import com.zja.entity.ArsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

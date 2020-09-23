@@ -23,11 +23,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -55,7 +55,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--集成swagger-API-->
+        <!--集成swagger-API 页面swagger-ui.html-->
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-models</artifactId>
@@ -83,6 +83,12 @@
                     <artifactId>swagger-annotations</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!--swagger 高级ui页面 页面doc.html-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>swagger-bootstrap-ui</artifactId>
         </dependency>
 
         <!-- dozer 对象间属性值赋值，不同属性名，借助map映射 -->

@@ -1,4 +1,4 @@
-package com.dist.util.result;
+package com.zja.util.result;
 
 /**
  * @author zhengja@dist.com.cn

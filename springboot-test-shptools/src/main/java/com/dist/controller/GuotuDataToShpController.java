@@ -1,6 +1,6 @@
-package com.dist.controller;
+package com.zja.controller;
 
-import com.dist.service.DataToShpService;
+import com.zja.service.DataToShpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

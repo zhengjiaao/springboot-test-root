@@ -1,4 +1,4 @@
-package com.dist.dto;
+package com.zja.dto;
 
 import java.util.HashMap;
 import java.util.List;

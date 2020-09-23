@@ -1,6 +1,6 @@
-package com.dist.service;
+package com.zja.service;
 
-import com.dist.entity.ArsModel;
+import com.zja.entity.ArsModel;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

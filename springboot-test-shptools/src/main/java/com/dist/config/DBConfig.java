@@ -1,4 +1,4 @@
-package com.dist.config;
+package com.zja.config;
 
 /**
  * @company: DIST

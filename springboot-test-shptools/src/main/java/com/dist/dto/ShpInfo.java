@@ -1,4 +1,4 @@
-package com.dist.dto;
+package com.zja.dto;
 
 
 /**shp业务模型对象 -- 针对写

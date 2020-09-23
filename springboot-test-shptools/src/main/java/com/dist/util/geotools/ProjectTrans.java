@@ -1,4 +1,4 @@
-package com.dist.util.geotools;
+package com.zja.util.geotools;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;

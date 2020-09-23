@@ -1,4 +1,4 @@
-package com.dist.util.IO;
+package com.zja.util.IO;
 
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.io.ParseException;
