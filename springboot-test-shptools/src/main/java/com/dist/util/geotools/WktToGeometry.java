@@ -1,11 +1,11 @@
 package com.zja.util.geotools;
 
 import com.alibaba.fastjson.JSON;
-import com.zja.dto.PolygonObject;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.WKTReader;
+import com.zja.dto.PolygonObject;
 import org.geotools.geojson.geom.GeometryJSON;
 
 import java.io.StringWriter;

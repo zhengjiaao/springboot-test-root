@@ -40,6 +40,7 @@
         <module>springboot-test-jpa</module>
         <module>springboot-test-jpaextention</module>
         <module>springboot-test-timedtask</module>
+        <module>springboot-test-unittest</module>
         <module>springboot-test-cache</module>
         <module>springboot-test-utils</module>
         <module>springboot-test-validation</module>

@@ -2,16 +2,16 @@ package com.zja.util.geotools;
 
 
 import com.alibaba.fastjson.JSON;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import com.zja.dto.PolygonObject;
 import com.zja.dto.ShpDatas;
 import com.zja.dto.ShpInfo;
 import com.zja.util.IO.StringTokenReader;
 import com.zja.util.result.ResponseMessage;
 import com.zja.util.result.ResponseResult;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.data.*;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
@@ -38,7 +38,6 @@ import org.springframework.util.ResourceUtils;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

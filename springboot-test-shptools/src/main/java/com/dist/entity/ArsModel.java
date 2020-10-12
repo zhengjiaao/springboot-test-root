@@ -1,6 +1,5 @@
 package com.zja.entity;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 /**
