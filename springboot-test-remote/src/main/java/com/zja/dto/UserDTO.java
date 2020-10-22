@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,8 +15,10 @@ import java.util.Date;
 @ApiModel(value = "用户信息")
 @Data
 public class UserDTO implements Serializable{
+    @NotNull
     @ApiModelProperty(value = "用户id")
     private String id;
+    @NotNull
     @ApiModelProperty(value = "用户名")
     private String name;
     @ApiModelProperty(value = "时间")

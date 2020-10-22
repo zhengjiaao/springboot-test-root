@@ -30,7 +30,7 @@ public class HelloControllerTest extends BaseTest {
     }
 
     @Test
-    public void deleteDictionary() {
+    public void hello() {
         Integer id = 6179;
         try {
             String hello = this.helloController.hello();

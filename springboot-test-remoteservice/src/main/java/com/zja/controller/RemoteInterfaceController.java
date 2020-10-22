@@ -40,6 +40,13 @@ public class RemoteInterfaceController {
         return userDTO;
     }
 
+    @ApiOperation(value ="get测试-传参数-对象接收",notes = "带传参数",httpMethod = "GET")
+    @RequestMapping(value = "/get/user/object",method = RequestMethod.GET)
+    public Object checkTelihuiLogin(@ApiParam(value = "传参值：userDto",required = true) UserDTO userDto){
+        System.out.println("service:userDto=="+userDto);
+        return userDto;
+    }
+
     @ApiOperation(value ="提供get方法测试-不传参数",notes = "不传参数",httpMethod = "GET")
     @RequestMapping(value = "/get/userdto3",method = RequestMethod.GET)
     public ResponseData getUserDTO3(){
@@ -191,4 +198,5 @@ public class RemoteInterfaceController {
         as.setAuthenticated(false);
         return as;
     }
+
 }

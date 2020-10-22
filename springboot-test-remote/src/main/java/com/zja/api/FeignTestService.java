@@ -16,33 +16,37 @@ import java.util.List;
 @Api(value = "Feign调用远程接口-API")
 public interface FeignTestService {
 
-    @ApiOperation(value ="提供get方法测试",notes = "不传参数",httpMethod = "GET")
+    @ApiOperation(value = "提供get方法测试", notes = "不传参数", httpMethod = "GET")
     @RequestLine("GET /rest/v1/get/userdto")
     Object getUserDTO();
 
-    @ApiOperation(value ="提供get方法测试",notes = "传参数",httpMethod = "GET")
+    @ApiOperation(value = "提供get方法测试", notes = "传参数", httpMethod = "GET")
     @RequestLine("GET /rest/v1/get/userdto2/?param={param}")
-    Object getUserDTO(@Param(value = "param")String param);
+    Object getUserDTO(@Param(value = "param") String param);
 
-    @ApiOperation(value ="提供post方法测试",httpMethod = "POST")
-    @Headers({"Content-Type: application/json","Accept: application/json"})
+    @ApiOperation(value = "提供get方法测试", notes = "传参数", httpMethod = "GET")
+    @RequestLine("GET /rest/v1/get/user/object/?id={id}&name={name}")
+    Object getUserDTO3(@Param(value = "id") String id, @Param("name") String name);
+
+    @ApiOperation(value = "提供post方法测试", httpMethod = "POST")
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @RequestLine("POST /rest/v1/post/userdto")
     Object postUserDTO(UserDTO userDto);
 
-    @ApiOperation(value ="提供put方法测试",httpMethod = "PUT")
-    @Headers({"Content-Type: application/json","Accept: application/json"})
+    @ApiOperation(value = "提供put方法测试", httpMethod = "PUT")
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @RequestLine("PUT /rest/v1/put/userdto")
     Object putUserDTO(UserDTO userDto);
 
-    @ApiOperation(value ="提供delete方法测试",httpMethod = "DELETE")
+    @ApiOperation(value = "提供delete方法测试", httpMethod = "DELETE")
     @RequestLine("DELETE /rest/v1/delete/userdto")
     Object deleteUserDTO();
 
-    @ApiOperation(value ="提供lsit<UserDTO>方法测试",httpMethod = "GET")
+    @ApiOperation(value = "提供lsit<UserDTO>方法测试", httpMethod = "GET")
     @RequestLine("GET /rest/v1/get/userdtolsit")
     List<UserDTO> getUserDTOS();
 
-    @ApiOperation(value ="提供listobject方法测试",httpMethod = "GET")
+    @ApiOperation(value = "提供listobject方法测试", httpMethod = "GET")
     @RequestLine("GET /rest/v1/get/userdtolsit")
     Object getUserDTOList();
 
@@ -77,7 +81,7 @@ public interface FeignTestService {
      }
      */
 
-    @ApiOperation(value ="提供服务降级测试",httpMethod = "GET")
+    @ApiOperation(value = "提供服务降级测试", httpMethod = "GET")
     @RequestLine("GET /rest/v1/get/hystrix")
     Object getHystrix();
 
