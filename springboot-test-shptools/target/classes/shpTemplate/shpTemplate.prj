@@ -1,1 +1,0 @@
-GEOGCS["GCS_China_Geodetic_Coordinate_System_2000", DATUM["D_China_2000", SPHEROID["CGCS2000", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude", EAST], AXIS["Latitude", NORTH]]
