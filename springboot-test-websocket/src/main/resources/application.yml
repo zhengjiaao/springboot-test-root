@@ -1,7 +1,0 @@
-server:
-  port: 8080
-  servlet:
-    context-path: /springboot-test-websocket
-websocket:
-  testPort: 8887
-  appPort: 8989
