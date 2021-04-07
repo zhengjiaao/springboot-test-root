@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>大文件分片上传</title>
+    <!--    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>-->
+    <script type="text/javascript" src="./js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        function upload() {
+            var file = $("#file")[0].files[0],  //文件对象
+                size = file.size,        //总大小
+                fileName = file.name,   //文件名
+                succeed = 0;        //上传成功分片数
+            console.log("fileName:" + fileName);
+            //每次分片的文件大小  以2MB为一个分片
+            var shardSize = 20 * 1024 * 1024;
+            var chunkCount = Math.ceil(size / shardSize);  //总片数
+
+
+            //批次号要每次都唯一，这里方便测试写固定了
+            var batchNo = fileName;
+            for (var i = 0; i < chunkCount; ++i) {
+                //计算每一片的起始与结束位置
+                var start = i * shardSize;
+                var end = Math.min(size, start + shardSize);
+                //构造一个表单，FormData是HTML5新增的
+                var form = new FormData();
+                form.append("file", file.slice(start, end));  //slice方法用于切出文件的一部分
+                form.append("chunkCount", chunkCount);  //总片数
+                form.append("batchNo", batchNo);          //批次编号
+                form.append("fileName", fileName);  //文件名
+                form.append("chunkNo", i + 1);        //分片序号  当前是第几片
+
+                $.ajax({
+                    url: "http://localhost:8080/springboot-test-file/rest/file/v1/upload",
+                    type: "POST",
+                    data: form,
+                    async: true,        //异步
+                    processData: false,  //很重要，告诉jquery不要对form进行处理
+                    contentType: false,  //很重要，指定为false才能形成正确的Content-Type
+                    success: function () {
+                        ++succeed;
+                        $("#output").text(succeed + " / " + chunkCount);
+                    }
+                });
+            }
+        };
+    </script>
+</head>
+<body>
+
+<input type="file" id="file"/>
+<input type="button" onclick="upload()" value="上传"/>
+<span id="output" style="font-size:12px">等待</span>
+
+</body>
+</html>
