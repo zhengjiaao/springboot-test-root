@@ -1,11 +1,18 @@
 package com.zja.util;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 /** RestTemplate 远程调用工具类
@@ -618,5 +625,140 @@ public class RestTemplateUtils {
     public static RestTemplate getRestTemplate() {
         return restTemplate;
     }
+
+
+    // *********************** 上传文件 到远程*********************
+
+    /**
+     * 上传文件流程 到远程
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    private static boolean uploadFileInputStream(String url, String fileName, InputStream inputStream, Map<String, Object> params) throws IOException {
+        if (StringUtils.isEmpty(url)) {
+            throw new RuntimeException("url is null ！");
+        }
+        if (StringUtils.isEmpty(fileName)) {
+            throw new RuntimeException("fileName is null ！");
+        }
+        if (inputStream == null) {
+            throw new RuntimeException("inputStream is null ！");
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setConnection("Keep-Alive");
+        headers.setCacheControl("no-cache");
+        InputStreamResource inputStreamResource = new InputStreamResource(inputStream) {
+            @Override
+            public long contentLength() throws IOException {
+                return inputStream.available();
+            }
+
+            @Override
+            public String getFilename() {
+                return fileName;
+            }
+        };
+
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.add("file", inputStreamResource);
+        if (!ObjectUtils.isEmpty(params)) {
+            form.setAll(params);
+        }
+
+        HttpEntity<MultiValueMap> httpEntity = new HttpEntity<>(form, headers);
+        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(url, httpEntity, Object.class);
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            System.out.println("上传文件成功！");
+            return true;
+        } else {
+            System.out.println("上传文件失败！");
+            return false;
+        }
+    }
+
+    /**
+     * 上传本地文件 到远程
+     * @param url
+     * @param filePath
+     * @return
+     * @throws IOException
+     */
+    public static boolean uploadFile(String url, String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw new RuntimeException("not find local file: " + filePath);
+        }
+        if (!file.isFile()) {
+            throw new RuntimeException("not is file type: " + filePath);
+        }
+        return uploadFileInputStream(url, file.getName(), new FileInputStream(file), null);
+    }
+
+    /**
+     * 上传文件 到远程
+     * @param url
+     * @param fileName
+     * @param inputStream
+     * @param params 参数
+     * @return
+     * @throws IOException
+     */
+    public static boolean uploadFile(String url, String fileName, InputStream inputStream, Map<String, Object> params) throws IOException {
+        return uploadFileInputStream(url, fileName, inputStream, params);
+    }
+
+    /**
+     * 上传文件 到远程
+     * @param url
+     * @param fileName
+     * @param inputStream
+     * @return
+     * @throws IOException
+     */
+    public static boolean uploadFile(String url, String fileName, InputStream inputStream) throws IOException {
+        return uploadFileInputStream(url, fileName, inputStream, null);
+    }
+
+    /**
+     * 上传文件 到远程
+     * @param url
+     * @param multipartFile
+     * @return
+     * @throws IOException
+     */
+    public static boolean uploadFile(String url, MultipartFile multipartFile) throws IOException {
+        return uploadFileInputStream(url, multipartFile.getOriginalFilename(), multipartFile.getInputStream(), null);
+    }
+
+
+    /**
+     * 上传本地文件 到远程
+     * @param url
+     * @param filePath
+     * @return
+     * @throws IOException
+     */
+    /*public Object uploadLocalFile(String url, String filePath) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setConnection("Keep-Alive");
+        headers.setCacheControl("no-cache");
+        FileSystemResource fileSystemResource = new FileSystemResource(new File(filePath));
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.add("file", fileSystemResource);
+
+        HttpEntity<MultiValueMap> httpEntity = new HttpEntity<>(form, headers);
+        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(url, httpEntity, Object.class);
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            System.out.println("上传文件成功！");
+            return responseEntity.getBody();
+        } else {
+            System.out.println("上传文件失败！");
+            return responseEntity.getBody();
+        }
+    }*/
 
 }

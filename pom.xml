@@ -50,6 +50,8 @@
         <module>springboot-test-jdbc</module>
         <module>springboot-test-yml</module>
         <module>springboot-test-redisson</module>
+        <module>springboot-test-java8</module>
+        <module>springboot-test-mq-rocketmq</module>
     </modules>
 
 
