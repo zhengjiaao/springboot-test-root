@@ -1,0 +1,34 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /springboot-test
+
+# spring配置
+spring:
+  http:
+    encoding:
+      force: true
+      charset: utf-8
+      enabled: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+  mvc:
+    # 视图默认扫描位置
+    view:
+      prefix: classpath:/static/
+      suffix: .html
+  # 模板默认位置
+  thymeleaf:
+#    prefix: classpath:/templates/
+    prefix: classpath:/static/
+  freemarker:
+    cache: false
+  servlet:
+    # 上传文件控制大小
+    multipart:
+      enabled: true
+      max-file-size: 100MB  # 设置单文件大小
+      max-request-size: 500MB   # 设置总上传数据总大小

@@ -52,6 +52,7 @@
         <module>springboot-test-redisson</module>
         <module>springboot-test-java8</module>
         <module>springboot-test-mq-rocketmq</module>
+        <module>springboot-test-juc</module>
     </modules>
 
 
