@@ -1,4 +1,4 @@
-package com.zja;
+package com.zja.controller;
 
 import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.map.MapUtil;
@@ -6,6 +6,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Stopwatch;
+import com.zja.SpringbootTestApplication;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -13,9 +14,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -29,10 +28,10 @@ import java.util.Map;
  * Desc：
  */
 //@Rollback //事务自动回滚，不自动回滚@Rollback(false)
-@Transactional //启用事务，默认 @Rollback(true)
-@ActiveProfiles("dev")
+//@Transactional //启用事务，默认 @Rollback(true)
+//@ActiveProfiles("dev")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = SpringbootJpaApplication.class)
+@SpringBootTest(classes = SpringbootTestApplication.class)
 public class BaseTests {
 
     public static Logger log = LoggerFactory.getLogger(BaseTests.class);
