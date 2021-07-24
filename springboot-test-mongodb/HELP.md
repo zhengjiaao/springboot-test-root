@@ -688,8 +688,8 @@ existFile2：false
 ```python
     # nginx代本地文件服务器
     location ^~ /public/file/ {
-    # alias   实际访问文件路径  D:/Temp/image/
-    alias   D:/Temp/image/;
+    # alias   实际访问文件路径  D:/Temp/storage/
+    alias   D:/Temp/storage/;
     }
 ```
 
