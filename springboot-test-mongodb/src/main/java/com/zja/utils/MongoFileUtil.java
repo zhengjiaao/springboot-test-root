@@ -68,7 +68,7 @@ public class MongoFileUtil {
         this.gridFSBucket = gridFSBucket;
         this.localFileMongoPath = localFilePath + File.separator + MONGO_PATH_PREFIX;
         this.baseURL = baseURL + "/" + MONGO_PATH_PREFIX;
-//        initLocalFileMongoPath();
+        initLocalFileMongoPath();
     }
 
 
