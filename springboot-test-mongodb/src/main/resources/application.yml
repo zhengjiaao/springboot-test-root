@@ -20,3 +20,10 @@ dist:
     mapping: "/**" # 限定的跨域资源
     method: "*" # 允许的跨域请求方式，* 需要以单引号'
     origin: "*" # 允许的请求域
+
+# 文件存储、预览
+file:
+  #  proxyAddress: http://127.0.0.1:80     # 代理地址 nginx
+  proxyAddress: http://127.0.0.1:8080/dgp-review-web     # 代理地址  springboot项目
+  proxyPath: /public/file                 # 代理路径 映射file.localStoragePath
+  localStoragePath: D:\\Temp\\StoragePath       # 本地存储路径 支持文件缓存/预览/下载/上传/转换等文件操作
