@@ -1,10 +1,7 @@
 package com.zja.utils;
 
-import com.zja.constants.Status;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -16,10 +13,8 @@ import java.util.concurrent.TimeUnit;
  * redisTemplate封装
  * @author zhengja@dist.com.cn
  */
-@Component
 public class RedisUtil {
 
-    @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
     public RedisUtil(RedisTemplate<String, Object> redisTemplate) {
@@ -557,16 +552,16 @@ public class RedisUtil {
     /**
      *将数据添加到Redis的list中（从右边添加）
      * @param listKey
-     * @param expireEnum 有效期的枚举类
+     * @param expireTime 有效期的枚举类
      * @param values 待添加的数据
      */
-    public void addToListRight(String listKey, Status.ExpireEnum expireEnum, Object... values) {
+    public void addToListRight(String listKey, Long expireTime, Object... values) {
         //绑定操作
         BoundListOperations<String, Object> boundValueOperations = redisTemplate.boundListOps(listKey);
         //插入数据
         boundValueOperations.rightPushAll(values);
         //设置过期时间
-        boundValueOperations.expire(expireEnum.getTime(), expireEnum.getTimeUnit());
+        boundValueOperations.expire(expireTime, TimeUnit.SECONDS);
     }
 
     /**

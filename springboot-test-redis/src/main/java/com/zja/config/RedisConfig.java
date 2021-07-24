@@ -1,9 +1,10 @@
 package com.zja.config;
 
-import com.zja.constants.RedisConstants;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zja.constants.RedisConstants;
+import com.zja.utils.RedisUtil;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -73,6 +74,16 @@ public class RedisConfig extends CachingConfigurerSupport {
 //      JdkSerializationRedisSerializer jdkSerializationRedisSerializer = new JdkSerializationRedisSerializer();
 
         return template;
+    }
+
+    /**
+     * redis自定义操作类
+     * @param redisTemplate
+     * @return
+     */
+    @Bean
+    public RedisUtil redisUtil(RedisTemplate<String, Object> redisTemplate){
+        return new RedisUtil(redisTemplate);
     }
 
     /**
