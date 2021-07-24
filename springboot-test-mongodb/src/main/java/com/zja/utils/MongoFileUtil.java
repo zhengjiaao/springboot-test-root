@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsCriteria;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.util.StringUtils;
 
 import java.io.*;
 
@@ -29,37 +30,38 @@ public class MongoFileUtil {
 
     private GridFSBucket gridFSBucket;
 
-    // 文件ID key
-    private static final String fileKey = "docid";
-
-    // 本地存储绝对路径：例 D：\\Temp\\mg
-    private String localFileMongoPath;
-
-    // 预览前缀：例 http://127.0.0.1:8080/dgp-web/public/file/
+    /**
+     * 预览前缀：例 http://127.0.0.1:8080/dgp-web/public/file/
+     */
     private String baseURL;
 
-    // 路径前缀：mg标识存储mongo文件
+    /**
+     * 本地存储绝对路径：例 D：\\Temp\\mg
+     */
+    private String localFileMongoPath;
+
+    /**
+     * 路径前缀：mg标识存储mongo文件
+     */
     private static final String MONGO_PATH_PREFIX = "mg";
 
-
     /**
-     * 需要注意
-     * @param localFilePath 本地绝对路径,例：D:\\Temp
-     *                      如果你需要通过url访问资源文件,
-     *                      则设置映射 @see ResourceHandlerRegistry.addResourceHandler("").addResourceLocations("file:" + localFilePath + "\\");
+     * 自定义ID key
      */
-    public MongoFileUtil(GridFsTemplate gridFsTemplate, GridFSBucket gridFSBucket, String localFilePath) {
-        new MongoFileUtil(gridFsTemplate,gridFSBucket,localFilePath,null);
-    }
+    private static final String fileKey = "path";
+
+
+    //----------------------------------------------
 
     /**
-     * 如果要使用预览接口 MongoFileUtil.getFileURL() ,请使用
+     * 注入bean
      * @param gridFsTemplate
      * @param gridFSBucket
-     * @param localFilePath
-     * @param baseURL
+     * @param localFilePath  本地存储路径    例: C:\\Temp\\storage
+     * @param baseURL        基础URL访问路径 例：http://127.0.0.1:80/public/file
      */
     public MongoFileUtil(GridFsTemplate gridFsTemplate, GridFSBucket gridFSBucket, String localFilePath, String baseURL) {
+        checkBeanParams(localFilePath, baseURL);
         this.gridFsTemplate = gridFsTemplate;
         this.gridFSBucket = gridFSBucket;
         this.localFileMongoPath = localFilePath + File.separator + MONGO_PATH_PREFIX;
@@ -69,7 +71,7 @@ public class MongoFileUtil {
 
     /**
      * 从本地上传文件到 mongo
-     * @param path 自定义文件id标识
+     * @param path 自定义ID {@link com.zja.utils.id.IdUtil#mgdbId()}
      * @param file 文件对象
      */
     public void uploadByFile(String path, File file) {
@@ -78,11 +80,12 @@ public class MongoFileUtil {
 
     /**
      * 从本地上传文件到 mongo ：支持自定义文件名称
-     * @param path
+     * @param path  自定义ID {@link com.zja.utils.id.IdUtil#mgdbId()}
      * @param filename 新的文件名称，mongo中存储的文件名
      * @param file
      */
     public void uploadByFile(String path, String filename, File file) {
+        checkPath(path);
         if (!file.exists()) {
             log.error("fileAbsolutePath: {}", file.getName(), file.getAbsolutePath());
             throw new RuntimeException("上传的文件file不存在！");
@@ -120,12 +123,12 @@ public class MongoFileUtil {
     /**
      * 存储文件
      * @param inputStream
-     * @param path 自定义文件存储path
+     * @param path 自定义ID {@link com.zja.utils.id.IdUtil#mgdbId()}
      * @param fileName 文件名称(带后缀)
      * @return 上传失败，则抛异常
      */
     public void uploadByStream(String path, String fileName, InputStream inputStream) {
-
+        checkPath(path);
         if (null == fileName) {
             throw new RuntimeException("上传的文件fileName不能为空！");
         }
@@ -155,7 +158,6 @@ public class MongoFileUtil {
      * @return 返回文件URL网址
      */
     public String getFileURL(String path, String newFileName) {
-
         String fileName = null;
         GridFSFile fileInfo = getGridFSFile(path);
 
@@ -203,6 +205,7 @@ public class MongoFileUtil {
      * @return 返回文件保存路径
      */
     public String downloadFile(String path) {
+        checkPath(path);
         if (null == localFileMongoPath) {
             log.error("需要配置默认路径: localFileMongoPath , 文件path=[{}]下载失败！", path);
             throw new RuntimeException("需要配置默认路径：localFileMongoPath");
@@ -240,7 +243,7 @@ public class MongoFileUtil {
      * @param path
      */
     public void downloadFileByPath(String path, String localFilePath) {
-
+        checkPath(path);
         if (new File(localFilePath).exists()) {
             new File(localFilePath).delete();
         }
@@ -301,6 +304,7 @@ public class MongoFileUtil {
      * @return 文件对象
      */
     public GridFSFile getGridFSFile(String path) {
+        checkPath(path);
         GridFsCriteria gridFsCriteria = GridFsCriteria.whereMetaData(fileKey);
         gridFsCriteria.is(path);
         Query query = new Query();
@@ -335,6 +339,7 @@ public class MongoFileUtil {
      * @return 返回删除结果 true 成功
      */
     public boolean deleteFile(String path) {
+        checkPath(path);
         GridFsCriteria gridFsCriteria = GridFsCriteria.whereMetaData(fileKey);
         gridFsCriteria.is(path);
         Query query = new Query();
@@ -354,8 +359,32 @@ public class MongoFileUtil {
      * @param gridFsFile
      * @return GridFsResource
      */
-    public GridFsResource gridFSFileToGridFsResource(GridFSFile gridFsFile) {
+    private GridFsResource gridFSFileToGridFsResource(GridFSFile gridFsFile) {
         GridFSDownloadStream gridFSDownloadStream = gridFSBucket.openDownloadStream(gridFsFile.getObjectId());
         return new GridFsResource(gridFsFile, gridFSDownloadStream);
+    }
+
+    /**
+     * 校验pdth
+     * @param path
+     */
+    private void checkPath(String path) {
+        if (StringUtils.isEmpty(path)) {
+            throw new RuntimeException("[path] not is null!");
+        }
+    }
+
+    /**
+     * 校验bean 注入的参数
+     * @param localFilePath
+     * @param baseURL
+     */
+    private void checkBeanParams(String localFilePath, String baseURL) {
+        if (StringUtils.isEmpty(localFilePath)) {
+            throw new RuntimeException("[localFilePath] not is null！");
+        }
+        if (StringUtils.isEmpty(baseURL)) {
+            throw new RuntimeException("[baseURL] not is null！");
+        }
     }
 }
