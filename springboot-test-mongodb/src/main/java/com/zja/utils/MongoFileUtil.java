@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Company: 上海数慧系统技术有限公司
@@ -51,7 +53,7 @@ public class MongoFileUtil {
     private static final String fileKey = "path";
 
 
-    //----------------------------------------------
+    //----------------------------------------------bean 需要注入才能使用，此类的所有方法
 
     /**
      * 注入bean
@@ -66,8 +68,11 @@ public class MongoFileUtil {
         this.gridFSBucket = gridFSBucket;
         this.localFileMongoPath = localFilePath + File.separator + MONGO_PATH_PREFIX;
         this.baseURL = baseURL + "/" + MONGO_PATH_PREFIX;
+//        initLocalFileMongoPath();
     }
 
+
+    //---------------------------------------------所有操作方法
 
     /**
      * 从本地上传文件到 mongo
@@ -75,38 +80,33 @@ public class MongoFileUtil {
      * @param file 文件对象
      */
     public void uploadByFile(String path, File file) {
+        //注意 path 不能重复，多个相同path只取第一个元素(文件)
         uploadByFile(path, null, file);
     }
 
     /**
      * 从本地上传文件到 mongo ：支持自定义文件名称
      * @param path  自定义ID {@link com.zja.utils.id.IdUtil#mgdbId()}
-     * @param filename 新的文件名称，mongo中存储的文件名
+     * @param newFileName 新的文件名称，mongo中存储的文件名
      * @param file
      */
-    public void uploadByFile(String path, String filename, File file) {
-        checkPath(path);
+    public void uploadByFile(String path, String newFileName, File file) {
         if (!file.exists()) {
-            log.error("fileAbsolutePath: {}", file.getName(), file.getAbsolutePath());
+            log.error("fileAbsolutePath: {}", file.getAbsolutePath());
             throw new RuntimeException("上传的文件file不存在！");
         }
         if (!file.isFile()) {
-            log.error("fileAbsolutePath: {}", file.getName(), file.getAbsolutePath());
+            log.error("fileAbsolutePath: {}", file.getAbsolutePath());
             throw new RuntimeException("上传的文件file不是文件类型！");
         }
-        /*if (file.length() <= 0) {
-            log.error("fileAbsolutePath: {}", file.getName(), file.getAbsolutePath());
-            throw new RuntimeException("上传的文件file大小必须大于0！");
-        }*/
-        if (null == filename) {
-            filename = file.getName();
+        if (null == newFileName) {
+            newFileName = file.getName();
         }
 
         InputStream inputStream = null;
-
         try {
             inputStream = new FileInputStream(file);
-            uploadByStream(path, filename, inputStream);
+            uploadByStream(path, newFileName, inputStream);
         } catch (FileNotFoundException e) {
             log.error("从本地文件上传到mongo失败,文件绝对路径：{}", file.getAbsolutePath());
             e.printStackTrace();
@@ -158,43 +158,28 @@ public class MongoFileUtil {
      * @return 返回文件URL网址
      */
     public String getFileURL(String path, String newFileName) {
-        String fileName = null;
-        GridFSFile fileInfo = getGridFSFile(path);
 
+        GridFSFile fileInfo = getGridFSFile(path);
         if (null == fileInfo) {
             log.error("根据path=[{}]在mongo中没有查询到file文件！", path);
             throw new RuntimeException("在mongo中没有查询到存在的文件！");
         }
 
-        if (null == baseURL) {
-            log.error("previewURL 必须配置，参考：MongoFileUtil(GridFsTemplate gridFsTemplate, GridFSBucket gridFSBucket, String localFilePath, String previewPrefix) ,previewPrefix not is null！");
-            throw new RuntimeException("previewURL is null,config MongoFileUtil(GridFsTemplate gridFsTemplate, GridFSBucket gridFSBucket, String localFilePath, String previewPrefix)！");
-        }
-
-        fileName = fileInfo.getFilename();
-
+        String fileName = fileInfo.getFilename();
         if (null != newFileName) {
             fileName = newFileName;
         }
-
         if (null == fileName) {
+            log.error("未发现文件名称,若无法正常打开文件,请尝试调用 downloadFile(String path, String newFileName) or downloadFile(String path, String localPath, String fileName) 方法.");
             fileName = path;
         }
 
-        //只保留后6位，避免名称相同的文件会覆盖
-        String uniqueness = "";
-        if (path.length() > 6) {
-            uniqueness = path.substring(path.length() - 6);
-        } else {
-            uniqueness = path;
-        }
-
-        File file = new File(localFileMongoPath + File.separator + uniqueness + File.separator + fileName);
+        File file = new File(localCacheUniquePath(path) + File.separator + fileName);
         if (!file.exists()) {
-            downloadFileByPath(path, file.getAbsolutePath());
+            downloadFile(path, localCacheUniquePath(path), fileName);
         }
 
-        String fileUrl = baseURL + "/" + uniqueness + "/" + fileName;
+        String fileUrl = baseURL + "/" + localUniqueId(path) + "/" + fileName;
         return fileUrl;
     }
 
@@ -205,60 +190,49 @@ public class MongoFileUtil {
      * @return 返回文件保存路径
      */
     public String downloadFile(String path) {
-        checkPath(path);
-        if (null == localFileMongoPath) {
-            log.error("需要配置默认路径: localFileMongoPath , 文件path=[{}]下载失败！", path);
-            throw new RuntimeException("需要配置默认路径：localFileMongoPath");
-        }
         String fileName = getFileName(path);
         if (null == fileName) {
+            log.error("未发现文件名称,若无法正常打开文件,请尝试调用 downloadFile(String path, String newFileName) or downloadFile(String path, String localPath, String fileName) 方法.");
             fileName = path;
         }
-
-        String filePath = localFileMongoPath + File.separator + fileName;
-        downloadFileByPath(path, filePath);
-        return filePath;
+        return downloadFile(path, localCacheUniquePath(path), fileName);
     }
 
     /**
      * 从mongo中下载文件到本地 并且文件重命名
      * @param path
-     * @param newFileName 下载本地后的文件新名称,例 test.txt
+     * @param newFileName 下载文件的新名称 例：test.txt
      * @return 返回文件保存路径
      */
     public String downloadFile(String path, String newFileName) {
-        if (null == localFileMongoPath) {
-            log.error("需要配置默认路径: localFileMongoPath , 文件path=[{}]下载失败！", path);
-            throw new RuntimeException("需要配置默认路径：localFileMongoPath");
-        }
-
-        String filePath = localFileMongoPath + File.separator + newFileName;
-        downloadFileByPath(path, filePath);
-        return filePath;
+        return downloadFile(path, localCacheUniquePath(path), newFileName);
     }
 
     /**
-     * 从mongo中下载文件到本地服务器上
-     * @param localFilePath 本地服务器绝对路径,例 C:\\Temp\\test.txt
+     * 从mongo中下载文件
      * @param path
+     * @param localPath 本地路径 例：C:\\Temp
+     * @param fileName  文件名称 例：test.txt
+     * @return 返回文件保存路径
      */
-    public void downloadFileByPath(String path, String localFilePath) {
+    public String downloadFile(String path, String localPath, String fileName) {
         checkPath(path);
-        if (new File(localFilePath).exists()) {
-            new File(localFilePath).delete();
+        String localFilePath = localPath + File.separator + fileName;
+        File localfile = new File(localFilePath);
+        if (localfile.exists()) {
+            localfile.delete();
         }
-
-        File file = new File(localFilePath);
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
+        if (!localfile.getParentFile().exists()) {
+            localfile.getParentFile().mkdirs();
         }
 
         FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream = new FileOutputStream(localfile);
             InputStream inputStream = getInputStream(path);
             IOUtils.copy(inputStream, fileOutputStream);
             log.debug("从mongo下载文件成功，localFilePath: {}", localFilePath);
+            return localFilePath;
         } catch (IOException e) {
             log.error("从mongo下载文件失败，path：{} ，localFilePath: {}", path, localFilePath);
             e.printStackTrace();
@@ -272,6 +246,7 @@ public class MongoFileUtil {
                 }
             }
         }
+        return null;
     }
 
     /**
@@ -281,6 +256,10 @@ public class MongoFileUtil {
      */
     public InputStream getInputStream(String path) throws IOException {
         GridFSFile gridFSFile = getGridFSFile(path);
+        if (gridFSFile == null) {
+            log.error("根据path=[{}]在mongo中没有查询到file文件！", path);
+            throw new RuntimeException("在mongo中没有查询到存在的文件！");
+        }
         GridFsResource gridFsResource = gridFSFileToGridFsResource(gridFSFile);
         return gridFsResource.getInputStream();
     }
@@ -290,7 +269,7 @@ public class MongoFileUtil {
      * @param path
      * @return true 存在
      */
-    public boolean existFileByPath(String path) {
+    public boolean existFile(String path) {
         GridFSFile gridFSFile = getGridFSFile(path);
         if (gridFSFile == null) {
             return false;
@@ -309,8 +288,8 @@ public class MongoFileUtil {
         gridFsCriteria.is(path);
         Query query = new Query();
         query.addCriteria(gridFsCriteria);
-        GridFSFile gridFSFile = gridFsTemplate.findOne(query);
-        return gridFSFile;
+        //注意：path是唯一的，如果存在多个path，只取第一个文件
+        return gridFsTemplate.findOne(query);
     }
 
     /**
@@ -324,22 +303,23 @@ public class MongoFileUtil {
             log.error("根据path=[{}]在mongo中没有查询到file文件！", path);
             throw new RuntimeException("在mongo中没有查询到存在的文件！");
         }
-        //确认文件上传时，是否设置文件名称
         if (null == result.getFilename()) {
             log.error("根据path=[{}]在mongo中没有查询到file文件名称！", path);
             return null;
         }
-
         return result.getFilename();
     }
 
     /**
-     * 删除mongo中存储的文件
+     * 删除文件(同时删除本地缓存文件与mongo文件)
      * @param path
      * @return 返回删除结果 true 成功
      */
     public boolean deleteFile(String path) {
         checkPath(path);
+        //1、清理本地缓存文件
+        cleanLocalCache(path);
+        //2、删除mongo中的文件
         GridFsCriteria gridFsCriteria = GridFsCriteria.whereMetaData(fileKey);
         gridFsCriteria.is(path);
         Query query = new Query();
@@ -347,12 +327,43 @@ public class MongoFileUtil {
         try {
             gridFsTemplate.delete(query);
             log.debug("从mongo中删除文件成功！");
+            return true;
         } catch (Exception e) {
             log.error("从mongo中删除文件失败，path：{} ，ExceptionMessage：{}", path, e.getMessage());
-            return false;
         }
-        return true;
+        return false;
     }
+
+    /**
+     * 清理本地所有缓存, 不会删除mongo存储的文件
+     * 删除 localFileMongoPath 目录下的所有资源 例 C:\\Temp\\mg
+     * @return true 清理成功
+     */
+    public boolean cleanLocalAllCache() {
+        try {
+            return deleteLocalDir(localFileMongoPath);
+        } catch (Exception e) {
+            log.error("清理所有本地缓存失败:{}", e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * 清理本地缓存文件, 不会删除mongo存储的文件
+     * @param path
+     * @return true 清理成功
+     */
+    public boolean cleanLocalCache(String path) {
+        try {
+            return deleteLocalDir(localCacheUniquePath(path));
+        } catch (Exception e) {
+            log.error("本地缓存清理失败:{}", e.getMessage());
+        }
+        return false;
+    }
+
+
+    //------------------------------------------- 内部方法
 
     /**
      * 转换器
@@ -365,10 +376,69 @@ public class MongoFileUtil {
     }
 
     /**
-     * 校验pdth
+     * 本地缓存唯一路径
+     * @param path
+     * @return 单个文件的本地缓存唯一路径
+     */
+    private String localCacheUniquePath(String path) {
+        String localUniqueId = localUniqueId(path);
+        return localFileMongoPath + File.separator + localUniqueId;
+    }
+
+    /**
+     * 本地缓存存储文件的唯一ID
+     * @param path
+     * @return 返回 本地缓存存储文件的唯一ID
+     */
+    private static String localUniqueId(String path) {
+        //只保留后6位，避免名称相同的文件会覆盖
+        String uniqueId = "";
+        if (path.length() > 6) {
+            uniqueId = path.substring(path.length() - 6);
+        } else {
+            uniqueId = path;
+        }
+        return uniqueId;
+    }
+
+    /**
+     * 初始化 mongo本地缓存路径
+     */
+    private void initLocalFileMongoPath() {
+        if (!new File(localFileMongoPath).exists()) {
+            try {
+                Files.createDirectories(Paths.get(localFileMongoPath));
+            } catch (IOException e) {
+                log.error("初始化mongo本地缓存路径失败：{}", localFileMongoPath);
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 删除目录（同时级联删除目录下所有资源文件）
+     * @param localDirPath 本地目录路径 例：C:\\Temp\\mg
+     * @return true 删除成功
+     */
+    private static boolean deleteLocalDir(String localDirPath) {
+        File f = new File(localDirPath);
+        if (!f.exists()) {
+            return true;
+        }
+        if (f.isDirectory()) {
+            File[] listFiles = f.listFiles();
+            for (File fs : listFiles) {
+                deleteLocalDir(fs.toString());
+            }
+        }
+        return f.delete();
+    }
+
+    /**
+     * 校验 pdth
      * @param path
      */
-    private void checkPath(String path) {
+    private static void checkPath(String path) {
         if (StringUtils.isEmpty(path)) {
             throw new RuntimeException("[path] not is null!");
         }
@@ -379,7 +449,7 @@ public class MongoFileUtil {
      * @param localFilePath
      * @param baseURL
      */
-    private void checkBeanParams(String localFilePath, String baseURL) {
+    private static void checkBeanParams(String localFilePath, String baseURL) {
         if (StringUtils.isEmpty(localFilePath)) {
             throw new RuntimeException("[localFilePath] not is null！");
         }

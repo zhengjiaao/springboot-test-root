@@ -11,9 +11,13 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
 import javax.annotation.Resource;
 
-/**Mongodb 配置类
- * @author zhengja@dist.com.cn
- * @data 2019/6/19 17:26
+/**
+ * Company: 上海数慧系统技术有限公司
+ * Department: 数据中心
+ * Date: 2021-07-22 17:45
+ * Author: zhengja
+ * Email: zhengja@dist.com.cn
+ * Desc：Mongodb 配置类
  */
 @Configuration
 public class MongodbConfig {

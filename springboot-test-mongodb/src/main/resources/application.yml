@@ -5,12 +5,12 @@ server:
 spring:
   data:
     mongodb:
-      host: 127.0.0.1
+      host: 161.189.167.206
       port: 27017
-      authentication-database: admin # 权限认证库
-      database: testdb               # 库不存在会自动创建
-      username: testuser
-      password: pass
+      username: distreview
+      password: dist2021
+      authentication-database: admin
+      database: distreview
 
   tomcat_file_temp: /rest/resource # 图片保存路径
   #静态图片服务器上传文件接口
