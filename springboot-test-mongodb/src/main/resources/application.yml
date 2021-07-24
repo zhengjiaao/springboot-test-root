@@ -1,15 +1,17 @@
 server:
   port: 8080
   servlet:
-   context-path: /springboot-test-mongodb
+   context-path: /@project.artifactId@
 spring:
   data:
     mongodb:
       host: 127.0.0.1
       port: 27017
-      database: testMongoLibrary  #若没有此库，调用时，自动创建
-      username: test
-     # password: admin
+      authentication-database: admin # 权限认证库
+      database: testdb               # 库不存在会自动创建
+      username: testuser
+      password: pass
+
   tomcat_file_temp: /rest/resource # 图片保存路径
   #静态图片服务器上传文件接口
   #file_server_url=http://127.0.0.1:8080/gxtz-server-file/rest/public/resource
@@ -23,7 +25,7 @@ dist:
 
 # 文件存储、预览
 file:
-  #  proxyAddress: http://127.0.0.1:80     # 代理地址 nginx
-  proxyAddress: http://127.0.0.1:8080/dgp-review-web     # 代理地址  springboot项目
-  proxyPath: /public/file                 # 代理路径 映射file.localStoragePath
-  localStoragePath: D:\\Temp\\StoragePath       # 本地存储路径 支持文件缓存/预览/下载/上传/转换等文件操作
+  #  proxyAddress: http://127.0.0.1:80      # 代理地址 nginx
+  proxyAddress: http://127.0.0.1:8080/springboot-test-mongodb     # 代理地址  springboot项目
+  proxyPath: /public/file                   # 代理路径 映射file.localStoragePath
+  localStoragePath: D:\\Temp\\storage       # 本地存储路径 支持文件缓存/预览/下载/上传/转换等文件操作
