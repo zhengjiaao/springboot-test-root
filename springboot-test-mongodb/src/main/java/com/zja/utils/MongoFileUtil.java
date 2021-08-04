@@ -28,24 +28,24 @@ import java.nio.file.Paths;
 @Slf4j
 public class MongoFileUtil {
 
-    private GridFsTemplate gridFsTemplate;
+    private final GridFsTemplate gridFsTemplate;
 
-    private GridFSBucket gridFSBucket;
+    private final GridFSBucket gridFSBucket;
 
     /**
      * 预览前缀：例 http://127.0.0.1:8080/dgp-web/public/file/
      */
-    private String baseURL;
+    private final String baseURL;
 
     /**
      * 本地存储绝对路径：例 D：\\Temp\\mg
      */
-    private String localFileMongoPath;
+    private final String localFileMongoPath;
 
     /**
      * 路径前缀：mg标识存储mongo文件
      */
-    private static final String MONGO_PATH_PREFIX = "mg";
+    private static final String PATH_PREFIX = "mg";
 
     /**
      * 自定义ID key
@@ -66,8 +66,8 @@ public class MongoFileUtil {
         checkBeanParams(localFilePath, baseURL);
         this.gridFsTemplate = gridFsTemplate;
         this.gridFSBucket = gridFSBucket;
-        this.localFileMongoPath = localFilePath + File.separator + MONGO_PATH_PREFIX;
-        this.baseURL = baseURL + "/" + MONGO_PATH_PREFIX;
+        this.localFileMongoPath = localFilePath + File.separator + PATH_PREFIX;
+        this.baseURL = baseURL + "/" + PATH_PREFIX;
         initLocalFileMongoPath();
     }
 
@@ -181,6 +181,31 @@ public class MongoFileUtil {
 
         String fileUrl = baseURL + "/" + localUniqueId(path) + "/" + fileName;
         return fileUrl;
+    }
+
+    /**
+     * 获取文件本地缓存路径
+     * @param path
+     * @return 返回本地缓存路径
+     */
+    public String getFileLocalCachePath(String path) {
+        GridFSFile fileInfo = getGridFSFile(path);
+        if (null == fileInfo) {
+            log.error("根据path=[{}]在mongo中没有查询到file文件！", path);
+            throw new RuntimeException("在mongo中没有查询到存在的文件！");
+        }
+
+        String fileName = fileInfo.getFilename();
+        if (null == fileName) {
+            log.error("未发现文件名称,若无法正常打开文件,请尝试调用 downloadFile(String path, String newFileName) or downloadFile(String path, String localPath, String fileName) 方法.");
+            fileName = path;
+        }
+
+        File file = new File(localCacheUniquePath(path) + File.separator + fileName);
+        if (!file.exists()) {
+            return downloadFile(path, localCacheUniquePath(path), fileName);
+        }
+        return file.getAbsolutePath();
     }
 
     /**
@@ -335,20 +360,6 @@ public class MongoFileUtil {
     }
 
     /**
-     * 清理本地所有缓存, 不会删除mongo存储的文件
-     * 删除 localFileMongoPath 目录下的所有资源 例 C:\\Temp\\mg
-     * @return true 清理成功
-     */
-    public boolean cleanLocalAllCache() {
-        try {
-            return deleteLocalDir(localFileMongoPath);
-        } catch (Exception e) {
-            log.error("清理所有本地缓存失败:{}", e.getMessage());
-        }
-        return false;
-    }
-
-    /**
      * 清理本地缓存文件, 不会删除mongo存储的文件
      * @param path
      * @return true 清理成功
@@ -358,6 +369,20 @@ public class MongoFileUtil {
             return deleteLocalDir(localCacheUniquePath(path));
         } catch (Exception e) {
             log.error("本地缓存清理失败:{}", e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * 清理本地所有缓存, 不会删除mongo存储的文件
+     * 删除 localFileMongoPath 目录下的所有资源 例 C:\\Temp\\mg
+     * @return true 清理成功
+     */
+    public boolean cleanLocalAllCache() {
+        try {
+            return deleteLocalDir(localFileMongoPath);
+        } catch (Exception e) {
+            log.error("清理所有本地缓存失败:{}", e.getMessage());
         }
         return false;
     }

@@ -161,6 +161,13 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
+
+        <!-- 文档转换 -->
+        <dependency>
+            <groupId>com.dist.zja</groupId>
+            <artifactId>aspose-all</artifactId>
+            <version>20.9-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
