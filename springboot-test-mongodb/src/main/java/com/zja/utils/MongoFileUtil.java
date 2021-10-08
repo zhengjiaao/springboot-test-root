@@ -5,6 +5,7 @@ import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.zja.utils.id.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.data.mongodb.core.query.Query;
@@ -24,6 +25,7 @@ import java.nio.file.Paths;
  * Author: zhengja
  * Email: zhengja@dist.com.cn
  * Desc：Mongo 操作文件工具类
+ * @Since: mongo 2.x
  */
 @Slf4j
 public class MongoFileUtil {
@@ -73,6 +75,16 @@ public class MongoFileUtil {
 
 
     //---------------------------------------------所有操作方法
+
+    /**
+     * 从本地上传文件到 mongo
+     * @param file 文件对象
+     */
+    public String uploadByFile(File file) {
+        String mgdbId = IdUtil.mgdbId();
+        uploadByFile(mgdbId, file);
+        return mgdbId;
+    }
 
     /**
      * 从本地上传文件到 mongo
