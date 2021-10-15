@@ -7,7 +7,8 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
 <!--        <version>2.0.5.RELEASE</version>-->
-        <version>2.2.10.RELEASE</version>
+<!--        <version>2.2.10.RELEASE</version>-->
+        <version>2.3.12.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -37,7 +38,7 @@
         <module>springboot-test-ftp</module>
         <module>springboot-test-document</module>
         <module>springboot-test-jpa</module>
-        <module>springboot-test-jpaextention</module>
+<!--        <module>springboot-test-jpaextention</module>-->
         <module>springboot-test-mode-factory</module>
         <module>springboot-test-timedtask</module>
         <module>springboot-test-unittest</module>
@@ -91,7 +92,6 @@
         <!--end集成swagger-API-->
         <dozer.version>5.4.0</dozer.version>
         <lang3.version>3.5</lang3.version>
-        <fastjson.version>1.2.70</fastjson.version>
         <taobao-sdk-java-auto.version>1.0</taobao-sdk-java-auto.version>
         <javase.version>2.0</javase.version>
         <commons-codec.version>1.11</commons-codec.version>
@@ -162,7 +162,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
+                <version>1.2.78</version>
             </dependency>
             <!--qrgen 二维码依赖 方式一-->
             <dependency>

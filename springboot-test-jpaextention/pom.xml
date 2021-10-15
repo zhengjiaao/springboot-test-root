@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
+	<!--<parent>
 		<artifactId>springboot-test-root</artifactId>
 		<groupId>com.dist</groupId>
 		<version>1.0-SNAPSHOT</version>
-	</parent>
+	</parent>-->
 	<groupId>com.dist</groupId>
 	<artifactId>springboot-test-jpaextention</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -70,13 +70,13 @@
 		</dependency>
 
 		<!--jpa扩展，可以使用模板配置原生sql语句-->
-		<dependency>
+		<!--<dependency>
 			<groupId>com.slyak</groupId>
 			<artifactId>spring-data-jpa-extra</artifactId>
 			<version>3.0.0.RELEASE</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/src/main/resources/lib/spring-data-jpa-extra-3.0.0.RELEASE.jar</systemPath>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>commons-beanutils</groupId>
