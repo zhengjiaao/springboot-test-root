@@ -2,7 +2,7 @@ package com.zja;
 
 import com.zja.entity.MyEntry;
 import com.zja.entity.SomeObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.redisson.api.*;
 
 import java.util.Iterator;

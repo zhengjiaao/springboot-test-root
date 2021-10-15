@@ -1,7 +1,7 @@
 package com.zja.test;
 
 import com.zja.util.RestTemplateUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.core.io.FileSystemResource;

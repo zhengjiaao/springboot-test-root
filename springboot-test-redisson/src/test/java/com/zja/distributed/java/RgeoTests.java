@@ -1,7 +1,7 @@
 package com.zja.distributed.java;
 
 import com.zja.BaseTests;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.redisson.api.GeoEntry;
 import org.redisson.api.GeoUnit;
 import org.redisson.api.RFuture;

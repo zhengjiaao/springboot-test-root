@@ -2,11 +2,8 @@ package com.zja.utils;
 
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -59,7 +56,11 @@ public class RedisUtil {
             if (key.length == 1) {
                 redisTemplate.delete(key[0]);
             } else {
-                redisTemplate.delete(CollectionUtils.arrayToList(key));
+//                redisTemplate.delete(CollectionUtils.arrayToList(key));
+
+                List<String> resultList = new ArrayList<>(key.length);
+                Collections.addAll(resultList, key);
+                redisTemplate.delete(resultList);
             }
         }
     }

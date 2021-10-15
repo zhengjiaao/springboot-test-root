@@ -3,7 +3,7 @@ package com.zja.distributed.servers;
 import com.zja.BaseTests;
 import com.zja.service.SomeServiceInterface;
 import com.zja.service.impl.SomeServiceImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.redisson.api.RRemoteService;
 import org.redisson.api.RemoteInvocationOptions;
 

@@ -3,7 +3,7 @@ package com.dist.springbootstarter;
 import com.dist.RocketmqApplicationTests;
 import com.dist.rocketmq.springbootstarter.RocketMQMsgListener;
 import com.dist.rocketmq.springbootstarter.RocketMQProducer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;
 

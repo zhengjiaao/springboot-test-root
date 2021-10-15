@@ -1,6 +1,7 @@
 package com.zja.javabasis;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author zhengja@dist.com.cn

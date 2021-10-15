@@ -1,7 +1,7 @@
 import com.zja.YmlApplication;
 import com.zja.dto.DynamicValue;
 import com.zja.dto.MyAttributes;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +47,7 @@ public class YmlTest {
     /**
      * 动态修改yml配置
      */
-    @Test
+//    @DynamicTest
     public void updateYaml(){
         try {
             URL url = Test.class.getClassLoader().getResource("application.yml");

@@ -2,7 +2,7 @@ package com.zja.biolWater;
 
 import com.zja.entity.BioBioWater;
 import com.zja.entity.NioBioWater;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**同步执行，同步回调
  * @author zhengja@dist.com.cn

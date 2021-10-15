@@ -7,7 +7,7 @@ import com.zja.utils.tree.FileTreeUtil;
 import com.zja.utils.tree.TreeUtil;
 import com.zja.utils.tree.dto.TreeDto;
 import com.zja.utils.tree.dto.TreeNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;

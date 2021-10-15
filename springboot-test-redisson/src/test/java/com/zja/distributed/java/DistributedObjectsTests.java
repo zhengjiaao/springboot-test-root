@@ -3,7 +3,7 @@ package com.zja.distributed.java;
 import com.zja.BaseTests;
 import com.zja.entity.AnyObject;
 import com.zja.entity.SomeObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.redisson.api.*;
 
 import java.io.FileOutputStream;

@@ -1,6 +1,7 @@
 package com.zja;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.redisson.api.RBucket;
 import org.redisson.api.RFuture;
 

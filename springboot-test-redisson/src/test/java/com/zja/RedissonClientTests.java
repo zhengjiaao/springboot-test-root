@@ -2,7 +2,7 @@ package com.zja;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Maybe;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.redisson.api.*;
 import reactor.core.publisher.Mono;
 

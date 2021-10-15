@@ -1,7 +1,7 @@
 package com.zja.execution;
 
 import com.zja.BaseTests;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RAtomicLongAsync;
 import org.redisson.api.RFuture;

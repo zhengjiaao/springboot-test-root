@@ -5,7 +5,8 @@ import com.zja.config.validator.util.ValidationUtil;
 import com.zja.dto.Child;
 import com.zja.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 
 /**
  * Company: 上海数慧系统技术有限公司

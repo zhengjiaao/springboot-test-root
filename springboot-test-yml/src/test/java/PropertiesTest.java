@@ -1,7 +1,6 @@
 import com.zja.YmlApplication;
 import com.zja.properties1.SecurityProperties;
 import com.zja.properties2.Unions;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +25,7 @@ public class PropertiesTest {
     @Autowired
     private Unions unions;
 
-    @Test
+//    @DynamicTest
     public void getProperties() {
 
         //获得传到"大盒子"类中的参数值

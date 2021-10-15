@@ -1,7 +1,7 @@
 package com.zja;
 
 import com.zja.dto.GroupDTO;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

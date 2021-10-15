@@ -2,7 +2,7 @@ package com.zja.java8.util.concurrent;
 
 import com.google.common.base.Stopwatch;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;

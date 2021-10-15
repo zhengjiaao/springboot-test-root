@@ -2,7 +2,8 @@ package com.zja.biolWater;
 
 import com.zja.entity.AioBoiIWater;
 import com.zja.entity.CompletableFutureBiolWater;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 
 /** ----异步执行，异步回调----
     a.加入适量的水

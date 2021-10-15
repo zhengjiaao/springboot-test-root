@@ -2,7 +2,7 @@ package com.zja.distributed.java;
 
 import com.zja.BaseTests;
 import com.zja.entity.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.redisson.api.*;
 import org.redisson.api.map.event.*;
 
