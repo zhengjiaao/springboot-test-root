@@ -113,11 +113,11 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.13.0</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jaxb-annotations</artifactId>
@@ -130,12 +130,6 @@
             <classifier>jdk15</classifier>
         </dependency>
         <!-- JSON end -->
-
-        <!-- 引入json处理包 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
 
         <!--*****dist公司依赖统一管理******-->
         <!--dist-存储过程-->
@@ -168,6 +162,10 @@
             <artifactId>poi</artifactId>
             <version>3.17</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
 
     </dependencies>
