@@ -1,6 +1,8 @@
 package com.zja.config.mongo;
 
+import com.mongodb.ClientSessionOptions;
 import com.mongodb.DB;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoDatabase;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
@@ -43,5 +45,15 @@ public class GridFsMongoDbFactory implements MongoDbFactory {
     public DB getLegacyDb() {
         Assert.notNull(gridFsDatabase, "GridFsDatabase must not be null");
         return (DB) this.mongoDbFactory.getDb(gridFsDatabase);
+    }
+
+    @Override
+    public ClientSession getSession(ClientSessionOptions clientSessionOptions) {
+        return null;
+    }
+
+    @Override
+    public MongoDbFactory withSession(ClientSession clientSession) {
+        return null;
     }
 }

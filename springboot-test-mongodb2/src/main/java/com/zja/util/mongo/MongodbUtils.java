@@ -1,7 +1,6 @@
 package com.zja.util.mongo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -225,7 +224,7 @@ public class MongodbUtils {
             }
         }
         Query query = Query.query(criteria);
-        query.with(new Sort(Sort.Direction.DESC, sort));
+//        query.with(new Sort(Sort.Direction.DESC, sort));
         List<? extends Object> resultList = mongodbUtils.mongoTemplate.find(query, obj.getClass(), collectionName);
         return resultList;
     }

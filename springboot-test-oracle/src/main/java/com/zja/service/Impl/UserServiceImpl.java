@@ -61,8 +61,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserEntity> getCurrentUserList() {
-        Sort sort =new Sort(Sort.Direction.DESC,"createTime");
-        return userDao.findAll(sort);
+//        Sort sort =new Sort(Sort.Direction.DESC,"createTime");
+        return userDao.findAll(Sort.by(Sort.Direction.DESC,"createTime"));
     }
 
     /**

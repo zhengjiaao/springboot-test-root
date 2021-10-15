@@ -1,7 +1,5 @@
 package com.zja.controller;
 
-import com.zja.dto.ShopDTO;
-import com.zja.dto.UserDTO;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.MongoCollection;
@@ -11,6 +9,8 @@ import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import com.zja.dto.ShopDTO;
+import com.zja.dto.UserDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,7 +20,6 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -317,8 +316,8 @@ public class FirstMongoController extends BaseController{
                 Criteria.where("name").is("数据源1"),
                 Criteria.where("age").is(23));
         Query query = new Query(criteria);   //组合查询放入query
-        Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC,"id"));  //结果集进行排序
-        query.with(sort);
+//        Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC,"id"));  //结果集进行排序
+//        query.with(sort);
         List<ShopDTO> shopDTOS = mongoTemplate.find(query,ShopDTO.class,"shops");
         //mongoDB组合查询数据成功,集合为shops,文档为：shopDTOS
         return shopDTOS;
