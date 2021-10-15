@@ -1,0 +1,10 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /@project.artifactId@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: dlywaydb
+    password: pass
+    driver-class-name: com.mysql.jdbc.Driver
