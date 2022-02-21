@@ -2,7 +2,16 @@ package com.zja.juc.shangguigu1.juc;
 
 import java.util.concurrent.CountDownLatch;
 
-//演示 CountDownLatch
+/**
+ * 输出结果：
+ * 1 号同学离开了教室
+ * 6 号同学离开了教室
+ * 5 号同学离开了教室
+ * 4 号同学离开了教室
+ * 2 号同学离开了教室
+ * 3 号同学离开了教室
+ * main 班长锁门走人了
+ */
 public class CountDownLatchDemo {
     //6个同学陆续离开教室之后，班长锁门
     public static void main(String[] args) throws InterruptedException {
