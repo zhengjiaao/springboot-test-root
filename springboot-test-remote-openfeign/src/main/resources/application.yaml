@@ -1,0 +1,9 @@
+
+server:
+  port: 8083
+  servlet:
+    context-path: /openfeign   # 服务名称
+
+remote:
+  feign:
+    url: http://localhost:8080/springboot-test-remoteservice
