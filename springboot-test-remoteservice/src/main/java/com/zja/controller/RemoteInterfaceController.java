@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,14 @@ public class RemoteInterfaceController {
         UserDTO userDTO = getUserDto();
         System.out.println("service:userDTO==" + userDTO);
         return userDTO;
+    }
+
+    @ApiOperation(value = "get-不传参数", notes = "返回对象", httpMethod = "GET")
+    @RequestMapping(value = "/get/token", method = RequestMethod.GET)
+    public Object getUserDTO(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        System.out.println("token= " + token);
+        return token;
     }
 
     @ApiOperation(value = "get-传参数", notes = "返回对象", httpMethod = "GET")
@@ -56,14 +65,14 @@ public class RemoteInterfaceController {
         return ResponseUtil.success(userDTO);
     }
 
-    @ApiOperation(value = "post-传参",notes = "返回对象",httpMethod = "POST")
+    @ApiOperation(value = "post-传参", notes = "返回对象", httpMethod = "POST")
     @RequestMapping(value = "/post/userdto", method = RequestMethod.POST)
     public Object postUserDTO(@ApiParam(value = "传参值：userDto", required = true) @RequestBody UserDTO userDto) {
         System.out.println("service:userDto==" + userDto);
         return userDto;
     }
 
-    @ApiOperation(value = "post-传参-对象接收",notes = "返回对象",httpMethod = "POST")
+    @ApiOperation(value = "post-传参-对象接收", notes = "返回对象", httpMethod = "POST")
     @RequestMapping(value = "/post/userdto5", method = RequestMethod.POST)
     public Object postUserDTO5(@ApiParam(value = "传参值：EpoitParamsDTO", required = true) @RequestBody EpoitParamsDTO epoitParamsDTO) {
         System.out.println("service:epoitParamsDTO==" + epoitParamsDTO);
@@ -112,17 +121,17 @@ public class RemoteInterfaceController {
     @ApiOperation(value = "post-上传多文件", httpMethod = "POST")
     @RequestMapping(value = "/post/upload/v3", method = RequestMethod.POST)
     public ResponseData uploadMongo(@ApiParam(value = "上传的文件", required = true) @RequestParam(value = "files", required = false) MultipartFile[] files) {
-        if (files.length<=0){
+        if (files.length <= 0) {
             return ResponseUtil.fail("请选择要上传的文件！");
         }
-        for (int i= 0;i<files.length;i++){
+        for (int i = 0; i < files.length; i++) {
             MultipartFile file = files[i];
             System.out.println("上传文件：" + file.getOriginalFilename() + "  大小：" + file.getSize());
         }
         return ResponseUtil.success(true);
     }
 
-    @ApiOperation(value = "put-无参",  httpMethod = "PUT")
+    @ApiOperation(value = "put-无参", httpMethod = "PUT")
     @RequestMapping(value = "/put/v1", method = RequestMethod.PUT)
     public Object putUserDTO() {
         System.out.println("service:" + "传参成功");
@@ -132,7 +141,7 @@ public class RemoteInterfaceController {
     @ApiOperation(value = "put-传多参-string接收", notes = "传多个参数", httpMethod = "PUT")
     @RequestMapping(value = "/put/userdto2", method = RequestMethod.PUT)
     public Object putUserDTO2(@ApiParam(value = "传参值：name") @RequestParam String name,
-                             @ApiParam(value = "传参值：age") @RequestParam String age) {
+                              @ApiParam(value = "传参值：age") @RequestParam String age) {
         System.out.println("service:" + "传参成功");
         String result = "名字：" + name + "  ,年龄：" + age;
         return result;
