@@ -25,6 +25,12 @@ public interface RemoteInterfaceFeignClient {
     @RequestLine("GET /rest/v1/get/userdto")
     Object getUserDTO();
 
+    //未成功，get 不允许传 body，delete允许传body
+    @ApiOperation(value = "提供get body方法测试", notes = "传body参数", httpMethod = "GET")
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @RequestLine("GET /rest/v1/get/body")
+    Object getBody(UserDTO userDTO);
+
     @ApiOperation(value = "提供get方法测试", notes = "不传参数", httpMethod = "GET")
     @RequestLine("GET /rest/v1/get/token")
     @Headers({"token:{token}"})
@@ -51,6 +57,12 @@ public interface RemoteInterfaceFeignClient {
     @ApiOperation(value = "提供delete方法测试", httpMethod = "DELETE")
     @RequestLine("DELETE /rest/v1/delete/userdto")
     Object deleteUserDTO();
+
+    //成功，delete允许传body, get 不允许传 body
+    @ApiOperation(value = "提供delete body方法测试", notes = "传body参数", httpMethod = "DELETE")
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @RequestLine("DELETE /rest/v1/delete/body")
+    Object deleteBody(/*@RequestBody */UserDTO userDTO);
 
     @ApiOperation(value = "提供lsit<UserDTO>方法测试", httpMethod = "GET")
     @RequestLine("GET /rest/v1/get/userdtolsit")

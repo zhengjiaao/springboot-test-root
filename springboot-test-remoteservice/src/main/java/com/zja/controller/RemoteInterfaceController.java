@@ -245,4 +245,21 @@ public class RemoteInterfaceController {
         return as;
     }
 
+    //特殊传参，示例 get、delete 传 body 数据
+    //未成功，get不允许传 body
+    @ApiOperation(value = "get测试-传body参数", notes = "带传参数", httpMethod = "GET")
+    @RequestMapping(value = "/get/body", method = RequestMethod.GET)
+    public Object getBody(@RequestBody UserDTO userDto) {
+        System.out.println("userDto: " + userDto);
+        return userDto;
+    }
+
+    //成功，delete允许传body
+    @ApiOperation(value = "delete测试-传body参数", notes = "带传参数", httpMethod = "DELETE")
+    @RequestMapping(value = "/delete/body", method = RequestMethod.DELETE)
+    public Object deleteBody(@RequestBody UserDTO userDto) {
+        System.out.println("userDto: " + userDto);
+        return userDto;
+    }
+
 }

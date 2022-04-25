@@ -35,6 +35,14 @@ public class RemoteInterfaceController {
         return service.getUserDTO();
     }
 
+    //未成功，get 不允许传 body，delete允许传body
+    @ApiOperation(value = "提供get方法测试-传body参数", notes = "传body参数", httpMethod = "GET")
+    @RequestMapping(value = "/get/body", method = RequestMethod.GET)
+    public Object getBody(UserDTO userDTO) {
+        System.out.println("remote:" + "进入调用方法");
+        return service.getBody(userDTO);
+    }
+
     @ApiOperation(value = "提供get方法测试-不传参数", notes = "不传参数", httpMethod = "GET")
     @RequestMapping(value = "/get/token", method = RequestMethod.GET)
     public Object getToken(String token) {
@@ -77,6 +85,13 @@ public class RemoteInterfaceController {
     public Object deleteUserDTO() {
         System.out.println("remote:" + "进入删除方法");
         return service.deleteUserDTO();
+    }
+
+    @ApiOperation(value = "提供delete body方法测试", httpMethod = "DELETE")
+    @RequestMapping(value = "/delete/body", method = RequestMethod.DELETE)
+    public Object deleteBody(@RequestBody UserDTO userDTO) {
+        System.out.println("remote:" + "进入删除方法");
+        return service.deleteBody(userDTO);
     }
 
     @ApiOperation(value = "提供lsit<UserDTO>方法测试", httpMethod = "GET")
