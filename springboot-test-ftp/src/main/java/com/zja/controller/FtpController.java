@@ -1,6 +1,6 @@
 package com.zja.controller;
 
-import com.zja.dto.FTPDirDTO;
+import com.zja.dto.FTPFileTreeInfo;
 import com.zja.dto.FtpCfgDTO;
 import com.zja.util.FtpFileZipUtls;
 import com.zja.util.FtpUtil;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @author zhengja@dist.com.cn
  * @data 2019/7/15 9:41
  */
-@Api(tags = {"FtpController"},description = "FTP测试")
+@Api(tags = {"FtpController"}, description = "FTP测试")
 @RestController
 @RequestMapping(value = "/ftp")
 public class FtpController extends BaseController {
@@ -44,93 +44,93 @@ public class FtpController extends BaseController {
     @Qualifier("topicFtp")
     private FtpCfgDTO topicFtpCfgDTO;
 
-    @ApiOperation(value = "获取default-ftp目录",httpMethod = "GET")
-    @RequestMapping(value = "v1/directory",method = RequestMethod.GET)
-    public Object ftpCfgDTO(@ApiParam(value = "相对路径") @RequestParam String relativeDir,
-                       @ApiParam(value = "级别 0表示当前目录以及所有子目录内容，1表示获取一级目录内容") @RequestParam int level) throws Exception {
+    @ApiOperation(value = "获取default-ftp目录", httpMethod = "GET")
+    @RequestMapping(value = "v1/directory", method = RequestMethod.GET)
+    public Object ftpCfgDTO(@ApiParam(value = "相对路径", required = true) @RequestParam String relativeDir,
+                            @ApiParam(value = "级别 0表示当前目录以及所有子目录内容，1表示获取一级目录内容", defaultValue = "1", required = true) @RequestParam int level) throws Exception {
         FTPClient ftpClient = FtpUtil.connectServer(ftpCfgDTO);
-        List<FTPDirDTO> ftpDirDTOS =null;
+        List<FTPFileTreeInfo> ftpFileTreeInfos = null;
         try {
-            ftpDirDTOS = FtpUtil.getSubDirectory(ftpClient, relativeDir, level);
+            ftpFileTreeInfos = FtpUtil.getSubDirectory(ftpClient, relativeDir, level);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ftpDirDTOS;
+        return ftpFileTreeInfos;
     }
 
-    @ApiOperation(value = "获取cadFtp-ftp目录",httpMethod = "GET")
-    @RequestMapping(value = "v2/directory",method = RequestMethod.GET)
+    @ApiOperation(value = "获取cadFtp-ftp目录", httpMethod = "GET")
+    @RequestMapping(value = "v2/directory", method = RequestMethod.GET)
     public Object cadFtpCfgDTO(@ApiParam(value = "相对路径") @RequestParam String relativeDir,
-                         @ApiParam(value = "级别 0表示当前目录以及所有子目录内容，1表示获取一级目录内容") @RequestParam int level) throws Exception {
+                               @ApiParam(value = "级别 0表示当前目录以及所有子目录内容，1表示获取一级目录内容") @RequestParam int level) throws Exception {
         FTPClient ftpClient = FtpUtil.connectServer(cadFtpCfgDTO);
-        System.out.println("Directory="+ftpClient.printWorkingDirectory());
-        List<FTPDirDTO> ftpDirDTOS =null;
+        System.out.println("Directory=" + ftpClient.printWorkingDirectory());
+        List<FTPFileTreeInfo> ftpFileTreeInfos = null;
         try {
-            ftpDirDTOS = FtpUtil.getSubDirectory(ftpClient, relativeDir, level);
+            ftpFileTreeInfos = FtpUtil.getSubDirectory(ftpClient, relativeDir, level);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ftpDirDTOS;
+        return ftpFileTreeInfos;
     }
 
-    @ApiOperation(value = "获取topicFtp-ftp目录",httpMethod = "GET")
-    @RequestMapping(value = "v3/directory",method = RequestMethod.GET)
+    @ApiOperation(value = "获取topicFtp-ftp目录", httpMethod = "GET")
+    @RequestMapping(value = "v3/directory", method = RequestMethod.GET)
     public Object topicFtpCfgDTO(@ApiParam(value = "相对路径") @RequestParam String relativeDir,
-                         @ApiParam(value = "级别 0表示当前目录以及所有子目录内容，1表示获取一级目录内容") @RequestParam int level) throws Exception {
+                                 @ApiParam(value = "级别 0表示当前目录以及所有子目录内容，1表示获取一级目录内容") @RequestParam int level) throws Exception {
         FTPClient ftpClient = FtpUtil.connectServer(topicFtpCfgDTO);
-        List<FTPDirDTO> ftpDirDTOS =null;
+        List<FTPFileTreeInfo> ftpFileTreeInfos = null;
         try {
-            ftpDirDTOS = FtpUtil.getSubDirectory(ftpClient, relativeDir, level);
+            ftpFileTreeInfos = FtpUtil.getSubDirectory(ftpClient, relativeDir, level);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ftpDirDTOS;
+        return ftpFileTreeInfos;
     }
 
-    @ApiOperation(value = "上传文件到default-ftp",httpMethod = "GET")
-    @RequestMapping(value = "v1/uploadfile",method = RequestMethod.GET)
+    @ApiOperation(value = "上传文件到default-ftp", httpMethod = "GET")
+    @RequestMapping(value = "v1/uploadfile", method = RequestMethod.GET)
     public Object uploadFileFtpCfgDTO(@ApiParam(value = "上传的文件,包含目录的文件名") @RequestParam String filePathName,
-                                 @ApiParam(value = "新的文件名") @RequestParam String newName) throws Exception {
+                                      @ApiParam(value = "新的文件名") @RequestParam String newName) throws Exception {
         FTPClient ftpClient = FtpUtil.connectServer(ftpCfgDTO);
         boolean uploadFile = FtpUtil.uploadFile(ftpClient, filePathName, newName);
         return uploadFile;
     }
 
-    @ApiOperation(value = "从default-ftp下载文件",httpMethod = "GET")
-    @RequestMapping(value = "v1/downloadfile",method = RequestMethod.GET)
+    @ApiOperation(value = "从default-ftp下载文件", httpMethod = "GET")
+    @RequestMapping(value = "v1/downloadfile", method = RequestMethod.GET)
     public Object downloadFileFtpCfgDTO(@ApiParam(value = "远程文件名，路径开头不能以“/”或者“\\”开始") @RequestParam String remoteFilePath,
-                                 @ApiParam(value = "本地文件") @RequestParam String localFileName) throws IOException {
+                                        @ApiParam(value = "本地文件") @RequestParam String localFileName) throws IOException {
         FTPClient ftpClient = FtpUtil.connectServer(ftpCfgDTO);
         boolean downloadFile = FtpUtil.download(ftpClient, remoteFilePath, localFileName);
         return downloadFile;
     }
 
-    @ApiOperation(value = "从default-ftp下载多个文件",httpMethod = "GET")
-    @RequestMapping(value = "v1/multiple/downloadfile",method = RequestMethod.GET)
+    @ApiOperation(value = "从default-ftp下载多个文件", httpMethod = "GET")
+    @RequestMapping(value = "v1/multiple/downloadfile", method = RequestMethod.GET)
     public Object downloadMultipleFileFtpCfgDTO() {
 
         String jpg = "CAD\\1.jpg,CAD\\2.jpg";
         String[] split = jpg.split(",");
         boolean downloadFile = false;
-        for (String path : split){
+        for (String path : split) {
             FTPClient ftpClient = FtpUtil.connectServer(ftpCfgDTO);
-            String localFileName ="D:\\doc\\"+path;
+            String localFileName = "D:\\doc\\" + path;
             downloadFile = FtpUtil.downloadFileFromFtp(ftpClient, path, localFileName);
         }
         return downloadFile;
     }
 
-    @ApiOperation(value = "从default-ftp下载文件夹下所有的内容",httpMethod = "GET")
-    @RequestMapping(value = "v1/download/folder",method = RequestMethod.GET)
+    @ApiOperation(value = "从default-ftp下载文件夹下所有的内容", httpMethod = "GET")
+    @RequestMapping(value = "v1/download/folder", method = RequestMethod.GET)
     public void downloadFolder(@ApiParam(value = "远程文件夹名，路径开头不能以“/”或者“\\”开始") @RequestParam String remotePath,
-                                 @ApiParam(value = "本地文件夹") @RequestParam String localPath) throws Exception {
+                               @ApiParam(value = "本地文件夹") @RequestParam String localPath) throws Exception {
         FTPClient ftpClient = FtpUtil.connectServer(ftpCfgDTO);
-        FtpUtil.downFtpFiles(ftpClient,remotePath,localPath);
+        FtpUtil.downFtpFiles(ftpClient, remotePath, localPath);
         FtpUtil.closeServer(ftpClient);
     }
 
-    @ApiOperation(value = "从default-ftp压缩图片下载-将多个文件压缩",notes = "支持目录和文件同时下载",httpMethod = "GET")
-    @RequestMapping(value = "v1/getZipFile",method = RequestMethod.GET)
+    @ApiOperation(value = "从default-ftp压缩图片下载-将多个文件压缩", notes = "支持目录和文件同时下载", httpMethod = "GET")
+    @RequestMapping(value = "v1/getZipFile", method = RequestMethod.GET)
     public Object getZipFile(@ApiParam(value = "文件路径:多个以 ',' 分割", required = true) @RequestParam(value = "filePaths") String[] filePaths)
             throws Exception {
 
@@ -168,12 +168,12 @@ public class FtpController extends BaseController {
         return returnPath;
     }
 
-    @ApiOperation(value = "从default-ftp压缩FTP上指定文件或者文件夹并返回下载地址",httpMethod = "POST")
-    @RequestMapping(value = "v1/getZipFileByPath",method = RequestMethod.POST)
+    @ApiOperation(value = "从default-ftp压缩FTP上指定文件或者文件夹并返回下载地址", httpMethod = "POST")
+    @RequestMapping(value = "v1/getZipFileByPath", method = RequestMethod.POST)
     public Object getZipFileByPath(@ApiParam(value = "文件路径,参数传递例如['/CAD/1.jpg','/CAD/图片']", required = true) @RequestBody String[] filePaths)
             throws Exception {
         FTPClient ftpClient = FtpUtil.connectServer(ftpCfgDTO);
-        FtpUtil.changeMutiWorkingDirectory(ftpClient,"/CAD");
+        FtpUtil.changeMutiWorkingDirectory(ftpClient, "/CAD");
         String savePath = getSavePath("ftpzip");
         FtpFileZipUtls.zipFileByPaths(ftpClient, savePath, filePaths);
 
@@ -205,12 +205,12 @@ public class FtpController extends BaseController {
     }
 
 
-    @ApiOperation(value = "上传,断点续传到default-ftp-待完善",notes = "上传文件到FTP服务器，支持断点续传",httpMethod = "GET")
-    @RequestMapping(value = "v1/uploadBreakpoints",method = RequestMethod.GET)
+    @ApiOperation(value = "上传,断点续传到default-ftp-待完善", notes = "上传文件到FTP服务器，支持断点续传", httpMethod = "GET")
+    @RequestMapping(value = "v1/uploadBreakpoints", method = RequestMethod.GET)
     public Object uploadBreakpointsFtpCfgDTO(@ApiParam(value = "本地文件名称，绝对路径") @RequestParam String localFile,
-                                      @ApiParam(value = "远程文件路径,带文件后缀") @RequestParam String remoteFile) throws Exception {
+                                             @ApiParam(value = "远程文件路径,带文件后缀") @RequestParam String remoteFile) throws Exception {
         FTPClient ftpClient = FtpUtil.connectServer(ftpCfgDTO);
-       // FtpUtil.UploadStatus uploadStatus = FtpUtil.uploadBreakpoints(ftpClient, localFile, remoteFile);
+        // FtpUtil.UploadStatus uploadStatus = FtpUtil.uploadBreakpoints(ftpClient, localFile, remoteFile);
         return null;
     }
 

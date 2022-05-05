@@ -76,10 +76,15 @@
 		<!--End##集成swagger-API##-->
 
 		<!-- FtpClient依赖包-->
-		<dependency>
+		<!--<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
 			<version>${ftpclient.version}</version>
+		</dependency>-->
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.8.0</version>
 		</dependency>
         <!--spring-boot-->
 		<dependency>
