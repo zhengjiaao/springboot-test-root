@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    #本地环境
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5433/postgres?searchPath=postgres  #&rewriteBatchedStatements=true
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+        generate_statistics: true # 打印统计信息[连接，执行耗时、批处理情况等]
+        jdbc:
+          batch_size: 1000   # 批处理配置
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true

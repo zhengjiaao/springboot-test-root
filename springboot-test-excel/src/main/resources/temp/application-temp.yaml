@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    #    username: test
+    #    password: pass
+    #    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    #    driverClassName: com.mysql.cj.jdbc.Driver
+#    username: bj_nr_new
+#    password: pass
+#    url: jdbc:oracle:thin:@192.168.1.15:1521/ORCL
+#    driver-class-name: oracle.jdbc.driver.OracleDriver
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+        generate_statistics: true # 打印统计信息[连接，执行耗时、批处理情况等]
+        jdbc:
+          batch_size: 1000
+#          batch_versioned_data: true
+        order_inserts: true
+#        order_updates: true
+    hibernate:
+      ddl-auto: update  # update会导致启动至 org.hibernate.dialect.Dialect 时卡住
+      naming:
+        # physical-strategy: 物理策略 把[属性名] 映射为 [表字段]，默认 将实体类的属性名映射表中策略是：userName --> user_name
+#        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy # 默认，Spring 物理命名策略，示例： userName --> user_name，@Column(name = "LICENSENUMBER") --> licensenumber  name变为小写
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # 驼峰命名策略，示例： userName --> userName，@Column(name = "LICENSENUMBER") --> LICENSENUMBER     name变为大写
+    show-sql: true
