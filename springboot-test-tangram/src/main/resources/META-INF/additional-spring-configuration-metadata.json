@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "tangram.server_url",
+      "type": "java.lang.String",
+      "description": "Description for tangram.server_url."
+    },
+    {
+      "name": "tangram.example1.process_id",
+      "type": "java.lang.String",
+      "description": "Description for tangram.example1.process_id."
+    },
+    {
+      "name": "tangram.example2.process_id",
+      "type": "java.lang.String",
+      "description": "Description for tangram.example2.process_id."
+    },
+    {
+      "name": "tangram.brwg.process_id",
+      "type": "java.lang.String",
+      "description": "Description for tangram.brwg.process_id."
+    },
+    {
+      "name": "tangram.fwzx.process_id",
+      "type": "java.lang.String",
+      "description": "Description for tangram.fwzx.process_id."
+    }
+  ] }

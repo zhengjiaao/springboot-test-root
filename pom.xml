@@ -57,6 +57,7 @@
         <module>springboot-test-juc</module>
         <module>springboot-test-flywaydb</module>
         <module>springboot-test-tangram</module>
+        <module>springboot-test-excel</module>
     </modules>
 
 
