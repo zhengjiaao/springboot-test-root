@@ -24,35 +24,26 @@
         <module>springboot-test-autonomy</module>
         <module>springboot-test-redis</module>
         <module>springboot-test-redis2</module>
-        <module>springboot-test-redis-session</module>
         <module>springboot-test-encrypt</module>
         <module>springboot-test-encryptEx</module>
         <module>springboot-test-mongodb</module>
         <module>springboot-test-mongodb2</module>
         <module>springboot-test-oracle</module>
         <module>springboot-test-oracle2</module>
-        <module>springboot-test-postgresql</module>
         <module>springboot-test-remote</module>
         <module>springboot-test-remote-openfeign</module>
         <module>springboot-test-remoteservice</module>
         <module>springboot-test-file</module>
         <module>springboot-test-ftp</module>
         <module>springboot-test-document</module>
-        <module>springboot-test-jpa</module>
 <!--        <module>springboot-test-jpaextention</module>-->
         <module>springboot-test-mode-factory</module>
         <module>springboot-test-timedtask</module>
         <module>springboot-test-unittest</module>
-        <module>springboot-test-cache</module>
         <module>springboot-test-utils</module>
-        <module>springboot-test-validation</module>
-        <module>springboot-test-email</module>
         <module>springboot-test-dist</module>
         <module>springboot-test-elasticsearch</module>
-        <module>springboot-test-jdbc</module>
         <module>springboot-test-yml</module>
-        <module>springboot-test-redisson</module>
-        <module>springboot-test-java8</module>
         <module>springboot-test-mq-rocketmq</module>
         <module>springboot-test-juc</module>
         <module>springboot-test-flywaydb</module>

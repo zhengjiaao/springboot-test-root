@@ -1,8 +1,0 @@
---getAlls
-select * from t_user
-
---getList
-select * from t_user
-
---getNames
-select name from t_user
