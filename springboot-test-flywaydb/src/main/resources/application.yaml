@@ -17,11 +17,12 @@ spring:
     password: pass
     ## 以下都是默认配置[可选的]
     table: flyway_schema_history        # 默 flyway_schema_history，用于记录所有的版本变化记录
+#    table: flyway_user_history        # 默 flyway_schema_history，用于记录所有的版本变化记录
     check-location: true                # 默 true，校验 locations 路径下必须存在 *.sql文件
     locations:                          # 默 classpath:db/migration，用于扫描的迁移脚本目录
       - classpath:db/migration          # 默 classpath:db/migration，sql脚本文件位置
-      - classpath:db/user               # 默 classpath:db/migration，sql脚本文件位置
-    baseline-on-migrate: false          # 默 false，若发现schema数据库非空时，当存在flyway_schema_history表，会执行sql文件，不存在，则不执行sql文件并启动时抛出异常
+#      - classpath:db/user               # 默 classpath:db/migration，sql脚本文件位置
+    baseline-on-migrate: true          # 默 false，若发现schema数据库非空时，当存在flyway_schema_history表，会执行sql文件，不存在，则不执行sql文件并启动时抛出异常
     baseline-version: 1                 # 默 1，开始执行基准迁移时对现有的schema的版本打标签
     sql-migration-prefix: V             # 默 V，SQL迁移的文件名前缀
     repeatable-sql-migration-prefix: R  # 默 R，可重复 SQL迁移的文件名前缀
