@@ -3,6 +3,7 @@
 > SQL 版本管理组件 flywaydb
 
 ```xml
+<!--spring-boot-dependencies 已内置-->
 <dependency>
     <groupId>org.flywaydb</groupId>
     <artifactId>flyway-core</artifactId>
