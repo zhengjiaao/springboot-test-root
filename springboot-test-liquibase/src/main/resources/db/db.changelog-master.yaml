@@ -1,5 +1,8 @@
 # TODO 个人比较喜欢这种
 databaseChangeLog:
+  - changeSet:  # 一个空的changeset，不会对数据库造成任何影响，但是升级时会产生一条记录
+      id: 1
+      author: zhenja
   - includeAll: # 把一个文件夹下所有 changelog 都加载进来
       path: classpath:db/mysql_sql_a/
   - include:    # 加载单个文件 支持：sql、xml、yaml、json
