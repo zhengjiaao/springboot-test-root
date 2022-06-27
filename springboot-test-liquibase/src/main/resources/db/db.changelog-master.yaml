@@ -1,0 +1,21 @@
+# TODO 个人比较喜欢这种
+databaseChangeLog:
+  - includeAll: # 把一个文件夹下所有 changelog 都加载进来
+      path: classpath:db/mysql_sql_a/
+  - include:    # 加载单个文件 支持：sql、xml、yaml、json
+      file: classpath:db/mysql_sql_b/V1.0.1.sql
+#  - include:
+#      file: changelog/eps/mysql-ddl-init.xml
+#  - include:
+#      file: changelog/eps/mysql-dml-change.xml
+
+# 同时也支持依赖外部SQL文件
+#databaseChangeLog:
+#  - changeSet:
+#      id: 1
+#      author: Liquibase2
+#      changes:
+#        - sqlFile:
+#            encoding: utf8      # 默 UTF-8 文件编码
+#            endDelimiter: ;    # 默 ; 结束分隔符
+#            path: classpath:db/mysql_sql_a/V1.0.0.sql
