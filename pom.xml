@@ -35,6 +35,7 @@
         <module>springboot-test-remoteservice</module>
         <module>springboot-test-file</module>
         <module>springboot-test-ftp</module>
+        <module>springboot-test-java8</module>
         <module>springboot-test-document</module>
 <!--        <module>springboot-test-jpaextention</module>-->
         <module>springboot-test-mode-factory</module>
@@ -49,6 +50,7 @@
         <module>springboot-test-flywaydb</module>
         <module>springboot-test-tangram</module>
         <module>springboot-test-excel</module>
+        <module>springboot-test-liquibase</module>
     </modules>
 
 
