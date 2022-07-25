@@ -51,6 +51,7 @@
         <module>springboot-test-tangram</module>
         <module>springboot-test-excel</module>
         <module>springboot-test-liquibase</module>
+        <module>springboot-test-xxl-job</module>
     </modules>
 
 
