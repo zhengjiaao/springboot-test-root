@@ -1,6 +1,6 @@
 package com.zja.bigFile;
 
-import com.zja.SpringbootApplication;
+import com.zja.FileFileApplication;
 import com.zja.entity.BigFileSplit;
 import com.zja.util.BigFileSplitUtil;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @data 2019/9/11 9:42
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringbootApplication.class})
+@SpringBootTest(classes = {FileFileApplication.class})
 public class BigFileTest {
 
     @Autowired

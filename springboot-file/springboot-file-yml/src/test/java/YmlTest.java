@@ -1,4 +1,4 @@
-import com.zja.YmlApplication;
+import com.zja.FileYmlApplication;
 import com.zja.dto.DynamicValue;
 import com.zja.dto.MyAttributes;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import java.util.Map;
  * Desc：
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = YmlApplication.class)
+@SpringBootTest(classes = FileYmlApplication.class)
 public class YmlTest {
 
     @Autowired

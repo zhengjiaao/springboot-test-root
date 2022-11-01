@@ -40,7 +40,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!--解决 jar 命令启动报错问题：no main manifest attribute, in /app.jar-->
-                    <mainClass>com.zja.WebApplication</mainClass>
+                    <mainClass>com.zja.ApiSwagger3Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>

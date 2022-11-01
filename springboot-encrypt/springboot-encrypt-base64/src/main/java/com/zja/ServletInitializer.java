@@ -7,7 +7,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(SpringbootTestEncryptApplication.class);
+		return application.sources(EncryptBase64Application.class);
 	}
 
 }

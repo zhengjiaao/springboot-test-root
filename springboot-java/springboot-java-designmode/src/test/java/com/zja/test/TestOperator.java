@@ -1,6 +1,6 @@
 package com.zja.test;
 
-import com.zja.SpringbootTestApplication;
+import com.zja.JavaDesignmodeApplication;
 import com.zja.constant.Operator;
 import com.zja.entity.Calculator;
 import com.zja.factory.BonusStrategyFactory;
@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Desc：
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringbootTestApplication.class})
+@SpringBootTest(classes = {JavaDesignmodeApplication.class})
 public class TestOperator {
 
     /**

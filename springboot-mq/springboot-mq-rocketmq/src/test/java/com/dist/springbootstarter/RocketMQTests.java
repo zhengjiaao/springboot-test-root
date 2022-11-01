@@ -1,6 +1,6 @@
 package com.dist.springbootstarter;
 
-import com.dist.RocketmqApplicationTests;
+import com.dist.MqRocketmqApplicationTests;
 import com.dist.rocketmq.springbootstarter.RocketMQMsgListener;
 import com.dist.rocketmq.springbootstarter.RocketMQProducer;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  * Email: zhengja@dist.com.cn
  * Desc：
  */
-public class RocketMQTests extends RocketmqApplicationTests {
+public class RocketMQTests extends MqRocketmqApplicationTests {
 
     @Resource
     RocketMQProducer rocketMQProducer;

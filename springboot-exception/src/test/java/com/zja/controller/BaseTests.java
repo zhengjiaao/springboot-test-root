@@ -6,7 +6,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Stopwatch;
-import com.zja.SpringbootTestApplication;
+import com.zja.SpringbootExceptionApplication;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +31,7 @@ import java.util.Map;
 //@Transactional //启用事务，默认 @Rollback(true)
 //@ActiveProfiles("dev")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = SpringbootTestApplication.class)
+@SpringBootTest(classes = SpringbootExceptionApplication.class)
 public class BaseTests {
 
     public static Logger log = LoggerFactory.getLogger(BaseTests.class);

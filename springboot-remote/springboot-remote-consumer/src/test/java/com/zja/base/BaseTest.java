@@ -1,6 +1,6 @@
 package com.zja.base;
 
-import com.zja.RemoteApplication;
+import com.zja.RemoteConsumerApplication;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @date 2019/03/14.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {RemoteApplication.class})
+@SpringBootTest(classes = {RemoteConsumerApplication.class})
 public class BaseTest {
     private static Logger LOG = LoggerFactory.getLogger(BaseTest.class);
 

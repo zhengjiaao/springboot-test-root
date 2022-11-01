@@ -1,6 +1,6 @@
 package com.zja.base;
 
-import com.zja.SpringbootApplication;
+import com.zja.QrcodeQrgenApplication;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import java.util.Set;
  * @date 2018/11/20.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringbootApplication.class})
+@SpringBootTest(classes = {QrcodeQrgenApplication.class})
 public class BaseTest {
     private static Logger log = LoggerFactory.getLogger(BaseTest.class);
     private String className;

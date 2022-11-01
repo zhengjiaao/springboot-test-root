@@ -1,4 +1,4 @@
-import com.zja.YmlApplication;
+import com.zja.FileYmlApplication;
 import com.zja.properties1.SecurityProperties;
 import com.zja.properties2.Unions;
 import org.junit.runner.RunWith;
@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Desc：
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = YmlApplication.class)
+@SpringBootTest(classes = FileYmlApplication.class)
 public class PropertiesTest {
 
     //从spring容器中拿出"大盒子"类

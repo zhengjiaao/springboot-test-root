@@ -9,7 +9,7 @@
 package com.zja.service;
 
 import com.zja.BaseTests;
-import com.zja.ExcleApplication;
+import com.zja.FileExcleApplication;
 import com.zja.planner.PlannerEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import java.util.List;
 
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ExcleApplication.class)
+@SpringBootTest(classes = FileExcleApplication.class)
 public class PlannerEntityBatchTests extends BaseTests {
 
     @Autowired

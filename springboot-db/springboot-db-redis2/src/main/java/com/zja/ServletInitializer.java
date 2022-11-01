@@ -7,7 +7,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(SpringbootTestRedis2Application.class);
+		return application.sources(DbRedis2Application.class);
 	}
 
 }

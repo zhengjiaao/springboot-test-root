@@ -1,6 +1,6 @@
 package com.zja.base;
 
-import com.zja.SpringbootTestApplication;
+import com.zja.UnittestJunitApplication;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ import java.util.Set;
  * @date 2018/11/20.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringbootTestApplication.class})
+@SpringBootTest(classes = {UnittestJunitApplication.class})
 public class BaseTest {
     private static Logger log = LoggerFactory.getLogger(BaseTest.class);
     private String className;

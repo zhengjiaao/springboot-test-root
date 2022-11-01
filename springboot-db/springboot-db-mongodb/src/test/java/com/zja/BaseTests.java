@@ -28,7 +28,7 @@ import java.util.Map;
  */
 //@ActiveProfiles("dev")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MongodbApplication.class)
+@SpringBootTest(classes = DbMongodbApplication.class)
 public class BaseTests {
 
     public static Logger log = LoggerFactory.getLogger(BaseTests.class);
