@@ -1,0 +1,27 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /springboot-test-autonomy
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+  thymeleaf:
+    #prefix: classpath:/templates/
+    prefix: classpath:/static/
+#  devtools:
+#    restart:
+#      enabled: true #设置开启热部署
+  freemarker:
+    cache: false #页面不加载缓存,修改即时生效
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB # 上传单个最大文件
+      max-request-size: 500MB  # 多文件上传最大
+source:
+  fileStorageLocation: D://FileTest//文件存储位置
+  fileFragmentationLocation: D://FileTest//文件分片位置
+  fileCompositePosition: D://FileTest//文件合成位置

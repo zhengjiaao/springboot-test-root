@@ -6,65 +6,35 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-<!--        <version>2.2.10.RELEASE</version>-->
         <version>2.3.12.RELEASE</version>
+<!--        <version>2.2.10.RELEASE</version>-->
 <!--        <version>2.5.5</version>-->
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>com.dist</groupId>
     <artifactId>springboot-test-root</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>springboot-test-root</name>
 
     <modules>
-        <module>springboot-test</module>
-        <module>springboot-test-autonomy</module>
-        <module>springboot-test-redis</module>
-        <module>springboot-test-redis2</module>
-        <module>springboot-test-encrypt</module>
-        <module>springboot-test-encryptEx</module>
-        <module>springboot-test-mongodb</module>
-        <module>springboot-test-mongodb2</module>
-        <module>springboot-test-oracle</module>
-        <module>springboot-test-oracle2</module>
-        <module>springboot-test-remote</module>
-        <module>springboot-test-remote-openfeign</module>
-        <module>springboot-test-remoteservice</module>
-        <module>springboot-test-file</module>
-        <module>springboot-test-ftp</module>
-        <module>springboot-test-java8</module>
-        <module>springboot-test-document</module>
-<!--        <module>springboot-test-jpaextention</module>-->
-        <module>springboot-test-mode-factory</module>
-        <module>springboot-test-timedtask</module>
-        <module>springboot-test-unittest</module>
-        <module>springboot-test-utils</module>
-        <module>springboot-test-dist</module>
-        <module>springboot-test-elasticsearch</module>
-        <module>springboot-test-yml</module>
-        <module>springboot-test-mq-rocketmq</module>
-        <module>springboot-test-juc</module>
-        <module>springboot-test-flywaydb</module>
-        <module>springboot-test-tangram</module>
-        <module>springboot-test-excel</module>
-        <module>springboot-test-liquibase</module>
-        <module>springboot-test-xxl-job</module>
+        <module>springboot-api</module>
+        <module>springboot-db</module>
+        <module>springboot-encrypt</module>
+        <module>springboot-exception</module>
+        <module>springboot-file</module>
+        <module>springboot-java</module>
+        <module>springboot-mq</module>
+        <module>springboot-process</module>
+        <module>springboot-qrcode</module>
+        <module>springboot-remote</module>
+        <module>springboot-task</module>
+        <module>springboot-unittest</module>
+
+        <module>springboot-web-19000</module>
     </modules>
-
-
-    <!--  <dependencies>
-        <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-      </dependencies>-->
 
     <properties>
 
@@ -154,44 +124,6 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
-            </dependency>
-            <!--commons-lang3工具-->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${lang3.version}</version>
-            </dependency>
-            <!--json 解析 json 互转 javaBean-->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>1.2.78</version>
-            </dependency>
-            <!--qrgen 二维码依赖 方式一-->
-            <dependency>
-                <groupId>net.glxn.qrgen</groupId>
-                <artifactId>javase</artifactId>
-                <version>${javase.version}</version>
-            </dependency>
-
-            <!--zxing二维码依赖 方式二(推荐)-->
-            <dependency>
-                <groupId>com.google.zxing</groupId>
-                <artifactId>core</artifactId>
-                <version>3.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.zxing</groupId>
-                <artifactId>javase</artifactId>
-                <version>3.0.0</version>
-            </dependency>
-
-            <!--计算文件MD5  成功-->
-            <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons-codec.version}</version>
             </dependency>
 
             <!--========Start集成swagger-API========-->
@@ -350,35 +282,6 @@
                 <version>${commons-io.version}</version>
             </dependency>
 
-            <!--cglib动态代理：rest代理帮助类-->
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib</artifactId>
-                <version>${cglib.version}</version>
-            </dependency>
-
-            <!--dist存储过程-->
-            <dependency>
-                <groupId>dist.xdata.product</groupId>
-                <artifactId>distprocedure</artifactId>
-                <version>${dist.procedure.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>spring-context</artifactId>
-                        <groupId>org.springframework</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>druid</artifactId>
-                        <groupId>com.alibaba</groupId>
-                    </exclusion>
-                    <!--去除ojdbc14-->
-                    <exclusion>
-                        <groupId>com.oracle</groupId>
-                        <artifactId>ojdbc14</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
             <!-- Springboot依赖 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -428,28 +331,4 @@
             </plugins>
         </pluginManagement>
     </build>
-<!--    -->
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>${maven.compiler.plugin.version}</version>-->
-<!--                <configuration>-->
-<!--                    <target>${java.version}</target>-->
-<!--                    <source>${java.version}</source>-->
-<!--                    <encoding>${project.build.sourceEncoding}</encoding>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--            &lt;!&ndash;maven打包跳过测试&ndash;&gt;-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <version>${mavne.surefire.plugin.version}</version>-->
-<!--                <configuration>-->
-<!--                    <skip>true</skip>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
 </project>
