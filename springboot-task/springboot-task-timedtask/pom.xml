@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>springboot-task</artifactId>
-		<groupId>com.dist</groupId>
+		<groupId>com.zja</groupId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.dist</groupId>
+	<groupId>com.zja</groupId>
 	<artifactId>springboot-task-timedtask</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
