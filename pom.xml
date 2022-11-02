@@ -20,9 +20,9 @@
         <module>springboot-api</module>
         <module>springboot-db</module>
         <module>springboot-encrypt</module>
-        <module>springboot-exception</module>
         <module>springboot-file</module>
         <module>springboot-java</module>
+        <module>springboot-mapping</module>
         <module>springboot-mq</module>
         <module>springboot-process</module>
         <module>springboot-qrcode</module>

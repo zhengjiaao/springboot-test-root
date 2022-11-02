@@ -25,7 +25,6 @@
 - [springboot-encrypt 加解密](./springboot-encrypt)
     - [springboot-encrypt-base64](./springboot-encrypt/springboot-encrypt-base64)
     - [springboot-encrypt-rsa](./springboot-encrypt/springboot-encrypt-rsa)
-- [springboot-exception 抛出的异常信息处理](./springboot-exception)
 - [springboot-file 文件相关操作](./springboot-file)
     - [springboot-file-compress](./springboot-file/springboot-file-compress)
     - [springboot-file-excel](./springboot-file/springboot-file-excel)
