@@ -68,11 +68,6 @@
 		</dependency>
 
 		<!-- FtpClient依赖包-->
-		<!--<dependency>
-			<groupId>commons-net</groupId>
-			<artifactId>commons-net</artifactId>
-			<version>${ftpclient.version}</version>
-		</dependency>-->
 		<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>

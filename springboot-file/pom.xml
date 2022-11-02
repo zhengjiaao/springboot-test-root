@@ -16,9 +16,9 @@
 	</properties>
 
 	<modules>
-		<module>springboot-file-compress</module>
+<!--		<module>springboot-file-compress</module>-->
 		<module>springboot-file-excel</module>
-		<module>springboot-file-file</module>
+<!--		<module>springboot-file-file</module>-->
 		<module>springboot-file-ftp</module>
 		<module>springboot-file-yml</module>
 	</modules>
