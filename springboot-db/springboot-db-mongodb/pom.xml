@@ -109,14 +109,14 @@
         <dependency>
             <groupId>net.sf.jmimemagic</groupId>
             <artifactId>jmimemagic</artifactId>
-            <version>${jmimemagic.version}</version>
+            <version>0.1.5</version>
         </dependency>
 
         <!--http请求客户端jar包-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
+            <version>4.4.1</version>
             <exclusions>
                 <exclusion>
                     <artifactId>commons-codec</artifactId>
@@ -131,20 +131,22 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>${httpclient.version}</version>
+            <version>4.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <version>${httpclient.version}</version>
+            <version>4.4.1</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
+            <version>3.10.0</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>

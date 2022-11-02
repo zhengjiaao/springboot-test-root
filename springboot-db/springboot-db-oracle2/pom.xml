@@ -47,11 +47,13 @@
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
 		</dependency>
 		<!--数据库连接池-->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
+			<version>1.2.14</version>
 		</dependency>
 
 		<dependency>

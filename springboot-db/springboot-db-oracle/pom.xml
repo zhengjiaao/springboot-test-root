@@ -54,12 +54,13 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
+			<version>1.2.14</version>
 		</dependency>
 		<!--oracle数据库驱动-->
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
-			<version>${oracle.version}</version>
+			<version>11.2.0.3</version>
 		</dependency>
 
 		<!--集成swagger-API-->
@@ -109,6 +110,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
+			<version>2.1</version>
 		</dependency>
 
 		<!--solr 全文检索-->

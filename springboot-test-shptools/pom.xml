@@ -60,12 +60,13 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
+			<version>1.2.14</version>
 		</dependency>
 		<!--oracle数据库驱动-->
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
-			<version>${oracle.version}</version>
+			<version>11.2.0.3</version>
 		</dependency>
 		<!-- hibernate jpa-->
 		<dependency>
@@ -119,19 +120,19 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-shapefile</artifactId>
-			<version>${geotools.version}</version>
+			<version>17.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-swing</artifactId>
-			<version>${geotools.version}</version>
+			<version>17.0</version>
 		</dependency>
 
 		<!-- wkt转geojson -->
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-geojson</artifactId>
-			<version>${geotools.version}</version>
+			<version>17.0</version>
 		</dependency>
 
 		<!-- 引入json处理包 -->
@@ -145,19 +146,19 @@
 		<dependency>
 			<groupId>org.geotools.jdbc</groupId>
 			<artifactId>gt-jdbc-postgis</artifactId>
-			<version>${geotools.version}</version>
+			<version>17.0</version>
 		</dependency>
 
 		<!--wktid 坐标系转换 -->
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-extension</artifactId>
-			<version>${geotools.version}</version>
+			<version>17.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-referencing</artifactId>
-			<version>${geotools.version}</version>
+			<version>17.0</version>
 		</dependency>
 
 		<!-- jackson -->

@@ -127,12 +127,14 @@
         <dependency>
             <groupId>com.hynnet</groupId>
             <artifactId>jacob</artifactId>
+            <version>1.18</version>
         </dependency>
 
         <!-- dozer 对象间属性值赋值，不同属性名，借助map映射 -->
         <dependency>
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
+			<version>5.4.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
