@@ -10,7 +10,7 @@
 
     <groupId>com.zja</groupId>
     <artifactId>springboot-qrcode-zxing</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+
     <packaging>war</packaging>
 
     <name>springboot-qrcode-zxing</name>

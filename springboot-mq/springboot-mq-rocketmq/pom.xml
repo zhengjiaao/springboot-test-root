@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.zja</groupId>
     <artifactId>springboot-mq-rocketmq</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+
     <name>springboot-mq-rocketmq</name>
     <description>Demo project for Spring Boot</description>
     <properties>

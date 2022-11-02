@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.zja</groupId>
     <artifactId>springboot-unittest-junit</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+
     <packaging>war</packaging>
     <name>springboot-unittest-junit</name>
     <description>Demo project for Spring Boot</description>

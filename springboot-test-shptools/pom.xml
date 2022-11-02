@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.zja</groupId>
 	<artifactId>springboot-test-shptools</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+
 	<packaging>war</packaging>
 	<name>springboot-test-shptools</name>
 	<description>spring-boot集成geotools工具包，实现将几何对象写进Shapefile【文件】并读取和显示</description>

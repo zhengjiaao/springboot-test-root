@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.zja</groupId>
 	<artifactId>springboot-task-timedtask</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+
 	<packaging>war</packaging>
 	<name>springboot-task-timedtask</name>
 	<description>springboot整合几种定时任务测试</description>

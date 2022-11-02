@@ -10,7 +10,7 @@
 
 	<groupId>com.zja</groupId>
 	<artifactId>springboot-remote-consumer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+
 	<packaging>war</packaging>
 	<name>springboot-remote-consumer</name>
 	<description>Demo project for Spring Boot</description>

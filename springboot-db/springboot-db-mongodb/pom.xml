@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.zja</groupId>
     <artifactId>springboot-db-mongodb</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+
     <packaging>war</packaging>
     <name>springboot-db-mongodb</name>
     <description>Demo project for Spring Boot</description>
