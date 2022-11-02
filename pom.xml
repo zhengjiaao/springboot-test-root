@@ -118,58 +118,11 @@
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
             </dependency>
-            <!-- 使用lombok实现JavaBean的get、set、toString、hashCode、equals等方法的自动生成  -->
+
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!--========Start集成swagger-API========-->
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-models</artifactId>
-                <version>${swagger.version}</version>
-                <!--<scope>compile</scope>-->
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.version}</version>
-                <!--<scope>compile</scope>-->
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>io.swagger</groupId>
-                        <artifactId>swagger-models</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>io.swagger</groupId>
-                        <artifactId>swagger-annotations</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!--swagger 高级ui页面-->
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>swagger-bootstrap-ui</artifactId>
-                <version>${swagger-ui.version}</version>
+                <version>1.18.24</version>
             </dependency>
 
             <!--========End 集成swagger-API========-->

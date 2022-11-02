@@ -43,41 +43,28 @@
             <scope>test</scope>
         </dependency>
 
-
         <!--集成swagger-API-->
-        <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-models</artifactId>
-            <!--<scope>compile</scope>-->
+            <version>1.5.20</version>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <!--<scope>compile</scope>-->
+            <version>1.5.20</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.swagger</groupId>
-                    <artifactId>swagger-models</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.swagger</groupId>
-                    <artifactId>swagger-annotations</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.9.2</version>
         </dependency>
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
