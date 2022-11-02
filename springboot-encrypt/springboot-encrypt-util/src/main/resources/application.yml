@@ -1,0 +1,5 @@
+
+dist:
+  encryptType: DAP4AES256 # 数据库加密方式[DAP,MD5,DAP4AES256]
+  systemEncryptType: RSA # 系统加密方式[DAP,MD5,DAP4AES256]
+  isDynamicEncryption: false # 实施配置是否开启动态获取秘钥对的方式
