@@ -29,7 +29,7 @@ import static com.google.zxing.client.j2se.MatrixToImageConfig.WHITE;
  */
 public class ZxingOrCodeUtilsTest {
 
-    public static void main(String[] args) throws NotFoundException, IOException {
+    public static void main(String[] args) throws NotFoundException, IOException, WriterException {
 
         //二位码 内容
         String content = "西秀区农村土地承包经营权证\n" +
@@ -51,6 +51,9 @@ public class ZxingOrCodeUtilsTest {
 
         //2、简单的生成二维码例子
         //String basepath= URLDecoder.decode("D:\\zxing.png","utf-8");
+
+        //3、生成彩色二维码
+        QRcodeZxingUtil.generateColorQRcode(content,new File("D://ColorQRcode.png"));
 
         //读取二位码 内容
         Result result = QRcodeZxingUtil.readQRcode("D:\\zxing.png");
