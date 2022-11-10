@@ -1,35 +1,31 @@
-# springboot-qrcode-zxing
+/**
+ * @Company: 上海数慧系统技术有限公司
+ * @Department: 数据中心
+ * @Author: 郑家骜[ào]
+ * @Email: zhengja@dist.com.cn
+ * @Date: 2022-11-10 16:56
+ * @Since:
+ */
+package com.zja.util;
 
-> ZXing 是一个开源的、多格式的一维/二维条码图像处理库
+import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 
-- [zxing 官网](https://github.com/zxing/zxing)
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
+import static com.google.zxing.client.j2se.MatrixToImageConfig.BLACK;
+import static com.google.zxing.client.j2se.MatrixToImageConfig.WHITE;
 
-## 依赖引入
-
-```xml
-    <properties>
-        <zxing.version>3.5.1</zxing.version>
-    </properties>
-
-        <!--zxing二维码依赖 方式二(推荐)-->
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-            <version>${zxing.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
-            <version>${zxing.version}</version>
-        </dependency>
-```
-
-## 简单示例
-
-自定义工具类
-
-```java
 public class QRcodeZxingUtil {
 
     /**
@@ -111,36 +107,3 @@ public class QRcodeZxingUtil {
     }
 
 }
-```
-
-测试类
-
-```java
-    public static void main(String[] args) throws NotFoundException, IOException {
-
-        //二位码 内容
-        String content = "西秀区农村土地承包经营权证\n" +
-                "权证编码：398881111222211J\n" +
-                "发包方名称：轿子山镇大进村民委员会\n" +
-                "承包方代表：杨井岗\n" +
-                "确权总面积：12.33亩\n" +
-                "地块总数: 13块";
-
-        try {
-            String fileName = "zxing.png";
-            //1、自定义生成二维码
-            QRcodeZxingUtil.generateQRcode(content, "D://", fileName, true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-
-        //2、简单的生成二维码例子
-        //String basepath= URLDecoder.decode("D:\\zxing.png","utf-8");
-
-        //读取二位码 内容
-        Result result = QRcodeZxingUtil.readQRcode("D:\\zxing.png");
-        System.out.println(result.getText());
-    }
-```
