@@ -16,7 +16,7 @@
 	</properties>
 
 	<modules>
-<!--		<module>springboot-qrcode-qrgen</module>-->
+		<module>springboot-qrcode-qrgen</module>
 		<module>springboot-qrcode-zxing</module>
 	</modules>
 
