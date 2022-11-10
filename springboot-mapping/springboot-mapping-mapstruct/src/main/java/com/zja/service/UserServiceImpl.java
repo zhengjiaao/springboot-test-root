@@ -11,13 +11,14 @@ package com.zja.service;
 import com.zja.mapper.UserMapper;
 import com.zja.model.User;
 import com.zja.model.UserDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-   /* @Autowired
-    UserMapper userMapper;*/
+    @Autowired
+    UserMapper userMapper;
 
     @Override
     public UserDTO getUserDTO() {
@@ -26,9 +27,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword("123456");
         user.setSex("男");
 
-        UserDTO userDTO = UserMapper.INSTANCE.toDto(user);
-        return userDTO;
-//        return userMapper.toDto(user);
+//        return UserMapper.INSTANCE.toDto(user);
+
+        return userMapper.toDto(user);
     }
 
 }
