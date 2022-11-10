@@ -8,11 +8,11 @@
  */
 package com.zja.controller;
 
+import com.zja.model.UserDTO;
+import com.zja.model.UserVO;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,8 +23,14 @@ public class DozerController {
     @Autowired
     private Mapper mapper;
 
-    @GetMapping("{id}")
-    public ResponseEntity queryById(@PathVariable Long id) {
-        return ResponseEntity.ok(id);
+    /**
+     * http://127.0.0.1:8080/dozer/query
+     */
+    @GetMapping("/query")
+    public UserVO query() {
+        UserDTO userDTO = new UserDTO("lisi", "123", 666L);
+        //属性拷贝
+        UserVO userVO = mapper.map(userDTO, UserVO.class);
+        return userVO;
     }
 }
