@@ -42,7 +42,7 @@ public class Zip4jZipCompressUtil {
     /**
      * 加压 从 zip 中提取所有文件
      * @param zipFilePath     zip路径          例：C:\temp\test.zip
-     * @param destFolderPath 目标文件夹路径     例：C:\temp\test or 例：C:\temp\a.txt
+     * @param destFolderPath 目标文件夹路径     例：C:\temp\test
      */
     public static void unzip(String zipFilePath, String destFolderPath) throws ZipException {
         new ZipFile(zipFilePath).extractAll(destFolderPath);

@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>springboot-file-compress-ant</module>
+		<module>springboot-file-compress-jdk</module>
 		<module>springboot-file-compress-zip4j</module>
 		<module>springboot-file-csv</module>
 		<module>springboot-file-excel</module>
