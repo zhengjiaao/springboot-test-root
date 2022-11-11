@@ -8,3 +8,4 @@
 
 - [springboot-api-swagger2](./springboot-api-swagger2)
 - [springboot-api-swagger3](./springboot-api-swagger3)
+- [Swagger API 生成word文档](https://github.com/zhengjiaao/swagger-api-docs-root)
