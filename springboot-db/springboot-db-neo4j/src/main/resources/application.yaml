@@ -1,0 +1,14 @@
+spring:
+  data:
+    neo4j:
+      uri: bolt://localhost:7687
+      username: neo4j   # neo4j服务端 默：neo4j/secret
+      password: secret
+      #可选的，默认配置
+      auto-index: none
+      open-in-view: false
+      embedded:
+        enabled: true
+      repositories:
+        enabled: true
+      use-native-types: false
