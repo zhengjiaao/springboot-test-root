@@ -48,6 +48,12 @@ public class UserRepositoryTests {
     }
 
     @Test
+    public void test3() {
+        List<User> userList = userRepository.getUserByName("李四");
+        System.out.println(userList);
+    }
+
+    @Test
     public void deleteAllTest() throws Exception {
         //仅删除所有的User，不会删除Phone
         userRepository.deleteAll();
