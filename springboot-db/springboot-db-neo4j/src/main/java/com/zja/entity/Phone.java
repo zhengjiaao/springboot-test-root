@@ -28,6 +28,6 @@ public class Phone {
     /**
      * 一对多的关系
      */
-    @Relationship(type = RelsType.OWN, direction = Relationship.INCOMING)
+    @Relationship(type = RelsType.HAVE, direction = Relationship.INCOMING)
     private List<User> users;
 }

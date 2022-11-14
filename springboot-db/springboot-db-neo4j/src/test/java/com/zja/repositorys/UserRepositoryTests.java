@@ -42,20 +42,14 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void deleteAllTest() throws Exception {
-
-        //仅删除user，不会删除Phone
-        userRepository.deleteAll();
+    public void test2() {
+        List<User> userList = (List<User>) userRepository.findAll();
+        System.out.println(userList);
     }
 
     @Test
-    public void findAllTest() throws Exception {
-        List<User> userList = (List<User>) userRepository.findAll();
-        for (User user : userList) {
-            //查询时产生了死循环或无限递归
-            //java.lang.StackOverflowError
-            System.out.println(user);
-            userRepository.delete(user);
-        }
+    public void deleteAllTest() throws Exception {
+        //仅删除所有的User，不会删除Phone
+        userRepository.deleteAll();
     }
 }
