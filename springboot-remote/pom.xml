@@ -16,9 +16,10 @@
 	</properties>
 
 	<modules>
-		<module>springboot-remote-consumer</module>
+<!--		<module>springboot-remote-consumer</module>-->
 		<module>springboot-remote-consumer-openfeign</module>
-		<module>springboot-remote-web-19000</module>
+		<module>springboot-remote-consumer-web</module>
+<!--		<module>springboot-remote-web-19000</module>-->
 
 	</modules>
 
