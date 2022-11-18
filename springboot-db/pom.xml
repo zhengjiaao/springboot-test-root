@@ -18,6 +18,7 @@
 	<modules>
 		<module>springboot-db-elasticsearch</module>
 		<module>springboot-db-flywaydb</module>
+		<module>springboot-db-h2</module>
 		<module>springboot-db-liquibase</module>
 		<module>springboot-db-mongodb</module>
 		<module>springboot-db-mongodb2</module>
