@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MqRocketmqApplication {
+public class MqRocketmqStarterApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MqRocketmqApplication.class, args);
+        SpringApplication.run(MqRocketmqStarterApplication.class, args);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.dist.rocketmq.springbootstarter;
+package com.dist.rocketmq.producer;
 
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;

@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>springboot-mq-rocketmq</module>
+		<module>springboot-mq-rocketmq-starter</module>
 	</modules>
 
 </project>
