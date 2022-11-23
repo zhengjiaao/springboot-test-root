@@ -17,8 +17,9 @@
 	</properties>
 
 	<modules>
+<!--		<module>springboot-task-elasticJob</module>-->
 		<module>springboot-task-quartz</module>
-		<module>springboot-task-timedtask</module>
+		<module>springboot-task-springtask</module>
 		<module>springboot-task-xxl-job</module>
 	</modules>
 
