@@ -1,5 +1,6 @@
 package com.zja.dto;
 
+import feign.Param;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -8,10 +9,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author zhengja@dist.com.cn
- * @data 2019/6/27 16:35
- */
 @ApiModel(value = "用户信息")
 @Data
 public class UserDTO implements Serializable{
@@ -20,6 +17,7 @@ public class UserDTO implements Serializable{
     private String id;
     @NotNull
     @ApiModelProperty(value = "用户名")
+    @Param("name")
     private String name;
     @ApiModelProperty(value = "时间")
     private Date date;

@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * http://localhost:8083/openfeign/swagger-ui.html
- */
 @Api("提供远程-XML测试接口")
 @RestController
 @RequestMapping("/fegin/xml")

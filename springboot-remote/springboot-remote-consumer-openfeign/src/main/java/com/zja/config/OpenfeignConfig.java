@@ -8,20 +8,21 @@
  */
 package com.zja.config;
 
-import com.zja.remote.RemoteInterfaceFeignClient;
-import com.zja.remote.RemoteUrlFegin;
-import com.zja.remote.XmlFegin;
+import com.zja.fegin.MyJacksonDecoder;
+import com.zja.remote.*;
 import feign.Client;
 import feign.Feign;
 import feign.Logger;
 import feign.Request;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
-import feign.jackson.JacksonDecoder;
+import feign.form.FormEncoder;
+import feign.form.spring.SpringFormEncoder;
 import feign.jackson.JacksonEncoder;
 import feign.jaxb.JAXBContextFactory;
 import feign.jaxb.JAXBDecoder;
 import feign.jaxb.JAXBEncoder;
+import feign.spring.SpringContract;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.ssl.SSLContexts;
@@ -36,29 +37,78 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class OpenfeignConfig {
 
-    @Value("${remote.feign.url}")
-    public String urlRemote;
+    @Value("${base-url}")
+    private String baseUrl;
 
+    //推荐
     @Bean
-    RemoteInterfaceFeignClient remoteInterfaceFeignClient() {
+    SpringRestFeignClient springRestFeignClient() {
 //        final Decoder decoder = new GsonDecoder();
 //        final Encoder encoder = new GsonEncoder();
-        final Decoder decoder = new JacksonDecoder();
+        // Decoder使用json解码器后，若返回String类型，使用String或Object类型接受数据都会报错无法解析
+        //final Decoder decoder = new JacksonDecoder();
+        final Decoder decoder = new MyJacksonDecoder();
         final Encoder encoder = new JacksonEncoder();
+        return Feign.builder()
+                .contract(new SpringContract()) // @RequestLine("GET /get") 转为 @GetMapping("/get")
+                .encoder(encoder)
+                .decoder(decoder)
+                .logger(new Logger.ErrorLogger())
+                .logLevel(Logger.Level.BASIC)
+                .options(new Request.Options(10, TimeUnit.SECONDS, 60, TimeUnit.SECONDS, true))
+                .target(SpringRestFeignClient.class, baseUrl);
+    }
+
+    //推荐
+    @Bean
+    SpringFileFeignClient springFileFeignClient() {
+//        final Decoder decoder = new JacksonDecoder();
+        final Decoder decoder = new MyJacksonDecoder();
+//        final Encoder encoder = new JacksonEncoder();
+        //支持上传文件  @PostMapping @RequestPart MultipartFile
+        final Encoder encoder = new SpringFormEncoder();
+        return Feign.builder()
+                .contract(new SpringContract()) // @RequestLine("GET /get") 转为 @GetMapping("/get")
+                .encoder(encoder)
+                .decoder(decoder)
+                .logger(new Logger.ErrorLogger())
+                .logLevel(Logger.Level.BASIC)
+                .options(new Request.Options(10, TimeUnit.SECONDS, 60, TimeUnit.SECONDS, true))
+                .target(SpringFileFeignClient.class, baseUrl);
+    }
+
+    @Bean
+    RestFeignClient restFeignClient() {
+//        final Decoder decoder = new GsonDecoder();
+//        final Encoder encoder = new GsonEncoder();
+        // Decoder使用json解码器后，若返回String类型，使用String或Object类型接受数据都会报错无法解析
+        //final Decoder decoder = new JacksonDecoder();
+        final Decoder decoder = new MyJacksonDecoder();
+        final Encoder encoder = new JacksonEncoder();
+        return Feign.builder()
+//                .contract(new SpringContract()) // @RequestLine("GET /get") 转为 @GetMapping("/get")
+                .encoder(encoder)
+                .decoder(decoder)
+                .logger(new Logger.ErrorLogger())
+                .logLevel(Logger.Level.BASIC)
+                .options(new Request.Options(10, TimeUnit.SECONDS, 60, TimeUnit.SECONDS, true))
+                .target(RestFeignClient.class, baseUrl);
+    }
+
+    @Bean
+    FileFeignClient fileFeignClient() {
+//        final Decoder decoder = new JacksonDecoder();
+        final Decoder decoder = new MyJacksonDecoder();
+//        final Encoder encoder = new JacksonEncoder();
+        //支持上传文件
+        final Encoder encoder = new FormEncoder(new JacksonEncoder());
         return Feign.builder()
                 .encoder(encoder)
                 .decoder(decoder)
                 .logger(new Logger.ErrorLogger())
                 .logLevel(Logger.Level.BASIC)
-//                .requestInterceptor(template -> {
-//                    template.header(
-//                            // not available when building PRs...
-//                            // https://docs.travis-ci.com/user/environment-variables/#defining-encrypted-variables-in-travisyml
-//                            "Authorization",
-//                            "token 383f1c1b474d8f05a21e7964976ab0d403fee071");
-//                })
                 .options(new Request.Options(10, TimeUnit.SECONDS, 60, TimeUnit.SECONDS, true))
-                .target(RemoteInterfaceFeignClient.class, urlRemote);
+                .target(FileFeignClient.class, baseUrl);
     }
 
     @Bean
@@ -75,23 +125,7 @@ public class OpenfeignConfig {
                 .logger(new Logger.ErrorLogger())
                 .logLevel(Logger.Level.BASIC)
                 .options(new Request.Options(10, TimeUnit.SECONDS, 60, TimeUnit.SECONDS, true))
-                .target(XmlFegin.class, urlRemote);
-    }
-
-    @Bean
-    RemoteUrlFegin remoteUrlFegin() {
-        final Decoder decoder = new JacksonDecoder();
-        final Encoder encoder = new JacksonEncoder();
-        final String url = "https://ghbzdw.mnr.gov.cn/";
-        return Feign.builder()
-                .client(skipSSLClient())
-                .encoder(encoder)
-                .decoder(decoder)
-                .logger(new Logger.ErrorLogger())
-                .logLevel(Logger.Level.BASIC)
-
-                .options(new Request.Options(10, TimeUnit.SECONDS, 60, TimeUnit.SECONDS, true))
-                .target(RemoteUrlFegin.class, url);
+                .target(XmlFegin.class, baseUrl);
     }
 
     @Bean

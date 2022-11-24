@@ -12,7 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * swagger: http://localhost:8083/openfeign/swagger-ui.html
+ * http://localhost:8080/swagger-ui/index.html#/
  */
 @SpringBootApplication
 public class RemoteConsumerOpenfeignApplication {
