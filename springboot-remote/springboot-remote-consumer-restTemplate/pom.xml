@@ -8,7 +8,7 @@
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>springboot-remote-consumer-web</artifactId>
+    <artifactId>springboot-remote-consumer-restTemplate</artifactId>
 
     <properties>
         <java.version>1.8</java.version>
