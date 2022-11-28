@@ -76,3 +76,5 @@
 | ----------------- | ---------- | ---------- | ---------- | ---------- | ---------- | 
 | zookeeper        | [zookeeper.apache.org](http://zookeeper.apache.org/releases.html)    |  | [zookeeper-3.6.3-bin.tar.gz](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz)  |   |  |
 | Git              | [git-scm.com](https://git-scm.com/)       |           | [git-latest](https://git-scm.com/downloads)  |   |  |
+| Minio            | [minio 官网](https://min.io/)       | [minio github](https://github.com/minio/minio)        | [minio-latest](https://min.io/docs/minio/windows/index.html)  |   |  |
+| Rocketmq         | [rocketmq 官方](https://rocketmq.apache.org/zh/)       | [rocketmq github](https://github.com/apache/rocketmq)        | [rocketmq-4.9.4](https://github.com/apache/rocketmq/releases/tag/rocketmq-all-4.9.4)  |   |  |
