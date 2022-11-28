@@ -38,6 +38,7 @@
     - [springboot-file-csv](./springboot-file/springboot-file-csv)
     - [springboot-file-excel](./springboot-file/springboot-file-excel)
     - [springboot-file-ftp](./springboot-file/springboot-file-ftp)
+    - [springboot-file-minio](./springboot-file/springboot-file-minio)
     - [springboot-file-yml](./springboot-file/springboot-file-yml)
 - [springboot-java JAVA相关操作](./springboot-java)
     - [springboot-java-juc](./springboot-java/springboot-java-juc)
