@@ -14,6 +14,7 @@
     - [springboot-api-swagger2-knife4j](./springboot-api/springboot-api-swagger2-knife4j)
     - [springboot-api-swagger3](./springboot-api/springboot-api-swagger3)
     - [springboot-api-swagger3-knife4j](./springboot-api/springboot-api-swagger3-knife4j)
+- [springboot-captcha 验证码](./springboot-captcha)
 - [springboot-db 数据库](./springboot-db)
     - [springboot-db-elasticsearch](./springboot-db/springboot-db-elasticsearch)
     - [springboot-db-flywaydb](./springboot-db/springboot-db-flywaydb)

@@ -18,6 +18,7 @@
 
     <modules>
         <module>springboot-api</module>
+        <module>springboot-captcha</module>
         <module>springboot-db</module>
         <module>springboot-encrypt</module>
         <module>springboot-file</module>
