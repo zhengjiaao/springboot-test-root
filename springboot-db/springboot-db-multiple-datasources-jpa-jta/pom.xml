@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>com.zja</groupId>
-    <artifactId>springboot-db-multiple-datasources-jta</artifactId>
+    <artifactId>springboot-db-multiple-datasources-jpa-jta</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

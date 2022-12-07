@@ -12,10 +12,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DbMultipleDatasourcesJtaApplication {
+public class DbMultipleDatasourcesJpaJtaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DbMultipleDatasourcesJtaApplication.class, args);
+        SpringApplication.run(DbMultipleDatasourcesJpaJtaApplication.class, args);
     }
 
 }

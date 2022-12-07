@@ -1,6 +1,6 @@
-# starter-jta-atomikos
+# springboot-db-multiple-datasources-jpa-jta
 
-**多数据源+jta分布式事务管理**
+**多数据源+jpa+jta分布式事务管理**
 
 ## 依赖引入
 
