@@ -1,0 +1,40 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    primary:
+      type: com.zaxxer.hikari.HikariDataSource
+      jdbc-url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC #&rewriteBatchedStatements=true
+      username: test
+      password: pass
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    secondary:
+      type: com.alibaba.druid.pool.DruidDataSource
+      jdbc-url: jdbc:postgresql://localhost:5433/test
+      username: test
+      password: pass
+      driver-class-name: org.postgresql.Driver
+  jpa:
+#    show-sql: true      # 控制台打印sql
+#    hibernate:
+#      ddl-auto: update  # update会导致启动至 org.hibernate.dialect.Dialect 时卡住
+#      naming:
+#        # physical-strategy: 物理策略 把[属性名] 映射为 [表字段]，默认 将实体类的属性名映射表中策略是：userName --> user_name
+#        #        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy # 默认，Spring 物理命名策略，示例： userName --> user_name，@Column(name = "LICENSENUMBER") --> licensenumber  name变为小写
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # 驼峰命名策略，示例： userName --> userName，@Column(name = "LICENSENUMBER") --> LICENSENUMBER     name变为大写
+    primary:
+      show-sql: true
+      properties:
+        hibernate:
+          hbm2ddl:
+            auto: update
+            naming:
+              physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    secondary:
+      show-sql: true
+      properties:
+        hibernate:
+          hbm2ddl:
+            auto: update
+            naming:
+              physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl

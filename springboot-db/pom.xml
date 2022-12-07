@@ -22,6 +22,7 @@
 		<module>springboot-db-liquibase</module>
 		<module>springboot-db-mongodb</module>
 		<module>springboot-db-mongodb2</module>
+		<module>springboot-db-multiple-datasources-jta</module>
 		<module>springboot-db-mysql</module>
 		<module>springboot-db-neo4j</module>
 		<module>springboot-db-oracle</module>
