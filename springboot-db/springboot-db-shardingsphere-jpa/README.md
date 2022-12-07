@@ -2,6 +2,7 @@
 
 **shardingsphere + jpa 实现同构库(`非异构库`)分库分表、分库、分表**
 
+- [官网](https://shardingsphere.apache.org/index_zh.html)
 - [官方示例 sharding-spring-boot-jpa-example](https://github.com/apache/shardingsphere/blob/5.2.1/examples/shardingsphere-jdbc-example/single-feature-example/sharding-example/sharding-spring-boot-jpa-example)
 
 ## 引入依赖
