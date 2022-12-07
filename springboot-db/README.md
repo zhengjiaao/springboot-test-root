@@ -18,3 +18,4 @@
 - [springboot-db-oracle2 双数据源](./springboot-db-oracle2)
 - [springboot-db-redis 缓存数据存储](./springboot-db-redis)
 - [springboot-db-redis2 双数据源](./springboot-db-redis2)
+- [springboot-db-shardingsphere-jpa 分库分表](./springboot-db-shardingsphere-jpa)

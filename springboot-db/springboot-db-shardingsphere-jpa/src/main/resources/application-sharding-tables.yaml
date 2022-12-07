@@ -1,0 +1,47 @@
+# 分表
+
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  shardingsphere:
+    datasource:
+      names: ds
+      ds:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3306/test_1?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+        username: test_1
+        password: pass
+    rules:
+      sharding:
+        #配置表的规则
+        tables:
+          #配置某张表的分库分表规则
+          t_order:
+            #配置 t_order 表规则
+            actual-data-nodes: ds.t_order_$->{0..1}   # 可能有2个表[0,1],不然会导致表丢失识别不到
+            #分表策略
+            table-strategy:
+              #标准策略
+              standard:
+                sharding-column: order_id             # 按指定字段进行分表存储、查询等操作
+                sharding-algorithm-name: table-inline # 选择分片算法
+            #主键生成策略
+#            key-generate-strategy:
+#              column: order_id  # 主键列
+#              key-generator-name: snowflake  # 选择主键策略算法
+        #定义分片算法
+        sharding-algorithms:
+          table-inline:
+            type: INLINE  # 标准分片算法 行表达式分片算法
+            props:
+              algorithm-expression: t_order_$->{order_id % 2}
+              allow-range-query-with-inline-sharding: true  #允许范围查询，走全表扫描的范围查询,INLINE默false
+        #定义主键生成算法
+#        key-generators:
+#          snowflake:
+#            type: SNOWFLAKE
+    props:
+      sql-show: true

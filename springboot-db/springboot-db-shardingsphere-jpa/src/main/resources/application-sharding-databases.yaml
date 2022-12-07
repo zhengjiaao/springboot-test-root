@@ -1,0 +1,50 @@
+#分库
+
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  shardingsphere:
+    datasource:
+      names: ds-0,ds-1
+      ds-0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3306/test_1?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+        username: test_1
+        password: pass
+      ds-1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3306/test_2?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+        username: test_2
+        password: pass
+    rules:
+      sharding:
+        #绑定表规则列表，指分片规则一致的主表和子表
+        binding-tables:
+          - t_order,t_order_item
+        #广播表规则列表，表结构和表中的数据在每个数据库中均完全⼀致
+        broadcast-tables: t_address
+        #默认数据库分片策略，同分库策略
+        default-database-strategy:
+          standard:
+            sharding-column: user_id  #指定根据哪个字段进行分片
+            sharding-algorithm-name: database-inline  # 选择分片算法
+        #定义分片算法
+        sharding-algorithms:
+          database-inline:
+            type: INLINE
+            props:
+              algorithm-expression: ds-$->{user_id % 2}   #配置分片规则
+        #配置某张表的分库分表规则
+        tables:
+          t_order:
+            #配置 t_order 表规则
+            actual-data-nodes: ds-$->{0..1}.t_order
+          #配置 t_order_item 表规则
+          t_order_item:
+            actual-data-nodes: ds-$->{0..1}.t_order_item
+    props:
+      sql-show: true

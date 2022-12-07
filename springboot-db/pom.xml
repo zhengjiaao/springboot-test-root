@@ -28,6 +28,7 @@
 		<module>springboot-db-oracle2</module>
 		<module>springboot-db-redis</module>
 		<module>springboot-db-redis2</module>
+		<module>springboot-db-shardingsphere-jpa</module>
 
 	</modules>
 

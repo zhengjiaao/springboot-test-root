@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: sharding-tables
+#    active: sharding-databases
+#    active: sharding-databases-tables
+#    active: sharding-auto-tables
