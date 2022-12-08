@@ -28,7 +28,6 @@
 		<module>springboot-db-oracle</module>
 		<module>springboot-db-postgresql</module>
 		<module>springboot-db-redis</module>
-		<module>springboot-db-redis2</module>
 		<module>springboot-db-shardingsphere-jpa</module>
 
 	</modules>
