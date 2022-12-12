@@ -24,6 +24,7 @@
 		<module>springboot-db-multiple-datasources-jpa-jta</module>
 		<module>springboot-db-mysql</module>
 		<module>springboot-db-neo4j</module>
+		<module>springboot-db-neo4j-dynamic-node</module>
 		<module>springboot-db-oracle</module>
 		<module>springboot-db-postgresql</module>
 		<module>springboot-db-redis</module>
