@@ -1,0 +1,22 @@
+
+spring:
+  rabbitmq:
+#    addresses: amqp://admin:pass@localhost
+    host: 192.168.159.136
+    port: 5672
+    username: admin
+    password: pass
+    virtual-host: /
+    publisher-confirm-type: correlated  # 开启生产者的消息确认
+    publisher-returns: true             # 开启消费者的消息确认
+    listener:
+      simple:
+        # ack模式 手动
+        acknowledge-mode: manual
+        # 消费者限流，每次只能获取一条消息，处理完成才能获取下一个消息
+        prefetch: 1
+        # 并发处理的线程最小数目，不能大于 max-concurrency
+        concurrency: 3
+        # 并发处理的线程最大数目，不能小于 concurrency
+        max-concurrency: 5
+

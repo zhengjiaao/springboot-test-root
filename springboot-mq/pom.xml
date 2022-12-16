@@ -16,6 +16,9 @@
 	</properties>
 
 	<modules>
+		<module>springboot-mq-rabbitmq</module>
+		<module>springboot-mq-rabbitmq-spring</module>
+		<module>springboot-mq-rabbitmq-starter</module>
 		<module>springboot-mq-rocketmq</module>
 		<module>springboot-mq-rocketmq-starter</module>
 	</modules>

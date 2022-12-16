@@ -1,0 +1,13 @@
+
+spring:
+  rabbitmq:
+    host: 192.168.159.136
+    port: 5672
+    username: admin
+    password: pass
+    virtual-host: /
+    #消息发送到交换机确认机制,是否确认回调
+    #如果没有本条配置信息，当消费者收到生产者发送的消息后，生产者无法收到确认成功的回调信息
+    publisher-confirm-type: correlated
+    #消息成功则不返回，启动消息失败返回：比如路由不到队列时触发回调, 默 false
+    publisher-returns: true
