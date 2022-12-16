@@ -47,6 +47,8 @@
     - [springboot-mapping-dozer](./springboot-mapping/springboot-mapping-dozer)
     - [springboot-mapping-mapstruct](./springboot-mapping/springboot-mapping-mapstruct)
 - [springboot-mq MQ消息中间件](./springboot-mq)
+    - [springboot-mq-rabbitmq-spring](./springboot-mq/springboot-mq-rabbitmq-spring)
+    - [springboot-mq-rabbitmq-starter](./springboot-mq/springboot-mq-rabbitmq-starter)
     - [springboot-mq-rocketmq](./springboot-mq/springboot-mq-rocketmq)
     - [springboot-mq-rocketmq-starter](./springboot-mq/springboot-mq-rocketmq-starter)
 - [springboot-process 流程管理](./springboot-process)
