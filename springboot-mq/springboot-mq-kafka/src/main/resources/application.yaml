@@ -1,0 +1,19 @@
+
+spring:
+  kafka:
+    # kafka连接接地址
+    bootstrap-servers: 192.168.159.136:9092
+    # 生产者配置
+    producer:
+      # 序列化key的类
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # 反序列化value的类
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    # 消费者配置
+    consumer:
+      # 消费者所属消息组
+      group-id: testGroup
+      # 反序列化key的类
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # 反序列化value的类
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer

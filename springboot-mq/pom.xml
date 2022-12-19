@@ -16,6 +16,7 @@
 	</properties>
 
 	<modules>
+<!--		<module>springboot-mq-kafka</module>-->
 		<module>springboot-mq-rabbitmq</module>
 		<module>springboot-mq-rabbitmq-spring</module>
 		<module>springboot-mq-rabbitmq-starter</module>
