@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>springboot-file</artifactId>
+        <artifactId>springboot-file-compress</artifactId>
         <groupId>com.zja</groupId>
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>springboot-file-compress-ant</artifactId>
+    <artifactId>springboot-file-compress-jdk</artifactId>
 
     <properties>
         <java.version>1.8</java.version>
@@ -28,13 +28,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <!--Zip 解压缩 ZipEntry-->
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.10.12</version>
         </dependency>
     </dependencies>
 
