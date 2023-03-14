@@ -18,6 +18,8 @@ import java.util.zip.*;
  */
 public class JdkZipCompressUtil {
 
+    private static final int BYTE_BUFFER = 5 * 1024;
+
     /**
      * 压缩文件/文件夹
      * @param zipFilePath    zip路径          例：C:\temp\test.zip
@@ -58,7 +60,7 @@ public class JdkZipCompressUtil {
                 InputStream is = zipFile.getInputStream(entry);
                 FileOutputStream fos = new FileOutputStream(targetFile);
                 int len;
-                byte[] buf = new byte[5 * 1024];
+                byte[] buf = new byte[BYTE_BUFFER];
                 while ((len = is.read(buf)) != -1) {
                     fos.write(buf, 0, len);
                 }
@@ -113,6 +115,7 @@ public class JdkZipCompressUtil {
             for (File f : files) {
                 //包含根节点目录
                 //zipFolder(zos, f, file.getName());
+                //不包含根节点目录
                 zipFolder(zos, f, "");
             }
         }
@@ -140,7 +143,7 @@ public class JdkZipCompressUtil {
             FileInputStream zis = new FileInputStream(file);
             zos.putNextEntry(new ZipEntry(zipPath + "/" + file.getName()));
             int len;
-            byte[] buffer = new byte[5 * 1024];
+            byte[] buffer = new byte[BYTE_BUFFER];
             while ((len = zis.read(buffer)) != -1) {
                 zos.write(buffer, 0, len);
             }
