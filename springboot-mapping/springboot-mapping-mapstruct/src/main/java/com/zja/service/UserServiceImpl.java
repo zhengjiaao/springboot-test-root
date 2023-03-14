@@ -14,6 +14,9 @@ import com.zja.model.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -21,15 +24,19 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Override
-    public UserDTO getUserDTO() {
-        User user = new User();
-        user.setUsername("李四");
-        user.setPassword("123456");
-        user.setSex("男");
+    public UserDTO userDTO() {
+        return userMapper.map(new User("李四", "111", "男"));
+    }
 
-//        return UserMapper.INSTANCE.toDto(user);
+    @Override
+    public List<UserDTO> userDTOList() {
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("李四", "111", "男"));
+        userList.add(new User("李四2", "222", "男"));
+        userList.add(new User("李四3", "333", "男"));
+        userList.add(new User("李四4", "444", "男"));
 
-        return userMapper.toDto(user);
+        return userMapper.mapList(userList);
     }
 
 }

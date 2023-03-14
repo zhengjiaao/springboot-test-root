@@ -31,11 +31,11 @@ public class MapstructApplicationTests {
         user.setPassword("123456");
         user.setSex("男");
 
-        UserDTO userDTO1 = UserMapper.INSTANCE.toDto(user);
-        System.out.println("userDTO1=" + userDTO1);
+//        UserDTO userDTO1 = UserMapper.INSTANCE.map(user);
+//        System.out.println("userDTO1=" + userDTO1);
 
         //需要注释掉上面，多次拷贝会抛出空指针异常
-        UserDTO userDTO2 = userMapper.toDto(user);
+        UserDTO userDTO2 = userMapper.map(user);
         System.out.println("userDTO2=" + userDTO2);
     }
 }

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RequestMapping("/user")
 @RestController
 public class UserController {
@@ -26,7 +28,16 @@ public class UserController {
      * http://127.0.0.1:8080/user/get
      */
     @GetMapping("/get")
-    public UserDTO getUserDTO(){
-        return userService.getUserDTO();
+    public UserDTO userDTO() {
+        return userService.userDTO();
     }
+
+    /**
+     * http://127.0.0.1:8080/user/get/list
+     */
+    @GetMapping("/get/list")
+    public List<UserDTO> userDTOList() {
+        return userService.userDTOList();
+    }
+
 }

@@ -10,7 +10,12 @@ package com.zja.service;
 
 import com.zja.model.UserDTO;
 
+import java.util.List;
+
 public interface UserService {
 
-    UserDTO getUserDTO();
+    UserDTO userDTO();
+
+    List<UserDTO> userDTOList();
+
 }
