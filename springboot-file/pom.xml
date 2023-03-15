@@ -22,6 +22,7 @@
 <!--		<module>springboot-file-file</module>-->
 		<module>springboot-file-ftp</module>
 		<module>springboot-file-minio</module>
+		<module>springboot-file-spire</module>
 		<module>springboot-file-yml</module>
 	</modules>
 
