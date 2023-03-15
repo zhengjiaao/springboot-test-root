@@ -16,7 +16,7 @@
 	</properties>
 
 	<modules>
-<!--		<module>springboot-java-designmode</module>-->
+		<module>springboot-java-designmode</module>
 <!--		<module>springboot-java-exception</module>-->
 		<module>springboot-java-juc</module>
 <!--		<module>springboot-java-mvc</module>-->
