@@ -24,7 +24,9 @@
         <module>springboot-file</module>
         <module>springboot-java</module>
         <module>springboot-mapping</module>
+        <module>springboot-monitor</module>
         <module>springboot-mq</module>
+        <module>springboot-nlp</module>
         <module>springboot-process</module>
         <module>springboot-qrcode</module>
         <module>springboot-remote</module>
