@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chunk Upload</title>
+</head>
+<body>
+    <input type="file" id="file">
+    <button onclick="upload()">Upload</button>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        /**
+         * 上传文件
+         */
+        async function upload() {
+            const file = document.getElementById('file').files[0]; // 获取文件
+            const chunkSize = 1024 * 1024 * 3; // 3MB
+            const totalSize = file.size; // 文件总大小
+            const totalChunks = Math.ceil(totalSize / chunkSize); // 总块数
+            const identifier = file.name + '-' + totalSize + '-' + Date.now(); // 文件标识符
+            const filename = file.name; // 文件名
+            for (let currentChunk = 0; currentChunk < totalChunks; currentChunk++) { // 循环上传每一块
+                const chunk = file.slice(currentChunk * chunkSize, (currentChunk + 1) * chunkSize); // 获取当前块
+                const formData = new FormData(); // 创建表单数据
+                formData.append('file', chunk); // 添加文件块
+                formData.append('chunkNumber', currentChunk); // 添加当前块数
+                formData.append('totalChunks', totalChunks); // 添加总块数
+                formData.append('identifier', identifier); // 添加文件标识符
+                formData.append('filename', filename); // 添加文件名
+                try {
+                    const response = await axios.post('http://localhost:19000/chunk/upload', formData); // 发送上传请求
+                    if (response.status !== 200) { // 如果上传失败
+                        throw new Error('Upload failed'); // 抛出异常
+                    }
+                } catch (error) {
+                    console.error(error); // 输出错误信息
+                    throw new Error('Upload failed'); // 抛出异常
+                }
+            }
+            const formData = new FormData(); // 创建表单数据
+            formData.append('identifier', identifier); // 添加文件标识符
+            formData.append('filename', filename); // 添加文件名
+            formData.append('totalChunks', totalChunks); // 添加总块数
+            try {
+                const response = await axios.post('http://localhost:19000/chunk/merge', formData); // 发送合并请求
+                if (response.status !== 200) { // 如果合并失败
+                    throw new Error('Merge failed'); // 抛出异常
+                }
+            } catch (error) {
+                console.error(error); // 输出错误信息
+                throw new Error('Merge failed'); // 抛出异常
+            }
+        }
+    </script>
+</body>
+</html>

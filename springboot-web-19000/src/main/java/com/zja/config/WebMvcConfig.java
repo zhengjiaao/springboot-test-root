@@ -26,5 +26,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/public/file/**").addResourceLocations("file:D:/picture/");
         //访问地址：http://127.0.0.1:19000/file
         registry.addResourceHandler("/file/**").addResourceLocations("classpath:/file/");
+
+        /**
+         * 代理静态地址
+         */
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 }
