@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 /**
- * This controller handles chunked file uploads and merging.
+ * 这个控制器处理分块文件上传和合并。
  */
 @CrossOrigin
 @Api(tags = "Chunk Upload")
@@ -31,7 +31,7 @@ public class ChunkUploadController {
      * @param filename 文件名
      * @throws IOException
      */
-    @ApiOperation(value = "Upload a chunk of a file", notes = "Uploads a single chunk of a file for later merging")
+    @ApiOperation(value = "上传文件的一个分片", notes = "上传文件的一个分片以便稍后合并")
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
                                      @RequestParam("chunkNumber") Integer chunkNumber,
@@ -48,7 +48,7 @@ public class ChunkUploadController {
      * @param filename 文件名
      * @throws IOException
      */
-    @ApiOperation(value = "Merge uploaded file chunks", notes = "Merges all uploaded file chunks into a single file")
+    @ApiOperation(value = "合并上传的文件分片", notes = "将所有上传的文件分片合并成一个文件")
     @PostMapping("/merge")
     public ResponseEntity<?> merge(@RequestParam("identifier") String identifier,
                                    @RequestParam("filename") String filename,

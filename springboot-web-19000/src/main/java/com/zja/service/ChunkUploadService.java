@@ -14,19 +14,19 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 
 /**
- * This class provides methods for uploading and merging file chunks.
+ * 此类提供上传和合并文件块的方法。
  */
 @Service
 public class ChunkUploadService {
     /**
-     * Uploads a chunk of a file with the given parameters.
+     * 上传具有给定参数的文件块。
      *
-     * @param file the chunk file to upload
-     * @param chunkNumber the number of the chunk being uploaded
-     * @param totalChunks the total number of chunks the file is split into
-     * @param identifier the identifier of the file being uploaded
-     * @param filename the name of the file being uploaded
-     * @throws IOException if an I/O error occurs
+     * @param file 要上传的块文件
+     * @param chunkNumber 正在上传的块的编号
+     * @param totalChunks 文件分成的总块数
+     * @param identifier 正在上传的文件的标识符
+     * @param filename 正在上传的文件的名称
+     * @throws IOException 如果发生I/O错误
      */
     public void upload(MultipartFile file, Integer chunkNumber, Integer totalChunks, String identifier, String filename) throws IOException {
         Path chunkPath = Paths.get("uploads", identifier, chunkNumber.toString());
@@ -34,21 +34,21 @@ public class ChunkUploadService {
         if (!Files.exists(chunkPath)) {
             Files.write(chunkPath, file.getBytes());
         } else {
-            // handle case where chunk file already exists
+            // 处理块文件已存在的情况
         }
     }
 
     /**
-     * This method merges all uploaded chunks into a single file for a given file identifier and filename.
-     * If not all chunks have been uploaded, it returns without merging.
-     * @param identifier the identifier of the file being uploaded
-     * @param filename the name of the file being uploaded
-     * @param totalChunks the total number of chunks the file is split into
-     * @throws IOException if an I/O error occurs
+     * 此方法将所有已上传的块合并为给定文件标识符和文件名的单个文件。
+     * 如果没有上传所有块，则返回而不进行合并。
+     * @param identifier 正在上传的文件的标识符
+     * @param filename 正在上传的文件的名称
+     * @param totalChunks 文件分成的总块数
+     * @throws IOException 如果发生I/O错误
      */
     public void merge(String identifier, String filename, Integer totalChunks) throws IOException {
         if (!isUploadComplete(identifier, totalChunks)) {
-            // handle case where not all chunks have been uploaded
+            // 处理未上传所有块的情况
             return;
         }
         Path dirPath = Paths.get("uploads", identifier);
@@ -68,12 +68,12 @@ public class ChunkUploadService {
     }
 
     /**
-     * This method checks whether all chunks have been uploaded for a given file identifier and total number of chunks.
-     * If all chunks have been uploaded, it returns true. Otherwise, it returns false.
-     * @param identifier the identifier of the file being uploaded
-     * @param totalChunks the total number of chunks the file is split into
-     * @return true if all chunks have been uploaded, false otherwise
-     * @throws IOException if an I/O error occurs
+     * 此方法检查是否已上传给定文件标识符和总块数的所有块。
+     * 如果已上传所有块，则返回true。否则，返回false。
+     * @param identifier 正在上传的文件的标识符
+     * @param totalChunks 文件分成的总块数
+     * @return 如果已上传所有块，则为true，否则为false
+     * @throws IOException 如果发生I/O错误
      */
     public boolean isUploadComplete(String identifier, Integer totalChunks) throws IOException {
         Path dirPath = Paths.get("uploads", identifier);
