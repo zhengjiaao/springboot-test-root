@@ -14,10 +14,10 @@ import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 
 @EnableNeo4jRepositories("com.zja.repositorys")
 @SpringBootApplication
-public class Neo4jApplication {
+public class Neo4jDynamicApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Neo4jApplication.class, args);
+        SpringApplication.run(Neo4jDynamicApplication.class, args);
     }
 
 }
