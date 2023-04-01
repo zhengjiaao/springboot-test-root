@@ -1,0 +1,7 @@
+#密钥
+open:
+  ai:
+    key: sess-b1N9dTWt9QIW8NtcSwSiTtQQc7p66KXfMGDQ1G9x
+    model: text-davinci-003
+    request:
+      timeout: 100000

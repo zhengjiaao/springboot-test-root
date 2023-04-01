@@ -17,6 +17,7 @@
     <name>springboot-test-root</name>
 
     <modules>
+        <module>springboot-ai</module>
         <module>springboot-api</module>
         <module>springboot-captcha</module>
         <module>springboot-db</module>
