@@ -16,6 +16,9 @@
 	</properties>
 
 	<modules>
+		<module>springboot-captcha-easy</module>
+		<module>springboot-captcha-hutool</module>
+		<module>springboot-captcha-penggle</module>
 <!--		<module>springboot-captcha-tianai</module>-->
 	</modules>
 
