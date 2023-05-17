@@ -5,16 +5,15 @@ server:
 spring:
   data:
     mongodb:
-      host: 161.189.167.206
+      host: 127.0.0.1
       port: 27017
-      username: distreview
-      password: dist2021
+      username: test
+      password: pass
       authentication-database: admin
-      database: distreview
+      database: test
 
   tomcat_file_temp: /rest/resource # 图片保存路径
   #静态图片服务器上传文件接口
-  #file_server_url=http://127.0.0.1:8080/gxtz-server-file/rest/public/resource
   file_server_url: http://127.0.0.1:8080/springboot-test-mongodb/rest/public/resource
 dist:
   cors:
