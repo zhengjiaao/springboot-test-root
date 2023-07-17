@@ -8,33 +8,36 @@
  */
 package com.zja.controller;
 
-import com.zja.model.UserDTO;
+import com.zja.model.dto.UserDTO;
+import com.zja.model.request.UserRequest;
 import com.zja.service.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RequestMapping("/user")
+@Validated
 @RestController
+@RequestMapping("/rest/user")
+@Api(tags = {"用户页面"})
 public class UserController {
 
     @Autowired
     UserService userService;
 
     /**
-     * http://127.0.0.1:8080/user/get
+     * http://localhost:8080/swagger-ui/index.html#/
      */
-    @GetMapping("/get")
-    public UserDTO userDTO() {
-        return userService.userDTO();
+    @PostMapping("/save")
+    public UserDTO userDTO(UserRequest request) {
+        return userService.save(request);
     }
 
-    /**
-     * http://127.0.0.1:8080/user/get/list
-     */
     @GetMapping("/get/list")
     public List<UserDTO> userDTOList() {
         return userService.userDTOList();

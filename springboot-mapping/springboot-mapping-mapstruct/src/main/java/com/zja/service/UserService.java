@@ -8,13 +8,14 @@
  */
 package com.zja.service;
 
-import com.zja.model.UserDTO;
+import com.zja.model.dto.UserDTO;
+import com.zja.model.request.UserRequest;
 
 import java.util.List;
 
 public interface UserService {
 
-    UserDTO userDTO();
+    UserDTO save(UserRequest request);
 
     List<UserDTO> userDTOList();
 

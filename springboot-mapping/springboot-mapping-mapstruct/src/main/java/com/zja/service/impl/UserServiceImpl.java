@@ -6,11 +6,13 @@
  * @Date: 2022-11-10 15:30
  * @Since:
  */
-package com.zja.service;
+package com.zja.service.impl;
 
+import com.zja.entity.User;
 import com.zja.mapper.UserMapper;
-import com.zja.model.User;
-import com.zja.model.UserDTO;
+import com.zja.model.dto.UserDTO;
+import com.zja.model.request.UserRequest;
+import com.zja.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +26,10 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Override
-    public UserDTO userDTO() {
-        return userMapper.map(new User("李四", "111", "男"));
+    public UserDTO save(UserRequest request) {
+        User user = userMapper.map(request);
+        System.out.println(user);
+        return userMapper.map(user);
     }
 
     @Override

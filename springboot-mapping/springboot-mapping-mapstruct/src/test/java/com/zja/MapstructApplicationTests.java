@@ -9,8 +9,8 @@
 package com.zja;
 
 import com.zja.mapper.UserMapper;
-import com.zja.model.User;
-import com.zja.model.UserDTO;
+import com.zja.entity.User;
+import com.zja.model.dto.UserDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

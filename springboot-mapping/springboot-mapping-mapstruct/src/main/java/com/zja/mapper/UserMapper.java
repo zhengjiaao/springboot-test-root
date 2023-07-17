@@ -8,8 +8,9 @@
  */
 package com.zja.mapper;
 
-import com.zja.model.User;
-import com.zja.model.UserDTO;
+import com.zja.entity.User;
+import com.zja.model.dto.UserDTO;
+import com.zja.model.request.UserRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -21,6 +22,8 @@ import java.util.List;
 public interface UserMapper {
 
 //    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+
+    User map(UserRequest request);
 
     //    @Mapping(target = "name", source = "username")
     @Mappings({

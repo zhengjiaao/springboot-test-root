@@ -6,7 +6,7 @@
  * @Date: 2022-11-10 15:32
  * @Since:
  */
-package com.zja.model;
+package com.zja.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
