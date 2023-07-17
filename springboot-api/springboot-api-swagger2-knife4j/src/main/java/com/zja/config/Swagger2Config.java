@@ -8,6 +8,7 @@
  */
 package com.zja.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -17,12 +18,14 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 /**
  * http://localhost:19000/swagger-ui.html
  */
-@EnableSwagger2
+//@EnableSwagger2	// 2.9.2 注解启动方式
+@EnableSwagger2WebMvc  //2.10.5 注解启动方式
+@EnableKnife4j  //仅需加入此注解就可以了，swagger配置不变，必须配合 swagger2.10.5
 @Configuration
 public class Swagger2Config {
 
