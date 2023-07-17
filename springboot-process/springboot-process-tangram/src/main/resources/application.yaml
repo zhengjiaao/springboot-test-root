@@ -1,24 +1,11 @@
 # 流程测试
 tangram:
-  server_url: http://192.168.200.122:8826/tangram/
+  server_url: http://192.168.122.13:8231/tangram/
   example1: # 示例 1  常规流程1
-    process_id: 6260ef3978aa846f08fb6346  # 流程id
+    process_id: 6260ef3978aa846f08fbqwes  # 流程id
   example2: # 示例 2  常规流程2
-    process_id: 6260ef3978aa846f08fb6346  # 流程id
+    process_id: 6260ef3978aa846f08fbqwes  # 流程id
   brwg:     # 包容网关
-    process_id: 6260ef3978aa846f08fb6346  # 流程id  抽象 AbstractTangram
+    process_id: 6260ef3978aa846f08fbqwes  # 流程id  抽象 AbstractTangram
   gwzx:     # 规委在线
-    process_id: 6260ef3978aa846f08fb6346  # 流程id
-
-#基线 流程引擎
-#tangram:
-#  server-url: http://52.82.78.179:30308
-#  server-url: http://52.82.78.179:30308/tangram/
-#  server-url: http://192.168.1.217:31820
-#  server-url: http://192.168.1.217:31820/tangram/
-#  process-id: 6260c6c53290c614972c31c0  # 流程id
-
-#基线 流程引擎：
-#  构建端  http://52.82.78.179:30308/#/process/flow-overview?businessId=61de6cb7a5041a2e328f0f70
-#  运行端  http://192.168.1.217:31820/#/login
-#  账号：xjtbr xjshr sjshr 对应县级填报、县级审核、市级审核,密码都是 qwe123
+    process_id: 6260ef3978aa846f08fbqwes  # 流程id
