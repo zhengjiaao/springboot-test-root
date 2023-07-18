@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>springboot-test-root</artifactId>
+		<artifactId>springboot-file</artifactId>
 		<groupId>com.zja</groupId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>springboot-file</artifactId>
+	<artifactId>springboot-file-storage</artifactId>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -16,13 +16,8 @@
 	</properties>
 
 	<modules>
-		<module>springboot-file-compress</module>
-		<module>springboot-file-csv</module>
-		<module>springboot-file-excel</module>
-<!--		<module>springboot-file-file</module>-->
-		<module>springboot-file-spire</module>
-		<module>springboot-file-storage</module>
-		<module>springboot-file-yml</module>
+		<module>springboot-file-storage-ftp</module>
+		<module>springboot-file-storage-minio</module>
 	</modules>
 
 </project>

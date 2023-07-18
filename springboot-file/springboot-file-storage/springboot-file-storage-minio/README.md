@@ -1,4 +1,4 @@
-# springboot-file-minio
+# springboot-file-storage-minio
 
 - [minio 官网](https://min.io/)
 - [minio github](https://github.com/minio/minio)
