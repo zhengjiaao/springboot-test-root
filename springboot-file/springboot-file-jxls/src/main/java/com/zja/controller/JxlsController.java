@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -56,15 +55,21 @@ public class JxlsController {
         return true;
     }
 
-    @GetMapping(value = "/excel/export")
-    @ApiOperation(value = "excel导出")
-    public void excelExport(HttpServletResponse response,
-                            @ApiParam(value = "filename") @RequestParam String filename) throws IOException {
+    @GetMapping(value = "/excel/export/v1")
+    @ApiOperation(value = "excel导出", notes = "简单示例")
+    public void excelExport(HttpServletResponse response) throws IOException {
+
+        //如果想下载试自动填好文件名，需要设置Content-Disposition响应头
+        response.setHeader("Content-Disposition", "attachment;filename=" + "object_collection_output.xls");
+        response.setContentType("application/vnd.ms-excel");
 
         log.info("Running Object Collection demo");
         List<Employee> employees = generateSampleEmployeeData();
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("object_collection_template.xls")) {
-            try (OutputStream os = new FileOutputStream("object_collection_output.xls")) {
+            //本地保存
+//            try (OutputStream os = new FileOutputStream("object_collection_output.xls")) {
+            //直接下载
+            try (OutputStream os = response.getOutputStream()) {
                 Context context = new Context();
                 context.putVar("employees", employees);
                 JxlsHelper.getInstance().processTemplate(is, os, context);
@@ -73,36 +78,25 @@ public class JxlsController {
     }
 
 
-    private static String JSON_DATA = "{\"summary\":\"汇总\",\"performList\":[{\"adoptDate\":1672800485279,\"approveCode\":\"003\",\"bjmc\":\"name2\",\"dynzybjmc\":\"123\",\"hbghed\":1.0000,\"hbxzjshydmj\":1.0000,\"nzypwh\":\"123\",\"pid\":\"f87b0b85-5787-407c-aeec-84aa4379df40\",\"pzsj\":\"123\",\"qzghxzjsyd\":1.00,\"regionCity\":\"某市\",\"sjysyghed\":1.00,\"submitStatus\":1,\"targetDate\":\"2023\",\"xmmc\":\"123\",\"zjdydkxmmc\":\"\",\"zjdynzybjmc\":\"\",\"zjnzyslh\":\"\"},{\"adoptDate\":1672804391971,\"approveCode\":\"004\",\"bjmc\":\"某市2023年度测试某啥啥第2次使用\",\"dynzybjmc\":\"123\",\"hbghed\":21.0000,\"hbxzjshydmj\":21.0000,\"nzypwh\":\"123\",\"pid\":\"123-419b-8fe9-a654dfa9c500\",\"pzsj\":\"123\",\"qzghxzjsyd\":1.00,\"regionCity\":\"某市\",\"sjysyghed\":1.00,\"submitStatus\":1,\"targetDate\":\"2023\",\"xmmc\":\"测试\",\"zjdydkxmmc\":\"123\",\"zjdynzybjmc\":\"123\",\"zjnzyslh\":\"123\",\"zjsyghed\":20,\"zjxzjsyd\":20}],\"hbxzjshydmj\":22.0000,\"hbghed\":22.0000}";
+    private static final String JSON_DATA = "{\"summary\":\"汇总\",\"performList\":[{\"adoptDate\":1672800485279,\"approveCode\":\"003\",\"bjmc\":\"name2\",\"dynzybjmc\":\"123\",\"hbghed\":1.0000,\"hbxzjshydmj\":1.0000,\"nzypwh\":\"123\",\"pid\":\"f87b0b85-5787-407c-aeec-84aa4379df40\",\"pzsj\":\"123\",\"qzghxzjsyd\":1.00,\"regionCity\":\"某市\",\"sjysyghed\":1.00,\"submitStatus\":1,\"targetDate\":\"2023\",\"xmmc\":\"123\",\"zjdydkxmmc\":\"\",\"zjdynzybjmc\":\"\",\"zjnzyslh\":\"\"},{\"adoptDate\":1672804391971,\"approveCode\":\"004\",\"bjmc\":\"某市2023年度测试某啥啥第2次使用\",\"dynzybjmc\":\"123\",\"hbghed\":21.0000,\"hbxzjshydmj\":21.0000,\"nzypwh\":\"123\",\"pid\":\"123-419b-8fe9-a654dfa9c500\",\"pzsj\":\"123\",\"qzghxzjsyd\":1.00,\"regionCity\":\"某市\",\"sjysyghed\":1.00,\"submitStatus\":1,\"targetDate\":\"2023\",\"xmmc\":\"测试\",\"zjdydkxmmc\":\"123\",\"zjdynzybjmc\":\"123\",\"zjnzyslh\":\"123\",\"zjsyghed\":20,\"zjxzjsyd\":20}],\"hbxzjshydmj\":22.0000,\"hbghed\":22.0000}";
 
 
     @GetMapping(value = "/excel/export/v2")
-    @ApiOperation(value = "excel导出")
+    @ApiOperation(value = "excel导出", notes = "添加自定义工具类(函数)")
     public void excelExport2(HttpServletResponse response) throws IOException {
 
         JSONObject jsonObject = JSONObject.parseObject(JSON_DATA);
         Map<String, Object> map = (Map<String, Object>) jsonObject;
 
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("map_template.xlsx")) {
-            try (OutputStream os = new FileOutputStream("map_output.xlsx")) {
-                Context context = new Context(map);
-//                context.putVar("data", map); //data.performList
-
-                //存在两个问题：1、单元格无法自增序列号，2、时间戳过长无法显示 “#####” (设置时间格式也不能用)
-                JxlsHelper.getInstance().processTemplate(is, os, context);
-            }
-        }
-    }
-
-    @GetMapping(value = "/excel/export/v3")
-    @ApiOperation(value = "excel导出", notes = "添加自定义工具类(函数)")
-    public void excelExport3(HttpServletResponse response) throws IOException {
-
-        JSONObject jsonObject = JSONObject.parseObject(JSON_DATA);
-        Map<String, Object> map = (Map<String, Object>) jsonObject;
+        //如果想下载试自动填好文件名，需要设置Content-Disposition响应头
+        response.setHeader("Content-Disposition", "attachment;filename=" + "map_output.xlsx");
+        response.setContentType("application/vnd.ms-excel");
 
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("map_template.xlsx")) {
-            try (OutputStream os = new FileOutputStream("map_output.xlsx")) {
+            //本地保存
+//            try (OutputStream os = new FileOutputStream("map_output.xlsx")) {
+            //直接下载
+            try (OutputStream os = response.getOutputStream()) {
                 Context context = new Context(map);
                 //context.putVar("data", map); //data.performList
 
@@ -129,12 +123,61 @@ public class JxlsController {
                 JexlEngine je = jb.create();
                 evaluator.setJexlEngine(je);
 
-                //解决时间戳过长无法显示 “#####” (设置时间格式也不能用)
+                //解决两个问题：
+                // 1、单元格无法自增序列号
+                // 2、时间戳过长无法显示 “#####” (设置时间格式也不能用)
                 JxlsHelper.getInstance().processTemplate(context, transformer);
             }
         }
     }
 
+    @GetMapping(value = "/excel/export/v3")
+    @ApiOperation(value = "excel导出", notes = "设置公式 Excel和jxls方式")
+    public void excelExport3(HttpServletResponse response) throws IOException {
+
+        //如果想下载试自动填好文件名，需要设置Content-Disposition响应头
+        response.setHeader("Content-Disposition", "attachment;filename=" + "function_output.xlsx");
+        response.setContentType("application/vnd.ms-excel");
+
+        log.info("Running Object Collection demo");
+        List<Employee> employees = generateSampleEmployeeData();
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("function_output_template.xlsx")) {
+            //本地保存
+//            try (OutputStream os = new FileOutputStream("object_collection_output.xls")) {
+            //直接下载
+            try (OutputStream os = response.getOutputStream()) {
+                Context context = new Context();
+                context.putVar("money1", 80);
+                context.putVar("money2", 20);
+                //以下两种都生效
+                JxlsHelper.getInstance().processTemplate(is, os, context);
+//                JxlsHelper.getInstance().processTemplateAtCell(is, os, context, "Result!A1");
+            }
+        }
+    }
+
+    @GetMapping(value = "/excel/export/v4")
+    @ApiOperation(value = "excel导出", notes = "设置公式")
+    public void excelExport4(HttpServletResponse response) throws IOException {
+
+        //如果想下载试自动填好文件名，需要设置Content-Disposition响应头
+        response.setHeader("Content-Disposition", "attachment;filename=" + "param_formulas_output.xls");
+        response.setContentType("application/vnd.ms-excel");
+
+        log.info("Running Object Collection demo");
+        List<Employee> employees = generateSampleEmployeeData();
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("param_formulas_template.xls")) {
+            //本地保存
+//            try (OutputStream os = new FileOutputStream("param_formulas_output.xls")) {
+            //直接下载
+            try (OutputStream os = response.getOutputStream()) {
+                Context context = new Context();
+                context.putVar("employees", employees);
+                context.putVar("bonus", 0.1);
+                JxlsHelper.getInstance().processTemplateAtCell(is, os, context, "Result!A1");
+            }
+        }
+    }
 
     // 以下是内部方法
 
