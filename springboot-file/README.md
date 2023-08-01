@@ -10,7 +10,7 @@
 	- [springboot-file-compress-jdk](./springboot-file-compress/springboot-file-compress-jdk)
 	- [springboot-file-compress-zip4j](./springboot-file-compress/springboot-file-compress-zip4j)
 - [springboot-file-csv csv文件操作](./springboot-file-csv)
-- [springboot-file-excel excel文件读写](./springboot-file-excel)
+- [springboot-file-excel Excel文件操作](./springboot-file-excel)
 - [springboot-file-storage 文件存储](./springboot-file-storage)
 	- [springboot-file-storage-ftp](./springboot-file-storage/springboot-file-storage-ftp)
 	- [springboot-file-storage-minio](./springboot-file-storage/springboot-file-storage-minio)
