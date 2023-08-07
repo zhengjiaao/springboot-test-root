@@ -20,6 +20,7 @@
 		<module>springboot-file-csv</module>
 		<module>springboot-file-excel</module>
 <!--		<module>springboot-file-file</module>-->
+		<module>springboot-file-preview</module>
 		<module>springboot-file-spire</module>
 		<module>springboot-file-storage</module>
 		<module>springboot-file-yml</module>

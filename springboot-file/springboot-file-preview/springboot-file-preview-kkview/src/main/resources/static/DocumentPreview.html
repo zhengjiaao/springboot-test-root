@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文档预览</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-base64@3.6.0/base64.min.js"></script>
+</head>
+<body>
+<div>
+    <button type="button" onclick="preview()" name="预览文档">预览文档</button>
+</div>
+
+<script>
+    function preview() {
+        const previewUrl = 'http://localhost:19000/file/pdf.pdf'; //要预览文件的访问地址
+        window.open('http://127.0.0.1:8012/onlinePreview?url=' + encodeURIComponent(Base64.encode(previewUrl)));
+    }
+</script>
+</body>
+</html>
