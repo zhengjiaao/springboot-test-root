@@ -16,6 +16,7 @@
 	</properties>
 
 	<modules>
+		<module>springboot-db-druid</module>
 		<module>springboot-db-elasticsearch</module>
 		<module>springboot-db-flywaydb</module>
 		<module>springboot-db-h2</module>
