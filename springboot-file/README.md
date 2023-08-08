@@ -14,4 +14,4 @@
 - [springboot-file-storage 文件存储](./springboot-file-storage)
 	- [springboot-file-storage-ftp](./springboot-file-storage/springboot-file-storage-ftp)
 	- [springboot-file-storage-minio](./springboot-file-storage/springboot-file-storage-minio)
-- [springboot-file-yml yam文件读写](./springboot-file-yml)
+- [springboot-file-yaml yaml文件读写](./springboot-file-yaml)

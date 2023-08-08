@@ -23,7 +23,7 @@
 		<module>springboot-file-preview</module>
 		<module>springboot-file-spire</module>
 		<module>springboot-file-storage</module>
-		<module>springboot-file-yml</module>
+		<module>springboot-file-yaml</module>
 	</modules>
 
 </project>

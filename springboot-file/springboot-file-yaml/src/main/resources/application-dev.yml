@@ -1,0 +1,50 @@
+# yml 映射单个属性、数组、list、map、list<map>，List<User>，User等
+my-attributes:
+  # 单个值
+  value: 345
+  # 数组
+  valueArray: 1,2,3,4,5,6,7,8,9
+  # list
+  valueList:
+    - 13579
+    - 246810
+  # map
+  valueMap:
+    name: 张三
+    age: 20
+    sex: female
+  # list<map>
+  valueMapList:
+    - name: 李四
+      age: 21
+    - name: caven
+      age: 31
+  valueUserList:
+    - name: 李四
+      age: 24
+    - name: 张三
+      age: 22
+  valueUser:
+    name: 安其拉
+    age: 18
+
+system:
+  name: 一个博客系统
+  user:
+    username: 李四
+    password: pass123
+    roleObjectList:
+      - roleId: 1
+        roleName: 省级角色
+      - roleId: 2
+        roleName: 市级角色
+    authorityList:
+      - 上传
+      - 下载
+    friendArray: 张三、王强
+
+unions:
+  partI:
+    name: 李四
+  partII:
+    age: 19
