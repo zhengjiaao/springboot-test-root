@@ -33,6 +33,7 @@
         <module>springboot-remote</module>
         <module>springboot-task</module>
         <module>springboot-unittest</module>
+        <module>springboot-utils</module>
         <module>springboot-web-19000</module>
     </modules>
 
