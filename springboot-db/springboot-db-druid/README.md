@@ -1,7 +1,7 @@
 # springboot-db-druid
 
-[druid | github](https://github.com/alibaba/druid)
-[druid-spring-boot-starter | github](https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter)
+* [druid | github](https://github.com/alibaba/druid)
+* [druid-spring-boot-starter | github](https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter)
 
 **druid 数据库连接池**
 
