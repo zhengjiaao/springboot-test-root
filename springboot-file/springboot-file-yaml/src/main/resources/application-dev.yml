@@ -48,3 +48,18 @@ unions:
     name: 李四
   partII:
     age: 19
+
+jasypt:
+  encryptor:
+    # 必须设置，加密的密钥，自定义即可，为了安全 password属性不推荐存储在属性文件中，而应作为系统属性、命令行参数或环境变量传递。
+    password: 34ui23de34h
+    # 加解密算法，默认 PBEWithMD5AndDES，是 md5 加 des 标准加密
+    algorithm: PBEWithMD5AndDES
+    # bean名称，默认 jasyptStringEncryptor，可以使用自定义加密
+    bean: jasyptStringEncryptor
+    property:
+      #默认 ENC(密文内容)
+      prefix: ENC(
+      suffix: )
+
+jasyptTest: ENC(z9/xqdfLNLz1SU4DId7XCw==)
