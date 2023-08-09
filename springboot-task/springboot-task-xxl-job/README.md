@@ -1,6 +1,6 @@
 # springboot-task-xxl-job
 
-> 分布式任务调度平台XXL-JOB  
+> 分布式任务调度平台XXL-JOB
 
 - [xxl-job 官方](https://www.xuxueli.com/xxl-job/)
 - [xxl-job github](https://github.com/xuxueli/xxl-job)
@@ -14,11 +14,11 @@
 
 ```xml
         <!-- xxl-job-core -->
-        <dependency>
-            <groupId>com.xuxueli</groupId>
-            <artifactId>xxl-job-core</artifactId>
-            <version>2.3.1</version>
-        </dependency>
+<dependency>
+    <groupId>com.xuxueli</groupId>
+    <artifactId>xxl-job-core</artifactId>
+    <version>2.3.1</version>
+</dependency>
 ```
 
 ## 简单示例
@@ -26,6 +26,7 @@
 先配置 [XxlJobConfig,java](./src/main/java/com/zja/xxl/config/XxlJobConfig.java)
 
 ```java
+
 @Component
 public class SampleXxlJob {
 
@@ -255,3 +256,11 @@ public class SampleXxlJob {
 }
 
 ```
+
+## 适配的中间件版本
+
+> 以下是你可能会用到的中间件
+
+|         | 官网文档                                       | github                                                 | 使用版本下载                                                | 详细 | 推荐 |
+|---------|--------------------------------------------|--------------------------------------------------------|-------------------------------------------------------|----|----| 
+| xxl-job | [xxl-job](https://www.xuxueli.com/xxl-job) | [xuxueli/xxl-job](https://github.com/xuxueli/xxl-job/) | [v2.4.0](https://github.com/xuxueli/xxl-job/releases) |    |    |
