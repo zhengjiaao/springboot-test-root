@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>springboot-utils-file</module>
+		<module>springboot-utils-id</module>
 	</modules>
 
 </project>
