@@ -9,7 +9,8 @@
 - AI：chatgpt
 - api：API管理(swagger2 or 3)、knife4j
 - captcha：图形验证码
-- db：关系型数据库(h2、mysql、oracle、postgresql等)、SQL版本管理(flywaydb、liquibase)、分库分表(shardingSphere)、分布式事务管理(jta)
+- db：关系型数据库(h2、mysql、oracle、postgresql等)、SQL版本管理(flywaydb、liquibase)、分库分表(shardingSphere)、分布式事务管理(
+  jta)
 - db：非关系型数据库(mongodb、redis、elasticsearch、neo4j图数据库)
 - encrypt：加解密(rsa、sm等)
 - file：文件操作(解压缩、csv、excel、yml等)、文件预览、文档存储
@@ -37,41 +38,48 @@
     - [springboot-api-swagger3-knife4j](./springboot-api/springboot-api-swagger3-knife4j)
 - [springboot-captcha 验证码](./springboot-captcha)
 - [springboot-db 数据库](./springboot-db)
+    - [springboot-db-druid](./springboot-db/springboot-db-druid)
     - [springboot-db-elasticsearch](./springboot-db/springboot-db-elasticsearch)
-    - [springboot-db-flywaydb](./springboot-db/springboot-db-flywaydb)
+    - [springboot-db-flywaydb SQL 版本管理](./springboot-db/springboot-db-flywaydb)
+    - [springboot-db-liquibase SQL 版本管理](./springboot-db/springboot-db-liquibase)
     - [springboot-db-h2](./springboot-db/springboot-db-h2)
-    - [springboot-db-liquibase](./springboot-db/springboot-db-liquibase)
     - [springboot-db-mongodb](./springboot-db/springboot-db-mongodb)
-    - [springboot-db-mongodb2](./springboot-db/springboot-db-mongodb2)
+    - [springboot-db-multiple-datasources-jpa-jta 分布式事物管理](./springboot-db/springboot-db-multiple-datasources-jpa-jta)
     - [springboot-db-mysql](./springboot-db/springboot-db-mysql)
+    - [springboot-db-neo4j 图数据库](./springboot-db/springboot-db-neo4j)
+    - [springboot-db-neo4j-dynamic-node](./springboot-db/springboot-db-neo4j-dynamic-node)
+    - [springboot-db-neo4j-manager](./springboot-db/springboot-db-neo4j-manager)
     - [springboot-db-oracle](./springboot-db/springboot-db-oracle)
-    - [springboot-db-oracle2](./springboot-db/springboot-db-oracle2)
+    - [springboot-db-postgresql](./springboot-db/springboot-db-postgresql)
     - [springboot-db-redis](./springboot-db/springboot-db-redis)
-    - [springboot-db-redis2](./springboot-db/springboot-db-redis2)
+    - [springboot-db-shardingsphere-jpa 分库分表](./springboot-db/springboot-db-shardingsphere-jpa)
 - [springboot-encrypt 加解密](./springboot-encrypt)
     - [springboot-encrypt-base64](./springboot-encrypt/springboot-encrypt-base64)
-    - [springboot-encrypt-rsa](./springboot-encrypt/springboot-encrypt-rsa)
-    - [springboot-encrypt-sm](./springboot-encrypt/springboot-encrypt-sm)
+    - [springboot-encrypt-rsa 非对称算法](./springboot-encrypt/springboot-encrypt-rsa)
+    - [springboot-encrypt-sm 国密算法](./springboot-encrypt/springboot-encrypt-sm)
     - [springboot-encrypt-util](./springboot-encrypt/springboot-encrypt-util)
 - [springboot-file 文件相关操作](./springboot-file)
-    - [springboot-file-compress-ant](./springboot-file/springboot-file-compress-ant)
-    - [springboot-file-compress-jdk](./springboot-file/springboot-file-compress-jdk)
-    - [springboot-file-compress-zip4j](./springboot-file/springboot-file-compress-zip4j)
+    - [springboot-file-compress 解压缩](./springboot-file/springboot-file-compress)
     - [springboot-file-csv](./springboot-file/springboot-file-csv)
     - [springboot-file-excel](./springboot-file/springboot-file-excel)
-    - [springboot-file-ftp](./springboot-file/springboot-file-ftp)
-    - [springboot-file-minio](./springboot-file/springboot-file-minio)
-    - [springboot-file-yml](./springboot-file/springboot-file-yml)
+    - [springboot-file-preview 文件预览](./springboot-file/springboot-file-preview)
+    - [springboot-file-storage 文件存储](./springboot-file/springboot-file-storage)
+    - [springboot-file-yaml](./springboot-file/springboot-file-yaml)
 - [springboot-java JAVA相关操作](./springboot-java)
     - [springboot-java-juc](./springboot-java/springboot-java-juc)
 - [springboot-mapping 对象属性映射](./springboot-mapping)
     - [springboot-mapping-dozer](./springboot-mapping/springboot-mapping-dozer)
     - [springboot-mapping-mapstruct](./springboot-mapping/springboot-mapping-mapstruct)
+- [springboot-monitor 应用监控](./springboot-monitor)
+    - [springboot-monitor-prometheus 普罗米修斯监控](./springboot-monitor/springboot-monitor-prometheus)
 - [springboot-mq MQ消息中间件](./springboot-mq)
+    - [springboot-mq-rabbitmq](./springboot-mq/springboot-mq-rabbitmq)
     - [springboot-mq-rabbitmq-spring](./springboot-mq/springboot-mq-rabbitmq-spring)
     - [springboot-mq-rabbitmq-starter](./springboot-mq/springboot-mq-rabbitmq-starter)
     - [springboot-mq-rocketmq](./springboot-mq/springboot-mq-rocketmq)
     - [springboot-mq-rocketmq-starter](./springboot-mq/springboot-mq-rocketmq-starter)
+- [springboot-nlp NLP自然语言分析](./springboot-nlp)
+    - [springboot-nlp-hanlp](./springboot-nlp/springboot-nlp-hanlp)
 - [springboot-process 流程管理](./springboot-process)
     - [springboot-process-liteflow](./springboot-process/springboot-process-liteflow)
     - [springboot-process-tangram](./springboot-process/springboot-process-tangram)
@@ -87,19 +95,25 @@
     - [springboot-task-xxl-job](./springboot-task/springboot-task-xxl-job)
 - [springboot-unittest 单元测试](./springboot-unittest)
     - [springboot-unittest-junit](./springboot-unittest/springboot-unittest-junit)
+- [springboot-utils 工具包使用](./springboot-utils)
+    - [springboot-utils-file](./springboot-utils/springboot-utils-file)
 - [springboot-web-19000 REST接口提供者](./springboot-web-19000)
 
 ## 适配的中间件版本
 
 > 以下是你可能会用到的中间件
 
-|           | 官网文档                                                              | github                                                | 使用版本下载                                                                                                                          | 详细 | 推荐 |
-|-----------|-------------------------------------------------------------------|-------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|----|----| 
-| zookeeper | [zookeeper.apache.org](http://zookeeper.apache.org/releases.html) |                                                       | [zookeeper-3.6.3-bin.tar.gz](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz) |    |    |
-| Git       | [git-scm.com](https://git-scm.com/)                               |                                                       | [git-latest](https://git-scm.com/downloads)                                                                                     |    |    |
-| Minio     | [minio 官网](https://min.io/)                                       | [minio github](https://github.com/minio/minio)        | [minio-latest](https://min.io/docs/minio/windows/index.html)                                                                    |    |    |
-| Rocketmq  | [rocketmq 官方](https://rocketmq.apache.org/zh/)                    | [rocketmq github](https://github.com/apache/rocketmq) | [rocketmq-4.9.4](https://github.com/apache/rocketmq/releases/tag/rocketmq-all-4.9.4)                                            |    |    |
-| Rabbitmq  | [Rabbitmq 官方](https://www.rabbitmq.com/)                          | [Rabbitmq github](https://github.com/rabbitmq)        | [rabbitmq-server-3.11.5](https://github.com/rabbitmq/rabbitmq-server/releases/tag/v3.11.5)                                      |    |    |
+|            | 官网文档                                                              | github                                                            | 使用版本下载                                                                                                                          | 详细 | 推荐 |
+|------------|-------------------------------------------------------------------|-------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|----|----| 
+| zookeeper  | [zookeeper.apache.org](http://zookeeper.apache.org/releases.html) |                                                                   | [zookeeper-3.6.3-bin.tar.gz](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz) |    |    |
+| Git        | [git-scm.com](https://git-scm.com/)                               |                                                                   | [git-latest](https://git-scm.com/downloads)                                                                                     |    |    |
+| Minio      | [minio 官网](https://min.io/)                                       | [minio github](https://github.com/minio/minio)                    | [minio-latest](https://min.io/docs/minio/windows/index.html)                                                                    |    |    |
+| Rocketmq   | [rocketmq 官方](https://rocketmq.apache.org/zh/)                    | [rocketmq github](https://github.com/apache/rocketmq)             | [rocketmq-4.9.4](https://github.com/apache/rocketmq/releases/tag/rocketmq-all-4.9.4)                                            |    |    |
+| Rabbitmq   | [Rabbitmq 官方](https://www.rabbitmq.com/)                          | [Rabbitmq github](https://github.com/rabbitmq)                    | [rabbitmq-server-3.11.5](https://github.com/rabbitmq/rabbitmq-server/releases/tag/v3.11.5)                                      |    |    |
+| kkfileview | [kkview.cn 官网](https://kkview.cn/zh-cn/index.html)                | [kekingcn/kkFileView](https://github.com/kekingcn/kkFileView)     | [v4.3.0](https://github.com/kekingcn/kkFileView/releases)                                                                       |    |    |
+| onlyoffice | [onlyoffice.com 官网](https://helpcenter.onlyoffice.com/)           | [ONLYOFFICE](https://github.com/ONLYOFFICE)                       | [7.4.1](https://github.com/ONLYOFFICE/DocumentServer/releases)                                                                  |    |    |
+| prometheus | [prometheus.io 官网](https://prometheus.io/)                        | [prometheus/prometheus](https://github.com/prometheus/prometheus) | [2.46.0](https://github.com/prometheus/prometheus/releases)                                                                     |    |    |
+| xxl-job    | [xxl-job](https://www.xuxueli.com/xxl-job)                        | [xuxueli/xxl-job](https://github.com/xuxueli/xxl-job/)            | [v2.4.0](https://github.com/xuxueli/xxl-job/releases)                                                                           |    |    |
 
 ## 本地运行环境搭建
 
