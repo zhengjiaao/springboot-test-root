@@ -20,6 +20,9 @@ import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 非对称加密和签名：SM2
+ */
 public class Sm2Util {
 
     //秘钥大小
