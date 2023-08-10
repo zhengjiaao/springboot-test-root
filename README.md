@@ -4,28 +4,7 @@
 
 **说明**
 
-> springboot 集成项目中常用到的一些技术
-
-- AI：chatgpt
-- api：API管理(swagger2 or 3)、knife4j
-- captcha：图形验证码
-- db：关系型数据库(h2、mysql、oracle、postgresql等)、SQL版本管理(flywaydb、liquibase)、分库分表(shardingSphere)、分布式事务管理(
-  jta)
-- db：非关系型数据库(mongodb、redis、elasticsearch、neo4j图数据库)
-- encrypt：加解密(rsa、sm等)
-- file：文件操作(解压缩、csv、excel、yml等)、文件预览、文档存储
-- java：java基础、设计模式、juc并发编程
-- mapping：对象映射(dozer、mapstruct)
-- monitor：系统监控(prometheus)
-- mq：消息中间件(rabbitmq、rocketmq、kafka等)
-- nlp：自然语言分析(hanlp)
-- process：流程引擎(flowable、liteflow、tangram等)
-- qrcode：二维码(qrgen、zxing等)
-- remote：远程调用(httpclient、openfeign、restTemplate等)
-- task：定时任务(quartz、springTask、xxl-job等)
-- unittest：单元测试(junit)
-- utils：自定义工具类(utils)
-- web-19000：接口服务提供者(rest api 接口服务)
+springboot 项目中常用到的一些技术集成示例，可以快速开始开箱测试，以及集成到项目当中使用。
 
 ## spring-boot 集成(组件)示例
 
