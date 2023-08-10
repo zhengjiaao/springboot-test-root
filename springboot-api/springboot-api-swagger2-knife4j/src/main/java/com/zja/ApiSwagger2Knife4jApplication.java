@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * http://localhost:19000/doc.html
- * http://localhost:19000/swagger-ui.html
+ * <a href="http://localhost:19000/doc.html">knife4j</a>
+ * <a href="http://localhost:19000/swagger-ui.html">Swagger2</a>
  */
 @SpringBootApplication
 public class ApiSwagger2Knife4jApplication {

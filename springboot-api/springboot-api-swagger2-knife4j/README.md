@@ -2,37 +2,49 @@
 
 > 简单介绍knife4j搭配swagger2的使用和配置
 
+## 版本选型
+
+| swagger | knife4j | 描述           |
+|---------|---------|--------------|
+| 2.9.2   | 不支持     | 建议升级为 2.10.5 |
+| 2.10.5  | 2.0.9   |              |
+| 3.0.0   | 3.0.3   |              |
+
+注：swagger 从`2.9.2`升级为`2.10.5`，需要切换启动注解
+
+```java
+//@EnableSwagger2	// 2.9.2 注解启动方式
+@EnableSwagger2WebMvc  //2.10.5 注解启动方式
+@EnableKnife4j  //仅需加入此注解就可以了，swagger配置不变，必须配合 swagger2.10.5
+@Configuration
+public class Swagger2Config {
+
+}
+```
+
 ## 依赖引用
 ```xml
-        <!--swagger2-->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.20</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-            <version>1.5.20</version>
-        </dependency>
 
-        <!--引入Knife4j的官方start包,Swagger2基于Springfox2.10.5项目-->
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <!--使用Swagger2-->
-            <artifactId>knife4j-spring-boot-starter</artifactId>
-            <version>2.0.9</version>
-        </dependency>
+<dependencies>
+    <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+        <version>2.10.5</version>
+    </dependency>
+    <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger-ui</artifactId>
+        <version>2.10.5</version>
+    </dependency>
+
+    <!--引入Knife4j的官方start包,Swagger2基于Springfox2.10.5项目-->
+    <dependency>
+        <groupId>com.github.xiaoymin</groupId>
+        <!--使用Swagger2-->
+        <artifactId>knife4j-spring-boot-starter</artifactId>
+        <version>2.0.9</version>
+    </dependency>
+</dependencies>
 ```
 
 ## 基本配置
@@ -44,8 +56,6 @@
  * http://localhost:19000/doc.html
  * http://localhost:19000/swagger-ui.html
  */
-@EnableKnife4j  //只需要此注解就可以了
-@EnableSwagger2
 @Configuration
 public class Swagger2Config {
 

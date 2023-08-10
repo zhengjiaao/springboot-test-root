@@ -3,19 +3,20 @@
 > 简单介绍knife4j搭配swagger3的使用和配置
 
 ## 依赖引用
+
 ```xml
         <!--swagger3-->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
-        </dependency>
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-boot-starter</artifactId>
+    <version>3.0.0</version>
+</dependency>
         <!--knife4j-->
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring-boot-starter</artifactId>
-            <version>3.0.3</version>
-        </dependency>
+<dependency>
+<groupId>com.github.xiaoymin</groupId>
+<artifactId>knife4j-spring-boot-starter</artifactId>
+<version>3.0.3</version>
+</dependency>
 ```
 
 ## 基本配置
@@ -51,9 +52,10 @@ public class Swagger3Config {
 > 实体类和REST接口应用
 
 ```java
+
 @ApiModel(value = "用户信息")
 @Data
-public class UserDTO implements Serializable{
+public class UserDTO implements Serializable {
     @ApiModelProperty(value = "用户id")
     private String id;
     @ApiModelProperty(value = "用户名")
@@ -97,3 +99,19 @@ public class ApiSwagger3Application {
 
 [点击-访问Knife4j API 管理页面](http://localhost:19000/doc.html)
 [点击-访问swagger3 API 管理页面](http://localhost:19000/swagger-ui/index.html#/)
+
+## 开启认证
+
+> 为了通过项目的安全检查，及等保测评要求，必须要对swagger接口进行权限认证，或者现场环境禁用swagger访问。  
+> 这里以swagger+knife4j进行权限认证方式实现，访问swagger页面时，进行拦截弹出登录页面，只有登录成功才能访问swagger页面。
+
+```properties
+#作用：拦截swagger api，例如：/swagger-ui.html,/v2/api-docs 等api
+# # 开启增强配置 ，默认 false
+knife4j.enable=true
+# 开启Swagger的Basic认证功能 ，默认是false
+knife4j.basic.enable=true
+# Basic认证用户名和密码
+knife4j.basic.username=test
+knife4j.basic.password=pass
+```
