@@ -26,5 +26,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/public/file/**").addResourceLocations("file:D:/picture/");
         //访问地址：http://127.0.0.1:19000/file
         registry.addResourceHandler("/file/**").addResourceLocations("classpath:/file/");
+
+        //若遇到无法访问swagger3页面时，添加此配置
+        //registry.addResourceHandler("/swagger-ui/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
     }
 }
