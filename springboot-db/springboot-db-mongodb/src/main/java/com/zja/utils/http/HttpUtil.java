@@ -16,11 +16,11 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -211,12 +211,12 @@ public abstract  class HttpUtil {
         CloseableHttpResponse response = null;
         HttpPost httpPost = new HttpPost(url);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        builder.setCharset(java.nio.charset.Charset.forName("UTF-8"));
+        builder.setCharset(StandardCharsets.UTF_8);
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         String fileName = multipartFile.getOriginalFilename();
         try {
             builder.addBinaryBody("file", multipartFile.getInputStream(), ContentType.MULTIPART_FORM_DATA, fileName);
-            ContentType contentType = ContentType.create("multipart/form-data", HTTP.UTF_8);
+            ContentType contentType = ContentType.create("multipart/form-data", StandardCharsets.UTF_8);
             // 类似浏览器表单提交，对应input的name和value
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 if(entry.getValue() != null) {
