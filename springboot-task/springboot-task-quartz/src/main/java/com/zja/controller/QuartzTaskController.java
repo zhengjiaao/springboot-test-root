@@ -14,7 +14,7 @@ import java.util.Date;
  * Quartz 动态控制任务(暂停，启动，修改执行时间)
  * 真实环境使用请配合数据库动态设置
  */
-@Api(tags = {"QuartzTaskController"}, description = "Quartz 动态控制任务")
+@Api(tags = {"Quartz 动态控制任务"})
 @RestController
 @RequestMapping("/quartz")
 public class QuartzTaskController {

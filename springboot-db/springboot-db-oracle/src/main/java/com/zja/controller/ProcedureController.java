@@ -19,7 +19,7 @@ import java.util.List;
  */
 @RestController("ProcedureController")
 @RequestMapping("/procedure")
-@Api(tags = {"ProcedureController"}, description = "简单存储过程测试")
+@Api(tags = {"简单存储过程示例"})
 public class ProcedureController extends BaseController {
 
     @Resource

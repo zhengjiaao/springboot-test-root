@@ -26,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/fegin/file")
-@Api(tags = {"FileFeginController"}, description = "openfeign 调用远程REST接口")
+@Api(tags = {"FileFeginController"})
 public class FileFeginController {
 
     @Autowired

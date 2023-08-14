@@ -20,12 +20,12 @@ import java.util.Map;
 
 /**
  * 本地资源文件
- *
+ * 上传文件到本地tomcat服务器，不是传到mongodb
  *  @author yinxp@dist.com.cn
  */
 @Slf4j
 @RestController
-@Api(tags = "LocalResourceController",description = "上传文件到本地tomcat服务器，不是传到mongodb")
+@Api(tags = "LocalResourceController")
 public class LocalResourceController extends BaseController{
 
     @Resource

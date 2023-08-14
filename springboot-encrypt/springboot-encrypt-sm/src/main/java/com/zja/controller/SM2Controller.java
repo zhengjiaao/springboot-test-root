@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/sm2")
-@Api(tags = {"SM2Controller"}, description = "前端加密，后端解密，保证系统安全")
+@Api(tags = {"SM2 国密算法"})
 public class SM2Controller {
 
     @ApiOperation(value = "获取非对称加密公钥", notes = "获取非对称加密公钥，通过前端加密之后到达后端对数据进行解密")

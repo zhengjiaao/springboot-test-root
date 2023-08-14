@@ -36,7 +36,7 @@ import java.util.UUID;
  * @author zhengja@dist.com.cn
  * @data 2019/6/19 16:33
  */
-@Api(tags = {"GridFSController"},description = "Mongo文件操作-用Postman工具测试")
+@Api(tags = {"GridFSController"})
 @RequestMapping(value = "rest/gridfs")
 @RestController
 public class GridFSController {

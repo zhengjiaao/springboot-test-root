@@ -28,7 +28,7 @@ import java.util.Optional;
 //@EnableScheduling  //开启定时任务，项目启动自动执行定时任务
 @RequestMapping(value = "rest/solr/v2")
 @RestController
-@Api(tags = {"SolrTemplateController"},description = "Solr 全文检索 SolrTemplate")
+@Api(tags = {"Solr 全文检索"})
 public class SolrTemplateController {
 
     //方式二：自动装配

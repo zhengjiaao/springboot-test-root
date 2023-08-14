@@ -19,7 +19,7 @@ import java.io.IOException;
  * Email: zhengja@dist.com.cn
  * Desc：文件代理控制器
  */
-@Api(tags = {"FileProxyController"}, description = "Mongo文件操作-用Postman工具测试")
+@Api(tags = {"FileProxyController"})
 @RequestMapping(value = "rest/file")
 @RestController
 public class FileProxyController {

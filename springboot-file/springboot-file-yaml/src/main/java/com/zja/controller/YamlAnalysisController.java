@@ -21,7 +21,7 @@ import java.util.Map;
  * Desc：
  */
 @RestController
-@Api(tags = {"YamlController"}, description = "yml配置解析")
+@Api(tags = {"yml配置解析"})
 public class YamlAnalysisController {
 
     @GetMapping("v1/get/yml")

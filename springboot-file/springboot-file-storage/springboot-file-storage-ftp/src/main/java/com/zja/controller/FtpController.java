@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @author zhengja@dist.com.cn
  * @data 2019/7/15 9:41
  */
-@Api(tags = {"FtpController"}, description = "FTP测试")
+@Api(tags = {"FtpController"})
 @RestController
 @RequestMapping(value = "/ftp")
 public class FtpController extends BaseController {

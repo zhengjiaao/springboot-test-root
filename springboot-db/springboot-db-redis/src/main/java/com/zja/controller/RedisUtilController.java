@@ -21,7 +21,7 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping(value = "rest/redis")
-@Api(tags = {"RedisUtilController"}, description = "redisUtil测试")
+@Api(tags = {"RedisUtilController"})
 public class RedisUtilController {
 
     @Resource

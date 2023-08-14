@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
-/**测试加解密
+/**测试加解密，数据入库加解密
  * @author zhengja@dist.com.cn
  * @data 2019/6/17 13:45
  */
-@Api(tags = {"EncryptController"}, description = "数据入库加解密")
+@Api(tags = {"EncryptController"})
 @RequestMapping(value = "rest/encrypt")
 @RestController
 public class EncryptController {

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/fegin/rest")
-@Api(tags = {"RestFeignController"}, description = "openfeign 调用远程REST接口")
+@Api(tags = {"RestFeignController"})
 public class RestFeignController {
 
 //    @Autowired

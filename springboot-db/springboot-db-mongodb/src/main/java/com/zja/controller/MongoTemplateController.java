@@ -20,7 +20,7 @@ import java.util.Map;
  * @author zhengja@dist.com.cn
  * @data 2019/6/19 9:59
  */
-@Api(tags = {"MongoTemplateController"}, description = "Mongodb 文档数据操作")
+@Api(tags = {"Mongodb 文档数据操作"})
 @RestController
 @RequestMapping(value = "rest/mongo")
 public class MongoTemplateController {

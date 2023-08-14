@@ -26,7 +26,7 @@ import java.util.TimeZone;
  */
 @Controller("UserController")
 @RequestMapping("/user")
-@Api(tags = {"UserController"}, description = "用户服务")
+@Api(tags = {"用户服务"})
 public class UserController extends BaseController {
 
     @Resource

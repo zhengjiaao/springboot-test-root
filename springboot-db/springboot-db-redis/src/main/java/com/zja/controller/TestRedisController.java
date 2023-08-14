@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  * @author zhengja@dist.com.cn
  * @data 2019/6/11 14:05
  */
-@Api(tags = {"TestRedisController"}, description = "redis发布测试")
+@Api(tags = {"redis发布测试"})
 @RestController
 @RequestMapping(value = "/v1")
 public class TestRedisController {

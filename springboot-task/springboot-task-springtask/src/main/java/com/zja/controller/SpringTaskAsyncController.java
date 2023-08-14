@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 任务多线程运行
  */
-@Api(tags = {"SpringTaskAsyncController"},description = "Spring Task")
+@Api(tags = {"SpringTaskAsyncController"})
 @RestController
 @RequestMapping(value = "/springtask")
 public class SpringTaskAsyncController {

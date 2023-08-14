@@ -19,7 +19,7 @@ import java.util.List;
  * @author zhengja@dist.com.cn
  * @data 2019/8/14 11:36
  */
-@Api(tags = {"ScheduledController"},description = "Scheduled定时任务")
+@Api(tags = {"Scheduled定时任务"})
 @RestController
 @RequestMapping("rest/scheduled")
 public class ScheduledController {

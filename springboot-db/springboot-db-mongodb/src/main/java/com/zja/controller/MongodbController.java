@@ -33,7 +33,7 @@ import java.net.URLEncoder;
  * @data 2019/6/25 16:29
  */
 @RestController
-@Api(tags = "WEB-MongodbController",description = "资源文件")
+@Api(tags = "WEB-MongodbController")
 @Slf4j
 public class MongodbController extends BaseController{
 

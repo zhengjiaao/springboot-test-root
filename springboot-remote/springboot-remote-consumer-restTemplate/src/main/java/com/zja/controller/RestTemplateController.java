@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "rest/template")
-@Api(tags = {"RestTemplateController"}, description = "RestTemplate 调用远程REST接口")
+@Api(tags = {"RestTemplateController"})
 public class RestTemplateController {
 
     @Autowired

@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping(value = "rest/cache")
-@Api(tags = {"RedisCacheController"}, description = "redis 接口缓存")
+@Api(tags = {"RedisCacheController"})
 public class RedisCacheController {
 
     @Resource

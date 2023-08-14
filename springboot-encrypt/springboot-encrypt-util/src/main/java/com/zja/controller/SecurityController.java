@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
  */
 @RestController
 @RequestMapping(value = "rest/secrity/v1")
-@Api(tags = {"SecurityController"}, description = "安全服务：前端加密，后端解密，保证系统安全")
+@Api(tags = {"安全服务"})
 public class SecurityController{
 
     /**

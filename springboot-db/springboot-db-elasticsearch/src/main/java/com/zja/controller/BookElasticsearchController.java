@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
-/**
+/** 全文检索
  * @author zhengja@dist.com.cn
  * @data 2020/07/16 11:41
  */
 @RestController
-@Api(tags = {"BookElasticsearchController"}, description = "全文检索")
+@Api(tags = {"BookElasticsearchController"})
 public class BookElasticsearchController {
 
     @Autowired

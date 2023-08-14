@@ -27,7 +27,7 @@ import java.net.URLEncoder;
 
 @RestController
 @RequestMapping(value = "rest/template/file")
-@Api(tags = {"RestTemplateFileController"}, description = "RestTemplate 调用远程REST接口")
+@Api(tags = {"RestTemplateFileController"})
 public class RestTemplateFileController {
 
     @Autowired
