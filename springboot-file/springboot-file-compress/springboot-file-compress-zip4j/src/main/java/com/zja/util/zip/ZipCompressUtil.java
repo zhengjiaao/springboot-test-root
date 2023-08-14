@@ -53,8 +53,9 @@ public abstract class ZipCompressUtil {
      */
     private static void compressByType(File src, ZipOutputStream zos, String baseDir) {
 
-        if (!src.exists())
+        if (!src.exists()) {
             return;
+        }
         System.out.println("压缩路径" + baseDir + src.getName());
         //判断文件是否是文件，如果是文件调用compressFile方法,如果是路径，则调用compressDir方法；
         if (src.isFile()) {
@@ -73,8 +74,9 @@ public abstract class ZipCompressUtil {
      * 压缩文件
      */
     private static void compressFile(File file, ZipOutputStream zos, String baseDir) {
-        if (!file.exists())
+        if (!file.exists()) {
             return;
+        }
         try {
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
             ZipEntry entry = new ZipEntry(baseDir + file.getName());
@@ -95,8 +97,9 @@ public abstract class ZipCompressUtil {
      * 压缩文件夹
      */
     private static void compressDir(File dir, ZipOutputStream zos, String baseDir) {
-        if (!dir.exists())
+        if (!dir.exists()) {
             return;
+        }
         File[] files = dir.listFiles();
         if (files.length == 0) {
             try {

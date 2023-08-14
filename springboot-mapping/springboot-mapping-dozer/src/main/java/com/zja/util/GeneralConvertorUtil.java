@@ -26,7 +26,9 @@ public class GeneralConvertorUtil {
      * List  实体类 深度转换器
      */
     public <T, S> List<T> convertor(List<S> source, Class<T> clz) {
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         List<T> list = new ArrayList<>();
         for (S s : source) {
             list.add(mapper.map(s, clz));
@@ -38,7 +40,9 @@ public class GeneralConvertorUtil {
      * Set 实体类 深度转换器
      */
     public <T, S> Set<T> convertor(Set<S> source, Class<T> clz) {
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         Set<T> set = new TreeSet<>();
         for (S s : source) {
             set.add(mapper.map(s, clz));
@@ -50,7 +54,9 @@ public class GeneralConvertorUtil {
      * 实体类 深度转换器
      */
     public <T, S> T convertor(S source, Class<T> clz) {
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         return mapper.map(source, clz);
     }
 

@@ -510,7 +510,9 @@ public class FtpUtil {
      */
     public static boolean inputStreamToFile(InputStream inputStream, String localFilePath) throws IOException {
         File newDir = new File(localFilePath.replace("\\", "/").substring(0, localFilePath.lastIndexOf("/")));
-        if (!newDir.exists()) newDir.mkdirs();
+        if (!newDir.exists()) {
+            newDir.mkdirs();
+        }
         FileOutputStream fs = new FileOutputStream(localFilePath);
         try {
             int bytesum = 0;
