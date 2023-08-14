@@ -64,7 +64,7 @@ public class Lock_8 {
 
         new Thread(() -> {
             try {
-                phone.sendSMS();
+                Phone.sendSMS();
             } catch (Exception e) {
                 e.printStackTrace();
             }
