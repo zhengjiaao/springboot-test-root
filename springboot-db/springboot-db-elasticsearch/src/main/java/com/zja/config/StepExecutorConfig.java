@@ -40,7 +40,7 @@ public class StepExecutorConfig implements ApplicationRunner {
 
     private Boolean exitisVersion() {
         String osName = System.getProperties().getProperty("os.name");
-        if(osName.equals("Linux")) {
+        if("Linux".equals(osName)) {
             LOG.info("running in Linux");
             return true;
         }

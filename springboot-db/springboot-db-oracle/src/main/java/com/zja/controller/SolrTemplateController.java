@@ -100,7 +100,7 @@ public class SolrTemplateController {
         Query query=new SimpleQuery(condition);
         query.setOffset(pageStart);  //开始索引（默认0）start:(page-1)*rows
         query.setRows(pageEnd);      //每页记录数(默认10)//rows:rows
-        if (collection.equals("core")){
+        if ("core".equals(collection)){
             ScoredPage<UserEntityDto> userEntityDtos = this.solrTemplate.queryForPage(collection, query, UserEntityDto.class);
             this.solrTemplate.commit(collection);
             return userEntityDtos.iterator();
@@ -116,7 +116,7 @@ public class SolrTemplateController {
     public Object queryDocument3(@ApiParam(value = "条件id") @RequestParam String id,
                                  @ApiParam(value = "corename/默 core 库",defaultValue = "core") @RequestParam String collection){
 
-        if (collection.equals("core")){
+        if ("core".equals(collection)){
             Optional<UserEntityDto> userEntityDto = this.solrTemplate.getById(collection, id, UserEntityDto.class);
             System.out.println("userEntityDto "+userEntityDto);
             this.solrTemplate.commit(collection);
@@ -151,7 +151,7 @@ public class SolrTemplateController {
         //输出当前时间
         System.out.println("当前时间为:" + localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-        if (is.equals("true")){
+        if ("true".equals(is)){
             //调用删除索引的方法，实现全量更新-不加的，多次调用就是增量更新
             deteleAllDocument2(collection,"*:*");
             System.out.println("============测试全量更新============");

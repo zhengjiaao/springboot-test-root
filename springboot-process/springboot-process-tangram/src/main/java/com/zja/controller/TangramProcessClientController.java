@@ -94,11 +94,11 @@ public class TangramProcessClientController {
                 }
             }
             System.out.println();
-            List<Map<String, Object>> params = actions.stream().map(e -> !e.getParameter().equals("{}") ? e.getParameter() : null).collect(Collectors.toList());
+            List<Map<String, Object>> params = actions.stream().map(e -> !"{}".equals(e.getParameter()) ? e.getParameter() : null).collect(Collectors.toList());
             System.out.println("params=" + params);
             if (!CollectionUtils.isEmpty(params)) {
                 //过滤出额外参数
-                param_cpl = params.stream().filter(e -> e.get("param_cpl").equals("true")).collect(Collectors.toList());
+                param_cpl = params.stream().filter(e -> "true".equals(e.get("param_cpl"))).collect(Collectors.toList());
                 if (!"{}".equals(param_cpl)) {
                     param = param_cpl.get(0);
                     System.out.println("param=" + param);

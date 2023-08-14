@@ -152,7 +152,7 @@ public class DocConversionPreviewUtil {
 
         //按文件类型转换为 pdf
         String fileType = getFileType(sourceFilePath);
-        if (fileType.equals("pdf")) {
+        if ("pdf".equals(fileType)) {
             Files.copy(sourceFile.toPath(), pdfFile.toPath());
         } else if (isWordType(fileType)) {
             asposeConvertToPDF.toPdfByWord(sourceFilePath, pdfFilePath);
@@ -285,7 +285,7 @@ public class DocConversionPreviewUtil {
 
     //判断是 doc、docx
     private boolean isWordType(String fileType) {
-        if (fileType.equals("doc") || fileType.equals("docx")) {
+        if ("doc".equals(fileType) || "docx".equals(fileType)) {
             return true;
         }
         return false;
@@ -293,7 +293,7 @@ public class DocConversionPreviewUtil {
 
     //判断是 xls、xlsx
     private boolean isExcelType(String fileType) {
-        if (fileType.equals("xls") || fileType.equals("xlsx")) {
+        if ("xls".equals(fileType) || "xlsx".equals(fileType)) {
             return true;
         }
         return false;
@@ -301,7 +301,7 @@ public class DocConversionPreviewUtil {
 
     //判断是 ppt/pptx
     private boolean isSlidesType(String fileType) {
-        if (fileType.equals("ppt") || fileType.equals("pptx")) {
+        if ("ppt".equals(fileType) || "pptx".equals(fileType)) {
             return true;
         }
         return false;
@@ -309,7 +309,7 @@ public class DocConversionPreviewUtil {
 
     //判断是 dwg/plt/dxf/dwf
     private boolean isCADType(String fileType) {
-        if (fileType.equals("dwg") || fileType.equals("plt") || fileType.equals("dxf") || fileType.equals("dwf")) {
+        if ("dwg".equals(fileType) || "plt".equals(fileType) || "dxf".equals(fileType) || "dwf".equals(fileType)) {
             return true;
         }
         return false;
@@ -317,7 +317,7 @@ public class DocConversionPreviewUtil {
 
     //判断是 png、jpg
     private boolean isPicture(String fileType) {
-        if (fileType.equals("png") || fileType.equals("jpg")) {
+        if ("png".equals(fileType) || "jpg".equals(fileType)) {
             return true;
         }
         return false;

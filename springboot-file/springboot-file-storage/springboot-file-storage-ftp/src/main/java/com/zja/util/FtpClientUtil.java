@@ -191,7 +191,7 @@ public class FtpClientUtil {
             } else if (files[i].isDirectory()) {
                 //排除linux 内核 环境搭建 出现目录中. 以及 .. 的 目录
                 //请注意 ser-u 会出现这种情况 不知道 FileZilla 会不会 貌似是不会
-                if (files[i].getName().equals(".") || files[i].getName().equals("..")) {
+                if (".".equals(files[i].getName()) || "..".equals(files[i].getName())) {
                     continue;
                 }
                 vo.setType("folder");
