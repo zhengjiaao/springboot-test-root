@@ -12,11 +12,10 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.crypto.SmUtil;
 import cn.hutool.crypto.asymmetric.SM2;
 import cn.hutool.crypto.symmetric.SM4;
-import com.zja.util.SM4FileUtil;
-import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -44,7 +43,7 @@ public class SMFileTest {
     }
 
     //SM4适合文件加解密
-    //效率比v2快些
+    //整个方法耗时大概26秒
     @Test
     public void sm4_file_test_v1() throws IOException {
         //源文件
@@ -59,29 +58,5 @@ public class SMFileTest {
         sm4.encrypt(FileUtil.getInputStream(inputFile), Files.newOutputStream(Paths.get(encryptedFile)), true);
 
         sm4.decrypt(FileUtil.getInputStream(encryptedFile), Files.newOutputStream(Paths.get(decryptedFile)), true);
-    }
-
-    //效率比v1慢些
-    @Test
-    public void sm4_file_test_v2() {
-        String inputFile = "D:\\temp\\pdf\\100M.pdf";
-        String outputFile = "D:\\temp\\pdf\\sm4\\output_encrypted_pdf.pdf";
-        String key = "0123456789abcdef"; // 16字节的密钥，示例中使用了16进制表示
-
-        try {
-            SM4FileUtil.encryptFile(inputFile, outputFile, key);
-            System.out.println("文件加密成功！");
-        } catch (IOException | InvalidCipherTextException e) {
-            System.out.println("文件加密失败：" + e.getMessage());
-        }
-
-        String decryptedFile = "D:\\temp\\pdf\\sm4\\output_decrypted_pdf.pdf";
-
-        try {
-            SM4FileUtil.decryptFile(outputFile, decryptedFile, key);
-            System.out.println("文件解密成功！");
-        } catch (IOException | InvalidCipherTextException e) {
-            System.out.println("文件解密失败：" + e.getMessage());
-        }
     }
 }

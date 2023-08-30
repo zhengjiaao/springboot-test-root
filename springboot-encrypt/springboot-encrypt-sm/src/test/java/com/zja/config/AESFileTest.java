@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 public class AESFileTest {
 
     //AES 适合加解密文件，效率比 SMFileTests.sm4 高
+    //整个方法耗时大概20秒
     @Test
     public void aes_file_test_v1() throws IOException {
         //源文件
