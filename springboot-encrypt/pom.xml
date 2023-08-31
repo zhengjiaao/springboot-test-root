@@ -16,7 +16,9 @@
 	</properties>
 
 	<modules>
+		<module>springboot-encrypt-aes</module>
 		<module>springboot-encrypt-base64</module>
+		<module>springboot-encrypt-des</module>
 		<module>springboot-encrypt-rsa</module>
 		<module>springboot-encrypt-sm</module>
 		<module>springboot-encrypt-util</module>
