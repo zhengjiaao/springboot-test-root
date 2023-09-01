@@ -1,0 +1,16 @@
+${AnsiColor.BLUE}
+ __          __  ______   ____             __    ___     ___     ___     ___
+ \ \        / / |  ____| |  _ \           /_ |  / _ \   / _ \   / _ \   / _ \
+  \ \  /\  / /  | |__    | |_) |  ______   | | | (_) | | | | | | | | | | | | |
+   \ \/  \/ /   |  __|   |  _ <  |______|  | |  \__, | | | | | | | | | | | | |
+    \  /\  /    | |____  | |_) |           | |    / /  | |_| | | |_| | | |_| |
+     \/  \/     |______| |____/            |_|   /_/    \___/   \___/   \___/
+${AnsiColor.BRIGHT_GREEN}
+== Basic info ==
+Project ArtifactId: (${project.artifactId})
+Project Version:    (${project.version})
+SpringBoot Version: (${spring-boot.version})
+== Basic info ==
+
+Welcome to.
+Starting project ... ...
