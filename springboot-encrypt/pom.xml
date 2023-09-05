@@ -22,6 +22,7 @@
 		<module>springboot-encrypt-rsa</module>
 		<module>springboot-encrypt-sm</module>
 		<module>springboot-encrypt-util</module>
+		<module>springboot-encrypt-yaml</module>
 	</modules>
 
 </project>
