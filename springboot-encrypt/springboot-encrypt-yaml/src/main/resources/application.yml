@@ -3,4 +3,4 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: dev  # 可选：dev、sm4
