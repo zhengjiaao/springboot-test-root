@@ -18,6 +18,11 @@ import java.util.Base64;
 /**
  * 对称加密：SM4
  *
+ * <p>
+ * 依赖：org.bouncycastle.bcprov-jdk15to18
+ * 依赖：cn.hutool.hutool-crypto
+ * </p>
+ *
  * @author: zhengja
  * @since: 2023/08/08 16:00
  */
