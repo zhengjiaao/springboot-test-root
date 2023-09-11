@@ -1,0 +1,9 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5120MB       # 5G  支持上传单个最大文件大小
+      max-request-size: 10240MB   # 10G 支持上传多个文件总和大小
+
+feign:
+  arcgis: http://127.0.0.1:6080/arcgis

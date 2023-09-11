@@ -6,5 +6,11 @@
 
 > 以下是已经完成的示例模块
 
-- [springboot-remote-consumer-openfeign](./springboot-remote-consumer-openfeign)
-- [springboot-remote-consumer-restTemplate](./springboot-remote-consumer-restTemplate)
+- [springboot-remote-httpclient-apache](./springboot-remote-httpclient-apache)
+- [springboot-remote-httpclient-jdk](./springboot-remote-httpclient-jdk)
+- [springboot-remote-okhttp](./springboot-remote-okhttp)
+- [springboot-remote-openfeign](./springboot-remote-openfeign)
+- [springboot-remote-openfeign-arcgis](./springboot-remote-openfeign-arcgis)
+- [springboot-remote-restTemplate](./springboot-remote-restTemplate)
+- [springboot-remote-webclient](./springboot-remote-webclient)
+

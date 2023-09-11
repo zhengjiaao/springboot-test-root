@@ -17,10 +17,13 @@
 
 	<modules>
 <!--		<module>springboot-remote-consumer</module>-->
-		<module>springboot-remote-consumer-openfeign</module>
-		<module>springboot-remote-consumer-restTemplate</module>
-<!--		<module>springboot-remote-web-19000</module>-->
-
+		<module>springboot-remote-httpclient-apache</module>
+		<module>springboot-remote-httpclient-jdk</module>
+		<module>springboot-remote-okhttp</module>
+		<module>springboot-remote-openfeign</module>
+		<module>springboot-remote-openfeign-arcgis</module>
+		<module>springboot-remote-restTemplate</module>
+		<module>springboot-remote-webclient</module>
 	</modules>
 
 </project>
