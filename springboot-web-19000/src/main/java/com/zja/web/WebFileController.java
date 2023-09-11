@@ -111,14 +111,25 @@ public class WebFileController {
     public String downloadfile(@ApiParam(value = "filename", defaultValue = "jpg.jpg") @RequestParam String filename,
                                HttpServletRequest request) {
         String urlContextPath = getUrlContextPath(request);
-        String fileUrl= urlContextPath+"/file/"+filename;
+        String fileUrl = urlContextPath + "/file/" + filename;
         return fileUrl;
     }
 
     @GetMapping(value = "get/download/v2")
     @ApiOperation(value = "下载文件-文件流")
-    public void downloadfile(HttpServletResponse response,
-                             @ApiParam(value = "filename", defaultValue = "jpg.jpg") @RequestParam String filename) throws IOException {
+    public void downloadFileByGet(HttpServletResponse response,
+                                  @ApiParam(value = "filename", defaultValue = "jpg.jpg") @RequestParam String filename) throws IOException {
+        downloadFile(response, filename);
+    }
+
+    @PostMapping(value = "post/download/v1")
+    @ApiOperation(value = "下载文件-文件流")
+    public void downloadFileByPost(HttpServletResponse response,
+                                   @ApiParam(value = "filename", defaultValue = "jpg.jpg") @RequestParam String filename) throws IOException {
+        downloadFile(response, filename);
+    }
+
+    public void downloadFile(HttpServletResponse response, String filename) throws IOException {
 
         //打成jar时，无法读取流
         /*File file = null;
@@ -129,7 +140,9 @@ public class WebFileController {
         }*/
 
         //支持读取jar中的文件流
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("file/"+filename);
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("file/" + filename);
+
+        assert inputStream != null;
 
         byte[] bytes = toByteArray(inputStream);
 //        byte[] bytes = toByteArray(new FileInputStream(file));
@@ -158,9 +171,10 @@ public class WebFileController {
 
     /**
      * 获取URL路径
+     *
      * @return http://localhost:19000 或 http://localhost:19000/web
      */
-    private String getUrlContextPath(HttpServletRequest request){
-        return request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+    private String getUrlContextPath(HttpServletRequest request) {
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 }
