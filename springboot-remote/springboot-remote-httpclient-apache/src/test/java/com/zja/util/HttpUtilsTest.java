@@ -119,7 +119,7 @@ public class HttpUtilsTest {
         Map<String, String> params = new HashMap<>();
         params.put("filename", "test2.txt");
 
-        String response = HttpUtils.doPostUploadFile(url, file, params, StandardCharsets.UTF_8);
+        String response = HttpUtils.doPostUploadFile(url, file, params);
 
         // Add your assertions here
         Assert.assertNotNull(response);
@@ -187,7 +187,7 @@ public class HttpUtilsTest {
         Map<String, String> params = new HashMap<>();
         params.put("filename", "jpg.jpg");
         // Act
-        byte[] result = HttpUtils.doPostDownloadFile(url,params);
+        byte[] result = HttpUtils.doPostDownloadFile(url, params);
 
         // Assert
         Assertions.assertNotNull(result);

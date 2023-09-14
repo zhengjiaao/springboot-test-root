@@ -33,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -166,10 +167,14 @@ public class HttpUtils {
     }
 
     public static String doPostUploadFile(String url, MultipartFile multipartFile, Map<String, String> params) throws IOException {
-        return doPostUploadFile(url, multipartFile, params, CHARSET);
+        return doPostUploadFile(url, multipartFile, null, params, CHARSET);
     }
 
-    public static String doPostUploadFile(String url, MultipartFile multipartFile, Map<String, String> params, Charset charset) throws IOException {
+    public static String doPostUploadFile(String url, MultipartFile multipartFile, Map<String, String> headers, Map<String, String> params) throws IOException {
+        return doPostUploadFile(url, multipartFile, headers, params, CHARSET);
+    }
+
+    public static String doPostUploadFile(String url, MultipartFile multipartFile, Map<String, String> headers, Map<String, String> params, Charset charset) throws IOException {
         if (StringUtils.isEmpty(url)) {
             throw new IllegalArgumentException("URL cannot be empty.");
         }
@@ -194,6 +199,7 @@ public class HttpUtils {
         }
         HttpEntity httpEntity = builder.build();
         httpPost.setEntity(httpEntity);
+        setHeaders(headers, httpPost);
         return executeRequest(httpPost);
     }
 
@@ -332,4 +338,12 @@ public class HttpUtils {
         }
     }
 
+    private static void setHeaders(Map<String, String> headers, HttpRequestBase httpMethod) {
+        if (headers != null && !headers.isEmpty()) {
+            Set<Map.Entry<String, String>> entrySet = headers.entrySet();
+            for (Map.Entry<String, String> entry : entrySet) {
+                httpMethod.setHeader(entry.getKey(), entry.getValue());
+            }
+        }
+    }
 }
