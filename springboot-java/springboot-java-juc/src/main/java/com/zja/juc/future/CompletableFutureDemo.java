@@ -45,6 +45,9 @@ public class CompletableFutureDemo {
         //实战应用
         Map<String, Object> userInfo = getUserInfo();
         System.out.println(JSON.toJSONString(userInfo, true));
+
+        //thenApply 串行化执行
+//        thenApplyTest();
     }
 
     /**
@@ -139,27 +142,27 @@ public class CompletableFutureDemo {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public void thenApplyTest() throws ExecutionException, InterruptedException {
+    public static void thenApplyTest() throws ExecutionException, InterruptedException {
         log.info("test......start");
 
         CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-            log.info("supply async.......");
-            int i = 10 / 0;
+            log.info("supplyAsync()");
+
+//            int i = 10 / 0; //模拟异常
+
             return 10;
         }).thenApply(new Function<Integer, String>() {
             @Override
             public String apply(Integer params) {
-                log.info("then apply.......");
+                log.info("thenApply()");
                 return params + " append 5";
             }
         }).exceptionally(t -> {
-            log.info("exception deal");
+            log.error("exception deal");
             return null;
         });
 
         String res = future.get();
-        log.info("test.......result:{}", res);
-
-        log.info("test......end");
+        log.info("result:{}", res);
     }
 }
