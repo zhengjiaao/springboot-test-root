@@ -29,6 +29,7 @@
         <module>springboot-monitor</module>
         <module>springboot-mq</module>
         <module>springboot-nlp</module>
+        <module>springboot-patterns</module>
         <module>springboot-process</module>
         <module>springboot-qrcode</module>
         <module>springboot-remote</module>
