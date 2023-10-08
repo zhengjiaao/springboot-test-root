@@ -49,7 +49,7 @@
 
 > 以下是已经完成的示例模块
 
-- [dp-behaviour  行为型模式 11种](./3-behaviour-patterns)
 - [dp-creational 创建型模式 5种](./1-creational-patterns)
 - [dp-structural 结构型模式 7种](./2-structural-patterns)
+- [dp-behaviour  行为型模式 11种](./3-behaviour-patterns)
 
