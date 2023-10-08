@@ -15,3 +15,12 @@
 * 原型模式（Prototype Pattern）
 
 
+## spring-boot 集成(组件)示例
+
+> 以下是已经完成的示例模块
+
+- [1-singleton-pattern 单例模式](./1-singleton-pattern)
+- [2-factory-pattern 工厂模式](./2-factory-pattern)
+- [3-abstract-factory-pattern 抽象工厂模式](./3-abstract-factory-pattern)
+- [4-builder-pattern 建造者模式](./4-builder-pattern)
+- [5-prototype-pattern 原型模式](./5-prototype-pattern)
