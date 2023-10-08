@@ -17,6 +17,12 @@
 
     <modules>
         <module>1-adapter-pattern</module>
+        <module>2-decorator-pattern</module>
+        <module>3-proxy-pattern</module>
+        <module>4-bridge-pattern</module>
+        <module>5-composite-pattern</module>
+        <module>6-facade-pattern</module>
+        <module>7-flyweight-pattern</module>
     </modules>
 
 </project>
