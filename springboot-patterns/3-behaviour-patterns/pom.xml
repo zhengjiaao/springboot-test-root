@@ -17,6 +17,16 @@
 
     <modules>
         <module>1-observer-pattern</module>
+        <module>2-strategy-pattern</module>
+        <module>3-template-method-pattern</module>
+        <module>4-iterator-pattern</module>
+        <module>5-command-pattern</module>
+        <module>6-state-pattern</module>
+        <module>7-chain-of-responsibility-pattern</module>
+        <module>8-visitor-pattern</module>
+        <module>9-memento-pattern</module>
+        <module>10-mediator-pattern</module>
+        <module>11-interpreter-pattern</module>
     </modules>
 
 </project>
