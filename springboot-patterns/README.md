@@ -49,13 +49,13 @@
 
 > 以下是已经完成的示例模块
 
-- [dp-creational 创建型模式 5种](./1-creational-patterns)
+- [1-creational-patterns 创建型模式 5种](./1-creational-patterns)
     - [1-singleton-pattern 单例模式](./1-singleton-pattern)
     - [2-factory-pattern 工厂模式](./2-factory-pattern)
     - [3-abstract-factory-pattern 抽象工厂模式](./3-abstract-factory-pattern)
     - [4-builder-pattern 建造者模式](./4-builder-pattern)
     - [5-prototype-pattern 原型模式](./5-prototype-pattern)
-- [dp-structural 结构型模式 7种](./2-structural-patterns)
+- [2-structural-patterns 结构型模式 7种](./2-structural-patterns)
     - [1-adapter-pattern 适配器模式](./1-adapter-pattern)
     - [2-decorator-pattern 装饰者模式](./2-decorator-pattern)
     - [3-proxy-pattern 代理模式](./3-proxy-pattern)
@@ -63,7 +63,7 @@
     - [5-composite-pattern 组合模式](./5-composite-pattern)
     - [6-facade-pattern 外观模式](./6-facade-pattern)
     - [7-flyweight-pattern 享元模式](./7-flyweight-pattern)
-- [dp-behaviour  行为型模式 11种](./3-behaviour-patterns)
+- [3-behaviour-patterns  行为型模式 11种](./3-behaviour-patterns)
     - [1-observer-pattern 观察者模式](./1-observer-pattern)
     - [2-strategy-pattern 策略模式](./2-strategy-pattern)
     - [3-template-method-pattern 模板方法模式](./3-template-method-pattern)
