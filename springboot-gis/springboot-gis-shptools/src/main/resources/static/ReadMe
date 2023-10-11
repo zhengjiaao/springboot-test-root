@@ -8,5 +8,5 @@ Polygon类型   :  中国建筑物【部分 -- 北京故宫】
 
 ==============
 
-E:\Spring-boot\Spring-Boot-Shaper\src\main\resources\static\shpTest[Point]\dp_tl.shp
-E:\Spring-boot\Spring-Boot-Shaper\src\main\resources\static\shpTest[Polygon]\china_building_part.shp
+\resources\static\shpTest[Point]\dp_tl.shp
+\resources\static\shpTest[Polygon]\china_building_part.shp

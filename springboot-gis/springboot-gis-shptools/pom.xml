@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>springboot-test-root</artifactId>
+		<artifactId>springboot-gis</artifactId>
 		<groupId>com.zja</groupId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
@@ -11,7 +11,7 @@
 	<artifactId>springboot-test-shptools</artifactId>
 
 	<packaging>war</packaging>
-	<name>springboot-test-shptools</name>
+	<name>springboot-gis-shptools</name>
 	<description>spring-boot集成geotools工具包，实现将几何对象写进Shapefile【文件】并读取和显示</description>
 
 	<properties>
