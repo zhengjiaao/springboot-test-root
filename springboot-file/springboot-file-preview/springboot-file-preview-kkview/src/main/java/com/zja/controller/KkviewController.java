@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Kkview 文档预览
+ * Kkview 文档预览(Kkview v4.3.0)
  *
  * @author: zhengja
  * @since: 2023/08/03 11:22
