@@ -122,6 +122,7 @@ springboot 项目中常用到的一些技术集成示例，可以快速开始开
 | springboot-login    | 预研接入第三方平台登录(QQ、微信、企业微信、...)                | 计划中     |
 | springboot-payment  | 预研接入第三方平台支付(微信、支付宝、QQ、银联、...)              | 计划中     |
 | springboot-gis      | 预研Gis空间数据处理(GeoTools、gdal、JTS、PostGis、...) | 计划中     |
+| springboot-ai       | 预研Ai相关技术(ChatGPT、ChatGLM、...)              | 计划中     |
 
 ## 你还可以学习其他项目
 
