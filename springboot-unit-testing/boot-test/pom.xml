@@ -4,14 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.zja</groupId>
-        <artifactId>springboot-unittest</artifactId>
+        <artifactId>springboot-unit-testing</artifactId>
         <version>2.0-SNAPSHOT</version>
     </parent>
     <groupId>com.zja</groupId>
-    <artifactId>springboot-unittest-junit</artifactId>
+    <artifactId>boot-test</artifactId>
 
     <packaging>war</packaging>
-    <name>springboot-unittest-junit</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -19,12 +18,25 @@
 
     <dependencies>
 
-        <!--单元测试-->
+        <!-- spring-boot-starter-test 单元测试-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- 使用 spring-boot-starter-test 模块来实现自动化的数据库测试-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!-- 在单元测试中使用嵌入式数据库 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
