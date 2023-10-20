@@ -6,7 +6,7 @@
  * @Date: 2023-10-10 16:58
  * @Since:
  */
-package com.zja.shapefile;
+package com.zja.shapefile.util;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.nio.file.Paths;
  * @since: 2023/10/10 16:58
  */
 @Slf4j
-public class TestUtil {
+public class TargetPathUtil {
 
     @Test
     public void testSaveTemporaryFile() throws IOException {

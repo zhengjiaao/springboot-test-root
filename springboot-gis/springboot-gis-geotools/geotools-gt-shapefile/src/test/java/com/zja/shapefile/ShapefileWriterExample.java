@@ -8,6 +8,7 @@
  */
 package com.zja.shapefile;
 
+import com.zja.shapefile.util.TargetPathUtil;
 import org.geotools.data.*;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
@@ -31,6 +32,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * 创建空Shapefile文件，并写入数据到Shapefile中
+ *
  * @author: zhengja
  * @since: 2023/10/11 12:14
  */
@@ -39,7 +42,7 @@ public class ShapefileWriterExample {
     @Test
     public void test() throws IOException, FactoryException {
         //shapefile 文件路径
-        String shapefilePath = TestUtil.createTempFile("output", "1_shapefile.shp");
+        String shapefilePath = TargetPathUtil.createTempFile("output", "1_shapefile.shp");
 
         //创建空 shapefile
         createEmpty_shapefile(shapefilePath);

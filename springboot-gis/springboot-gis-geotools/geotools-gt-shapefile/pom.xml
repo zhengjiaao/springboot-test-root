@@ -51,11 +51,31 @@
             <artifactId>gt-referencing</artifactId>
             <version>${geotools.version}</version>
         </dependency>
-        <!--<dependency>
+        <!--坐标系转换-->
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-epsg-hsql</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <!--显示和交互,在 Swing 应用程序中显示 Shapefile 文件-->
+        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-swing</artifactId>
             <version>${geotools.version}</version>
-        </dependency>-->
+        </dependency>
+
+        <!--shapefile to geojson-->
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-geojson</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <version>1.13</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

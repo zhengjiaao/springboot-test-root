@@ -8,6 +8,7 @@
  */
 package com.zja.shapefile;
 
+import com.zja.shapefile.util.ResourceUtil;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -28,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 读取 Shapefile 文件
+ *
  * @author: zhengja
  * @since: 2023/10/11 11:08
  */
@@ -36,21 +39,23 @@ public class ShapefileReadExample {
     @Test
     public void test() throws IOException {
         // Shapefile 文件路径
-        String shapefilePath = TestUtil.getTempFilePath("output", "1_shapefile.shp");
+//        String shapefilePath = TargetPathUtil.getTempFilePath("output", "1_shapefile.shp");
+        String shapefilePath = ResourceUtil.getResourceFilePath("310000_full/310000_full.shp");
+
         Map<String, Serializable> params = new HashMap<>();
         params.put(ShapefileDataStoreFactory.URLP.key, new File(shapefilePath).toURI().toURL());
         params.put(ShapefileDataStoreFactory.CREATE_SPATIAL_INDEX.key, true);
 
         ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
-        ShapefileDataStore dataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
+        ShapefileDataStore shpDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
 
         // 读取 Shapefile
 
         // 设置字符编码（如果 Shapefile 使用非 UTF-8 编码）
-        dataStore.setCharset(Charset.forName("UTF-8"));
+        shpDataStore.setCharset(Charset.forName("UTF-8"));
 
         // 获取 Shapefile 的 FeatureCollection
-        SimpleFeatureCollection featureCollection = dataStore.getFeatureSource().getFeatures();
+        SimpleFeatureCollection featureCollection = shpDataStore.getFeatureSource().getFeatures();
 
         // 获取 FeatureCollection 的特征类型
         SimpleFeatureType featureType = featureCollection.getSchema();
@@ -61,6 +66,9 @@ public class ShapefileReadExample {
 
         // 输出 FeatureCollection 的要素数量
         System.out.println("Number of Features: " + featureCollection.size());
+
+        String[] typeNames = shpDataStore.getTypeNames();
+        System.out.println("typeName:" + typeNames[0]);
 
         // 迭代处理每个要素
         try (SimpleFeatureIterator featureIterator = featureCollection.features()) {

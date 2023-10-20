@@ -3,7 +3,23 @@
 **说明**
 
 gt-shapefile 模块（geotools-shapefile）是 GeoTools 库的一个扩展模块，专门用于读取和写入 Shapefile 格式的数据。
-Shapefile 是一种常见的地理空间数据格式，通常用于存储矢量数据，如点、线、面等几何对象。
+
+## Shapefile文件格式介绍
+
+> Shapefile 是一种常见的地理空间数据格式，通常用于存储矢量数据，如点、线、面等几何对象。    
+> Shapefile文件可以包含一个或多个图层。每个图层对应Shapefile文件中的一个文件，这些文件具有相同的前缀名称但不同的扩展名。
+
+Shapefile文件由以下几个文件组成：
+
+1. .shp：包含几何数据的主要文件，存储点、线、多边形等几何实体的空间信息。
+2. .shx：空间索引文件，提供.shp文件中几何实体的快速访问和查询。
+3. .dbf：属性数据文件，存储与每个几何实体相关联的属性信息。
+4. .prj：投影文件，定义Shapefile文件中几何数据的地理参考系统。
+
+每个Shapefile文件可以包含一个图层，也可以包含多个图层。
+如果Shapefile文件包含多个图层，则将使用相同的.shp、.shx和.prj文件，但每个图层将有自己的.dbf文件，其中包含该图层的属性数据。
+
+要确定Shapefile文件中有多少个图层，可以查看.dbf文件的数量。每个.dbf文件对应一个图层。
 
 ## gt-shapefile 模块的功能
 
@@ -25,6 +41,7 @@ gt-shapefile 模块提供了以下主要功能：
 引入依赖：
 
 ```xml
+
 <dependencies>
     <dependency>
         <groupId>org.geotools</groupId>
@@ -36,9 +53,142 @@ gt-shapefile 模块提供了以下主要功能：
 
 ### 读写 Shapefile 数据
 
+```xml
+
+<dependencies>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-main</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-shapefile</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-referencing</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+</dependencies>
+```
+
 简单示例：读写shapefile文件
 
 由于代码过多，参考单元示例 `shapefile/ShapefileReadExample.java` 和`shapefile/ShapefileWriterExample.java`
 
+### Java实现 shape文件转成 geojson
 
+```xml
+
+<dependencies>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-shapefile</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-geojson</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+</dependencies>
+```
+
+代码示例: `ShapefileToGeoJSONExample.java`
+
+### Java实现 shape文件转成 geojson
+
+```xml
+
+<dependencies>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-shapefile</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-geojson</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.vividsolutions</groupId>
+        <artifactId>jts</artifactId>
+        <version>1.13</version>
+    </dependency>
+</dependencies>
+```
+
+代码示例: `GeoJSONToShapefileTest.java`
+
+### Shapefile 与 GeoTools 的 CRS 功能集成，进行坐标转换
+
+> Shapefile 与 GeoTools 的 CRS 功能集成，进行坐标转换
+
+```xml
+
+<dependencies>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-shapefile</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+    <!--坐标转换-->
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-epsg-hsql</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-referencing</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-geometry</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+</dependencies>
+```
+
+代码示例: `CoordinateTransformExample.java`
+
+### Shapefile 与 GeoTools 的 CRS 功能集成，进行投影操作
+
+代码示例: `ProjectionExample.java`
+
+### shapefile 集成 gt-swing 显示与交互
+
+```xml
+
+<dependencies>
+   <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-main</artifactId>
+      <version>${geotools.version}</version>
+   </dependency>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-shapefile</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+   <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-referencing</artifactId>
+      <version>${geotools.version}</version>
+   </dependency>
+   
+    <!--显示和交互,在 Swing 应用程序中显示 Shapefile 文件-->
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-swing</artifactId>
+        <version>${geotools.version}</version>
+    </dependency>
+</dependencies>
+```
+
+代码示例: `ShapefileSwingExample.java`
 
