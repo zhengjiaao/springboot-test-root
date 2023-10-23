@@ -8,6 +8,7 @@
  */
 package com.zja.geotools;
 
+import com.zja.geotools.util.TargetPathUtil;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -35,7 +36,7 @@ public class WriteGeoJSONExample {
     @Test
     public void testWriteGeoJSONFile() {
         // GeoJSON 文件路径
-        String geoJSONFilePath = TestUtil.createTempFile("output.geojson");
+        String geoJSONFilePath = TargetPathUtil.createTempFile("output.geojson");
 
         // 创建要素类型
         SimpleFeatureType featureType = createFeatureType();

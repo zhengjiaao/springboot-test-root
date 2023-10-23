@@ -8,6 +8,7 @@
  */
 package com.zja.geotools;
 
+import com.zja.geotools.util.ResourceUtil;
 import org.geotools.data.geojson.GeoJSONReader;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -31,8 +32,8 @@ public class ReadGeoJSONExample {
     @Test
     public void testReadGeoJSONFile() throws IOException {
         // GeoJSON 文件路径
-        String geoJSONFilePath = TestUtil.getTempFilePath("output.geojson");
-
+        //String geoJSONFilePath = TargetPathUtil.getTempFilePath("output.geojson");
+        String geoJSONFilePath = ResourceUtil.getResourceFilePath("310000_full.json");
         // 读取 GeoJSON 文件
         readGeoJSON2(geoJSONFilePath);
     }
@@ -48,6 +49,9 @@ public class ReadGeoJSONExample {
             // 获取要素几何类型
             Class<?> binding = feature.getDefaultGeometryProperty().getType().getBinding();
             Object defaultGeometry = feature.getDefaultGeometry();
+
+            //具体的几何类型
+            System.out.println(defaultGeometry.toString());
 
             // 具体的几何类型判断
             if (defaultGeometry instanceof Point) {

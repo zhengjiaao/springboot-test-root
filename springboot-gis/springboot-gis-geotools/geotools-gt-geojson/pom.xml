@@ -46,7 +46,7 @@
             <version>${geotools.version}</version>
         </dependency>
 
-        <!--geojson转-->
+        <!--geojson-->
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geojson</artifactId>
