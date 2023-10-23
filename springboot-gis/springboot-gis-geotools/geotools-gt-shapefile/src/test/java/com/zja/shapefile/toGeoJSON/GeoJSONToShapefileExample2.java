@@ -38,12 +38,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * GeoJSON To Shapefile todo 未成功
+ * todo 未成功：geometry 转换后数据不全，丢失了一部分。
+ * <p>
+ * GeoJSON To Shapefile
  *
  * @author: zhengja
  * @since: 2023/10/19 10:55
  */
-public class GeoJSONToShapefileTest {
+@Deprecated
+public class GeoJSONToShapefileExample2 {
 
     @Test
     public void test_GeoJSONToShapefileConverter() {

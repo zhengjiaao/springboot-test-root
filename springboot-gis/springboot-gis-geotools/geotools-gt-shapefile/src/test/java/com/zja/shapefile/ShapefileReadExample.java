@@ -8,7 +8,7 @@
  */
 package com.zja.shapefile;
 
-import com.zja.shapefile.util.ResourceUtil;
+import com.zja.shapefile.util.TargetPathUtil;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -40,7 +40,8 @@ public class ShapefileReadExample {
     public void test() throws IOException {
         // Shapefile 文件路径
 //        String shapefilePath = TargetPathUtil.getTempFilePath("output", "1_shapefile.shp");
-        String shapefilePath = ResourceUtil.getResourceFilePath("310000_full/310000_full.shp");
+//        String shapefilePath = ResourceUtil.getResourceFilePath("310000_full/310000_full.shp");
+        String shapefilePath = TargetPathUtil.getTempFilePath("310000_full.shp");
 
         Map<String, Serializable> params = new HashMap<>();
         params.put(ShapefileDataStoreFactory.URLP.key, new File(shapefilePath).toURI().toURL());
