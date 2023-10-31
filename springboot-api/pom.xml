@@ -18,6 +18,7 @@
 	<modules>
 		<module>springboot-api-swagger2</module>
 		<module>springboot-api-swagger2-knife4j</module>
+		<module>springboot-api-swagger2-modules</module>
 		<module>springboot-api-swagger3</module>
 		<module>springboot-api-swagger3-knife4j</module>
 	</modules>
