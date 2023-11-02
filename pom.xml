@@ -29,6 +29,7 @@
         <module>springboot-mapping</module>
         <module>springboot-monitor</module>
         <module>springboot-mq</module>
+        <module>springboot-ocr</module>
         <module>springboot-nlp</module>
         <module>springboot-patterns</module>
         <module>springboot-process</module>
