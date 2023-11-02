@@ -11,14 +11,14 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @since: 2023/11/02 9:39
  */
 @SpringBootApplication
-public class OCRTess4jApplication extends SpringBootServletInitializer {
+public class OCRTesseractApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication.run(OCRTess4jApplication.class, args);
+        SpringApplication.run(OCRTesseractApplication.class, args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(OCRTess4jApplication.class);
+        return application.sources(OCRTesseractApplication.class);
     }
 }
