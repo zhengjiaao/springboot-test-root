@@ -23,19 +23,19 @@ import java.io.IOException;
  * @author: zhengja
  * @since: 2023/11/02 9:41
  */
-public class OCRImageTest {
+public class ImageOCRTest {
 
     //简单示例1
     @Test
-    public void ocr_png_test1() throws IOException {
+    public void ocr_image_recognizing_text() throws IOException {
         Tesseract tesseract = new Tesseract();
         //设置指定训练集位置，推荐配置为全局环境变量：TESSDATA_PREFIX=E:\App\tesseract-ocr\tessdata
         tesseract.setDatapath("E:\\App\\tesseract-ocr\\tessdata");
-        //设置识别语言(默认是英文识别)
+        //设置识别语言(默认是英文识别):指定一个或多个语言，用逗号分隔，例如："eng"表示英语，"chi_sim"表示简体中文。
         tesseract.setLanguage("chi_sim"); //chi_sim 是中文
 
         //需要识别的图
-        File imageFile = new File("D:\\temp\\images\\ocr-test.png");
+        File imageFile = new File("D:\\temp\\ocr\\input.png");
 
         String result = null;
         try {
@@ -50,7 +50,7 @@ public class OCRImageTest {
 
     //简单示例2
     @Test
-    public void ocr_png_test2() throws IOException {
+    public void ocr_image_recognizing_text_2() throws IOException {
 
         // 创建实例
         ITesseract instance = new Tesseract();
@@ -64,7 +64,7 @@ public class OCRImageTest {
         instance.setPageSegMode(6);
 
         // 读取文件
-        BufferedImage image = ImageIO.read(new File("D:\\temp\\images\\ocr-test.png"));
+        BufferedImage image = ImageIO.read(new File("D:\\temp\\ocr\\input.png"));
         try {
             // 识别
             //String res = instance.doOCR(new File("C:\\Users\\Lenovo\\Pictures\\联想截图\\联想截图_20230220144409.png"));
@@ -77,14 +77,14 @@ public class OCRImageTest {
 
     //复杂实例：增强识别率
     @Test
-    public void ocr_png_test3() throws IOException {
+    public void ocr_image_recognizing_text_3() throws IOException {
         //设置训练库的位置
         String modelPath = "E:\\App\\tesseract-ocr\\tessdata";
 
         //原图(可能存在模糊不好识别情况)
-        File imageFile = new File("D:\\temp\\images\\ocr-test.png");
+        File imageFile = new File("D:\\temp\\ocr\\input.png");
         //处理后的图(放大倍数，增强识别率)
-        File imageFileEnlarge = new File("D:\\temp\\images\\ocr-test-temp.png");
+        File imageFileEnlarge = new File("D:\\temp\\ocr\\ocr-output.png");
 
         String result = null;
         try {

@@ -38,7 +38,7 @@ public class OCRExample {
             tesseract.setLanguage("eng,chi_sim"); //chi_sim 是中文
 
             // 读取图像文件
-            File imageFile = new File("D:\\temp\\images\\ocr-test.png");
+            File imageFile = new File("D:\\temp\\ocr\\input.png");
 
             // 进行文本识别
             String result = tesseract.doOCR(imageFile);
