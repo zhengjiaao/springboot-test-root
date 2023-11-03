@@ -89,11 +89,11 @@
             <version>23.3</version>
         </dependency>-->
         <!--OCR图像中提取文本处理 API-->
-        <!--<dependency>
+        <dependency>
             <groupId>com.aspose</groupId>
             <artifactId>aspose-ocr</artifactId>
-            <version>23.7.1</version>
-        </dependency>-->
+            <version>23.10.0</version>
+        </dependency>
 
         <!--动态字节技术-->
         <dependency>
