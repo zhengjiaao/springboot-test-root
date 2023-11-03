@@ -17,6 +17,7 @@
 
     <modules>
         <module>ocr-apache-tika</module>
+        <module>ocr-aspose</module>
         <module>ocr-tesseract</module>
     </modules>
 

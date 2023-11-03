@@ -9,16 +9,21 @@
     </parent>
 
     <groupId>com.zja</groupId>
-    <artifactId>ocr-tess4j</artifactId>
+    <artifactId>ocr-aspose</artifactId>
 
     <packaging>jar</packaging>
 
     <dependencies>
-        <!--ocr tesseract-->
+        <!--ocr aspose-->
         <dependency>
-            <groupId>net.sourceforge.tess4j</groupId>
-            <artifactId>tess4j</artifactId>
-            <version>5.8.0</version>
+            <groupId>com.aspose</groupId>
+            <artifactId>aspose-ocr</artifactId>
+            <version>21.10</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime</artifactId>
+            <version>1.8.1</version>
         </dependency>
 
         <dependency>
