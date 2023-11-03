@@ -24,11 +24,12 @@ import java.io.InputStream;
  * @author: zhengja
  * @since: 2023/11/02 15:32
  */
+@Deprecated // todo 不理想，无法打印正确内容
 public class ImageMetadataExtractor {
 
     @Test
     public void test() {
-        File imageFile = new File("D:\\temp\\images\\ocr-test.png"); // 图片文件路径
+        File imageFile = new File("D:\\temp\\ocr\\input.png"); // 图片文件路径
 
         try (InputStream stream = new FileInputStream(imageFile)) {
             // 创建一个解析器
