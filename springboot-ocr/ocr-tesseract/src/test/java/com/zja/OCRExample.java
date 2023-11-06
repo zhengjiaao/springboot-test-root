@@ -30,15 +30,15 @@ public class OCRExample {
         tesseract.setDatapath(tessDataPath);
 
         // 设置其他配置参数
-//        tesseract.setPageSegMode(PageSegMode.AUTO); // 页面分割模式
-//        tesseract.setOcrEngineMode(OcrEngineMode.LSTM_ONLY); // OCR引擎模式
+//        tesseract.setPageSegMode(ITessAPI.TessPageSegMode.PSM_AUTO); // 页面分割模式, 默认 -1
+//        tesseract.setOcrEngineMode(ITessAPI.TessOcrEngineMode.OEM_DEFAULT); // OCR引擎模式， 默认 3
 
         try {
             //设置识别语言(默认是英文识别):指定一个或多个语言，用逗号分隔，例如："eng"表示英语，"chi_sim"表示简体中文。
-            tesseract.setLanguage("eng,chi_sim"); //chi_sim 是中文
+            tesseract.setLanguage("chi_sim+eng"); //chi_sim 是中文
 
             // 读取图像文件
-            File imageFile = new File("D:\\temp\\ocr\\input.png");
+            File imageFile = new File("D:\\temp\\ocr\\input-3.png");
 
             // 进行文本识别
             String result = tesseract.doOCR(imageFile);

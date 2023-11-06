@@ -36,7 +36,7 @@ public class ImageToPdfOCRExample {
         CommandUtil.ocrCommand(command);
     }
 
-    //Tesseract 将图像转换为 PDF: 当有多个图谱转为pdf时
+    //Tesseract 将图像转换为 PDF: 多张图像转为pdf
     @Test
     public void ocr_multiple_images_to_pdf() throws IOException, InterruptedException {
         String inputMultipleImagesPath = "D:\\temp\\ocr\\input-multiple_images.txt";
