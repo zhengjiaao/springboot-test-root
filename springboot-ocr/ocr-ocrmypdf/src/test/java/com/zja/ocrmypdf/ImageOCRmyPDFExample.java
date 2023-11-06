@@ -28,14 +28,19 @@ public class ImageOCRmyPDFExample {
         // 输入文件路径
         String inputImagePath = "D:\\temp\\ocr\\input.png";
         // 输出PDF文件路径
-        String outputPdfPath = "D:\\temp\\ocr\\image-output.pdf";
+        String outputPdfPath = "D:\\temp\\ocr\\output-image.pdf";
 
         // 执行OCRmyPDF命令  注意：--image-dpi，某些图片不一定有image-dpi，需要设置一个默认的，不然报错。
-        String command = "ocrmypdf -l eng+chi_sim --image-dpi 500 " + inputImagePath + " " + outputPdfPath;
+        String command = "ocrmypdf -l chi_sim+eng --image-dpi 1000 " + inputImagePath + " " + outputPdfPath;
         //todo 请注意，DPI值的可用性取决于图片格式以及图片本身是否包含DPI信息。某些图片格式可能没有DPI信息可供提取，因此在使用这段代码时应该注意处理这种情况。
 
         // 执行OCRmyPDF命令
         OCRmyPDFUtil.ocrCommand(command);
+
+        // todo 可能会遇到的问题
+        // 错误：UnsupportedImageFormatError: The input image has an alpha channel. Remove the alpha channel first.
+        // 原因：tesseract 目前不支持带有 alpha 通道（透明度通道）的图片。
+        // 方案：可以将图片转换为不带 alpha 通道的格式。
     }
 
     /**
