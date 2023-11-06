@@ -1,4 +1,4 @@
-
+# springboot-ocr
 
 **说明**
 
@@ -17,6 +17,13 @@ OCR系统使用各种技术分析图像或文档中字符的形状、模式和�
 
 OCR技术依赖于机器学习算法和计算机视觉技术来分析和解释图像中的文本。这些算法经过大量字符和字体的训练，以提高准确性并识别各种文本样式和语言。
 
-##
+## 一些OCR软件工具和库
 
 有许多OCR软件工具和库可用，既有独立应用程序，也有可集成到其他软件系统中的API。
+
+1. Tesseract：Tesseract是一个开源OCR引擎，由Google开发和维护。它支持多种编程语言，包括Python、C++、Java等，并且可以运行在多个操作系统上。Tesseract具有较高的识别准确性和广泛的语言支持。
+2. OCRopus：OCRopus是Tesseract引擎的基础上构建的一个OCR框架。它提供了一组工具和库，用于图像处理、文本分割、布局分析和文本识别等任务。OCRopus是一个功能强大且灵活的OCR解决方案，适用于各种OCR应用。
+3. PyTesseract：PyTesseract是Tesseract OCR引擎的Python封装库。它提供了简单易用的接口，使得在Python中使用Tesseract变得更加方便。PyTesseract可以轻松地读取图像中的文本，并返回识别结果。
+4. OpenCV：OpenCV是一个强大的计算机视觉库，其中包含了许多用于图像处理和分析的功能。虽然OpenCV本身不是专门为OCR设计的，但它提供了一些有用的工具和算法，用于预处理图像、文本分割和字符识别等任务。
+5. Adobe Acrobat：Adobe Acrobat是一个功能强大的PDF编辑和阅读软件，它也包含了OCR功能。通过Adobe Acrobat，你可以将扫描的文档转换为可编辑的文本，以及执行其他与OCR相关的操作。
+6. Amazon Textract：Amazon Textract是亚马逊AWS的一项OCR服务。它可以自动提取扫描文档、表格和表单中的文本和数据。Textract支持多种文件格式，并提供了API和SDK，以便开发人员可以轻松集成OCR功能到他们的应用程序中。
