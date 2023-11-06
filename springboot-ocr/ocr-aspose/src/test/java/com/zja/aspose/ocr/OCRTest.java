@@ -32,7 +32,7 @@ public class OCRTest {
         recognitionSettings.setDetectAreas(true);
         recognitionSettings.setAllowedCharacters(CharactersAllowedType.ALL);
         recognitionSettings.setLanguage(Language.Chi);
-        RecognitionResult result = api.RecognizePage("D:\\temp\\images\\ocr-test.png", recognitionSettings);
+        RecognitionResult result = api.RecognizePage("D:\\temp\\ocr\\input.png", recognitionSettings);
         System.out.println("Recognition result:\n" + result.recognitionText + "\n\n");
     }
 
