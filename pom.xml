@@ -26,6 +26,7 @@
         <module>springboot-file</module>
         <module>springboot-gis</module>
         <module>springboot-java</module>
+        <module>springboot-log</module>
         <module>springboot-login</module>
         <module>springboot-mapping</module>
         <module>springboot-monitor</module>
