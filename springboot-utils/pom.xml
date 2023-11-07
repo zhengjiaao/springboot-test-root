@@ -16,6 +16,8 @@
 	</properties>
 
 	<modules>
+		<module>springboot-guava</module>
+		<module>springboot-hutool</module>
 		<module>springboot-utils-file</module>
 		<module>springboot-utils-id</module>
 	</modules>
