@@ -19,6 +19,7 @@
     <modules>
         <module>springboot-ai</module>
         <module>springboot-api</module>
+        <module>springboot-baidu</module>
         <module>springboot-captcha</module>
         <module>springboot-db</module>
         <module>springboot-encrypt</module>
