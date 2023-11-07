@@ -5,6 +5,16 @@
 OCR（Optical Character Recognition，光学字符识别）是一种将印刷或手写文本转换为机器可读文本的技术。
 OCR系统使用各种技术分析图像或文档中字符的形状、模式和结构，然后将其转换为可编辑和可搜索的文本。
 
+## spring-boot 集成(组件)示例
+
+> 以下是已经完成的示例模块
+
+- [ocr-apache-tika 文本提取和内容分析工具](./ocr-apache-tika)
+- [ocr-aspose 文本提取（商业的）](./ocr-aspose)
+- [ocr-ocrmypdf 自动识别图像中的文字添加到PDF文档中（命令行工具）](./ocr-ocrmypdf)
+- [ocr-opencv 计算机视觉库（许多图像处理和计算机视觉算法）](./ocr-opencv)
+- [ocr-tesseract 图像文本识别（命令行工具）](./ocr-tesseract)
+
 ## OCR应用场景
 
 常见的OCR应用包括：
