@@ -34,7 +34,7 @@ public class ImageOCRTest {
         //设置指定训练集位置，推荐配置为全局环境变量：TESSDATA_PREFIX=E:\App\tesseract-ocr\tessdata
         tesseract.setDatapath("E:\\App\\tesseract-ocr\\tessdata");
         //设置识别语言(默认是英文识别):指定一个或多个语言，用逗号分隔，例如："eng"表示英语，"chi_sim"表示简体中文。
-        tesseract.setLanguage("chi_sim"); //chi_sim 是中文
+        tesseract.setLanguage("chi_sim+eng"); //chi_sim 是中文
 
         //需要识别的图
         File imageFile = new File("D:\\temp\\ocr\\input.png");
