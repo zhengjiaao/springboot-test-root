@@ -35,6 +35,22 @@
             <artifactId>tika-parsers-standard-package</artifactId>
         </dependency>
 
+        <!--可选的-->
+     <!--   <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parser-sqlite3-package</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parser-scientific-package</artifactId>
+        </dependency>-->
+
+        <!--检查语言-->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-langdetect-tika</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -53,5 +69,6 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 </project>

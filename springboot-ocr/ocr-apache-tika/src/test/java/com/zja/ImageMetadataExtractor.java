@@ -24,7 +24,7 @@ import java.io.InputStream;
  * @author: zhengja
  * @since: 2023/11/02 15:32
  */
-@Deprecated // todo 不理想，无法打印正确内容
+@Deprecated // todo 不理想，无法打印正确内容，推荐参考：TikaAndTesseractOCRTest.java
 public class ImageMetadataExtractor {
 
     @Test

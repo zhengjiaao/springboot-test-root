@@ -8,12 +8,14 @@
  */
 package com.zja;
 
+import com.zja.tika.ApacheTikaUtil;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -26,7 +28,10 @@ import java.nio.file.Paths;
  * @since: 2023/11/02 16:46
  */
 public class OfficeContentExtractor {
-    public static void main(String[] args) {
+
+
+    @Test
+    public void testExtractDocxMetadata() throws Exception {
         // 创建Tika解析器
         Parser parser = new AutoDetectParser();
 
@@ -48,4 +53,11 @@ public class OfficeContentExtractor {
         String extractedContent = handler.toString();
         System.out.println(extractedContent);
     }
+
+    @Test
+    public void testExtractDocxMetadata2() throws Exception {
+        String extractedContent = ApacheTikaUtil.extractedContent("D:\\temp\\word\\test.docx");
+        System.out.println(extractedContent);
+    }
+
 }

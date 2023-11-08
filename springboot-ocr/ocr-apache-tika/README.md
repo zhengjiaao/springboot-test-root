@@ -1,5 +1,7 @@
 # ocr-apache-tika
 
+- [Apache Tika 官网](https://tika.apache.org/)
+
 **说明**
 
 Apache Tika是一个开源的文本提取和内容分析工具，它支持处理多种文件格式。 它支持多种OCR引擎，包括Tesseract OCR和其他一些商业OCR引擎。

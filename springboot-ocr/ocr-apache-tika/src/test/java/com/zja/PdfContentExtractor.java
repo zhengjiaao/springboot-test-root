@@ -8,11 +8,13 @@
  */
 package com.zja;
 
+import com.zja.tika.ApacheTikaUtil;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.InputStream;
@@ -24,7 +26,8 @@ import java.nio.file.Files;
  */
 public class PdfContentExtractor {
 
-    public static void main(String[] args) {
+    @Test
+    public void testExtractPDF() throws Exception {
         File pdfFile = new File("D:\\temp\\pdf\\test.pdf"); // PDF文件路径
 
         try (InputStream stream = Files.newInputStream(pdfFile.toPath())) {
@@ -51,5 +54,11 @@ public class PdfContentExtractor {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testExtractPDF2() throws Exception {
+        String extractedContent = ApacheTikaUtil.extractedContent("D:\\temp\\pdf\\test.pdf");
+        System.out.println(extractedContent);
     }
 }
