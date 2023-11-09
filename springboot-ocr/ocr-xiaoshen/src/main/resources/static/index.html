@@ -32,14 +32,24 @@
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
             <div class="el-upload__tip" slot="tip">支持上传大多数文件格式，且不超过10M.</div>
-            <div class="el-upload__tip" slot="tip">可以从大多数文件格式(例如 PDF、DOC、图像 和
-                PPT)中提取文本，理论上支持上千种文件内容提取，但大多数的还未经过验证，需要自己去探索.
+            <div class="el-upload__tip" slot="tip">可以从大多数文件格式(例如 PDF、Office文件、图像 和
+                PPT)中提取文本，理论上支持几百千种文件内容提取，但大多数的还未经过验证，需要自己去探索.
             </div>
             <div class="el-upload__tip" slot="tip">后续计划：目前，仅是测试版本，后续将尝试提供 REST API
                 服务能力，以便其他业务系统使用，正在开发中...
             </div>
+            <div class="el-upload__tip" slot="tip">主要技术支撑：<a href="https://tesseract-ocr.github.io/"
+                                                                   target="_blank">Tesseract OCR</a></div>
             <div class="el-upload__tip" slot="tip">遇到问题联系开发者：郑家骜</div>
         </el-upload>
+
+        <p></p>
+
+        <div>
+            <el-button size="small" type="primary" @click="openDialog()" v>
+                查看预计支持提取的文件类型
+            </el-button>
+        </div>
 
         <div>
             <p>{{fileName}}</p>
@@ -53,6 +63,22 @@
         </div>
     </div>
 
+    <el-dialog title="预计支持提取的文件类型" :visible.sync="dialogVisible">
+        <div>
+            支持提取的文件类型示例：</br>
+            1. 文本文件：txt、csv、xml、html、markdown等。</br>
+            2. Microsoft Office文件：doc、docx、ppt、pptx、xls、xlsx等。</br>
+            3. Adobe PDF文件：pdf。</br>
+            4. 超文本标记语言文件：htm、html。</br>
+            5. 媒体文件(暂不支持)：音频文件（mp3、wav、flac等）、视频文件（mp4、avi、mov等）。</br>
+            6. 图像文件：jpg、png、gif、bmp等。</br>
+            7. 归档文件：zip、tar、gzip、bzip2等。</br>
+            8. CAD文件格式（如dwg、dxf）等</br>
+            8. 地理空间数据格式（如shp、kml）等</br>
+            8. 其他格式：包括电子书格式（如epub、mobi）、更多需要自己探索... ...
+        </div>
+    </el-dialog>
+
 </div>
 
 <script>
@@ -61,6 +87,7 @@
             return {
                 extractionButtonVisible: false,
                 downloadResultButtonVisible: false,
+                dialogVisible: false,
                 fileName: '',
                 fileId: ''
             }
@@ -74,6 +101,9 @@
             initData() {
 
             },
+            openDialog() {
+                this.dialogVisible = true
+            },
             handleBeforeUpload(file) {
                 this.fileName = file.name;
                 console.log('fileName', this.fileName);
@@ -82,6 +112,7 @@
                 // 处理上传成功的逻辑
                 console.log('上传成功', response);
                 this.extractionButtonVisible = true;
+                this.downloadResultButtonVisible = false;
                 this.fileId = response;
                 console.log('fileId', this.fileId);
             },
@@ -142,6 +173,7 @@
                     })
                     .catch(error => {
                         console.error('文件下载失败:', error);
+                        this.$message.error('下载结果失败:' + error);
                     });
             },
 
