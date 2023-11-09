@@ -33,7 +33,6 @@ public class PDFTextReader {
             System.out.println("PDF Text:");
             System.out.println(text);
 
-            document.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
