@@ -39,7 +39,7 @@ public class OCRXiaoshenController {
     @Autowired
     OCRXiaoshenService service;
 
-    private static final String ROOT_DIR = "D:\\file";
+    private static final String ROOT_DIR = "C:\\ocr\\data";
 
     @PostMapping("/upload")
     @ApiOperation(value = "上传文件")

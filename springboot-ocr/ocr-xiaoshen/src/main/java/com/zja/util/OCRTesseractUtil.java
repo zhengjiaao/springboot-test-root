@@ -31,7 +31,7 @@ public class OCRTesseractUtil {
         String result = null;
 
         Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath("E:\\App\\tesseract-ocr\\tessdata");
+//        tesseract.setDatapath("E:\\App\\tesseract-ocr\\tessdata");
         // 设置识别语言："eng"表示英语，"chi_sim"表示简体中文
         tesseract.setLanguage("chi_sim+eng");
 
