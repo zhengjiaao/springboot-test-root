@@ -3,63 +3,73 @@
  * @Department: 数据中心
  * @Author: 郑家骜[ào]
  * @Email: zhengja@dist.com.cn
- * @Date: 2023-11-03 15:14
+ * @Date: 2023-11-08 10:38
  * @Since:
  */
 package com.zja.ocrmypdf.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * @author: zhengja
- * @since: 2023/11/03 15:14
+ * @since: 2023/11/08 10:38
  */
 @Slf4j
 public class OCRmyPDFUtil {
 
+    private OCRmyPDFUtil() {
+
+    }
+
     /**
-     * 执行 OCRmyPDF 命令
+     * 将图像转 PDF/A
+     *
+     * @param inputImagePath /input.png
+     * @param outputPdfPath  /output-image.pdf
+     * @throws IOException
+     * @throws InterruptedException
      */
-    public static void ocrCommand(String command) throws IOException, InterruptedException {
-
-        Process process = Runtime.getRuntime().exec(command);
-
-        // 读取命令输出
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            log.info(line);
-        }
-
-        // 等待命令执行完成
-        int exitCode = process.waitFor();
-
-        if (exitCode != 0) {
-            //命令执行失败
-            String errorMessage = "OCRmyPDF 命令：" + command + "\n" +
-                    "OCRmyPDF 执行命令错误信息：" +
-                    getErrorMessage(process.getErrorStream());
-
-            throw new RuntimeException(errorMessage);
-        }
+    public static void ocrImageToPDFA(String inputImagePath, String outputPdfPath) throws IOException, InterruptedException {
+        ocrImageToPDFA(inputImagePath, outputPdfPath, 300);
     }
 
-    private static StringBuilder getErrorMessage(InputStream errorStream) throws IOException {
-        // 获取错误输出流
-        BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+    /**
+     * 将图像转 PDF/A
+     *
+     * @param inputImagePath /input.png
+     * @param outputPdfPath  /output-image.pdf
+     * @param imageDpi       图像的 DPI
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void ocrImageToPDFA(String inputImagePath, String outputPdfPath, int imageDpi) throws IOException, InterruptedException {
+        // OCRmyPDF命令
+        // 注意：--image-dpi，某些图片不一定有image-dpi，需要设置一个默认的，不然报错。
+        String command = "ocrmypdf -l chi_sim+eng --image-dpi " + imageDpi + " " + inputImagePath + " " + outputPdfPath;
+        //todo 请注意，DPI值的可用性取决于图片格式以及图片本身是否包含DPI信息。某些图片格式可能没有DPI信息可供提取，因此在使用这段代码时应该注意处理这种情况。
 
-        String line;
-        StringBuilder errorMessage = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            errorMessage.append(line).append("\n");
-        }
+        CommandUtil.command(command);
 
-        return errorMessage;
+        // todo 可能会遇到的问题
+        // 错误：UnsupportedImageFormatError: The input image has an alpha channel. Remove the alpha channel first.
+        // 原因：tesseract 目前不支持带有 alpha 通道（透明度通道）的图片。
+        // 方案：可以将图片转换为不带 alpha 通道的格式。
     }
 
+
+    /**
+     * 将 PDF 转为 PDF/A
+     *
+     * @param inputPdfPath  /input.pdf
+     * @param outputPdfPath /output.pdf
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void ocrPdfToPDFA(String inputPdfPath, String outputPdfPath) throws IOException, InterruptedException {
+        // OCRmyPDF命令
+        String command = "ocrmypdf --output-type pdfa --pdfa-image-compression jpeg --redo-ocr -l chi_sim+eng " + inputPdfPath + " " + outputPdfPath;
+        CommandUtil.command(command);
+    }
 }

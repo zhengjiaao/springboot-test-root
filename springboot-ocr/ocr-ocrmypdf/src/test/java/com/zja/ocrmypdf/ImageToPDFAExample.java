@@ -8,6 +8,7 @@
  */
 package com.zja.ocrmypdf;
 
+import com.zja.ocrmypdf.util.CommandUtil;
 import com.zja.ocrmypdf.util.OCRmyPDFUtil;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ import java.io.IOException;
  * @author: zhengja
  * @since: 2023/11/03 14:55
  */
-public class ImageOCRmyPDFExample {
+public class ImageToPDFAExample {
 
 
     /**
@@ -31,11 +32,11 @@ public class ImageOCRmyPDFExample {
         String outputPdfPath = "D:\\temp\\ocr\\output-image.pdf";
 
         // 执行OCRmyPDF命令  注意：--image-dpi，某些图片不一定有image-dpi，需要设置一个默认的，不然报错。
-        String command = "ocrmypdf -l chi_sim+eng --image-dpi 1000 " + inputImagePath + " " + outputPdfPath;
+//        String command = "ocrmypdf -l chi_sim+eng --image-dpi 1000 " + inputImagePath + " " + outputPdfPath;
         //todo 请注意，DPI值的可用性取决于图片格式以及图片本身是否包含DPI信息。某些图片格式可能没有DPI信息可供提取，因此在使用这段代码时应该注意处理这种情况。
 
         // 执行OCRmyPDF命令
-        OCRmyPDFUtil.ocrCommand(command);
+        OCRmyPDFUtil.ocrImageToPDFA(inputImagePath,outputPdfPath);
 
         // todo 可能会遇到的问题
         // 错误：UnsupportedImageFormatError: The input image has an alpha channel. Remove the alpha channel first.
@@ -57,7 +58,7 @@ public class ImageOCRmyPDFExample {
 
         String command = "tesseract " + inputImagePath + " " + outputPdfPrefixPath + " pdf";
 
-        OCRmyPDFUtil.ocrCommand(command);
+        CommandUtil.command(command);
     }
 
     //Tesseract 将图像转换为 PDF: 当有多个图谱转为pdf时
@@ -68,7 +69,7 @@ public class ImageOCRmyPDFExample {
 
         String command = "tesseract " + inputMultipleImagesPath + " " + outputPdfPrefixPath + " pdf";
 
-        OCRmyPDFUtil.ocrCommand(command);
+        CommandUtil.command(command);
     }
 
 }

@@ -8,7 +8,7 @@
  */
 package com.zja.ocrmypdf;
 
-import com.zja.ocrmypdf.util.OCRmyPDFUtil;
+import com.zja.ocrmypdf.util.CommandUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -35,6 +35,6 @@ public class ImageImg2pdfExample {
 
         String command = "img2pdf " + inputImagePath + " | ocrmypdf - " + outputPdfPath;
 
-        OCRmyPDFUtil.ocrCommand(command);
+        CommandUtil.command(command);
     }
 }
