@@ -9,7 +9,10 @@
 package com.zja.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -24,19 +27,19 @@ public class OCRmyPDFUtil {
     }
 
     /**
-     * 将图像转pdf
+     * 将图像转 PDF/A
      *
      * @param inputImagePath /input.png
      * @param outputPdfPath  /output-image.pdf
      * @throws IOException
      * @throws InterruptedException
      */
-    public void ocrImageToPdf(String inputImagePath, String outputPdfPath) throws IOException, InterruptedException {
-        ocrImageToPdf(inputImagePath, outputPdfPath, 300);
+    public static void ocrImageToPDFA(String inputImagePath, String outputPdfPath) throws IOException, InterruptedException {
+        ocrImageToPDFA(inputImagePath, outputPdfPath, 300);
     }
 
     /**
-     * 将图像转pdf
+     * 将图像转 PDF/A
      *
      * @param inputImagePath /input.png
      * @param outputPdfPath  /output-image.pdf
@@ -44,7 +47,7 @@ public class OCRmyPDFUtil {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void ocrImageToPdf(String inputImagePath, String outputPdfPath, int imageDpi) throws IOException, InterruptedException {
+    public static void ocrImageToPDFA(String inputImagePath, String outputPdfPath, int imageDpi) throws IOException, InterruptedException {
         // OCRmyPDF命令
         // 注意：--image-dpi，某些图片不一定有image-dpi，需要设置一个默认的，不然报错。
         String command = "ocrmypdf -l chi_sim+eng --image-dpi " + imageDpi + " " + inputImagePath + " " + outputPdfPath;
@@ -67,10 +70,36 @@ public class OCRmyPDFUtil {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void ocrPdfToPdf(String inputPdfPath, String outputPdfPath) throws IOException, InterruptedException {
+    public static void ocrPdfToPDFA(String inputPdfPath, String outputPdfPath) throws IOException, InterruptedException {
         // OCRmyPDF命令
-        String command = "ocrmypdf -l eng+chi_sim --force-ocr " + inputPdfPath + " " + outputPdfPath;
+        String command = "ocrmypdf --output-type pdfa --pdfa-image-compression jpeg --redo-ocr -l chi_sim+eng " + inputPdfPath + " " + outputPdfPath;
         CommandUtil.command(command);
     }
 
+    public static String ocrPdf(String inputPdfPath) {
+        File file = new File(inputPdfPath);
+        if (!file.exists()) {
+            throw new RuntimeException("文件不存在.");
+        }
+
+        File parentFile = file.getParentFile();
+        String outputPdfPath = parentFile.getAbsolutePath() + File.separator + "output.pdf";
+
+        try {
+            ocrPdfToPDFA(inputPdfPath, outputPdfPath);
+            return getPdfText(outputPdfPath);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String getPdfText(String pdfFilePath) {
+        try (PDDocument document = PDDocument.load(new File(pdfFilePath))) {
+            PDFTextStripper textStripper = new PDFTextStripper();
+            return textStripper.getText(document);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 }

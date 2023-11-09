@@ -39,19 +39,21 @@ public class OCRXiaoshenServiceImpl implements OCRXiaoshenService {
 
         String name = inputFile.getName();
 
-        String result = null;
+        String result = "";
 
-        String fileExtension = FilenameUtils.getExtension(name);
-        if (isTesseractSupport(fileExtension)) {
+        String fileExtension = FilenameUtils.getExtension(name).toLowerCase();
+        if (isImage(fileExtension)) {
             result = OCRTesseractUtil.ocrImage(inputFilePath);
-        } else {
+        } /*else if (isPDF(fileExtension)) {
+            result = OCRmyPDFUtil.ocrPdf(inputFilePath);
+        } */else {
             result = OCRApacheTikaUtil.autoExtractedContent(inputFilePath);
         }
 
         return result;
     }
 
-    private boolean isTesseractSupport(String fileExtension) {
+    private boolean isImage(String fileExtension) {
         ImageEnum imageEnum = ImageEnum.get(fileExtension.toLowerCase());
 
         if (ObjectUtils.isEmpty(imageEnum)) {
@@ -59,6 +61,10 @@ public class OCRXiaoshenServiceImpl implements OCRXiaoshenService {
         }
 
         return Boolean.TRUE;
+    }
+
+    private boolean isPDF(String fileExtension) {
+        return "pdf".equalsIgnoreCase(fileExtension) ? Boolean.TRUE : Boolean.FALSE;
     }
 
 /*
