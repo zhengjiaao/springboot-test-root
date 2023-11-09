@@ -33,7 +33,7 @@ public class ImageToPdfOCRExample {
 
         String command = "tesseract " + inputImagePath + " " + outputPdfPrefixPath + " pdf";
 
-        CommandUtil.ocrCommand(command);
+        CommandUtil.command(command);
     }
 
     //Tesseract 将图像转换为 PDF: 多张图像转为pdf
@@ -44,7 +44,7 @@ public class ImageToPdfOCRExample {
 
         String command = "tesseract " + inputMultipleImagesPath + " " + outputPdfPrefixPath + " pdf";
 
-        CommandUtil.ocrCommand(command);
+        CommandUtil.command(command);
     }
 
 }

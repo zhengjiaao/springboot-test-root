@@ -16,16 +16,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
+ * 命令行执行工具
+ *
  * @author: zhengja
  * @since: 2023/11/03 15:14
  */
 @Slf4j
 public class CommandUtil {
 
+    private CommandUtil() {
+
+    }
+
     /**
      * 执行命令
      */
-    public static void ocrCommand(String command) throws IOException, InterruptedException {
+    public static void command(String command) throws IOException, InterruptedException {
 
         Process process = Runtime.getRuntime().exec(command);
 
