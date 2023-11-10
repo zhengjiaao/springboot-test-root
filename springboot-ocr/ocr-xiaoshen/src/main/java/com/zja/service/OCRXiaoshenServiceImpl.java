@@ -45,7 +45,8 @@ public class OCRXiaoshenServiceImpl implements OCRXiaoshenService {
         if (isImage(fileExtension)) {
             result = OCRTesseractUtil.ocrImage(inputFilePath);
         } /*else if (isPDF(fileExtension)) {
-            result = OCRmyPDFUtil.ocrPdf(inputFilePath);
+            //result = OCRmyPDFUtil.ocrPdf(inputFilePath); // 效果差,整体效果差，图文识别效果很差
+            //result = OCRTesseractUtil.ocrPdf(inputFilePath); // 效果差(图的文字识别差)
         } */else {
             result = OCRApacheTikaUtil.autoExtractedContent(inputFilePath);
         }

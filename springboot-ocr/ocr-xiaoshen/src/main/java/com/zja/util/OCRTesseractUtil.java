@@ -47,6 +47,26 @@ public class OCRTesseractUtil {
         return result;
     }
 
+    //todo 拆分两个方法，是为了后续调整不同类型文档识别准确率
+    public static String ocrPdf(String inputImagePath) {
+        //结果内容
+        String result = null;
+
+        Tesseract tesseract = new Tesseract();
+        tesseract.setLanguage("chi_sim+eng");
+
+        File imageFile = new File(inputImagePath);
+
+        try {
+            result = tesseract.doOCR(imageFile);
+        } catch (TesseractException e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 
     /**
      * 将单张图像转换为 PDF
