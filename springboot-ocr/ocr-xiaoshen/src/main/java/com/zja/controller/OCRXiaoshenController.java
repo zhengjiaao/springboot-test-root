@@ -61,7 +61,7 @@ public class OCRXiaoshenController {
             tmpFile.getParentFile().mkdirs();
         }
 
-        //存储到本地临时
+        // 存储到本地临时
         file.transferTo(new File(filePath));
 
         return fileId;
@@ -76,7 +76,7 @@ public class OCRXiaoshenController {
 
         String content = service.autoExtractContent(firstFile.getAbsolutePath());
 
-        //将提取的结果 存储到固定的 result.txt 文件
+        // 将提取的结果 存储到固定的 result.txt 文件
         String resultFilePath = fileParentPath + File.separator + "result.txt";
 
         storeResult(resultFilePath, content);
