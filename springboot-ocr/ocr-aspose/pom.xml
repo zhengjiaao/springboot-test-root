@@ -18,12 +18,7 @@
         <dependency>
             <groupId>com.aspose</groupId>
             <artifactId>aspose-ocr</artifactId>
-            <version>21.10</version>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft.onnxruntime</groupId>
-            <artifactId>onnxruntime</artifactId>
-            <version>1.8.1</version>
+            <version>23.10.0</version>
         </dependency>
 
         <dependency>
