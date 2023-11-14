@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +40,8 @@ public class OCRXiaoshenController {
     @Autowired
     OCRXiaoshenService service;
 
-    private static final String ROOT_DIR = "C:\\ocr\\data";
+    @Value("${storage-dir}")
+    public String storageDir;
 
     @PostMapping("/upload")
     @ApiOperation(value = "上传文件")
@@ -52,7 +54,7 @@ public class OCRXiaoshenController {
         System.out.println("上传文件：" + file.getOriginalFilename());
 
         String fileId = UUID.randomUUID().toString();
-        String filePath = ROOT_DIR + File.separator + fileId + File.separator + file.getOriginalFilename();
+        String filePath = storageDir + File.separator + fileId + File.separator + file.getOriginalFilename();
 
         File tmpFile = new File(filePath);
         if (!tmpFile.getParentFile().exists()) {
@@ -69,7 +71,7 @@ public class OCRXiaoshenController {
     @ApiOperation(value = "OCR自动识别文件格式进行提取文本内容", notes = "已启用提取pdf、word等中图片文本内容")
     public void autoExtractContent(@RequestParam String fileId) {
 
-        String fileParentPath = ROOT_DIR + File.separator + fileId;
+        String fileParentPath = storageDir + File.separator + fileId;
         File firstFile = getFirstFile(fileParentPath);
 
         String content = service.autoExtractContent(firstFile.getAbsolutePath());
@@ -84,7 +86,7 @@ public class OCRXiaoshenController {
     @ApiOperation(value = "下载OCR提取文本的结果")
     public void downloadResult(HttpServletResponse response,
                                @RequestParam String fileId) throws IOException {
-        String resultFilePath = ROOT_DIR + File.separator + fileId + File.separator + "result.txt";
+        String resultFilePath = storageDir + File.separator + fileId + File.separator + "result.txt";
         File file = new File(resultFilePath);
         if (!file.exists()) {
             throw new RuntimeException("不存在结果文件.");

@@ -10,3 +10,6 @@ spring:
       max-request-size: 20MB
       # 设置单文件大小 2G
       max-file-size: 10MB
+
+# 存储目录
+storage-dir: D:\\ocr
