@@ -20,6 +20,7 @@
         <module>ocr-aspose</module>
         <module>ocr-ocrmypdf</module>
         <module>ocr-opencv</module>
+        <module>ocr-paddleocr</module>
         <module>ocr-tesseract</module>
         <module>ocr-xiaoshen</module>
     </modules>
