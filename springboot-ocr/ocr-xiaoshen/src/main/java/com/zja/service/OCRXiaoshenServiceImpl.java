@@ -11,6 +11,7 @@ package com.zja.service;
 import com.zja.define.ImageEnum;
 import com.zja.util.OCRApacheTikaUtil;
 import com.zja.util.OCRTesseractUtil;
+import com.zja.util.PDFBoxUtil;
 import com.zja.util.PaddleOCRUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -99,6 +100,22 @@ public class OCRXiaoshenServiceImpl implements OCRXiaoshenService {
         }
     }
 
+    @Override
+    public int getPdfPagesCount(String inputFilePath) throws IOException {
+        File inputFile = new File(inputFilePath);
+        if (!inputFile.exists()) {
+            throw new RuntimeException("文件不存在：" + inputFilePath);
+        }
+
+        String name = inputFile.getName();
+        String fileExtension = FilenameUtils.getExtension(name).toLowerCase();
+
+        if (isPDF(fileExtension)) {
+            return PDFBoxUtil.getPdfPagesCount(inputFilePath);
+        }
+
+        throw new RuntimeException("仅支持pdf，不支持的类型：" + fileExtension);
+    }
 
     private boolean isImage(String fileExtension) {
         ImageEnum imageEnum = ImageEnum.get(fileExtension.toLowerCase());

@@ -8,6 +8,8 @@
  */
 package com.zja.service;
 
+import java.io.IOException;
+
 /**
  * OCR服务
  *
@@ -22,4 +24,5 @@ public interface OCRXiaoshenService {
 
     String accuratePosition(String inputFilePath, Integer pageNum);
 
+    int getPdfPagesCount(String inputFilePath) throws IOException;
 }

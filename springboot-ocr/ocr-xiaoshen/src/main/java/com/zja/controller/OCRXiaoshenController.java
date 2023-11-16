@@ -135,6 +135,16 @@ public class OCRXiaoshenController {
         outputStream.close();
     }
 
+    @GetMapping("/pages_count")
+    @ApiOperation(value = "获取文件总页数", notes = "仅支持PDF")
+    public int pagesCount(@RequestParam String fileId) throws IOException {
+
+        String fileParentPath = storageDir + File.separator + fileId;
+        File firstFile = getFirstFile(fileParentPath);
+
+        return service.getPdfPagesCount(firstFile.getAbsolutePath());
+    }
+
     private File getFirstFile(String fileParentPath) {
         File tmpFileDir = new File(fileParentPath);
         if (!tmpFileDir.exists()) {
@@ -146,12 +156,13 @@ public class OCRXiaoshenController {
             throw new RuntimeException("文件未上传.");
         }
 
-        File file = files[0];
-        if (!file.exists()) {
-            throw new RuntimeException("文件未上传.");
+        for (File file : files) {
+            if (file.isFile()) {
+                return file;
+            }
         }
 
-        return file;
+        throw new RuntimeException("文件未上传.");
     }
 
 

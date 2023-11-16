@@ -32,8 +32,17 @@
             <div class="el-upload__tip" slot="tip">遇到问题联系开发者：郑家骜</div>
         </el-upload>
 
+        <br>
+        <div v-show="showFileInfo">
+            文件名称：{{fileName}} , PDF总页数：{{pdfPageCount}}
+            <br> <br>
+            输入页数：
+            <el-input style="width: 220px;" v-model="pageNum" placeholder="输入指定页进行识别提取文本"></el-input>
+            默认：0 识别提取全部页面
+        </div>
+
+        <br>
         <div>
-            <p>{{fileName}}</p>
             <el-button v-if="extractionButtonVisible" size="small" type="primary" @click="autoExtractContent()" v>
                 提取内容
             </el-button>
@@ -56,7 +65,10 @@
                 downloadResultButtonVisible: false,
                 extractResultsVisible: false,
                 dialogVisible: false,
+                showFileInfo: false,
                 fileName: '',
+                pdfPageCount: 0,
+                pageNum: 0,
                 fileId: ''
             }
         },
@@ -83,11 +95,27 @@
                 this.downloadResultButtonVisible = false;
                 this.fileId = response;
                 console.log('fileId', this.fileId);
+
+                this.getPdfPageCount();
+                this.showFileInfo = true;
             },
             handleError(error) {
                 // 处理上传失败的逻辑
                 console.error('上传失败', error);
             },
+
+            // 获取页数
+            getPdfPageCount() {
+                fetch('./rest/ocr/pages_count?fileId=' + this.fileId, {}).then(response => response.json())
+                    .then(data => {
+                        const pageCount = parseInt(data);
+                        this.pdfPageCount = pageCount;
+                        console.log('pdfPageCount=', this.pdfPageCount);
+                    }).catch(error => {
+                    console.error('请求出错:', error);
+                });
+            },
+
             // 提取内容
             autoExtractContent() {
                 const loading = this.$loading({
@@ -96,7 +124,7 @@
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
-                fetch('./rest/ocr/accurate_position?fileId=' + this.fileId, {}).then((data) => {
+                fetch('./rest/ocr/accurate_position?fileId=' + this.fileId + "&pageNum=" + this.pageNum, {}).then((data) => {
                     //错误提示
                     if (data.status !== 200) {
                         loading.close();
