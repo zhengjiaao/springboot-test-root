@@ -52,7 +52,7 @@ public class OCRApacheTikaUtil {
             // 创建元数据对象，用于存储提取的元数据
             Metadata metadata = new Metadata();
 
-            //提取图像内容时(包含pdf等中的图像)，采用TesseractOCR方式识别图像内容，可以友好解决语言问题
+            // 提取图像内容时(包含pdf等中的图像)，采用TesseractOCR方式识别图像内容，可以友好解决语言问题
             TesseractOCRConfig config = new TesseractOCRConfig();
             config.setLanguage("chi_sim+eng"); // 支持中英文
 
@@ -70,14 +70,6 @@ public class OCRApacheTikaUtil {
 
             // 提取文本内容
             content = handler.toString();
-
-            // 输出文本内容
-            /*if (content.trim().isEmpty()) {
-                System.out.println("No content found.");
-            } else {
-                System.out.println("Content: " + content);
-            }*/
-
         } catch (IOException | SAXException | TikaException e) {
             log.error(e.getMessage());
             e.printStackTrace();

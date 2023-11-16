@@ -18,4 +18,8 @@ public interface OCRXiaoshenService {
 
     String autoExtractContent(String inputFilePath);
 
+    String accurateBasic(String inputFilePath, Integer pageNum);
+
+    String accuratePosition(String inputFilePath, Integer pageNum);
+
 }

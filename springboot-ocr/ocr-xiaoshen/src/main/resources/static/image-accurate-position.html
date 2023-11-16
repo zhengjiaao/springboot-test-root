@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR-图像高精度含位置版</title>
+    <script src="js/vue2@2.7.14.js"></script>
+    <script src="js/fetch.umd@5.3.5.min.js"></script>
+    <script src="js/element-ui@2.15.13.js"></script>
+    <link rel="stylesheet" href="css/element-ui@2.15.13.css"/>
+    <style>
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="div-left" style="text-align: center;">
+        <h3>OCR-图像高精度含位置版</h3>
+        <el-upload
+                class="upload-demo"
+                drag
+                action="/rest/ocr/upload"
+                :show-file-list="false"
+                :accept="'image/jpeg,image/png'"
+                :before-upload="handleBeforeUpload"
+                :on-success="handleSuccess"
+                :on-error="handleError"
+                multiple>
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将图像文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">仅支持上传【图像】文件格式，且不超过10M.</div>
+            <div class="el-upload__tip" slot="tip">主要技术支撑：<a href="https://www.paddlepaddle.org.cn/"
+                                                                   target="_blank">PaddleOCR</a></div>
+            <div class="el-upload__tip" slot="tip">遇到问题联系开发者：郑家骜</div>
+        </el-upload>
+
+        <div>
+            <p>{{fileName}}</p>
+            <el-button v-if="extractionButtonVisible" size="small" type="primary" @click="autoExtractContent()" v>
+                提取内容
+            </el-button>
+        </div>
+
+        <el-dialog title="提取结果" :visible.sync="extractResultsVisible">
+            <el-button v-if="downloadResultButtonVisible" size="small" type="primary" @click="downloadResult()" v>
+                下载结果 result.txt
+            </el-button>
+        </el-dialog>
+    </div>
+
+</div>
+
+<script>
+    let Main = {
+        data() {
+            return {
+                extractionButtonVisible: false,
+                downloadResultButtonVisible: false,
+                extractResultsVisible: false,
+                dialogVisible: false,
+                fileName: '',
+                fileId: ''
+            }
+        },
+        mounted() {
+            // 打开页面加载初始化数据
+            this.initData();
+        },
+        methods: {
+            //初始化页面数据
+            initData() {
+
+            },
+            openDialog() {
+                this.dialogVisible = true
+            },
+            handleBeforeUpload(file) {
+                this.fileName = file.name;
+                console.log('fileName', this.fileName);
+            },
+            handleSuccess(response) {
+                // 处理上传成功的逻辑
+                console.log('上传成功', response);
+                this.extractionButtonVisible = true;
+                this.downloadResultButtonVisible = false;
+                this.fileId = response;
+                console.log('fileId', this.fileId);
+            },
+            handleError(error) {
+                // 处理上传失败的逻辑
+                console.error('上传失败', error);
+            },
+            // 提取内容
+            autoExtractContent() {
+                const loading = this.$loading({
+                    lock: true,
+                    text: '正在提取内容中... ...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                fetch('./rest/ocr/accurate_position?fileId=' + this.fileId, {}).then((data) => {
+                    //错误提示
+                    if (data.status !== 200) {
+                        loading.close();
+                        this.$message.error(data.message);
+                    }
+
+                    if (data.status === 200) {
+                        loading.close();
+                        this.downloadResultButtonVisible = true;
+                        this.extractResultsVisible = true;
+                    }
+                });
+            },
+            // 下载结果
+            downloadResult() {
+                fetch('./rest/ocr/download/result?fileId=' + this.fileId)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        // 创建一个临时的 URL 对象
+                        const url = window.URL.createObjectURL(blob);
+
+                        // 创建一个 <a> 元素并设置下载链接
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', 'result.txt'); // 设置下载的文件名
+
+                        // 模拟用户点击链接来触发文件下载
+                        link.click();
+
+                        // 清理临时的 URL 对象
+                        window.URL.revokeObjectURL(url);
+                    })
+                    .catch(error => {
+                        console.error('文件下载失败:', error);
+                        this.$message.error('下载结果失败:' + error);
+                    });
+            },
+
+        }
+    }
+
+    const Ctor = Vue.extend(Main);
+    new Ctor().$mount('#app')
+</script>
+</body>
+</html>

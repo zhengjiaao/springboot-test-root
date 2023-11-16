@@ -67,7 +67,7 @@ public class OCRXiaoshenController {
         return fileId;
     }
 
-    @GetMapping("/autoExtractContent")
+    @GetMapping("/general")
     @ApiOperation(value = "OCR自动识别文件格式进行提取文本内容", notes = "已启用提取pdf、word等中图片文本内容")
     public void autoExtractContent(@RequestParam String fileId) {
 
@@ -75,6 +75,38 @@ public class OCRXiaoshenController {
         File firstFile = getFirstFile(fileParentPath);
 
         String content = service.autoExtractContent(firstFile.getAbsolutePath());
+
+        // 将提取的结果 存储到固定的 result.txt 文件
+        String resultFilePath = fileParentPath + File.separator + "result.txt";
+
+        storeResult(resultFilePath, content);
+    }
+
+    @GetMapping("/accurate_basic")
+    @ApiOperation(value = "OCR-图像高精度基础版", notes = "仅支持提取图像和PDF内容")
+    public void accurateBasic(@RequestParam String fileId,
+                              @RequestParam(required = false) Integer pageNum) {
+
+        String fileParentPath = storageDir + File.separator + fileId;
+        File firstFile = getFirstFile(fileParentPath);
+
+        String content = service.accurateBasic(firstFile.getAbsolutePath(), pageNum);
+
+        // 将提取的结果 存储到固定的 result.txt 文件
+        String resultFilePath = fileParentPath + File.separator + "result.txt";
+
+        storeResult(resultFilePath, content);
+    }
+
+    @GetMapping("/accurate_position")
+    @ApiOperation(value = "OCR-图像高精度含位置版", notes = "仅支持提取图像和PDF内容")
+    public void accuratePosition(@RequestParam String fileId,
+                                 @RequestParam(required = false) Integer pageNum) {
+
+        String fileParentPath = storageDir + File.separator + fileId;
+        File firstFile = getFirstFile(fileParentPath);
+
+        String content = service.accuratePosition(firstFile.getAbsolutePath(), pageNum);
 
         // 将提取的结果 存储到固定的 result.txt 文件
         String resultFilePath = fileParentPath + File.separator + "result.txt";
