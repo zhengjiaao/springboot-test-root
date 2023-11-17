@@ -118,6 +118,10 @@
 
             // 提取内容
             autoExtractContent() {
+                if (this.pageNum > this.pdfPageCount) {
+                    this.$message.error("输入页数不能大于总页数：" + this.pageNum + ">" + this.pdfPageCount);
+                    return
+                }
                 const loading = this.$loading({
                     lock: true,
                     text: '正在提取内容中... ...',
