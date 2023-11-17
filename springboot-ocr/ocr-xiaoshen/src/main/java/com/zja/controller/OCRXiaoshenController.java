@@ -111,6 +111,7 @@ public class OCRXiaoshenController {
 
         FileInputStream inputStream = FileUtils.openInputStream(resultFile);
         byte[] bytes = toByteArray(inputStream);
+        inputStream.close();
         response.setContentType("application/force-download");
         response.addHeader("Content-Disposition", "attachment;filename=" +
                 URLEncoder.encode("result.txt", "UTF-8"));
@@ -118,6 +119,7 @@ public class OCRXiaoshenController {
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(bytes);
         outputStream.close();
+        inputStream.close();
     }
 
     @GetMapping("/to_pdf")
