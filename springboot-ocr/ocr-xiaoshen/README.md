@@ -5,6 +5,7 @@
 ## 环境准备
 
 - Tesseract 安装(必须)
+- PaddleOCR 安装(必须的，依赖Python)
 - OCRmyPDF 安装(可选的)
 
 ## 依赖

@@ -12,6 +12,20 @@ PaddleOCR(百度飞桨OCR)旨在打造一套丰富、领先、实用的OCR工具
 
 > 首先需要`python`环境，然后本地pip安装`paddlepaddle`，`paddleocr`模块， 然后可以在命令行下测试`paddleocr`是否可以正常调用。
 
+### 安装
+
+```shell
+pip install paddlepaddle paddleocr
+```
+
+校验：python_test.py
+
+```python
+import paddleocr
+
+print(paddleocr.__version__)
+```
+
 ### 命令行操作
 
 通过OCR技术：版面恢复
@@ -26,6 +40,7 @@ paddleocr --image_dir=ppstructure/recovery/UnrealText.pdf --type=structure --rec
 ```
 
 ### python操作
+
 paddleocr --image_dir=D:\temp\ocr\input.png --type=structure --recovery=true --lang='en'
 
 paddleocr --image_dir=D:\temp\ocr\input.pdf --type=structure --recovery=true --lang='en'
