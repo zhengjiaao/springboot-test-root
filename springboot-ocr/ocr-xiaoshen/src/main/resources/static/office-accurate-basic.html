@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR-Office高精度基础版</title>
+    <script src="js/vue2@2.7.14.js"></script>
+    <script src="js/fetch.umd@5.3.5.min.js"></script>
+    <script src="js/element-ui@2.15.13.js"></script>
+    <link rel="stylesheet" href="css/element-ui@2.15.13.css"/>
+    <style>
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="div1" style="text-align: center;">
+        <h3>OCR-Office高精度基础版</h3>
+        <el-upload
+                class="upload-demo"
+                drag
+                action="/rest/ocr/upload"
+                :show-file-list="false"
+                :accept="'.doc,.docx,.ppt,.pptx,.xls,.xlsx'"
+                :before-upload="handleBeforeUpload"
+                :on-success="handleSuccess"
+                :on-error="handleError"
+                multiple>
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将Office文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">
+                仅支持上传Office【.doc,.docx,.ppt,.pptx,.xls,.xlsx】文件格式，且不超过10M.
+            </div>
+            <div class="el-upload__tip" slot="tip">主要技术支撑：<a href="https://www.paddlepaddle.org.cn/"
+                                                                   target="_blank">PaddleOCR</a></div>
+            <div class="el-upload__tip" slot="tip">遇到问题联系开发者：郑家骜</div>
+        </el-upload>
+
+        <br>
+        <div v-show="showFileInfo">
+            文件名称：{{fileName}} , 总页数：{{pdfPageCount}}
+            <br> <br>
+            输入页数：
+            <el-input style="width: 220px;" v-model="pageNum" placeholder="输入指定页进行识别提取文本"></el-input>
+            默认：0 识别提取全部页面
+        </div>
+
+        <br>
+        <div>
+            <el-button v-if="extractionButtonVisible" size="small" type="primary" @click="autoExtractContent()" v>
+                提取内容
+            </el-button>
+        </div>
+
+        <el-dialog title="提取结果" :visible.sync="extractResultsVisible">
+            <el-button v-if="downloadResultButtonVisible" size="small" type="primary" @click="downloadResult()" v>
+                下载结果 result.txt
+            </el-button>
+        </el-dialog>
+    </div>
+
+</div>
+
+<script>
+    let Main = {
+        data() {
+            return {
+                extractionButtonVisible: false,
+                downloadResultButtonVisible: false,
+                extractResultsVisible: false,
+                dialogVisible: false,
+                showFileInfo: false,
+                fileName: '',
+                pdfPageCount: 0,
+                pageNum: 0,
+                sourceFileId: '',
+                fileId: ''
+            }
+        },
+        mounted() {
+            // 打开页面加载初始化数据
+            this.initData();
+        },
+        methods: {
+            //初始化页面数据
+            initData() {
+
+            },
+            openDialog() {
+                this.dialogVisible = true
+            },
+            handleBeforeUpload(file) {
+                this.fileName = file.name;
+                console.log('fileName', this.fileName);
+                // 在上传之前的验证逻辑
+                const fileType = file.type.toLowerCase();
+                if (
+                    fileType !== 'application/msword' &&
+                    fileType !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+                    fileType !== 'application/vnd.ms-powerpoint' &&
+                    fileType !== 'application/vnd.openxmlformats-officedocument.presentationml.presentation' &&
+                    fileType !== 'application/vnd.ms-excel' &&
+                    fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                ) {
+                    this.$message.error('只能上传Office文件');
+                    return false; // 阻止文件上传
+                }
+                return true; // 允许文件上传
+            },
+            handleSuccess(response) {
+                // 处理上传成功的逻辑
+                console.log('上传成功', response);
+                this.extractionButtonVisible = true;
+                this.downloadResultButtonVisible = false;
+
+                //源文件id
+                this.sourceFileId = response;
+                console.log('sourceFileId', this.sourceFileId);
+
+                //转为 pdf，并获取pdf总页数
+                this.toPdf();
+            },
+            handleError(error) {
+                // 处理上传失败的逻辑
+                console.error('上传失败', error);
+            },
+
+            //转为pdf
+            toPdf() {
+                const loading = this.$loading({
+                    lock: true,
+                    text: '文档已上传，正在转换中... ...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                fetch('./rest/ocr/to_pdf?fileId=' + this.sourceFileId, {}).then(response => response.text())
+                    .then(data => {
+                        loading.close();
+                        this.fileId = data;
+                        console.log('fileId', this.fileId);
+                        this.getPdfPageCount();
+                    }).catch(error => {
+                    loading.close();
+                    console.error('请求出错:', error);
+                    this.$message.error(error);
+                });
+            },
+
+            // 获取页数
+            getPdfPageCount() {
+                fetch('./rest/ocr/pages_count?fileId=' + this.fileId, {}).then(response => response.json())
+                    .then(data => {
+                        this.pdfPageCount = parseInt(data);
+                        console.log('pdfPageCount=', this.pdfPageCount);
+                        this.showFileInfo = true;
+                    }).catch(error => {
+                    console.error('请求出错:', error);
+                    this.$message.error(error);
+                });
+            },
+
+            // 提取内容
+            autoExtractContent() {
+                if (this.pageNum > this.pdfPageCount) {
+                    this.$message.error("输入页数不能大于总页数：" + this.pageNum + ">" + this.pdfPageCount);
+                    return
+                }
+                const loading = this.$loading({
+                    lock: true,
+                    text: '正在提取内容中... ...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                fetch('rest/ocr/accurate_basic?fileId=' + this.fileId + "&pageNum=" + this.pageNum, {}).then((data) => {
+                    //错误提示
+                    if (data.status !== 200) {
+                        loading.close();
+                        this.$message.error(data.message);
+                    }
+
+                    if (data.status === 200) {
+                        loading.close();
+                        this.downloadResultButtonVisible = true;
+                        this.extractResultsVisible = true;
+                    }
+                });
+            },
+            // 下载结果
+            downloadResult() {
+                fetch('rest/ocr/download/result?fileId=' + this.fileId)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        // 创建一个临时的 URL 对象
+                        const url = window.URL.createObjectURL(blob);
+
+                        // 创建一个 <a> 元素并设置下载链接
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', 'result.txt'); // 设置下载的文件名
+
+                        // 模拟用户点击链接来触发文件下载
+                        link.click();
+
+                        // 清理临时的 URL 对象
+                        window.URL.revokeObjectURL(url);
+                    })
+                    .catch(error => {
+                        console.error('文件下载失败:', error);
+                        this.$message.error('下载结果失败:' + error);
+                    });
+            },
+
+        }
+    }
+
+    const Ctor = Vue.extend(Main);
+    new Ctor().$mount('#app')
+</script>
+</body>
+</html>

@@ -54,6 +54,33 @@
             <version>1.2.78</version>
         </dependency>
 
+        <!--Word文档处理 API-->
+        <dependency>
+            <groupId>com.aspose</groupId>
+            <artifactId>aspose-words</artifactId>
+            <version>23.2</version>
+            <classifier>jdk17</classifier>
+        </dependency>
+        <!--Excel电子表格处理 API-->
+        <dependency>
+            <groupId>com.aspose</groupId>
+            <artifactId>aspose-cells</artifactId>
+            <version>23.2</version>
+        </dependency>
+        <!--PPT演示文稿处理 API-->
+        <dependency>
+            <groupId>com.aspose</groupId>
+            <artifactId>aspose-slides</artifactId>
+            <version>23.1</version>
+            <classifier>jdk16</classifier>
+        </dependency>
+        <!--PDF文档创建 API-->
+        <dependency>
+            <groupId>com.aspose</groupId>
+            <artifactId>aspose-pdf</artifactId>
+            <version>23.2</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -74,10 +101,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>

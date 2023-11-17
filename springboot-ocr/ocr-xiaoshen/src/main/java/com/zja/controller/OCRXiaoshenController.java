@@ -9,6 +9,7 @@
 package com.zja.controller;
 
 import com.zja.service.OCRXiaoshenService;
+import com.zja.util.AsposePdfUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -75,11 +76,7 @@ public class OCRXiaoshenController {
         File firstFile = getFirstFile(fileParentPath);
 
         String content = service.autoExtractContent(firstFile.getAbsolutePath());
-
-        // 将提取的结果 存储到固定的 result.txt 文件
-        String resultFilePath = fileParentPath + File.separator + "result.txt";
-
-        storeResult(resultFilePath, content);
+        storeResultFile(fileId, content);
     }
 
     @GetMapping("/accurate_basic")
@@ -91,11 +88,7 @@ public class OCRXiaoshenController {
         File firstFile = getFirstFile(fileParentPath);
 
         String content = service.accurateBasic(firstFile.getAbsolutePath(), pageNum);
-
-        // 将提取的结果 存储到固定的 result.txt 文件
-        String resultFilePath = fileParentPath + File.separator + "result.txt";
-
-        storeResult(resultFilePath, content);
+        storeResultFile(fileId, content);
     }
 
     @GetMapping("/accurate_position")
@@ -107,24 +100,16 @@ public class OCRXiaoshenController {
         File firstFile = getFirstFile(fileParentPath);
 
         String content = service.accuratePosition(firstFile.getAbsolutePath(), pageNum);
-
-        // 将提取的结果 存储到固定的 result.txt 文件
-        String resultFilePath = fileParentPath + File.separator + "result.txt";
-
-        storeResult(resultFilePath, content);
+        storeResultFile(fileId, content);
     }
 
     @GetMapping("/download/result")
     @ApiOperation(value = "下载OCR提取文本的结果")
     public void downloadResult(HttpServletResponse response,
                                @RequestParam String fileId) throws IOException {
-        String resultFilePath = storageDir + File.separator + fileId + File.separator + "result.txt";
-        File file = new File(resultFilePath);
-        if (!file.exists()) {
-            throw new RuntimeException("不存在结果文件.");
-        }
+        File resultFile = getResultFile(fileId);
 
-        FileInputStream inputStream = FileUtils.openInputStream(file);
+        FileInputStream inputStream = FileUtils.openInputStream(resultFile);
         byte[] bytes = toByteArray(inputStream);
         response.setContentType("application/force-download");
         response.addHeader("Content-Disposition", "attachment;filename=" +
@@ -133,6 +118,26 @@ public class OCRXiaoshenController {
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(bytes);
         outputStream.close();
+    }
+
+    @GetMapping("/to_pdf")
+    @ApiOperation(value = "转为pdf", notes = "仅支持Office格式文件")
+    public String toPdf(@RequestParam String fileId) throws Exception {
+
+        String fileParentPath = storageDir + File.separator + fileId;
+        File firstFile = getFirstFile(fileParentPath);
+
+        String pdfFileId = UUID.randomUUID().toString();
+        String pdfFilePath = storageDir + File.separator + pdfFileId + File.separator + "to.pdf";
+        File tmpFile = new File(pdfFilePath);
+        if (!tmpFile.getParentFile().exists()) {
+            tmpFile.getParentFile().mkdirs();
+        }
+
+        // 转为pdf
+        AsposePdfUtil.officeToPdf(firstFile.getAbsolutePath(), pdfFilePath);
+
+        return pdfFileId;
     }
 
     @GetMapping("/pages_count")
@@ -166,25 +171,28 @@ public class OCRXiaoshenController {
     }
 
 
-    private void storeResult(String filePath, String data) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+    private void storeResultFile(String fileId, String data) {
+        String resultFilePath = storageDir + File.separator + fileId + File.separator + "result" + File.separator + "result.txt";
+        File resultFile = new File(resultFilePath);
+        if (!resultFile.getParentFile().exists()) {
+            resultFile.getParentFile().mkdirs();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultFilePath))) {
             writer.write(data);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void downloadFile(HttpServletResponse response, String filename) throws IOException {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("file/" + filename);
+    private File getResultFile(String fileId) {
+        String resultFilePath = storageDir + File.separator + fileId + File.separator + "result" + File.separator + "result.txt";
+        File resultFile = new File(resultFilePath);
+        if (!resultFile.exists()) {
+            throw new RuntimeException("不存在结果文件.");
+        }
 
-        byte[] bytes = toByteArray(inputStream);
-        response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition", "attachment;filename=" +
-                URLEncoder.encode(filename, "UTF-8"));
-        response.setContentLength(bytes.length);
-        ServletOutputStream outputStream = response.getOutputStream();
-        outputStream.write(bytes);
-        outputStream.close();
+        return resultFile;
     }
 
     private static byte[] toByteArray(InputStream input) throws IOException {
