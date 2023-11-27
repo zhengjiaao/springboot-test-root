@@ -50,71 +50,46 @@ public class OpenAiChatController {
         return completionResult.getChoices().get(0).getText();
     }
 
-    @GetMapping("/")
-    @ApiOperation(value = "", notes = "")
-    public ResponseEntity query() {
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/")
-    @ApiOperation(value = "", notes = "")
-    public ResponseEntity save() {
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/")
-    @ApiOperation(value = "", notes = "")
-    public ResponseEntity queryById() {
-        return ResponseEntity.ok().build();
-    }
-
-
-    @PostMapping("/okHttpPost")
-    @ApiOperation(value = "http自定义接口请求测试", notes = "")
-    public Map okHttpPost() {
+    @PostMapping("/chat/v2")
+    @ApiOperation(value = "聊天2", notes = "")
+    public Map chatV2() {
 
         try {
-            //json字符串的两种形式
+            // json字符串的两种形式
             String k = "{\n" + "     \"model\": \"gpt-3.5-turbo\",\n" + "     \"messages\": [{\"role\": \"user\", \"content\": \"Say this is a test!\"}],\n" + "     \"temperature\": 0.7\n" + "}";
 
-            //创建一个OkHttpClient
-            OkHttpClient client = new OkHttpClient().newBuilder().
-                    connectTimeout(Duration.ofSeconds(60 * 10)).
-                    readTimeout(Duration.ofSeconds(60 * 10)).
-                    callTimeout(Duration.ofSeconds(60 * 10)).build();
-//            client.setConnectTimeout(15, TimeUnit.SECONDS); // connect timeout
-//            client.setReadTimeout(15, TimeUnit.SECONDS);    // socket timeout
+            // 创建一个OkHttpClient
+            OkHttpClient client = new OkHttpClient().newBuilder().connectTimeout(Duration.ofSeconds(60 * 10)).readTimeout(Duration.ofSeconds(60 * 10)).callTimeout(Duration.ofSeconds(60 * 10)).build();
+            // client.setConnectTimeout(15, TimeUnit.SECONDS); // connect timeout
+            // client.setReadTimeout(15, TimeUnit.SECONDS);    // socket timeout
 
-            //设置请求头
+            // 设置请求头
             MediaType mediaType = MediaType.parse("application/json");
-            //请求体
+            // 请求体
             okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(mediaType, k);
-            //创建一个request
-            Request request = new Request.Builder().post(requestBody)
-                    .url("https://api.openai.com/v1/chat/completions")
-                    .addHeader("content-type", "application/json")
-                    .addHeader("authorization", "Bearer sess-b1N9dTWt9QIW8NtcSwSiTtQQc7p66KXfMGDQ1G9x")
-                    .build();
+            // 创建一个request
+            Request request = new Request.Builder().post(requestBody).url("https://api.openai.com/v1/chat/completions").addHeader("content-type", "application/json").addHeader("authorization", "Bearer sess-b1N9dTWt9QIW8NtcSwSiTtQQc7p66KXfMGDQ1G9x").build();
 
-            //获得返回
+            // 获得返回
             String responseData = null;
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new IOException("Unexpected code " + response);
                 }
-                //获取返回值
+                // 获取返回值
                 if (response.body() != null) {
                     responseData = response.body().string();
                 }
             }
-            //将json字符串转为JSONObject
+            // 将json字符串转为JSONObject
             JSONObject data = JSONObject.parseObject(responseData);
-            //将jsonObject 转为Map
+            // 将jsonObject 转为Map
             return data.toJavaObject(Map.class);
         } catch (Exception e) {
             e.printStackTrace();
-            return new HashMap<>();
         }
+
+        return new HashMap<>();
 
     }
 
