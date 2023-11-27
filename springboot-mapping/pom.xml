@@ -18,6 +18,7 @@
 	<modules>
 		<module>springboot-mapping-dozer</module>
 		<module>springboot-mapping-mapstruct</module>
+		<module>springboot-mapping-other</module>
 	</modules>
 
 </project>
