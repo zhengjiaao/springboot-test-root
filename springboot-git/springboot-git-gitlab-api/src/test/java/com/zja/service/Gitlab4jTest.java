@@ -9,6 +9,7 @@ import org.gitlab4j.api.models.Project;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author: zhengja
@@ -91,4 +92,16 @@ public class Gitlab4jTest {
         }
     }
 
+    @Test
+    public void testValidateGroup() {
+        // Create a GitLabApi instance to communicate with your GitLab server
+        try (GitLabApi gitLabApi = new GitLabApi(GITLAB_SERVER, GITLAB_ACCESS_TOKEN)) {
+
+            String groupIdOrPath = "test002";
+
+            // 验证组存在
+            Optional<Group> optionalGroup = gitLabApi.getGroupApi().getOptionalGroup(groupIdOrPath);
+            System.out.println(optionalGroup.isPresent());
+        }
+    }
 }
