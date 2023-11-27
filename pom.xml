@@ -19,12 +19,14 @@
     <modules>
         <module>springboot-ai</module>
         <module>springboot-api</module>
+        <module>springboot-asr</module>
         <module>springboot-baidu</module>
         <module>springboot-captcha</module>
         <module>springboot-db</module>
         <module>springboot-encrypt</module>
         <module>springboot-file</module>
         <module>springboot-gis</module>
+        <module>springboot-git</module>
         <module>springboot-java</module>
         <module>springboot-log</module>
         <module>springboot-login</module>
