@@ -27,8 +27,13 @@ public class Zip4jZipCompressUtilTests {
     @Test
     public void test2() throws ZipException {
         //解压文件夹
-        Zip4jZipCompressUtil.zip("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\测试目录");
-        Zip4jZipCompressUtil.unzip("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\存储目录");
+        // Zip4jZipCompressUtil.zip("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\测试目录");
+        // Zip4jZipCompressUtil.unzip("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\存储目录");
+
+        // GBK 无法自动识别编码，解压乱码，不会报错
+        String zipFilePath = "D:\\zhejiang\\331083玉环市城镇开发边界管理成果20231106.zip";
+        String unzipFilePath = "D:\\zhejiang\\331083玉环市城镇开发边界管理成果20231106";
+        Zip4jZipCompressUtil.unzip(zipFilePath, unzipFilePath);
     }
 
 }

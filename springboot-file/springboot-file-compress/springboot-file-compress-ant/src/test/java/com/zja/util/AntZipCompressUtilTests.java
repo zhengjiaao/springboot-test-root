@@ -26,4 +26,12 @@ public class AntZipCompressUtilTests {
         AntZipCompressUtil.unzip("D:\\temp\\zip\\存储目录\\a.zip", "D:\\temp\\zip\\存储目录\\a");
     }
 
+    @Test
+    public void test3() {
+        // GBK 无法自动识别编码，解压乱码，不会报错
+        String zipFilePath = "D:\\zhejiang\\331083玉环市城镇开发边界管理成果20231106.zip";
+        String unzipFilePath = "D:\\zhejiang\\331083玉环市城镇开发边界管理成果20231106";
+        AntZipCompressUtil.unzip(zipFilePath, unzipFilePath);
+    }
+
 }
