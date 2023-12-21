@@ -34,8 +34,8 @@ public class CommonsCompressZipUtil {
 
     private static final Logger log = LoggerFactory.getLogger(CommonsCompressZipUtil.class);
 
-    // private static final String CHARSET = "UTF8";
-    private static final String CHARSET = "GBK";
+    private static final String CHARSET_GBK = "GBK";
+    private static final String CHARSET_UTF8 = "UTF8";
 
 
     /**
@@ -87,7 +87,14 @@ public class CommonsCompressZipUtil {
      * @param outputDir /tmp/output
      */
     public static void unzip(String zipPath, String outputDir) {
-        unzip(zipPath, outputDir, CHARSET);
+        try {
+            log.warn("正在尝试以[UTF8]编码解压,zipPath={}", zipPath);
+            unzip(zipPath, outputDir, CHARSET_UTF8);
+        } catch (Exception e) {
+            log.warn("正在尝试以[GBK]编码解压,zipPath={}", zipPath);
+            unzip(zipPath, outputDir, CHARSET_GBK);
+        }
+        log.info("成功解压,zipPath={},outputDir={}", zipPath, outputDir);
     }
 
     /**
