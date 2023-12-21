@@ -118,14 +118,33 @@ public class CommonsCompressZipUtil {
 
     /**
      * 解压 zip
-     * <p>注：空目录也会被解压</p>
+     * <p>注：空目录也会被解压   </p>
+     * <p>注：自动动态切换解压编码：UTF8、GBK </p>
      *
      * @param inputStream 流
      * @param outputDir   /tmp/output
      */
     public static void unzip(InputStream inputStream, String outputDir) {
+        try {
+            log.warn("正在尝试以[UTF8]编码解压,outputDir={}", outputDir);
+            unzip(inputStream, outputDir, CHARSET_UTF8);
+        } catch (Exception e) {
+            log.warn("正在尝试以[GBK]编码解压,outputDir={}", outputDir);
+            unzip(inputStream, outputDir, CHARSET_GBK);
+        }
+        log.info("成功解压,outputDir={}", outputDir);
+    }
+
+    /**
+     * 解压 zip
+     * <p>注：空目录也会被解压</p>
+     *
+     * @param inputStream 流
+     * @param outputDir   /tmp/output
+     */
+    public static void unzip(InputStream inputStream, String outputDir, String encoding) {
         long startTime = System.currentTimeMillis();
-        try (InputStream bis = new BufferedInputStream(inputStream); ArchiveInputStream ais = new ZipArchiveInputStream(bis)) {
+        try (InputStream bis = new BufferedInputStream(inputStream); ArchiveInputStream ais = new ZipArchiveInputStream(bis,encoding)) {
             unzipArchive(outputDir, ais);
         } catch (IOException e) {
             log.error("zip fail，reason：" + e.getMessage());
