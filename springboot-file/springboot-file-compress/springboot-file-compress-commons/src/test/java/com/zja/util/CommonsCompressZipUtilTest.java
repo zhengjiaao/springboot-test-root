@@ -2,6 +2,8 @@ package com.zja.util;
 
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  * @author: zhengja
  * @since: 2023/12/20 19:20
@@ -25,5 +27,10 @@ public class CommonsCompressZipUtilTest {
         // String zipFilePath = "D:\\zhejiang\\331083玉环市城镇开发边界管理成果20231106.zip";
         // String unzipFilePath = "D:\\zhejiang\\331083玉环市城镇开发边界管理成果20231106";
         // CommonsCompressZipUtil.unzip(zipFilePath, unzipFilePath);
+    }
+
+    @Test
+    public void test3() throws IOException {
+        CommonsCompressZipUtil.zip("D:\\beijing\\gdb\\test\\530102城镇开发边界管理.gdb", "D:\\beijing\\gdb\\test\\530102城镇开发边界管理CommonsCompress4.gdb.zip");
     }
 }

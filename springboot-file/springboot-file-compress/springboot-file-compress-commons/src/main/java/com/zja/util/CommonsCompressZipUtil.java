@@ -14,6 +14,7 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,11 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Objects;
+import java.util.zip.ZipEntry;
 
 /**
  * Zip 加压缩工具
@@ -41,6 +46,7 @@ public class CommonsCompressZipUtil {
     /**
      * 压缩文件/目录
      * <p>注：空目录会被压缩</p>
+     * <p>注：路径模式，默认是跟随服务器主机，设置路径模式为Windows，即使用反斜杠（\）;设置路径模式为Unix，即使用正斜杠（/）</p>
      *
      * @param filePath 文件或目录 如：/root/test or /root/test.txt
      * @param zipPath  zip文件 如：/root/test.zip or /root/test.txt.zip
@@ -49,8 +55,7 @@ public class CommonsCompressZipUtil {
         long startTime = System.currentTimeMillis();
         try (OutputStream fos = Files.newOutputStream(Paths.get(zipPath));
              OutputStream bos = new BufferedOutputStream(fos);
-             ArchiveOutputStream aos = new ZipArchiveOutputStream(bos)
-        ) {
+             ArchiveOutputStream aos = new ZipArchiveOutputStream(bos)) {
             Path dirPath = Paths.get(filePath);
             Files.walkFileTree(dirPath, new SimpleFileVisitor<Path>() {
                 @Override
@@ -63,8 +68,7 @@ public class CommonsCompressZipUtil {
 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    ArchiveEntry entry = new ZipArchiveEntry(
-                            file.toFile(), dirPath.relativize(file).toString());
+                    ArchiveEntry entry = new ZipArchiveEntry(file.toFile(), dirPath.relativize(file).toString());
                     aos.putArchiveEntry(entry);
                     IOUtils.copy(Files.newInputStream(file.toFile().toPath()), aos);
                     aos.closeArchiveEntry();
@@ -72,8 +76,8 @@ public class CommonsCompressZipUtil {
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
             log.error("zip fail，reason：" + e.getMessage());
+            throw new RuntimeException("zip fail，reason：" + e.getMessage());
         }
         log.info("zip success，time：" + (System.currentTimeMillis() - startTime) + " ms");
     }
@@ -144,7 +148,7 @@ public class CommonsCompressZipUtil {
      */
     public static void unzip(InputStream inputStream, String outputDir, String encoding) {
         long startTime = System.currentTimeMillis();
-        try (InputStream bis = new BufferedInputStream(inputStream); ArchiveInputStream ais = new ZipArchiveInputStream(bis,encoding)) {
+        try (InputStream bis = new BufferedInputStream(inputStream); ArchiveInputStream ais = new ZipArchiveInputStream(bis, encoding)) {
             unzipArchive(outputDir, ais);
         } catch (IOException e) {
             log.error("zip fail，reason：" + e.getMessage());
@@ -177,16 +181,38 @@ public class CommonsCompressZipUtil {
         }
     }
 
+    public static List<ZipArchiveEntry> listZipEntries(String zipFilePath) throws IOException {
+        List<ZipArchiveEntry> zipEntries = new ArrayList<>();
+        try (ZipFile zipFile = new ZipFile(zipFilePath)) {
+            Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
+            while (entries.hasMoreElements()) {
+                ZipArchiveEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+                long entrySize = entry.getSize();
+                // boolean directory = entry.isDirectory(); // 是目录，否则是文件
+                // 还可以获取更多条目信息，例如压缩大小、修改时间等
+                log.info("Entry Name: {} , Entry Size: {}", entryName, entrySize);
+                zipEntries.add(entry);
+            }
+            return zipEntries;
+        }
+    }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         // 压缩目录
 //        CommonsCompressZipUtil.zip("D:\\temp\\zip\\测试目录", "D:\\temp\\zip\\测试目录.zip");
 //        CommonsCompressZipUtil.unzip("D:\\temp\\zip\\测试目录.zip", "D:\\temp\\zip\\测试目录zip");
 
         // 压缩文件
-        CommonsCompressZipUtil.zip("D:\\temp\\zip\\测试目录2\\新建文本文档.txt", "D:\\temp\\zip\\测试目录2\\新建文本文档.txt.zip");
-        CommonsCompressZipUtil.unzip("D:\\temp\\zip\\测试目录2\\新建文本文档.txt.zip", "D:\\temp\\zip\\测试目录2\\新建文本文档2.txt");
+        // CommonsCompressZipUtil.zip("D:\\temp\\zip\\测试目录2\\新建文本文档.txt", "D:\\temp\\zip\\测试目录2\\新建文本文档.txt.zip");
+        // CommonsCompressZipUtil.unzip("D:\\temp\\zip\\测试目录2\\新建文本文档.txt.zip", "D:\\temp\\zip\\测试目录2\\新建文本文档2.txt");
+
+        // 获取zip条目
+        List<ZipArchiveEntry> zipEntryList = listZipEntries("D:\\temp\\zip\\存储目录\\test.zip");
+        for (ZipEntry zipEntry : zipEntryList) {
+            System.out.println(zipEntry.getName());
+        }
     }
 
 }

@@ -8,9 +8,18 @@
  */
 package com.zja.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.zip.*;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Jdk 操作 zip 文件/文件夹
@@ -18,29 +27,36 @@ import java.util.zip.*;
  */
 public class JdkZipCompressUtil {
 
+    private static final Logger log = LoggerFactory.getLogger(JdkZipCompressUtil.class);
+
     private static final int BYTE_BUFFER = 5 * 1024;
+
+    private JdkZipCompressUtil() {
+    }
 
     /**
      * 压缩文件/文件夹
-     * @param zipFilePath    zip路径          例：C:\temp\test.zip
-     * @param srcPath       文件/文件夹路径   例：C:\temp\test or 例：C:\temp\a.txt
+     *
+     * @param zipFilePath zip路径          例：C:\temp\test.zip
+     * @param filePath    文件/文件夹路径   例：C:\temp\test or 例：C:\temp\a.txt
      */
-    public static void zip(String zipFilePath, String srcPath) throws IOException {
-        File file = new File(srcPath);
+    public static void zip(String filePath, String zipFilePath) throws IOException {
+        File file = new File(filePath);
         if (!file.exists()) {
-            throw new RuntimeException("source file or directory " + srcPath + " does not exist.");
+            throw new RuntimeException("source file or directory " + filePath + " does not exist.");
         }
 
         if (file.isDirectory()) {
-            zipFolder(zipFilePath, srcPath);
+            zipFolder(zipFilePath, filePath);
         } else {
-            zipFile(zipFilePath, srcPath);
+            zipFile(zipFilePath, filePath);
         }
     }
 
     /**
      * 解压zip
-     * @param zipFilePath     zip路径          例：C:\temp\test.zip
+     *
+     * @param zipFilePath    zip路径          例：C:\temp\test.zip
      * @param destFolderPath 目标文件夹路径    例：C:\temp\test
      */
     public static void unzip(String zipFilePath, String destFolderPath) throws IOException {
@@ -72,8 +88,9 @@ public class JdkZipCompressUtil {
 
     /**
      * 压缩文件
-     * @param zipFilePath    zip路径   例：C:\temp\a.zip
-     * @param srcFilePath   文件路径   例：C:\temp\a.txt
+     *
+     * @param zipFilePath zip路径   例：C:\temp\a.zip
+     * @param srcFilePath 文件路径   例：C:\temp\a.txt
      */
     private static void zipFile(String zipFilePath, String srcFilePath) throws IOException {
         File file = new File(srcFilePath);
@@ -81,7 +98,7 @@ public class JdkZipCompressUtil {
             throw new RuntimeException("source file " + srcFilePath + " does not exist.");
         }
 
-        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFilePath));
+        ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(Paths.get(zipFilePath)));
         FileInputStream zis = new FileInputStream(file);
         zos.putNextEntry(new ZipEntry(file.getName()));
         int len;
@@ -96,7 +113,8 @@ public class JdkZipCompressUtil {
 
     /**
      * 压缩文件夹
-     * @param zipFilePath    zip路径      例：C:\temp\test.zip
+     *
+     * @param zipFilePath   zip路径      例：C:\temp\test.zip
      * @param srcFolderPath 文件夹路径    例：C:\temp\test
      */
     private static void zipFolder(String zipFilePath, String srcFolderPath) throws IOException {
@@ -108,14 +126,14 @@ public class JdkZipCompressUtil {
             throw new RuntimeException(srcFolderPath + " not isDirectory.");
         }
 
-        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFilePath));
+        ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(Paths.get(zipFilePath)));
 
         File[] files = file.listFiles();
         if (files != null) {
             for (File f : files) {
-                //包含根节点目录
-                //zipFolder(zos, f, file.getName());
-                //不包含根节点目录
+                // 包含根节点目录
+                // zipFolder(zos, f, file.getName());
+                // 不包含根节点目录
                 zipFolder(zos, f, "");
             }
         }
@@ -131,7 +149,7 @@ public class JdkZipCompressUtil {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files == null || files.length == 0) {
-                //处理 空文件夹
+                // 处理 空文件夹
                 zos.putNextEntry(new ZipEntry(zipPath + "/" + file.getName() + "/"));
                 zos.closeEntry();
             } else {
@@ -152,15 +170,40 @@ public class JdkZipCompressUtil {
         }
     }
 
+    public static List<ZipEntry> listZipEntries(String zipFilePath) {
+        List<ZipEntry> zipEntries = new ArrayList<>();
+        try (ZipFile zipFile = new ZipFile(zipFilePath)) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+                long entrySize = entry.getSize();
+                log.info("Entry Name: {} , Entry Size: {}", entryName, entrySize);
+                // 还可以获取更多条目信息，例如压缩大小、修改时间等
+                // 如果需要读取条目内容，可以使用zipFile.getInputStream(entry)获取输入流
+                zipEntries.add(entry);
+            }
+            return zipEntries;
+        } catch (IOException e) {
+            throw new RuntimeException("获取zip条目列表失败：" + e);
+        }
+    }
 
     public static void main(String[] args) throws IOException {
-        //压缩文件
-        JdkZipCompressUtil.zipFile("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\测试文件.txt");
-        JdkZipCompressUtil.unzip("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\存储目录");
+        // 压缩文件
+        // JdkZipCompressUtil.zipFile("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\测试文件.txt");
+        // JdkZipCompressUtil.unzip("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\存储目录");
 
-        //压缩文件夹
+        // 压缩文件夹
 //        JdkZipCompressUtil.zipFolder("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\测试目录");
 //        JdkZipCompressUtil.unzip("D:\\temp\\zip\\存储目录\\test.zip", "D:\\temp\\zip\\存储目录");
+
+        //获取zip条目
+        List<ZipEntry> zipEntryList = listZipEntries("D:\\temp\\zip\\存储目录\\test.zip");
+        for (ZipEntry zipEntry : zipEntryList) {
+            System.out.println(zipEntry.getName());
+        }
     }
 
 }

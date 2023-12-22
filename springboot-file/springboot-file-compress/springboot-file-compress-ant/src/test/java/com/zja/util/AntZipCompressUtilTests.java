@@ -34,4 +34,10 @@ public class AntZipCompressUtilTests {
         AntZipCompressUtil.unzip(zipFilePath, unzipFilePath);
     }
 
+    @Test
+    public void test4() {
+        AntZipCompressUtil.zip("D:\\beijing\\gdb\\test\\530102城镇开发边界管理.gdb", "D:\\beijing\\gdb\\test\\530102城镇开发边界管理Ant.gdb.zip");
+    }
+
+
 }
