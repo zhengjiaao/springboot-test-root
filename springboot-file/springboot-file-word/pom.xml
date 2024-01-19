@@ -16,6 +16,7 @@
     </properties>
 
     <modules>
+        <module>springboot-file-word-jacob</module>
         <module>springboot-file-word-poi</module>
         <module>springboot-file-word-poi-tl</module>
     </modules>
