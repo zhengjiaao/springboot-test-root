@@ -19,6 +19,7 @@
         <module>springboot-file-word-jacob</module>
         <module>springboot-file-word-poi</module>
         <module>springboot-file-word-poi-tl</module>
+        <module>springboot-file-word-spire</module>
     </modules>
 
 </project>
