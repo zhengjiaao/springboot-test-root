@@ -1,4 +1,4 @@
-package com.zja.entity;
+package com.zja.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

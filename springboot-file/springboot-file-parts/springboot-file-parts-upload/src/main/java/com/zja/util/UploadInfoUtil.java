@@ -1,6 +1,6 @@
 package com.zja.util;
 
-import com.zja.entity.UploadInfo;
+import com.zja.model.UploadInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;

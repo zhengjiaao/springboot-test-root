@@ -1,6 +1,6 @@
 package com.zja.controller;
 
-import com.zja.entity.UploadInfo;
+import com.zja.model.UploadInfo;
 import com.zja.util.UploadInfoUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

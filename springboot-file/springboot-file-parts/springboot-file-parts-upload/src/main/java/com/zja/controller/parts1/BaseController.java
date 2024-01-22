@@ -1,4 +1,4 @@
-package com.zja.controller;
+package com.zja.controller.parts1;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ModelAttribute;

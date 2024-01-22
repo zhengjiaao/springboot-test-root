@@ -1,6 +1,6 @@
-package com.zja.controller;
+package com.zja.controller.parts1;
 
-import com.zja.entity.BigFileSplit;
+import com.zja.model.BigFileSplit;
 import com.zja.util.BigFileSplitUtil;
 import com.zja.util.FileUtil;
 import io.swagger.annotations.Api;

@@ -1,4 +1,4 @@
-package com.zja.controller;
+package com.zja.controller.parts1;
 
 import com.zja.util.FileUtil;
 import com.zja.util.ZipUtils;

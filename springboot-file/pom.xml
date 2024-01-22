@@ -19,11 +19,10 @@
 		<module>springboot-file-compress</module>
 		<module>springboot-file-csv</module>
 		<module>springboot-file-excel</module>
-<!--		<module>springboot-file-file</module>-->
 		<module>springboot-file-json</module>
+		<module>springboot-file-parts</module>
 		<module>springboot-file-pdf</module>
 		<module>springboot-file-preview</module>
-		<module>springboot-file-spire</module>
 		<module>springboot-file-storage</module>
 		<module>springboot-file-word</module>
 		<module>springboot-file-yaml</module>

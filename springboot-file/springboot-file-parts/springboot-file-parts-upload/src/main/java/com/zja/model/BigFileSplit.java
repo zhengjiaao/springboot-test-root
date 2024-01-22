@@ -1,4 +1,4 @@
-package com.zja.entity;
+package com.zja.model;
 
 import lombok.Data;
 

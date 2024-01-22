@@ -1,6 +1,6 @@
 package com.zja.util;
 
-import com.zja.entity.BigFileSplit;
+import com.zja.model.BigFileSplit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
