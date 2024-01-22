@@ -19,6 +19,7 @@
         <module>springboot-file-compress</module>
         <module>springboot-file-csv</module>
         <module>springboot-file-excel</module>
+        <module>springboot-file-io</module>
         <module>springboot-file-json</module>
         <module>springboot-file-monitor</module>
         <module>springboot-file-parts</module>

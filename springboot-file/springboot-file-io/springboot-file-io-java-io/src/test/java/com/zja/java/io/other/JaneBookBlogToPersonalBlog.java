@@ -1,4 +1,4 @@
-package com.zja;
+package com.zja.java.io.other;
 
 
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
+ * RandomAccessFile 随机存取文件
  * Date: 2020-01-02 9:25
  * Author: zhengja
  * Email: zhengja@dist.com.cn JaneBookBlogToPersonalBlog
@@ -15,7 +16,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class JaneBookBlogToPersonalBlog {
 
-    private static String filePath = "D:\\FileTest\\user"; //要操作的文件的目录
+    private static String filePath = "D:\\FileTest\\user"; // 要操作的文件的目录
     private static DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Test
@@ -54,20 +55,20 @@ public class JaneBookBlogToPersonalBlog {
                 String fileName = file.getName();
 
                 if (fileName.endsWith("md")) {
-                    //获取文件名称作为 文章名称
+                    // 获取文件名称作为 文章名称
                     String articleName = fileName.substring(0, fileName.lastIndexOf("."));
-                    //System.out.println("文章名称： " + articleName);
+                    // System.out.println("文章名称： " + articleName);
 
-                    //获取本地当前时间作为 文章的发表时间
+                    // 获取本地当前时间作为 文章的发表时间
                     LocalDateTime time = LocalDateTime.now();
                     String localTime = df.format(time);
-                    //System.out.println("发表时间： " + localTime);
+                    // System.out.println("发表时间： " + localTime);
 
-                    //获取文件父级目录名称作为 文章的标签
+                    // 获取文件父级目录名称作为 文章的标签
                     File parentFile = file.getParentFile();
-                    //System.out.println("文章标签: "+parentFile.getName());
+                    // System.out.println("文章标签: "+parentFile.getName());
 
-                    //要插入的内容
+                    // 要插入的内容
                     String content = "---\n" +
                             "title: " + articleName + "\n" +
                             "tags:\n" +
@@ -101,26 +102,26 @@ public class JaneBookBlogToPersonalBlog {
     public static void insert(File file, long pos, String insertContent) throws IOException {
         File tmp = File.createTempFile("tmp", null);
         tmp.deleteOnExit();
-        //使用临时文件保存插入点后的数据
+        // 使用临时文件保存插入点后的数据
         RandomAccessFile raf = new RandomAccessFile(file, "rw");
         FileOutputStream out = new FileOutputStream(tmp);
         FileInputStream in = new FileInputStream(tmp);
         raf.seek(pos);
         //----------下面代码将插入点后的内容读入临时文件中保存----------
         byte[] bbuf = new byte[64];
-        //用于保存实际读取的字节数
+        // 用于保存实际读取的字节数
         int hasRead = 0;
-        //使用循环方式读取插入点后的数据
+        // 使用循环方式读取插入点后的数据
         while ((hasRead = raf.read(bbuf)) > 0) {
-            //将读取的数据写入临时文件
+            // 将读取的数据写入临时文件
             out.write(bbuf, 0, hasRead);
         }
         //-----------下面代码用于插入内容----------
-        //把文件记录指针重写定位到pos位置
+        // 把文件记录指针重写定位到pos位置
         raf.seek(pos);
-        //追加需要插入的内容
+        // 追加需要插入的内容
         raf.write(insertContent.getBytes());
-        //追加临时文件中的内容
+        // 追加临时文件中的内容
         while ((hasRead = in.read(bbuf)) > 0) {
             raf.write(bbuf, 0, hasRead);
         }
@@ -134,9 +135,9 @@ public class JaneBookBlogToPersonalBlog {
      */
     public static void replacTextContent(File file) throws IOException {
 
-        //原有的内容
+        // 原有的内容
         String srcStr = "\\?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240";
-        //要替换的内容
+        // 要替换的内容
         String replaceStr = "";
 
         String srcStr2 = "!\\[";

@@ -1,4 +1,4 @@
-package com.zja;
+package com.zja.java.io;
 
 
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * RandomAccessFile 随机存取文件
+ *
  * @author zhengja@dist.com.cn
  * @data 2019/9/2 10:27
  */
@@ -16,28 +18,28 @@ public class RandomAccessFileTest {
     public static void main(String[] args) {
 
         try {
-            File file = new File("D:\\TestFile\\test1.txt");//创建一个txt文件内容是 123456789
+            File file = new File("D:\\TestFile\\test1.txt");// 创建一个txt文件内容是 123456789
             RandomAccessFile ras = new RandomAccessFile(file, "rw");
             System.out.println("ras当前指针位置：" + ras.getFilePointer() + "  length" + ras.length());
-            //默认情况下ras的指针为0，即从第1个字节读写到
-            ras.seek(1);//将ras的指针设置到1，则读写ras是从第2个字节读写
+            // 默认情况下ras的指针为0，即从第1个字节读写到
+            ras.seek(1);// 将ras的指针设置到1，则读写ras是从第2个字节读写
             System.out.println("ras当前指针位置-2：" + ras.getFilePointer());
 
             File file2 = new File("D:\\TestFile\\test2.txt");
             RandomAccessFile ras2 = new RandomAccessFile(file2, "rw");
             System.out.println("ras2当前指针位置：" + ras2.getFilePointer());
-            //ras2.setLength(10);
+            // ras2.setLength(10);
             ras2.seek(0);
             System.out.println("ras2当前指针位置-2：" + ras.getFilePointer());
-            byte[] buffer = new byte[10*1024];
+            byte[] buffer = new byte[10 * 1024];
             int len = 0;
             while ((len = ras.read(buffer)) != -1) {
-                ras2.write(buffer, 0, len);//从ras2的第6个字节被写入，因为前面设置ras2的指针为5
-                //ras2的写入结果是:pp.txt的内容为前5位是空格，第6位是9
-                //待写入的位置如果有内容将会被新写入的内容替换
+                ras2.write(buffer, 0, len);// 从ras2的第6个字节被写入，因为前面设置ras2的指针为5
+                // ras2的写入结果是:pp.txt的内容为前5位是空格，第6位是9
+                // 待写入的位置如果有内容将会被新写入的内容替换
             }
-            //System.out.println("ras2当前指针位置-：" + ras2.getFilePointer());
-            //System.out.println("ras当前指针位置：" + ras.getFilePointer());
+            // System.out.println("ras2当前指针位置-：" + ras2.getFilePointer());
+            // System.out.println("ras当前指针位置：" + ras.getFilePointer());
             ras.close();
             ras2.close();
             System.out.println("ok");
@@ -48,19 +50,19 @@ public class RandomAccessFileTest {
     }
 
     @Test
-    public void testRandomAccessFile(){
+    public void testRandomAccessFile() {
         try {
-            File file = new File("D:\\TestFile\\test1.txt");//创建一个txt文件内容是 123456789
+            File file = new File("D:\\TestFile\\test1.txt");// 创建一个txt文件内容是 123456789
             RandomAccessFile ras = new RandomAccessFile(file, "rw");
             System.out.println("ras当前指针位置：" + ras.getFilePointer() + "  length" + ras.length());
-            //默认情况下ras的指针为0，即从第1个字节读写到
-            ras.seek(1);//将ras的指针设置到1，则读写ras是从第2个字节读写
+            // 默认情况下ras的指针为0，即从第1个字节读写到
+            ras.seek(1);// 将ras的指针设置到1，则读写ras是从第2个字节读写
             System.out.println("ras当前指针位置-2：" + ras.getFilePointer());
 
             File file2 = new File("D:\\TestFile\\test2.txt");
             RandomAccessFile ras2 = new RandomAccessFile(file2, "rw");
             System.out.println("ras2当前指针位置：" + ras2.getFilePointer());
-            //ras2.setLength(10);
+            // ras2.setLength(10);
             ras2.seek(0);
             System.out.println("ras2当前指针位置-2：" + ras.getFilePointer());
             byte[] buffer = new byte[2];
@@ -103,12 +105,14 @@ public class RandomAccessFileTest {
         return buffer;
     }
 
-    /**电脑会卡**/
+    /**
+     * 电脑会卡
+     **/
     @Test
     public void test2() throws IOException {
         long begin = System.currentTimeMillis();
         FileInputStream is = new FileInputStream("D:\\FileTest" + File.separator + "移动电子底图.tpk");
-        byte[] bytes = new byte[64 * 1024 * 1024];//64MB
+        byte[] bytes = new byte[64 * 1024 * 1024];// 64MB
         int length = 0;
         while ((length = is.read(bytes)) != -1) {
             System.out.println(new String(bytes, 0, length));
@@ -116,11 +120,11 @@ public class RandomAccessFileTest {
         is.close();
         long end = System.currentTimeMillis();
         System.out.println("用时" + (end - begin));
-        //当缓冲数组的大小是1GB时，会有如下异常
+        // 当缓冲数组的大小是1GB时，会有如下异常
         // Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
-        //at com.westos.test.Readerfile.main(Readerfile.java:11)
-        //java虚拟机默认的最大内存是64MB,所以此异常是超出异常
-        //若缓冲内存大小为64MB,则用时为35937
+        // at com.westos.test.Readerfile.main(Readerfile.java:11)
+        // java虚拟机默认的最大内存是64MB,所以此异常是超出异常
+        // 若缓冲内存大小为64MB,则用时为35937
     }
 
 
@@ -161,8 +165,9 @@ public class RandomAccessFileTest {
     }
 
 
-
-    /**分片读取**/
+    /**
+     * 分片读取
+     **/
     public static byte[] getBlock(long offset, File file, int blockSize) {
         byte[] result = new byte[blockSize];
         RandomAccessFile accessFile = null;
