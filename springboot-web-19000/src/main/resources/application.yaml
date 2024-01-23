@@ -1,0 +1,21 @@
+server:
+  http:
+    port: 19000 # http port
+  port: 19001   # https port
+  ssl: # SSL 证书配置 支持 https
+    key-store: classpath:client.p12
+    key-store-password: 12345678
+    keyStoreType: PKCS12
+    key-alias: client
+
+# spring配置
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+# 自定义：读取xml配置
+project:
+  artifactId: @artifactId@
+  version: @version@
