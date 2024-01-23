@@ -16,6 +16,11 @@
     </properties>
 
     <modules>
+        <!--<module>JustAuth-login</module>-->
+        <!--<module>qq-login</module>-->
+        <!--<module>weixin-login</module>-->
+        <!--<module>weixin-qy-login</module>-->
+        <!--<module>zfb-login</module>-->
     </modules>
 
 </project>

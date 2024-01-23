@@ -3,14 +3,15 @@
  * @Department: 数据中心
  * @Author: 郑家骜[ào]
  * @Email: zhengja@dist.com.cn
- * @Date: 2023-03-15 16:33
+ * @Date: 2023-10-17 14:53
  * @Since:
  */
-package com.zja.spire;
-/*
+package com.zja.zfb;
 
-文档操作：创建、编辑、转换等
-
-    https://www.e-iceblue.cn/#
-
+/**
+ * @author: zhengja
+ * @since: 2023/10/17 14:53
  */
+public class A {
+    private String name;
+}
