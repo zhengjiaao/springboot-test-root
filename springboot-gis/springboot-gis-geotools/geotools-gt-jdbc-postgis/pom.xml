@@ -13,28 +13,47 @@
 
     <packaging>jar</packaging>
 
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
-
-    <!-- add repositories for JTS and Hibernate Spatial and Hibernate (JBoss) -->
     <repositories>
         <repository>
-            <id>OSGEO GeoTools repo</id>
-            <url>http://download.osgeo.org/webdav/geotools</url>
-        </repository>
-        <repository>
-            <id>Hibernate Spatial repo</id>
-            <url>http://www.hibernatespatial.org/repository</url>
-        </repository>
-        <!-- add JBOSS repository for easy access to Hibernate libraries -->
-        <repository>
-            <id>JBOSS</id>
-            <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+            <id>osgeo</id>
+            <name>OSGeo Release Repository</name>
+            <url>https://repo.osgeo.org/repository/release/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </repository>
     </repositories>
 
+    <properties>
+        <java.version>1.8</java.version>
+
+        <!--geotools-->
+        <geotools.version>28.5</geotools.version>
+    </properties>
+
     <dependencies>
+
+        <!-- GeoTools Core -->
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-main</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <!--jdbc-postgis-->
+        <dependency>
+            <groupId>org.geotools.jdbc</groupId>
+            <artifactId>gt-jdbc-postgis</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -59,57 +78,43 @@
             <version>3.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+        <!--  &lt;!&ndash; 添加GeoTools依赖 &ndash;&gt;
+          <dependency>
+              <groupId>org.geotools</groupId>
+              <artifactId>gt-shapefile</artifactId>
+              <version>17.0</version>
+          </dependency>
+          <dependency>
+              <groupId>org.geotools</groupId>
+              <artifactId>gt-swing</artifactId>
+              <version>17.0</version>
+          </dependency>
 
-        <!-- 添加GeoTools依赖 -->
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-shapefile</artifactId>
-            <version>17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-swing</artifactId>
-            <version>17.0</version>
-        </dependency>
+          &lt;!&ndash; wkt转geojson &ndash;&gt;
+          <dependency>
+              <groupId>org.geotools</groupId>
+              <artifactId>gt-geojson</artifactId>
+              <version>17.0</version>
+          </dependency>
 
-        <!-- wkt转geojson -->
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-geojson</artifactId>
-            <version>17.0</version>
-        </dependency>
+          &lt;!&ndash; 添加geotools-jdbc &ndash;&gt;
+          <dependency>
+              <groupId>org.geotools.jdbc</groupId>
+              <artifactId>gt-jdbc-postgis</artifactId>
+              <version>17.0</version>
+          </dependency>
 
-        <!-- 添加geotools-jdbc -->
-        <dependency>
-            <groupId>org.geotools.jdbc</groupId>
-            <artifactId>gt-jdbc-postgis</artifactId>
-            <version>17.0</version>
-        </dependency>
-
-        <!--wktid 坐标系转换 -->
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-extension</artifactId>
-            <version>17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-referencing</artifactId>
-            <version>17.0</version>
-        </dependency>
+          &lt;!&ndash;wktid 坐标系转换 &ndash;&gt;
+          <dependency>
+              <groupId>org.geotools</groupId>
+              <artifactId>gt-epsg-extension</artifactId>
+              <version>17.0</version>
+          </dependency>
+          <dependency>
+              <groupId>org.geotools</groupId>
+              <artifactId>gt-referencing</artifactId>
+              <version>17.0</version>
+          </dependency>-->
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

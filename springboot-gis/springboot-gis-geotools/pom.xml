@@ -20,7 +20,7 @@
 
     <modules>
         <module>geotools-gt-geojson</module>
-        <module>geotools-gt-jdbc-postgis</module>
+        <!--<module>geotools-gt-jdbc-postgis</module>-->
         <module>geotools-gt-main</module>
         <module>geotools-gt-shapefile</module>
     </modules>

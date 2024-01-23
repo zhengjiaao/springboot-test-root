@@ -16,7 +16,7 @@
     </properties>
 
     <modules>
-        <module>springboot-gis-gdal</module>
+        <!--<module>springboot-gis-gdal</module>-->
         <module>springboot-gis-geotools</module>
         <module>springboot-gis-jts</module>
         <module>springboot-gis-proj4J</module>
