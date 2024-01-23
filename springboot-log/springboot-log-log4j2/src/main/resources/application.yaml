@@ -1,0 +1,20 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      # 设置总上传数据总大小 5G
+      max-request-size: 5121MB
+      # 设置单文件大小 2G
+      max-file-size: 2049MB
+
+logging:
+  level:
+    root: info
+    com.zja.log.user: debug
+  file:
+    name: logs/application.log
+  config: classpath:log4j2.xml # 可选地，自定义日志配置
