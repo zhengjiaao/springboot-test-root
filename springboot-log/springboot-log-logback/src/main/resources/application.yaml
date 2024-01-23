@@ -1,0 +1,50 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      # 设置总上传数据总大小 5G
+      max-request-size: 5121MB
+      # 设置单文件大小 2G
+      max-file-size: 2049MB
+
+  # 启用彩色控制台日志输出
+  output:
+    ansi:
+      enabled: always
+
+## logging 默认配置
+#logging:
+#  # 设置日志级别
+#  level:
+#    root: info # 当前项目
+#  # 控制台日志输出格式
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+#  # 文件日志输出配置
+#  file:
+#    name:
+#    path:
+
+# logging 自定义配置
+logging:
+  # 设置日志级别
+  level:
+    root: info # 当前项目
+    com.zja.log.user: debug # 特定的包或类设置不同的日志级别
+  # 控制台日志输出格式
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    # 文件日志输出配置
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  # 文件日志输出配置
+  file:
+    name: logs/application.log
+    path:
+    # 按天滚动日志文件
+    rolling:
+      pattern: logs/application-%d{yyyy-MM-dd}.log
+      max-history: 7
