@@ -1,4 +1,4 @@
-package com.dist;
+package com.zja;
 
 
 import org.junit.jupiter.api.Test;

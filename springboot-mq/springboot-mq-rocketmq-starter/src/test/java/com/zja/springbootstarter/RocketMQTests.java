@@ -1,8 +1,8 @@
-package com.dist.springbootstarter;
+package com.zja.springbootstarter;
 
-import com.dist.MqRocketmqStarterApplicationTests;
-import com.dist.rocketmq.producer.RocketMQMsgListener;
-import com.dist.rocketmq.producer.RocketMQProducer;
+import com.zja.MqRocketmqStarterApplicationTests;
+import com.zja.rocketmq.producer.RocketMQMsgListener;
+import com.zja.rocketmq.producer.RocketMQProducer;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Resource;

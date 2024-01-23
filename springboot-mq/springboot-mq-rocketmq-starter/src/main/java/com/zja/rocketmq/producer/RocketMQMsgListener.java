@@ -1,4 +1,4 @@
-package com.dist.rocketmq.producer;
+package com.zja.rocketmq.producer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
