@@ -21,7 +21,7 @@ public class CompletableFutureDemo5 {
      * 在都执行结束以后，因为run是不消费也不返回的，所以入参为0，不需要你们的参数，也不返回，所以没有return。
      */
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        CompletableFuture cxf = CompletableFuture.supplyAsync(() -> "Both")
+        CompletableFuture<Void> cxf = CompletableFuture.supplyAsync(() -> "Both")
                 .runAfterBoth(CompletableFuture.supplyAsync(() -> "Message"), () -> {
                     System.out.println("Done");
                 });

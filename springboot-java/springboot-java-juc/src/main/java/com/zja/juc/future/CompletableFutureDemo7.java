@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public class CompletableFutureDemo7 {
     @SneakyThrows
     public static void main(String[] args) {
-        CompletableFuture cf = CompletableFuture.supplyAsync(() ->{
+        CompletableFuture<Object> cf = CompletableFuture.supplyAsync(() ->{
             throw new  RuntimeException("Occur exception");
         }).whenComplete((rs,th) -> { //whenComplete 表示当任务执行完成后，会触发的方法.不论前置的CompletionStage任务是正常执行结束还是出现异常，都能够触发特定的 action 方法
             if (th !=null){

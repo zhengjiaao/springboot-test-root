@@ -28,7 +28,7 @@ public class CompletableFutureDemo4 {
 
     //thenCombineAsync的作用就是将task1和task2的值都拿到以后返回值。
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        CompletableFuture cf = CompletableFuture.supplyAsync(() -> "Combine")
+        CompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> "Combine")
                 .thenCombineAsync(CompletableFuture.supplyAsync(() -> "Message"), (r1, r2) -> r1 + r2);
         System.out.println(cf.get());
     }
