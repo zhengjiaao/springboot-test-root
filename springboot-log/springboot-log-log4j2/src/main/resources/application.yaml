@@ -11,10 +11,39 @@ spring:
       # 设置单文件大小 2G
       max-file-size: 2049MB
 
+  # 启用彩色控制台日志输出
+  output:
+    ansi:
+      enabled: always
+
+## logging 默认配置
+#logging:
+#  # 设置日志级别
+#  level:
+#    root: info # 当前项目
+#  # 控制台日志输出格式
+#  #pattern:
+#  #  console:
+#  # 文件日志输出配置
+#  file:
+#    name:
+#    path:
+
+# logging 自定义配置
 logging:
+  # 日志输出级别
   level:
-    root: info
-    com.zja.log.user: debug
+    root: info # 当前[应用]输出日志级别
+    com.zja.log.user: debug # 当前应用的特定[包或类]输出日志级别
+  pattern:
+    # 控制台日志输出格式
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    # 文件日志输出配置
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
   file:
-    name: logs/application.log
-  config: classpath:log4j2.xml # 可选地，自定义日志配置
+    name: logs/application.log # 日志存储文件
+    #name: logs/${spring.application.name}-${spring.profiles.active}/application.log # 日志存储文件：针对不同环境
+    max-size: 10MB # 日志文件最大大小，默 10MB
+    total-size-cap: 0 # 日志文件总大小上限，默 0B，注：logback-spring.xml配置，不需要带单位
+    max-history: 7 # 日志文件存储时间，默 7天
+    clean-history-on-start: false # 项目启动清理过期日志文件
