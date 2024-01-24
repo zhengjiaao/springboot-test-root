@@ -15,6 +15,11 @@ spring:
   profiles:
     active: dev
 
+  # 启用彩色控制台日志输出
+  output:
+    ansi:
+      enabled: always
+
 # logging 自定义配置
 logging:
   # 日志输出级别
