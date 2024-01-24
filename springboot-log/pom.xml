@@ -16,9 +16,10 @@
     </properties>
 
     <modules>
-        <module>springboot-log-java-util-logging</module>
         <module>springboot-log-log4j2</module>
+        <module>springboot-log-log4j2-config</module>
         <module>springboot-log-logback</module>
+        <module>springboot-log-logback-config</module>
     </modules>
 
 </project>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 默 true 配置文件改变，将会被重新加载 -->
+<configuration scan="true">
+
+    <!-- 系统名称 -->
+    <springProperty scope="context" name="System" source="logging.system.name" defaultValue="logging.system.name"/>
+    <!-- 当前配置文件环境 -->
+    <springProperty scope="context" name="SystemActive" source="logging.system.active" defaultValue="logging.system.active"/>
+    <!--日志文件保存的根目录-->
+    <springProperty scope="context" name="LogBaseDir" source="logging.system.logBaseDir" defaultValue="../dist-log"/>
+    <!--日志文件保存天数-->
+    <springProperty scope="context" name="maxHistory" source="logging.system.maxHistory" defaultValue="30"/>
+    <!--单个日志文件最大大小-->
+    <springProperty scope="context" name="maxFileSize" source="logging.system.maxFileSize" defaultValue="20MB"/>
+
+    <!-- 系统日志存储路径 -->
+    <property name="LOG_PATH" value="${LogBaseDir}/${System}/${SystemActive}"/>
+
+    <!-- 系统日志级别 默 info -->
+    <springProperty scope="context" name="SystemLogLevel" source="logging.system.logLevel" defaultValue="info"/>
+    <!-- 控制台打印级别 默 info -->
+    <springProperty scope="context" name="ConsoleLogLevel" source="logging.console.logLevel" defaultValue="info"/>
+    <!-- 框架日志级别 默 WARN 例，第三方依赖日志级别 -->
+    <springProperty scope="context" name="RelyLogLevel" source="logging.rely.logLevel" defaultValue="warn"/>
+
+    <!--日志格式和颜色渲染 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+    <!-- 1. 日志输出控制台 -->
+    <appender name="CONSOLE_LOG" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 开发使用：控制台输出的日志级别是大于或等于此级别的日志信息 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${ConsoleLogLevel}</level>
+        </filter>
+        <encoder>
+            <!-- 日志输出格式 -->
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            <!-- 设置字符集 -->
+            <!-- <charset>UTF-8</charset> -->
+        </encoder>
+    </appender>
+
+    <!-- 2. 日志输出到文档 *.log -->
+    <!-- 2.1 level为 DEBUG 日志，时间滚动输出  -->
+    <!--RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件-->
+    <appender name="SYSTEM_LOG_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender" additivity="false">
+        <!--正在记录的日志文档的路径及文档名  相对目录或绝对目录，上级目录不存在会自动创建-->
+        <File>${LOG_PATH}/debug.log</File>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <!-- 设置字符集 -->
+            <!-- <charset>UTF-8</charset> -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <!--当发生滚动时，决定RollingFileAppender的行为，涉及文件移动和重命名 TimeBasedRollingPolicy最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责触发滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志归档 -->
+            <fileNamePattern>${LOG_PATH}/debug-%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <MaxHistory>${maxFileSize}</MaxHistory>
+            <!--项目启动时清理过期日志文件-->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <!-- 此日志文档只记录 debug 级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>debug</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 2. 日志输出到文档 *.log -->
+    <!-- 2.2 level为 INFO 日志，时间滚动输出  -->
+    <!--RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件-->
+    <appender name="SYSTEM_LOG_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender" additivity="false">
+        <!--正在记录的日志文档的路径及文档名  相对目录或绝对目录，上级目录不存在会自动创建-->
+        <File>${LOG_PATH}/info.log</File>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <!-- 设置字符集 -->
+            <!-- <charset>UTF-8</charset> -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <!--当发生滚动时，决定RollingFileAppender的行为，涉及文件移动和重命名 TimeBasedRollingPolicy最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责触发滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志归档 -->
+            <fileNamePattern>${LOG_PATH}/info-%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <MaxHistory>${maxHistory}</MaxHistory>
+            <!--项目启动时清理过期日志文件-->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <!-- 此日志文档只记录 info 级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>info</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 2. 日志输出到文档 *.log -->
+    <!-- 2.3 level为 WARN 日志，时间滚动输出  -->
+    <!--RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件-->
+    <appender name="SYSTEM_LOG_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender" additivity="false">
+        <!--正在记录的日志文档的路径及文档名  相对目录或绝对目录，上级目录不存在会自动创建-->
+        <File>${LOG_PATH}/warn.log</File>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <!-- 设置字符集 -->
+            <!-- <charset>UTF-8</charset> -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <!--当发生滚动时，决定RollingFileAppender的行为，涉及文件移动和重命名 TimeBasedRollingPolicy最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责触发滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志归档 -->
+            <fileNamePattern>${LOG_PATH}/warn-%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <MaxHistory>${maxHistory}</MaxHistory>
+            <!--项目启动时清理过期日志文件-->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <!-- 此日志文档只记录 warn 级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 2. 日志输出到文档 *.log -->
+    <!-- 2.4 level为 ERROR 日志，时间滚动输出  -->
+    <!--RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件-->
+    <appender name="SYSTEM_LOG_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender" additivity="false">
+        <!--正在记录的日志文档的路径及文档名  相对目录或绝对目录，上级目录不存在会自动创建-->
+        <File>${LOG_PATH}/error.log</File>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <!-- 设置字符集 -->
+            <!-- <charset>UTF-8</charset> -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <!--当发生滚动时，决定RollingFileAppender的行为，涉及文件移动和重命名 TimeBasedRollingPolicy最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责触发滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志归档 -->
+            <fileNamePattern>${LOG_PATH}/error-%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <MaxHistory>${maxHistory}</MaxHistory>
+            <!--项目启动时清理过期日志文件-->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <!-- 此日志文档只记录 error 级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 2. 日志输出到文档 *.log -->
+    <!-- 2.5 level为 FATAL 日志，时间滚动输出  -->
+    <!--RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件-->
+    <appender name="SYSTEM_LOG_FATAL" class="ch.qos.logback.core.rolling.RollingFileAppender" additivity="false">
+        <!--正在记录的日志文档的路径及文档名  相对目录或绝对目录，上级目录不存在会自动创建-->
+        <File>${LOG_PATH}/fatal.log</File>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <!-- 设置字符集 -->
+            <!-- <charset>UTF-8</charset> -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <!--当发生滚动时，决定RollingFileAppender的行为，涉及文件移动和重命名 TimeBasedRollingPolicy最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责触发滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志归档 -->
+            <fileNamePattern>${LOG_PATH}/fatal-%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <MaxHistory>${maxHistory}</MaxHistory>
+            <!--项目启动时清理过期日志文件-->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <!-- 此日志文档只记录 fatal 级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>fatal</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 配置框架级别：设置某一个包或具体的某一个类的日志打印级别，由yaml 或 properties控制级别-->
+    <logger name="druid.sql.Statement" level="${RelyLogLevel}"/>
+    <logger name="com.alibaba.dubbo" level="${RelyLogLevel}"/>
+    <logger name="org.springframework" level="${RelyLogLevel}"/>
+    <logger name="org.apache.zookeeper" level="${RelyLogLevel}"/>
+    <!--nacos 客户端日志级别 -->
+    <logger name="com.alibaba.nacos.client" level="${RelyLogLevel}"/>
+    <logger name="com.alibaba.nacos.client.config" level="${RelyLogLevel}"/>
+    <logger name="com.alibaba.nacos.client.naming" level="${RelyLogLevel}"/>
+
+    <!--预留：业务日志-->
+    <!--<logger name="com.dist" level="info">
+        <appender-ref ref="dist_info"/>
+    </logger>-->
+
+    <!-- 预留：发送日志到 logstash -->
+    <!--<appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <destination>192.168.200.39:8050</destination>
+    &lt;!&ndash; encoder is required &ndash;&gt;
+    <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>-->
+
+    <!-- 1.日志输出控制台 -->
+    <root level="${ConsoleLogLevel}">
+        <!--输出到控制台-->
+        <appender-ref ref="CONSOLE_LOG"/>
+    </root>
+
+    <!-- 2.日志输出到文档 -->
+    <!-- root输出：INFO级别日志 文件：${LOG_PATH}-${Level}.log-->
+    <root level="${SystemLogLevel}">
+        <!--输出系统日志-->
+        <appender-ref ref="SYSTEM_LOG_DEBUG"/>
+        <appender-ref ref="SYSTEM_LOG_INFO"/>
+        <appender-ref ref="SYSTEM_LOG_WARN"/>
+        <appender-ref ref="SYSTEM_LOG_ERROR"/>
+        <appender-ref ref="SYSTEM_LOG_FATAL"/>
+    </root>
+
+</configuration>
