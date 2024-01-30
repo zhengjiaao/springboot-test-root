@@ -35,6 +35,7 @@
         <module>springboot-mq</module>
         <module>springboot-ocr</module>
         <module>springboot-nlp</module>
+        <module>springboot-obfuscated-code</module>
         <module>springboot-patterns</module>
         <module>springboot-process</module>
         <module>springboot-qrcode</module>

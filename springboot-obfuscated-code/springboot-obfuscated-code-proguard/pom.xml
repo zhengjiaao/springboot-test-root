@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.zja</groupId>
+        <artifactId>springboot-obfuscated-code</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>springboot-obfuscated-code-proguard</artifactId>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+        <lombok.version>1.18.20</lombok.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.29</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.83</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>5.7.16</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.3.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!--代码混淆插件：proguard-maven-plugin-->
+            <plugin>
+                <!--一定要放到打包插件之前-->
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.6.0</version>
+                <executions>
+                    <execution>
+                        <!--混淆时刻：这里是打包的时候混淆-->
+                        <phase>package</phase>
+                        <goals>
+                            <!--使用插件的什么功能：当然是混淆啦-->
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- proguard原理：proguard代码混淆其实是将一个原始的jar，生成一个混淆后的jar -->
+                    <!-- 输入jar名称：在outputDirectory目录下的原始jar-->
+                    <injar>${project.build.finalName}.jar</injar>
+                    <!-- 输出jar名称：在outputDirectory目录下的输出jar，与injar同名的时候就是覆盖，混淆后的代码覆盖原始jar里面的代码-->
+                    <outjar>${project.build.finalName}.jar</outjar>
+                    <!-- 但是要注意这个路径必须要包括<injar>标签填写的jar -->
+                    <outputDirectory>${project.basedir}/target</outputDirectory>
+
+                    <!-- 混淆：是否混淆 默认是true -->
+                    <obfuscate>true</obfuscate>
+                    <!-- 混淆：指定混淆配置文件，通常叫做proguard.cfg,也可写在options中 -->
+                    <proguardInclude>${project.basedir}/proguard.cfg</proguardInclude>
+
+                    <!--添加jvm依赖：没在依赖列表中的依赖，这里你可以按你的需要修改，这里测试只需要一个JRE的Runtime包就行了-->
+                    <libs>
+                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/lib/jsse.jar</lib>
+                    </libs>
+
+                    <!--必改项：过滤器-->
+                    <!--输入过滤器：ProGuard 将仅对以该路径开始的类和包进行处理,可以只对特定的包或类进行混淆，而不是整个应用程序-->
+                    <!--匹配特定包下的所有类-->
+                    <!--<inFilter>com/zja/obfuscated/proguard/**</inFilter>-->
+
+                    <!--生成临时配置文件：解决依赖过多时报错:CreateProcess error=206，The filename or extension is too long.-->
+                    <!--<generateTemporaryConfigurationFile>true</generateTemporaryConfigurationFile>-->
+
+                    <!--混淆配置选项：也可写到proguard.cfg配置文件-->
+                    <!--配置混淆的一些细节选项，比如哪些类不需要混淆，哪些需要混淆-->
+                    <!--options：允许您直接在插件配置中指定ProGuard的选项-->
+                    <options>
+                        <!--不混淆项目包之外的任何包-->
+                        <option>-keep class !com.zja.obfuscated.proguard.** { *; }</option>
+                        <option>-keep interface !com.zja.obfuscated.proguard.** { *; }</option>
+                        <!--必改项：不混淆的包，或者实体类、入参的属性名、响应的属性名-->
+                        <!--实体类、入参的属性名、响应的属性名不混淆-->
+                        <option>-keep class com.zja.obfuscated.proguard.model.** {*;}</option>
+                        <option>-keep class com.zja.obfuscated.proguard.dao.** {*;}</option>
+                        <option>-keep class com.zja.obfuscated.proguard.config.** {*;}</option>
+                        <!--controller层：一般不混淆，避免请求无法接收到参数-->
+                        <option>-keep class com.zja.obfuscated.proguard.controller.** {*;}</option>
+                        <!--mapper层：一般不混淆，避免xml中找不到映射的属性-->
+                        <!--<option>-keep class com.zja.obfuscated.proguard.mapper.** {*;}</option>-->
+                        <!--<option>-keep class com.zja.obfuscated.proguard.manager.** {*;}</option>-->
+                        <!--业务层：推荐混淆，关键业务代码要进行混淆-->
+                        <option>-keep class com.zja.obfuscated.proguard.service.** {*;}</option>
+                    </options>
+                </configuration>
+            </plugin>
+
+            <!--打包插件:boot-maven-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--解决 jar 命令启动报错问题：no main manifest attribute, in /app.jar-->
+                    <mainClass>com.zja.obfuscated.proguard.ProguardApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

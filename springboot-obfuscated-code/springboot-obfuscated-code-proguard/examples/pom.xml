@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.zja</groupId>
+        <artifactId>springboot-obfuscated-code</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>springboot-obfuscated-code-proguard</artifactId>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+        <lombok.version>1.18.20</lombok.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.29</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.83</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>5.7.16</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.3.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--代码混淆插件：proguard-maven-plugin-->
+            <plugin>
+                <!--一定要放到打包插件之前-->
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.6.0</version>
+                <executions>
+                    <execution>
+                        <!--混淆时刻，这里是打包的时候混淆-->
+                        <phase>package</phase>
+                        <goals>
+                            <!--使用插件的什么功能，当然是混淆-->
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--跳过ProGuard的执行：默认false。设置为true时，跳过ProGuard的执行。可以在特定的构建配置中使用此选项以便根据需要启用或禁用ProGuard。-->
+                    <skip>false</skip>
+                    <!-- 就是输入Jar的名称,代码混淆其实是将一个原始的jar，生成一个混淆后的jar -->
+                    <injar>${project.build.finalName}.jar</injar>
+                    <!-- 输出jar名称，输入输出jar同名的时候就是覆盖-->
+                    <outjar>${project.build.finalName}-proguard.jar</outjar>
+                    <!-- 这是输出路径配置，但是要注意这个路径必须要包括injar标签填写的jar -->
+                    <outputDirectory>${project.basedir}/target</outputDirectory>
+                    <!-- 是否混淆 默认是true -->
+                    <obfuscate>true</obfuscate>
+                    <!-- 指定配置文件，通常叫做proguard.cfg,也可写在options中 -->
+                    <proguardInclude>$[project.basedir}/proguard.cfg</proguardInclude>
+                    <!-- jvm等没在依赖列表中的依赖 -->
+                    <!--<libs>
+                        <lib>${java.home]/lib/rt.jar</lib>
+                    </libs>-->
+                    <!-- 对依赖的jar进行过滤比如，如下配置就是对META-INF不处理。 -->
+                    <inLibsFilter>!META-INF/**,!META-INF/versions/9/**.class</inLibsFilter>
+                    <!--解决依赖过多时报错:CreateProcess error=206，The filename or extension is too long.-->
+                    <generateTemporaryConfigurationFile>true</generateTemporaryConfigurationFile>
+                    <!--配置混淆的一些细节选项，比如哪些类不需要混淆，哪些需要混淆-->
+                    <!--options：允许您直接在插件配置中指定ProGuard的选项-->
+                    <options>
+                        <!--true：禁用ProGuard的警告信息输出-->
+                        <disableWarning>true</disableWarning>
+                        <!--jdk目标版本-->
+                        <option>-target 1.8</option>
+                        <!--不做收缩-->
+                        <option>-dontshrink</option>
+                        <!--不做优化-->
+                        <option>-dontoptimize</option>
+                        <!--混淆类名之后，对使用class.forName('className')之类的地方进行相应替代-->
+                        <option>-adaptclassstrings</option>
+                        <!-- 不跳过非公用类文件及成员-->
+                        <option>-dontskipnonpubliclibraryclasses</option>
+                        <option>-dontskipnonpubliclibraryclassmembers</option>
+                        <!-- 混淆时不生成大小写混合的类名,避免windows下相互覆盖 -->
+                        <option>-dontusemixedcaseclassnames</option>
+                        <!-- 对于类成员的命名采取唯一策略,如EmpMapper g;那么在其他任何地方出现的时候变量名都是g-->
+                        <option>-useuniqueclassmembernames</option>
+                        <!-- 不混淆所有包名-->
+                        <option>-keeppackagenames</option>
+                        <!-- 保留参数名,因为controller/mapper等的参数若混淆会导致无法接受参数，xm1文件找不到参数-->
+                        <option>-keepparameternames</option>
+                        <!-- -keepattributes [attribute_filter] 保留属性,多个属性可以用多个-keepattributes配置
+                        也可以用逗号分隔，可以使用?**通配符，或否定符!-->
+                        <option>-keepattributes
+                            Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
+                        </option>
+                        <!--免com.example.Myclass.class.getResource("")nu11,保留目录entry-->
+                        <option>-keepdirectories</option>
+                        <!--保留入口main函数-->
+                        <option>
+                            -keepclasseswithmembers public class * {
+                                public static void main(java.lang.String[]);
+                            }
+                        </option>
+                        <!--必改：不混淆的包，或者实体类、入参的属性名、响应的属性名-->
+                        <!--mapper层不混淆,避免xml中找不到-->
+                        <option>-keep class com.zja.obfuscated.proguard.mapper.** {*;}</option>
+                        <!--实体类、入参的属性名、响应的属性名不混淆-->
+                        <option>-keep class com.zja.obfuscated.proguard.model.** {*;}</option>
+                        <option>-keep class com.zja.obfuscated.proguard.dao.** {*;}</option>
+                        <option>-keep class com.zja.obfuscated.proguard.util.** {*;}</option>
+                        <option>-keep class com.zja.obfuscated.proguard.config.** {*;}</option>
+                        <option>-keep class com.zja.obfuscated.proguard.controller.** {*;}</option>
+                        <option>-keep class com.zja.obfuscated.proguard.service.** {*;}</option>
+                    </options>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <!--打包插件:boot-maven-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--解决 jar 命令启动报错问题：no main manifest attribute, in /app.jar-->
+                    <mainClass>com.zja.obfuscated.proguard.ProguardApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
