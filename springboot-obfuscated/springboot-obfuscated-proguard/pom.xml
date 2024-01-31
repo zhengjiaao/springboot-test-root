@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.zja</groupId>
-        <artifactId>springboot-obfuscated-code</artifactId>
+        <artifactId>springboot-obfuscated</artifactId>
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>springboot-obfuscated-code-proguard</artifactId>
+    <artifactId>springboot-obfuscated-proguard</artifactId>
 
     <properties>
         <java.version>1.8</java.version>
