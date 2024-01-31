@@ -10,11 +10,13 @@ springboot 项目中常用到的一些技术集成示例，可以快速开始开
 
 > 以下是已经完成的示例模块
 
+- [springboot-ai Ai开源大模型](./springboot-ai)
 - [springboot-api API管理](./springboot-api)
     - [springboot-api-swagger2](./springboot-api/springboot-api-swagger2)
     - [springboot-api-swagger2-knife4j](./springboot-api/springboot-api-swagger2-knife4j)
     - [springboot-api-swagger3](./springboot-api/springboot-api-swagger3)
     - [springboot-api-swagger3-knife4j](./springboot-api/springboot-api-swagger3-knife4j)
+- [springboot-asr ASR语音识别](./springboot-asr)
 - [springboot-captcha 验证码](./springboot-captcha)
     - [springboot-captcha-easy](./springboot-captcha/springboot-captcha-easy)
     - [springboot-captcha-hutool](./springboot-captcha/springboot-captcha-hutool)
