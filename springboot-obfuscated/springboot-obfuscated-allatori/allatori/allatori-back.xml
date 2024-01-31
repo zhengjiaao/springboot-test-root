@@ -1,0 +1,88 @@
+<!--参考配置：-->
+<config>
+    <input>
+        <!-- in 指向的是 maven打包好的工具
+         out 是allatori 混淆之后的jar包名称， allatori 可以混淆jar 也可以混淆war经过
+     -->
+        <jar in="app.jar" out="app-obf.jar"/>
+    </input>
+
+    <classpath basedir="library-jars">
+        <!-- Adding library.jar to the classpath -->
+        <jar name="library.jar"/>
+        <!-- Adding all jars in the lib directory to the classpath -->
+        <jar name="lib/*.jar"/>
+        <!-- Adding all jars in the lib2 directory and its subdirectories to the classpath -->
+        <jar name="lib2/**/*.jar"/>
+    </classpath>
+
+    <!-- 混淆的时候需要保留 什么位置的类名、方法名、字段名称 -->
+    <keep-names>
+        <!-- 内容不有点正则的味道，这个里面说的是所有实现序列换接口的类都保持原本的名字，如果混淆的时候不抱持原有的名称，则类名会编程ABCD 这样的无意义的名称 -->
+        <class template="class * instanceof java.io.Serializable"/>
+        <!-- 这里指定 com.package 包下面的所有类、方法、接口都保持原名 -->
+        <class template="class com.package.*"/>
+        <class access="protected+">
+            <field access="protected+"/>
+            <method access="protected+"/>
+        </class>
+        <class template="class com.company.abc.*">
+            <field template="public int *"/>
+            <method template="public get*(*)"/>
+            <method template="public set*(*)"/>
+        </class>
+    </keep-names>
+
+
+    <!-- Control flow obfuscation -->
+    <property name="control-flow-obfuscation" value="enable"/>
+    <property name="extensive-flow-obfuscation" value="normal"/>
+
+    <!-- 指定要混淆的时候 包名、类名、字段名的混淆方式 -->
+    <property name="packages-naming" value="abc"/>
+    <property name="classes-naming" value="compact"/>
+    <property name="methods-naming" value="compact"/>
+    <!--指定这个，混淆之后字节码中类的字段名称就变更成了A G  B  D 这样的名称，没有语义 -->
+    <property name="fields-naming" value="compact"/>
+
+    <!-- local-variables-naming 指定为single-name 配合上面的 keep-name 里面的方式，就可以实现 类名、方法名都不变的情况下、方法的参数和方法内的变量都混淆成单名、比如是string 类型的本地变量就会 是 str1  str2  ，接口里面就会变成paramString 这样的名称、  list 类型的 变成paramList 这样无意义的字段-->
+    <property name="local-variables-naming" value="single-name"/>
+
+    <property name="update-resource-names" value="enable"/>
+    <property name="update-resource-contents" value="enable"/>
+
+    <!-- debug 时候的一些混淆 -->
+    <property name="line-numbers" value="obfuscate"/>
+    <!-- 下面的没怎么用过，官方文档里面有介绍，但是不知道实际是上面效果 -->
+    <property name="generics" value="remove"/>
+    <property name="inner-classes" value="remove"/>
+    <property name="member-reorder" value="enable"/>
+    <property name="finalize" value="disable"/>
+    <property name="version-marker" value="anyValidIdentifierName"/>
+    <property name="synthetize-methods" value="all"/>
+    <property name="synthetize-fields" value="all"/>
+    <property name="remove-toString" value="enable"/>
+    <property name="remove-calls" value="com.package.Logger.debug"/>
+    <property name="output-jar-compression-level" value="9"/>
+
+    <!-- Incremental obfuscation -->
+    <property name="incremental-obfuscation" value="input-renaming-log.xml"/>
+
+    <!-- 不进行混淆的类，感觉还是这里配置了也不是完全生效，项目中用的jpa 但是在里面没有加上 jpa的忽略，用jd-gui 反编译工具查看jpa的包，jpa用了hibernate，hibernate相关的类也没有被混淆，混淆工具版本8.1 官网下载，魔法打败魔法，官网给的这个包，不能反编译出来-->
+    <ignore-classes>
+        <class template="class *Application*"></class>
+        <class template="class *springframework*"></class>
+        <class template="class *alibaba*"></class>
+        <class template="class *persistence*"></class>
+        <class template="class *apache*"></class>
+        <class template="class *aop*"></class>
+        <class template="class *config*"></class>
+        <class template="class *define*"></class>
+        <class template="class *dao*"></class>
+        <class template="class *model*"></class>
+        <class template="class *filter*"></class>
+        <class template="class *security*"></class>
+        <class template="class *util*"></class>
+        <class template="class *websocket*"></class>
+    </ignore-classes>
+</config>

@@ -1,0 +1,112 @@
+<config>
+    <!-- Maven properties could be used in Allatori configuration file. -->
+    <input>
+        <!--这里没有读到maven属性-->
+        <!--<jar in="${project.build.finalName}.jar" out="${project.build.finalName}-obfuscated.jar"/>-->
+        <jar in="springboot-obfuscated-allatori-2.0-SNAPSHOT.jar" out="springboot-obfuscated-allatori-obfuscated.jar"/>
+    </input>
+
+    <!--忽略的类-->
+    <ignore-classes>
+        <class template="class *springframework*"/>
+        <class template="class *springframework.boot*"/>
+        <class template="class *javax*"/>
+        <class template="class *jni*"/>
+        <class template="class *alibaba*"/>
+        <class template="class *persistence*"/>
+    </ignore-classes>
+
+    <!-- 不替换类名、方法名、属性名 -->
+    <keep-names>
+        <class access="protected+">
+            <field access="protected+"/>
+            <method access="protected+"/>
+        </class>
+
+        <!-- 不混淆的包或类：避免实体类和表结构映射不上-->
+        <class template="class com.zja.obfuscated.allatori.model.*">
+            <field access="protected+"/>
+            <field access="private+"/>
+            <method access="protected+"/>
+            <!--参数不混淆：避免映射问题-->
+            <method template="public+ *(*)" parameters="keep"/>
+        </class>
+        <!-- 不混淆的包或类：避免controller层接收不到映射的参数-->
+        <class template="class com.zja.obfuscated.allatori.controller.*">
+            <field access="protected+"/>
+            <field access="private+"/>
+            <method access="protected+"/>
+            <method access="private+"/>
+            <!--参数不混淆：避免controller层接收不到映射的参数-->
+            <method template="public+ *(*)" parameters="keep"/>
+        </class>
+
+        <!-- Matches serialization members -->
+        <class template="class * instanceof java.io.Serializable">
+            <field template="static final long serialVersionUID"/>
+            <method template="void writeObject(java.io.ObjectOutputStream)"/>
+            <method template="void readObject(java.io.ObjectInputStream)"/>
+            <method template="java.lang.Object writeReplace()"/>
+            <method template="java.lang.Object readResolve()"/>
+        </class>
+
+        <!-- Matches applets -->
+        <class template="class * instanceof java.applet.Applet"/>
+        <!-- Matches servlets -->
+        <class template="class * instanceof javax.servlet.Servlet"/>
+    </keep-names>
+
+    <!--keep-names参考-->
+   <!-- <keep-names>
+        &lt;!&ndash; Stops applying further rules to classes in the com.company.abc package,
+             therefore all classes, methods and fields in this package will be renamed &ndash;&gt;
+        &lt;!&ndash;停止对此包进行应用规则，此包下的类不会被重命名&ndash;&gt;
+        &lt;!&ndash;<class template="class class com.zja.obfuscated.allatori.model.entity" stop="true"/>&ndash;&gt;
+        &lt;!&ndash; Further rules instruct Allatori not to rename matched elements &ndash;&gt;
+
+        &lt;!&ndash; Matches classes with the name "Main" in any package &ndash;&gt;
+        <class template="class *.Main"/>
+
+        &lt;!&ndash; Matches classes with the name ending with "Bean" &ndash;&gt;
+        <class template="class *Bean">
+            &lt;!&ndash; Matches all fields &ndash;&gt;
+            <field access="private+"/>
+            &lt;!&ndash; Matches public integer fields &ndash;&gt;
+            <field template="public int *"/>
+            &lt;!&ndash; Matches all static fields &ndash;&gt;
+            <field template="static *"/>
+            &lt;!&ndash; Matches protected and public String fields &ndash;&gt;
+            <field template="protected+ java.lang.String *"/>
+            &lt;!&ndash; Matches all methods &ndash;&gt;
+            <method template="private+ *(**)"/>
+            &lt;!&ndash; Matches all getter methods &ndash;&gt;
+            <method template="private+ get*(**)"/>
+            &lt;!&ndash; Matches all methods with String argument,
+                 parameter names of these methods will not be changed &ndash;&gt;
+            <method template="private+ *(java.lang.String)" parameters="keep"/>
+        </class>
+
+        &lt;!&ndash; Matches serialization members &ndash;&gt;
+        <class template="class * instanceof java.io.Serializable">
+            <field template="static final long serialVersionUID"/>
+            <method template="void writeObject(java.io.ObjectOutputStream)"/>
+            <method template="void readObject(java.io.ObjectInputStream)"/>
+            <method template="java.lang.Object writeReplace()"/>
+            <method template="java.lang.Object readResolve()"/>
+        </class>
+
+        &lt;!&ndash; Matches applets &ndash;&gt;
+        <class template="class * instanceof java.applet.Applet"/>
+        &lt;!&ndash; Matches servlets &ndash;&gt;
+        <class template="class * instanceof javax.servlet.Servlet"/>
+    </keep-names>-->
+
+    <property name="log-file" value="log.xml"/>
+
+    <!-- 设置默认包：位于默认包中的类将按照Allatori配置文件中指定的规则进行处理，可以是混淆、保留或其他操作。-->
+    <property name="default-package" value="class com.zja.obfuscated.allatori"/>
+    <!-- 设置方法重命名规则-->
+    <!--<property name="methods-naming" value="keywords"/>-->
+    <!--<property name="fields-naming" value="keywords"/>-->
+
+</config>

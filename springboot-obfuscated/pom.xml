@@ -16,8 +16,8 @@
     </properties>
 
     <modules>
+        <module>springboot-obfuscated-allatori</module>
         <module>springboot-obfuscated-proguard</module>
-        <!--<module>springboot-obfuscated-code-shade</module>-->
     </modules>
 
 </project>

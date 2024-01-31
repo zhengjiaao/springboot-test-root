@@ -1,0 +1,49 @@
+spring:
+  datasource:
+    # mysql
+    username: test
+    password: pass
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC #&rewriteBatchedStatements=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    # oracle
+#    username: test
+#    password: pass
+#    url: jdbc:oracle:thin:@127.0.0.1:1521/ORCL
+#    driver-class-name: oracle.jdbc.driver.OracleDriver
+    # postgresql
+#    username: test
+#    password: pass
+#    url: jdbc:postgresql://localhost:5433/postgres?searchPath=postgres
+#    driver-class-name: org.postgresql.Driver
+    # h2
+#    url: jdbc:oracle:thin:@127.0.0.1/orcl
+#    driver-class-name: oracle.jdbc.driver.OracleDriver
+#    url: jdbc:h2:file:d:/tools/h2/mydb;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1
+#    driverClassName: org.h2.Driver
+
+  jpa:
+    show-sql: true # 控制台打印sql
+    hibernate:
+      ddl-auto: update  # update会导致启动至 org.hibernate.dialect.Dialect 时卡住
+      naming:
+        # physical-strategy: 物理策略 把[属性名] 映射为 [表字段]，默认 将实体类的属性名映射表中策略是：userName --> user_name
+        # 物理策略(默认 Spring物理命名策略)，示例：userName --> user_name，@Column(name = "USERNAME") --> username  name变为小写
+        #physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        # 物理策略(驼峰命名)，示例：userName --> userName，@Column(name = "username") --> USERNAME     name变为大写
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    properties:
+#      hibernate:
+#        default_schema: public    # oracle 和 pg 库一般会用到
+#        generate_statistics: true # true打印统计信息[连接，执行耗时、批处理情况等]
+#        jdbc:
+#          batch_size: 1000 # 批处理
+#          batch_versioned_data: true
+#        order_inserts: true
+#        order_updates: true
+
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console # web页面管理h2 http://localhost:8080/h2-console
+#      settings:
+#        web-allow-others: true

@@ -4,6 +4,15 @@
 
 代码混淆是一种通过对源代码进行变换和优化，使其难以理解和逆向工程的技术。代码混淆的目的是增加对恶意用户和逆向工程师的阻碍，保护代码的安全性和知识产权。
 
+## spring-boot 集成(组件)示例
+
+> 以下是已经完成的示例模块
+
+- [springboot-obfuscated-allatori 推荐](springboot-obfuscated-allatori)
+- [springboot-obfuscated-proguard](springboot-obfuscated-proguard)
+
+
+
 ## 代码混淆的技术和策略
 
 在进行代码混淆时，通常会应用以下一些技术和策略：
