@@ -8,8 +8,9 @@
 
 > 以下是已经完成的示例模块
 
-- [springboot-obfuscated-allatori 推荐](springboot-obfuscated-allatori)
-- [springboot-obfuscated-proguard](springboot-obfuscated-proguard)
+- [springboot-obfuscated-allatori 强推荐](springboot-obfuscated-allatori)
+- [springboot-obfuscated-jshrink](springboot-obfuscated-jshrink)
+- [springboot-obfuscated-proguard 推荐](springboot-obfuscated-proguard)
 
 
 
