@@ -1,4 +1,4 @@
-package com.zja.vo.response;
+package com.zja.webexception.model.response;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -22,14 +22,14 @@ public abstract class ResponseUtil {
     public static final String RESULT_STATUS_FAIL = "fail";
 
 
-    //返回数据
+    // 返回数据
     public static ResponseVO instance(Object data, String status) {
         return new ResponseVO<>(data, status);
     }
 
     /**
      * @param responseCode 自定义状态码和提示消息
-     * @param data       返回数据
+     * @param data         返回数据
      */
     public static ResponseVO instance(ResponseCode responseCode, Object data, String status) {
         return new ResponseVO<>(responseCode, data, status);

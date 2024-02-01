@@ -24,6 +24,7 @@
         <module>springboot-captcha</module>
         <module>springboot-db</module>
         <module>springboot-encrypt</module>
+        <module>springboot-exception</module>
         <module>springboot-file</module>
         <module>springboot-gis</module>
         <module>springboot-git</module>

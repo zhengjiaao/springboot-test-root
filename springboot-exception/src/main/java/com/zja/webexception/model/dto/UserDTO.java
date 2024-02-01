@@ -1,9 +1,10 @@
-package com.zja.vo.user;
+package com.zja.webexception.model.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 /**
@@ -16,7 +17,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("用户展示类")
-public class UserVO implements Serializable {
+public class UserDTO implements Serializable {
 
     @ApiModelProperty("用户名称")
     @NotBlank(message = "用户登录名不能为空")
@@ -34,12 +35,12 @@ public class UserVO implements Serializable {
     @Min(value = 16)
     private Integer age;
 
-    public UserVO(String name, String password) {
+    public UserDTO(String name, String password) {
         this.name = name;
         this.password = password;
     }
 
-    public UserVO(String name, String password, Integer age) {
+    public UserDTO(String name, String password, Integer age) {
         this.name = name;
         this.password = password;
         this.age = age;

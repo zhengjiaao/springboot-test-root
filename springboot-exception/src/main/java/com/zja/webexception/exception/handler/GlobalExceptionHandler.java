@@ -1,8 +1,9 @@
-package com.zja.exception;
+package com.zja.webexception.exception.handler;
 
-import com.zja.vo.response.ResponseCode;
-import com.zja.vo.response.ResponseUtil;
-import com.zja.vo.response.ResponseVO;
+import com.zja.webexception.exception.BusinessException;
+import com.zja.webexception.model.response.ResponseCode;
+import com.zja.webexception.model.response.ResponseUtil;
+import com.zja.webexception.model.response.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
@@ -24,26 +25,25 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Company: 上海数慧系统技术有限公司
- * Department: 数据中心
- * Date: 2020-09-16 15:03
- * Author: zhengja
- * Email: zhengja@dist.com.cn
- * Desc：全局异常统一处理类
+ * 全局异常统一处理类
+ *
+ * @author: zhengja
+ * @since: 2024/02/01 9:55
  */
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
-     * 自定义异常 APIException
+     * 自定义异常 BusinessException
      */
-    @ExceptionHandler(APIException.class)
+    @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseVO APIExceptionHandler(APIException ex) {
-        log.error("api异常：", ex);
+    public ResponseVO BusinessExceptionHandler(BusinessException ex) {
+        // 保证异常被输出到日志文件
+        log.error("业务异常：" + ex.getMsg(), ex);
         // 提取错误信息返回给前端
-        return ResponseUtil.fail(ex.getMsg());
+        return ResponseUtil.fail(ex.getCode(), ex.getMsg());
     }
 
     /**
@@ -55,6 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseVO BindExceptionHandler(BindException ex) {
+        // 保证异常被输出到日志文件
         log.error("BindException 方法参数错误异常", ex);
         BindingResult bindingResult = ex.getBindingResult();
         Map<String, String> map = new HashMap<>();
@@ -79,6 +80,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseVO MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
+        // 保证异常被输出到日志文件
         log.error("MethodArgumentNotValidException 方法参数错误异常", ex);
         Map<String, String> map = new HashMap<>();
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
@@ -101,6 +103,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseVO ConstraintViolationExceptionHandler(ConstraintViolationException ex) {
+        // 保证异常被输出到日志文件
         log.error("ConstraintViolationException 方法参数错误异常", ex);
         Map<String, String> map = new HashMap<>();
         Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
@@ -118,6 +121,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseVO MissingServletRequestParameterExceptionHandler(MissingServletRequestParameterException ex) {
+        // 保证异常被输出到日志文件
         log.error("MissingServletRequestParameterExceptionHandler 方法参数错误异常", ex);
         Map<String, String> map = new HashMap<>();
         map.put(ex.getParameterName(), "必需的参数[ " + ex.getParameterName() + " ]不存在,参数类型为 [ " + ex.getParameterType() + " ]!");
@@ -134,6 +138,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({RuntimeException.class})
     @ResponseBody
     public ResponseVO runtimeExceptionHandler(RuntimeException ex) {
+        // 保证异常被输出到日志文件
         log.error("RuntimeException detail：", ex);
         if (ex.getMessage() != null) {
             return ResponseUtil.fail(ex.getMessage(), exceptionDetail(ex));
@@ -150,6 +155,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     @ResponseBody
     public ResponseVO exceptionHandler(Exception ex) {
+        // 保证异常被输出到日志文件
         log.error("Exception detail：", ex);
         if (ex.getMessage() != null) {
             return ResponseUtil.error(ex.getMessage(), exceptionDetail(ex));

@@ -1,4 +1,4 @@
-package com.zja.vo.response;
+package com.zja.webexception.model.response;
 
 import lombok.Getter;
 
@@ -13,10 +13,10 @@ import lombok.Getter;
 @Getter
 public enum ResponseCode {
 
-    //1000系列通用成功
+    // 1000系列通用成功
     SUCCESS(1000, "请求成功"),
 
-    //2000系列通用失败,因为业务逻辑错误导致操作失败，如邮箱已存在，年龄不满足条件等
+    // 2000系列通用失败,因为业务逻辑错误导致操作失败，如邮箱已存在，年龄不满足条件等
     FAILED(2000, "业务逻辑错误,请求失败"),
     VALIDATE_FAILED(2001, "参数校验失败"),
     USER_NOT_EXIST(2002, "用户不存在"),
@@ -24,7 +24,7 @@ public enum ResponseCode {
     USER_NOT_LOGIN(2004, "用户还未登录,请先登录"),
     NO_PERMISSION(2005, "权限不足,请联系管理员"),
 
-    //3000系列通用错误 错误 因为一些不可预计的、系统级的错误导致的操作失败，如数据库断电，服务器内存溢出等
+    // 3000系列通用错误 错误 因为一些不可预计的、系统级的错误导致的操作失败，如数据库断电，服务器内存溢出等
     ERROR(3000, "系统内部错误,请求失败"),
     SYS_RUN_ERROR(3001, "系统运行错误,请求失败");
 
