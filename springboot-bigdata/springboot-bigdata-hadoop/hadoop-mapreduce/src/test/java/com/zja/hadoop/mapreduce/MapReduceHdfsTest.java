@@ -9,6 +9,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -21,22 +22,23 @@ import java.util.StringTokenizer;
  * @author: zhengja
  * @since: 2024/02/01 16:29
  */
-@Deprecated // todo 错误：系统找不到路径
 @SpringBootTest
-public class HadoopMapReduceTest {
+public class MapReduceHdfsTest {
 
     /**
      * MapReduce实例，用于计算给定文本文件中每个单词的出现次数：
      */
     @Test
-    public void test() throws Exception {
-        Configuration conf = new Configuration();
-        // 获取 Windows 系统的临时目录路径
-        String temporaryDir = "D:/test";  // 使用双反斜杠或正斜杠
-        // 设置临时目录
-        conf.set("fs.defaultFS", "file://" + temporaryDir);
+    public void test_local_hdfs() throws Exception {
 
-        conf.set("mapreduce.framework.name", "yarn"); // 可以根据你的环境和需求将参数值设置为 "yarn" 或 "local", 若设置为 "local"，请确认你正在运行的是一个单节点的 Hadoop 环境，并且没有使用 YARN。
+        Configuration conf = new Configuration();
+        conf.set("mapreduce.framework.name", "local"); // 可以根据你的环境和需求将参数值设置为 "yarn" 或 "local", 若设置为 "local"，请确认你正在运行的是一个单节点的 Hadoop 环境，并且没有使用 YARN。
+
+        // 设置HDFS用户(可选，若没有设置用户权限，则不需要配置)
+        // String hdfsUser = "your-hdfs-user"; // 替换为实际的HDFS用户名
+        String hdfsUser = "hdfs"; // 替换为实际的HDFS用户名
+        UserGroupInformation ugi = UserGroupInformation.createRemoteUser(hdfsUser);
+        UserGroupInformation.setLoginUser(ugi);
 
         // yarn 设置
         // conf.set("yarn.resourcemanager.address", "your_resourcemanager_address");
@@ -47,8 +49,8 @@ public class HadoopMapReduceTest {
         conf.set("yarn.app.mapreduce.am.resource.mb", "1024");
         conf.set("yarn.app.mapreduce.am.resource.cpu-vcores", "1");
 
-        Job job = Job.getInstance(conf, "word count"); // 创建作业实例
-        job.setJarByClass(HadoopMapReduceTest.class); // 设置作业的主类
+        Job job = Job.getInstance(conf, "word count2"); // 创建作业实例
+        job.setJarByClass(MapReduceHdfsTest.class); // 设置作业的主类
 
         // 配置Mapper和Reducer
         job.setMapperClass(WordCountMapper.class);
@@ -60,8 +62,53 @@ public class HadoopMapReduceTest {
         job.setOutputValueClass(IntWritable.class);
 
         // 配置输入和输出路径
-        FileInputFormat.addInputPath(job, new Path("input.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("output"));
+        FileInputFormat.addInputPath(job, new Path("hdfs://192.168.200.154:8020/ds/test.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("hdfs://192.168.200.154:8020/ds/output2"));
+
+        // 提交作业并等待完成
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+
+    /**
+     * MapReduce实例，用于计算给定文本文件中每个单词的出现次数：
+     */
+    @Test
+    @Deprecated // todo 不存在用户的目录，感觉是hadoop上不存在目录。应该用户设置错误了。
+    public void test_yarn_hdfs() throws Exception {
+
+        Configuration conf = new Configuration();
+        conf.set("mapreduce.framework.name", "yarn"); // 可以根据你的环境和需求将参数值设置为 "yarn" 或 "local", 若设置为 "local"，请确认你正在运行的是一个单节点的 Hadoop 环境，并且没有使用 YARN。
+
+        // 设置HDFS用户(可选，若没有设置用户权限，则不需要配置)
+        // String hdfsUser = "your-hdfs-user"; // 替换为实际的HDFS用户名
+        String hdfsUser = "hdfs"; // 替换为实际的HDFS用户名
+        UserGroupInformation ugi = UserGroupInformation.createRemoteUser(hdfsUser);
+        UserGroupInformation.setLoginUser(ugi);
+
+        // yarn 设置
+        // conf.set("yarn.resourcemanager.address", "your_resourcemanager_address");
+        // conf.set("yarn.resourcemanager.scheduler.address", "your_scheduler_address");
+        conf.set("yarn.resourcemanager.address", "192.168.200.155:8032");
+        conf.set("yarn.resourcemanager.scheduler.address", "192.168.200.155:8030");
+        // 将应用程序的内存设置为 1024 MB，虚拟核心数设置为 1
+        conf.set("yarn.app.mapreduce.am.resource.mb", "1024");
+        conf.set("yarn.app.mapreduce.am.resource.cpu-vcores", "1");
+
+        Job job = Job.getInstance(conf, "word count2"); // 创建作业实例
+        job.setJarByClass(MapReduceHdfsTest.class); // 设置作业的主类
+
+        // 配置Mapper和Reducer
+        job.setMapperClass(WordCountMapper.class);
+        job.setCombinerClass(WordCountReducer.class);
+        job.setReducerClass(WordCountReducer.class);
+
+        // 配置输出键值对的类型
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        // 配置输入和输出路径
+        FileInputFormat.addInputPath(job, new Path("hdfs://192.168.200.154:8020/ds/test.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("hdfs://192.168.200.154:8020/ds/output3"));
 
         // 提交作业并等待完成
         System.exit(job.waitForCompletion(true) ? 0 : 1);

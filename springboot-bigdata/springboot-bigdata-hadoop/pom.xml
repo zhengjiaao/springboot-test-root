@@ -20,7 +20,7 @@
         <!--<module>hadoop-hbase</module>-->
         <module>hadoop-hdfs</module>
         <!--<module>hadoop-hive</module>-->
-        <!--<module>hadoop-mapreduce</module>-->
+        <module>hadoop-mapreduce</module>
         <!--<module>hadoop-pig</module>-->
         <module>hadoop-spark</module>
         <!--<module>hadoop-yarn</module>-->

@@ -51,6 +51,13 @@
             <artifactId>hadoop-client</artifactId>
             <version>3.3.1</version>
         </dependency>
+        <!--hadoop-hdfs-->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <!--hadoop-mapreduce-->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-mapreduce-client-core</artifactId>
