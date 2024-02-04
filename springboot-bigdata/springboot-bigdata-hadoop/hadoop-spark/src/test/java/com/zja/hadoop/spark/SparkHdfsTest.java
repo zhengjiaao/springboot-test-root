@@ -61,10 +61,30 @@ public class SparkHdfsTest {
             UserGroupInformation.setLoginUser(ugi);
 
             // 将处理后的结果写入HDFS
-            // processedLines.saveAsTextFile("hdfs://localhost:9000/path/to/output"); // 上传的结果，存在是分片的
+            // processedLines.saveAsTextFile("hdfs://localhost:9000/path/to/output"); // 上传的结果，存在是分片的，Spark史基于内存方式分片实现上传到hdfs的
             processedLines.saveAsTextFile("hdfs://192.168.200.154:8020/ds/output");
 
             System.out.println("Job completed successfully.");
+        }
+    }
+
+    // 读取输出到hdfs上的结果文件
+    @Test
+    public void test_textFile() {
+        // 创建Spark配置
+        SparkConf sparkConf = new SparkConf()
+                .setAppName("ReadFromHDFS")
+                .setMaster("local[*]"); // 使用本地模式，[*]表示使用所有可用的CPU核心
+
+        // 创建Spark上下文对象
+        try (JavaSparkContext sparkContext = new JavaSparkContext(sparkConf)) {
+            String hdfsPath = "hdfs://192.168.200.154:8020/ds/output";
+            JavaRDD<String> outputLines = sparkContext.textFile(hdfsPath);
+            outputLines.foreachPartition(partition -> { // 不会出现未序列化错误
+                while (partition.hasNext()) {
+                    System.out.println(partition.next());
+                }
+            });
         }
     }
 
