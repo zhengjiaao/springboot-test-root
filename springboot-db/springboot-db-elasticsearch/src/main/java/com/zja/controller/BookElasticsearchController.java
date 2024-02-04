@@ -20,7 +20,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /** 全文检索
  * @author zhengja@dist.com.cn
- * @data 2020/07/16 11:41
+ * @date 2020/07/16 11:41
  */
 @RestController
 @Api(tags = {"BookElasticsearchController"})
@@ -34,7 +34,7 @@ public class BookElasticsearchController {
 
     @ApiOperation(value = "添加索引", httpMethod = "POST")
     @PostMapping(value = "v1/book/add/{id}")
-    public Object addbook(@ApiParam(defaultValue = "50") @PathVariable String id) {
+    public Object addBook(@ApiParam(defaultValue = "50") @PathVariable String id) {
         //创建索引
         // 1、直接用名称创建索引
         //boolean indexRes = elasticsearchTemplate.createIndex("book_es");
@@ -53,26 +53,25 @@ public class BookElasticsearchController {
                 .withId(bookEntity.getId())
                 .withObject(bookEntity)
                 .build();
-        String index = elasticsearchTemplate.index(indexQuery);
         //BookEntity document = bookRepository.save(bookEntity);
-        return index;
+        return elasticsearchTemplate.index(indexQuery);
     }
 
     @ApiOperation(value = "查询全部内容", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch/all")
-    public Object srarch() {
+    @GetMapping(value = "v1/book/search/all")
+    public Object search() {
         return bookRepository.findAll();
     }
 
     @ApiOperation(value = "根据id查询内容", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch/id")
-    public Object srarch(@ApiParam(defaultValue = "50") @RequestParam String id) {
+    @GetMapping(value = "v1/book/search/id")
+    public Object search(@ApiParam(defaultValue = "50") @RequestParam String id) {
         return bookRepository.findById(id);
     }
 
     @ApiOperation(value = "根据id更新内容", httpMethod = "PUT")
-    @PutMapping(value = "v1/book/srarch/updete")
-    public Object updete(@ApiParam(defaultValue = "50") @RequestParam String id) {
+    @PutMapping(value = "v1/book/search/update")
+    public Object update(@ApiParam(defaultValue = "50") @RequestParam String id) {
         BookEntity bookEntity = new BookEntity();
         bookEntity.setId(id);
         bookEntity.setTitle("浣溪沙2");
@@ -83,26 +82,26 @@ public class BookElasticsearchController {
     }
 
     @ApiOperation(value = "单字符串全文模糊查询Ex", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch/ex")
-    public Object srarchEx(@ApiParam(value = "查询内容", defaultValue = "浣溪沙") @RequestParam String content,
-                         @ApiParam(value = "当前页", defaultValue = "0") @RequestParam int page,
-                         @ApiParam(value = "显示多少条", defaultValue = "20") @RequestParam int size) {
+    @GetMapping(value = "v1/book/search/ex")
+    public Object searchEx(@ApiParam(value = "查询内容", defaultValue = "浣溪沙") @RequestParam String content,
+                           @ApiParam(value = "当前页", defaultValue = "0") @RequestParam int page,
+                           @ApiParam(value = "显示多少条", defaultValue = "20") @RequestParam int size) {
 
         SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(QueryBuilders.queryStringQuery(content)).withPageable(PageRequest.of(page, size)).build();
         return bookRepository.search(searchQuery);
     }
 
     @ApiOperation(value = "多字段的匹配查询Ex", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch/queryBuilder")
-    public Object srarchQueryBuilder(@ApiParam(value = "查询内容", defaultValue = "浣溪沙") @RequestParam String title) {
+    @GetMapping(value = "v1/book/search/queryBuilder")
+    public Object searchQueryBuilder(@ApiParam(value = "查询内容", defaultValue = "浣溪沙") @RequestParam String title) {
 
         MultiMatchQueryBuilder queryBuilder = multiMatchQuery(title, "title", "content");
         return bookRepository.search(queryBuilder);
     }
 
     @ApiOperation(value = "单字符串全文模糊查询", notes = "查询全部字段内容", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch")
-    public Object srarch(@ApiParam(value = "查询内容", defaultValue = "浣溪沙") @RequestParam String content,
+    @GetMapping(value = "v1/book/search")
+    public Object search(@ApiParam(value = "查询内容", defaultValue = "浣溪沙") @RequestParam String content,
                          @ApiParam(value = "当前页", defaultValue = "0") @RequestParam int page,
                          @ApiParam(value = "显示多少条", defaultValue = "20") @RequestParam int size) {
         //使用queryStringQuery完成单字符串查询
@@ -112,8 +111,8 @@ public class BookElasticsearchController {
     }
 
     @ApiOperation(value = "某字段字符串模糊查询", notes = "将从所有字段中查找包含传来的content分词后字符串的数据集", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch/matchQuery")
-    public Object srarchMatchQuery(@ApiParam(value = "查询内容", defaultValue = "浣溪沙") @RequestParam String content,
+    @GetMapping(value = "v1/book/search/matchQuery")
+    public Object searchMatchQuery(@ApiParam(value = "查询内容", defaultValue = "浣溪沙") @RequestParam String content,
                                    @ApiParam(value = "当前页", defaultValue = "0") @RequestParam int page,
                                    @ApiParam(value = "显示多少条", defaultValue = "20") @RequestParam int size) {
         //某字段(content)字符串模糊查询
@@ -122,8 +121,8 @@ public class BookElasticsearchController {
     }
 
     @ApiOperation(value = "短语匹配", notes = "短语必须是连续的 不知归路 不归路", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch/PhraseQuery")
-    public Object srarchPhraseQuery(@ApiParam("查询内容") @RequestParam String content,
+    @GetMapping(value = "v1/book/search/PhraseQuery")
+    public Object searchPhraseQuery(@ApiParam("查询内容") @RequestParam String content,
                                     @ApiParam(value = "当前页", defaultValue = "0") @RequestParam int page,
                                     @ApiParam(value = "显示多少条", defaultValue = "20") @RequestParam int size) {
 
@@ -134,8 +133,8 @@ public class BookElasticsearchController {
     }
 
     @ApiOperation(value = "完全匹配查询", notes = "最严格的匹配,不进行分词", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch/TermQuery")
-    public Object srarchTermQuery(@ApiParam(value = "id", defaultValue = "5") @RequestParam int userId,
+    @GetMapping(value = "v1/book/search/TermQuery")
+    public Object searchTermQuery(@ApiParam(value = "id", defaultValue = "5") @RequestParam int userId,
                                   @ApiParam(value = "当前页", defaultValue = "0") @RequestParam int page,
                                   @ApiParam(value = "显示多少条", defaultValue = "10") @RequestParam int size) {
         //term一般适用于做过滤器filter的情况，譬如我们去查询title中包含“浣溪沙”且userId=1时，那么就可以用termQuery(“userId”, 1)作为查询的filter
@@ -145,8 +144,8 @@ public class BookElasticsearchController {
     }
 
     @ApiOperation(value = "多字段的匹配查询", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch/MultiMatchQuery")
-    public Object srarchMultiMatchQuery(@ApiParam("查询内容") @RequestParam String title,
+    @GetMapping(value = "v1/book/search/MultiMatchQuery")
+    public Object searchMultiMatchQuery(@ApiParam("查询内容") @RequestParam String title,
                                         @ApiParam(value = "当前页", defaultValue = "0") @RequestParam int page,
                                         @ApiParam(value = "显示多少条", defaultValue = "10") @RequestParam int size) {
 
@@ -168,8 +167,8 @@ public class BookElasticsearchController {
     }
 
     @ApiOperation(value = "多字段合并查询", httpMethod = "GET")
-    @GetMapping(value = "v1/book/srarch/BoolQuery")
-    public Object srarchBoolQuery(@ApiParam(value = "userId", defaultValue = "2") @RequestParam String userId,
+    @GetMapping(value = "v1/book/search/BoolQuery")
+    public Object searchBoolQuery(@ApiParam(value = "userId", defaultValue = "2") @RequestParam String userId,
                                   @ApiParam(value = "weight", defaultValue = "14") @RequestParam String weight,
                                   @ApiParam(value = "title", defaultValue = "浣溪沙") @RequestParam String title) {
         //boolQuery 可以设置多个条件的查询方式,用来组合多个Query,组合方式有四种：must，mustnot，filter，should
