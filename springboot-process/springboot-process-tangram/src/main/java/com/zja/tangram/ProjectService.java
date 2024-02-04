@@ -21,7 +21,6 @@ import java.util.List;
 
 /**
  * 七巧板 项目服务
- * 参考：{@link OpenfeignConfig#projectService()}
  */
 public interface ProjectService {
 

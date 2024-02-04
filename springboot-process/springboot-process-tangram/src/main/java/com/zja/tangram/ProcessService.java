@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  * 七巧板 流程服务
- * 参考：{@link OpenfeignConfig#processService()}
  */
 public interface ProcessService {
 
