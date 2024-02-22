@@ -16,6 +16,7 @@
 	</properties>
 
 	<modules>
+		<module>springboot-thread-dynamic</module>
 		<module>springboot-thread-pools</module>
 	</modules>
 
