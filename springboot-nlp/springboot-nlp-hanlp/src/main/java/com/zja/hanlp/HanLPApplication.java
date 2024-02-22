@@ -6,16 +6,16 @@
  * @Date: 2023-01-29 14:44
  * @Since:
  */
-package com.zja;
+package com.zja.hanlp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NlpHanLPApplication {
+public class HanLPApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NlpHanLPApplication.class, args);
+        SpringApplication.run(HanLPApplication.class, args);
     }
 
 }

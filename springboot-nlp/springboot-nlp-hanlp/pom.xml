@@ -36,17 +36,18 @@
             <optional>true</optional>
         </dependency>
 
- <!--       <dependency>
+        <!--NLP hanlp-restful 用于个人学习测试的提供的RESTFUL API-->
+        <dependency>
             <groupId>com.hankcs.hanlp.restful</groupId>
             <artifactId>hanlp-restful</artifactId>
-            <version>0.0.12</version>
-        </dependency>-->
+            <version>0.0.15</version>
+        </dependency>
 
-        <!--NLP hanlp 自然语言处理-->
+        <!--NLP hanlp 自然语言处理 适用于企业使用-->
         <dependency>
             <groupId>com.hankcs</groupId>
             <artifactId>hanlp</artifactId>
-            <version>portable-1.8.3</version>
+            <version>portable-1.8.4</version>
         </dependency>
 
     </dependencies>
