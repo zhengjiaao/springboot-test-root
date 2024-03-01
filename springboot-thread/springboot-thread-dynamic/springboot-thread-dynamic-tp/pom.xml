@@ -12,6 +12,19 @@
     <artifactId>springboot-thread-dynamic-tp</artifactId>
     <packaging>war</packaging>
 
+    <dependencyManagement>
+        <dependencies>
+            <!--dynamic-tp SpringBoot1x、2x、Spring6 以下用此依赖-->
+            <dependency>
+                <groupId>org.dromara.dynamictp</groupId>
+                <artifactId>dynamic-tp-dependencies</artifactId>
+                <version>1.1.6.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -31,15 +44,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-
-        <!--dynamic-tp SpringBoot1x、2x、Spring6 以下用此依赖-->
-        <dependency>
-            <groupId>org.dromara.dynamictp</groupId>
-            <artifactId>dynamic-tp-dependencies</artifactId>
-            <version>1.1.6.1</version>
-            <type>pom</type>
-            <scope>import</scope>
         </dependency>
 
         <!--dynamic-tp 无配置中心应用接入 无配置中心可以用此依赖，将配置放到本地配置文件中，无动态调参功能，但有监控告警功能-->
