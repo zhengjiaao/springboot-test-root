@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: user-center
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        namespace: nacos_config
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        extension-configs:
+          - dataId: ${spring.application.name}-dtp-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+            group: DEFAULT_GROUP
+            refresh: true              # 必须配置，负责自动刷新不生效
+        refresh-enabled: true
+
+logging:
+  level:
+    com.alibaba.nacos.client: warn
+    com.alibaba.nacos.client.config: warn
+    com.alibaba.nacos.client.naming: warn

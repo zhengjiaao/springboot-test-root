@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>springboot-thread-dynamic</artifactId>
+        <groupId>com.zja</groupId>
+        <version>2.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.zja</groupId>
+    <artifactId>springboot-thread-dynamic-tp-nacos-cloud</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <!--spring-boot-->
+        <spring-boot-dependencies.version>2.3.12.RELEASE</spring-boot-dependencies.version>
+        <!--spring-cloud-->
+        <spring-cloud-dependencies.version>Hoxton.SR12</spring-cloud-dependencies.version>
+        <!--spring-cloud-alibaba-->
+        <spring-cloud-alibaba-dependencies.version>2.2.3.RELEASE</spring-cloud-alibaba-dependencies.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--spring-boot-dependencies-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--spring-cloud-dependencies-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--spring-cloud-alibaba-dependencies-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--dynamic-tp SpringBoot1x、2x、Spring6 以下用此依赖-->
+            <dependency>
+                <groupId>org.dromara.dynamictp</groupId>
+                <artifactId>dynamic-tp-dependencies</artifactId>
+                <version>1.1.6.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!--优先加载 bootstrap.yaml-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!--nacos server 1.x-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!--dynamic-tp cloud-nacos 应用接入-->
+        <dependency>
+            <groupId>org.dromara.dynamictp</groupId>
+            <artifactId>dynamic-tp-spring-cloud-starter-nacos</artifactId>
+            <version>1.1.6.1</version>
+        </dependency>
+        <!--dynamic-tp 邮箱通知-->
+        <dependency>
+            <groupId>org.dromara.dynamictp</groupId>
+            <artifactId>dynamic-tp-spring-boot-starter-extension-notify-email</artifactId>
+            <version>1.1.6.1</version>
+        </dependency>
+
+    </dependencies>
+</project>

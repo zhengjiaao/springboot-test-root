@@ -17,6 +17,9 @@
 
     <modules>
         <module>springboot-thread-dynamic-tp</module>
+        <!--todo 读取不到nacos配置文件，很是奇怪-->
+        <!--<module>springboot-thread-dynamic-tp-nacos</module>-->
+        <module>springboot-thread-dynamic-tp-nacos-cloud</module>
     </modules>
 
 </project>
