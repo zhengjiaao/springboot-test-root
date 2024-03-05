@@ -18,6 +18,7 @@
     <modules>
         <module>springboot-file-preview-aspose</module>
         <module>springboot-file-preview-kkview</module>
+        <module>springboot-file-preview-libreoffice</module>
         <module>springboot-file-preview-onlyoffice</module>
     </modules>
 
