@@ -6,8 +6,8 @@ import com.zja.service.AOPEncrypt;
 import org.springframework.stereotype.Service;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/6/17 16:38
+ * @author: zhengja
+ * @since: 2019/6/17 16:38
  */
 @Service
 public class AOPEncryptImpl implements AOPEncrypt {

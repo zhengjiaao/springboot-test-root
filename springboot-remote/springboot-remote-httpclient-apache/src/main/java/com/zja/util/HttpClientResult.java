@@ -5,8 +5,8 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/6/28 9:57
+ * @author: zhengja
+ * @since: 2019/6/28 9:57
  */
 @Data
 public class HttpClientResult implements Serializable {

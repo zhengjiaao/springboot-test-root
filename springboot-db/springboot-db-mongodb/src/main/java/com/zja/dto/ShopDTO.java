@@ -7,8 +7,8 @@ import lombok.Data;
 /**
  * 文档数据类
  *
- * @author zhengja@dist.com.cn
- * @data 2019/6/19 10:00
+ * @author: zhengja
+ * @since: 2019/6/19 10:00
  */
 @ApiModel(value = "文档数据")
 @Data

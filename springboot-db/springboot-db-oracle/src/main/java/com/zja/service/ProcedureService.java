@@ -5,8 +5,8 @@ import com.zja.entity.UserEntity;
 import java.util.List;
 
 /**存储过程测试接口
- * @author zhengja@dist.com.cn
- * @data 2019/6/24 14:23
+ * @author: zhengja
+ * @since: 2019/6/24 14:23
  */
 public interface ProcedureService {
     /**

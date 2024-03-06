@@ -21,8 +21,8 @@ import java.io.*;
 import java.net.URLEncoder;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/9/6 14:42
+ * @author: zhengja
+ * @since: 2019/9/6 14:42
  */
 @Slf4j
 @Api(tags = {"BigFileSplitController"}, description = "本地大文件分片、下载、合并")

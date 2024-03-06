@@ -7,8 +7,8 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /** 对象属性值为 null的值转为 空字符串""
- * @author zhengja@dist.com.cn
- * @data 2019/8/20 13:59
+ * @author: zhengja
+ * @since: 2019/8/20 13:59
  */
 public class PropertyNullToStrUtil {
 

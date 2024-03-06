@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /**定时任务数据配置接口
- * @author zhengja@dist.com.cn
- * @data 2019/8/13 17:12
+ * @author: zhengja
+ * @since: 2019/8/13 17:12
  */
 public interface TaskTimeDao extends JpaRepository<TaskTimeEntity,Long>{
 

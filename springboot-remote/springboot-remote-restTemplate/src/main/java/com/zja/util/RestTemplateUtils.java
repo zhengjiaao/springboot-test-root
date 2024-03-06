@@ -16,8 +16,8 @@ import java.io.InputStream;
 import java.util.Map;
 
 /** RestTemplate 远程调用工具类
- * @author zhengja@dist.com.cn
- * @data 2019/6/28 17:06
+ * @author: zhengja
+ * @since: 2019/6/28 17:06
  */
 public class RestTemplateUtils {
 

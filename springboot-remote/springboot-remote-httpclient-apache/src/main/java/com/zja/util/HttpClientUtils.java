@@ -20,8 +20,8 @@ import java.util.*;
 /**
  * httpClient 远程调用工具类：最全
  *
- * @author zhengja@dist.com.cn
- * @data 2019/6/28 9:58
+ * @author: zhengja
+ * @since: 2019/6/28 9:58
  */
 //@Component
 public class HttpClientUtils {

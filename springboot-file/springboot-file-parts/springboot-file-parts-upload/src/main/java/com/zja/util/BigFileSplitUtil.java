@@ -16,8 +16,8 @@ import java.util.List;
  * 解决问题：解决前端下载大文件(300M以上)使用response.getOutputStream().write(b, 0, len); 下载太慢，或请求失败，也会导致其它接口请求延迟卡顿
  * 使用流程思想：前端下载大文件-传要下载文件路径->调用切片接口->返回切片后的数据信息给前端->前端开启多线程再调用下载切片接口(和普通下载接口一样)->所有下载完毕->前端进行合并分片
  *
- * @author zhengja@dist.com.cn
- * @data 2019/9/6 13:34
+ * @author: zhengja
+ * @since: 2019/9/6 13:34
  */
 @Component
 public class BigFileSplitUtil {

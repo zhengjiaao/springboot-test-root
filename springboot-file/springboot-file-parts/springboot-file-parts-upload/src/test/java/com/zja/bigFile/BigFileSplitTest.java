@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/9/6 11:33
+ * @author: zhengja
+ * @since: 2019/9/6 11:33
  */
 @Data
 public class BigFileSplitTest implements Serializable{

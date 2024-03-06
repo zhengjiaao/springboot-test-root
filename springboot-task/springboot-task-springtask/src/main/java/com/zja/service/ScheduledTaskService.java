@@ -5,8 +5,8 @@ import com.zja.entity.TaskTimeEntity;
 import java.util.List;
 
 /**定时任务接口
- * @author zhengja@dist.com.cn
- * @data 2019/8/14 11:21
+ * @author: zhengja
+ * @since: 2019/8/14 11:21
  */
 public interface ScheduledTaskService {
 

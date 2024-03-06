@@ -18,8 +18,8 @@ import java.util.Map;
 /**
  * HttpClient方式请求http接口
  *
- * @author zhengja@dist.com.cn
- * @data 2019/6/27 15:49
+ * @author: zhengja
+ * @since: 2019/6/27 15:49
  */
 @Deprecated
 @Api(tags = {"HttpClientController"}, description = "HttpClient调用远程服务器接口")

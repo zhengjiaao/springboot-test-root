@@ -16,8 +16,8 @@ import java.util.Date;
 import java.util.List;
 
 /**Scheduled定时任务 功能有: 初始化任务列表、所有任务列表、启动任务、重启任务、停止任务
- * @author zhengja@dist.com.cn
- * @data 2019/8/14 11:36
+ * @author: zhengja
+ * @since: 2019/8/14 11:36
  */
 @Api(tags = {"Scheduled定时任务"})
 @RestController

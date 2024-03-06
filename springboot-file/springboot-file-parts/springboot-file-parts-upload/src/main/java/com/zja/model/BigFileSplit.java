@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**文件分片后的返回信息
- * @author zhengja@dist.com.cn
- * @data 2019/9/6 14:34
+ * @author: zhengja
+ * @since: 2019/9/6 14:34
  */
 @Data
 public class BigFileSplit implements Serializable {

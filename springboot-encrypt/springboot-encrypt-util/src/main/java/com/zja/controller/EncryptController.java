@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 /**测试加解密，数据入库加解密
- * @author zhengja@dist.com.cn
- * @data 2019/6/17 13:45
+ * @author: zhengja
+ * @since: 2019/6/17 13:45
  */
 @Api(tags = {"EncryptController"})
 @RequestMapping(value = "rest/encrypt")

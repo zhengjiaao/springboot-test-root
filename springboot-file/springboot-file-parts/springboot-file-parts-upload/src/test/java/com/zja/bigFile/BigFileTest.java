@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/9/11 9:42
+ * @author: zhengja
+ * @since: 2019/9/11 9:42
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {FilePartsUploadApplication.class})

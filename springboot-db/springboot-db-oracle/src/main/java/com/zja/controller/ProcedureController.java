@@ -14,8 +14,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/6/24 11:09
+ * @author: zhengja
+ * @since: 2019/6/24 11:09
  */
 @RestController("ProcedureController")
 @RequestMapping("/procedure")

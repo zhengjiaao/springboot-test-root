@@ -5,8 +5,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/9/10 11:14
+ * @author: zhengja
+ * @since: 2019/9/10 11:14
  */
 public class ZipUtils {
 

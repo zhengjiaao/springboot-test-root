@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /** 全文检索
- * @author zhengja@dist.com.cn
+ * @author: zhengja
  * @date 2020/07/16 11:41
  */
 @RestController

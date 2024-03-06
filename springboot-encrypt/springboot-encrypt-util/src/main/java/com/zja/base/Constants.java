@@ -1,8 +1,8 @@
 package com.zja.base;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/6/14 10:23
+ * @author: zhengja
+ * @since: 2019/6/14 10:23
  */
 public class Constants {
 

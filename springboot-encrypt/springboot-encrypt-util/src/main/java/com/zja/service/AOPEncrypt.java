@@ -3,8 +3,8 @@ package com.zja.service;
 import com.zja.entity.User;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/6/17 16:36
+ * @author: zhengja
+ * @since: 2019/6/17 16:36
  */
 public interface AOPEncrypt {
 

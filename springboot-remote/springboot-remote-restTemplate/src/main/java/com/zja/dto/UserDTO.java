@@ -8,8 +8,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/6/27 16:35
+ * @author: zhengja
+ * @since: 2019/6/27 16:35
  */
 @ApiModel(value = "用户信息")
 @Data

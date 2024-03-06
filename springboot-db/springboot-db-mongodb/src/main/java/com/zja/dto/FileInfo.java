@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/9/2 18:34
+ * @author: zhengja
+ * @since: 2019/9/2 18:34
  */
 @Document(collection = "fileInfo")
 @Data

@@ -24,8 +24,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/7/15 9:41
+ * @author: zhengja
+ * @since: 2019/7/15 9:41
  */
 @Api(tags = {"FtpController"})
 @RestController

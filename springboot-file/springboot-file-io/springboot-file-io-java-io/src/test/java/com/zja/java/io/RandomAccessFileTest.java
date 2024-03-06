@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * RandomAccessFile 随机存取文件
  *
- * @author zhengja@dist.com.cn
- * @data 2019/9/2 10:27
+ * @author: zhengja
+ * @since: 2019/9/2 10:27
  */
 public class RandomAccessFileTest {
 

@@ -11,8 +11,8 @@
 //import java.util.Map;
 //
 ///**存储过程测试实现类
-// * @author zhengja@dist.com.cn
-// * @data 2019/6/24 14:23
+// * @author: zhengja
+// * @since: 2019/6/24 14:23
 // */
 //@Service
 //public class ProcedureServiceImpl implements ProcedureService {

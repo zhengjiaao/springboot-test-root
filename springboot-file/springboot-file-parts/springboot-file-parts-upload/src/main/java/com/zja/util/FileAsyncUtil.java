@@ -8,8 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/9/17 16:24
+ * @author: zhengja
+ * @since: 2019/9/17 16:24
  */
 @Component
 public class FileAsyncUtil {

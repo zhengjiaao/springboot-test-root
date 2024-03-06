@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**全文检索 Solr
- * @author zhengja@dist.com.cn
- * @data 2019/8/20 15:43
+ * @author: zhengja
+ * @since: 2019/8/20 15:43
  */
 //@EnableScheduling  //开启定时任务，项目启动自动执行定时任务
 @RequestMapping(value = "rest/solr/v1")

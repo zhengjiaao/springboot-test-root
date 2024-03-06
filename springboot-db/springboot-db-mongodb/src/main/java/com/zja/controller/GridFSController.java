@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.UUID;
 
 /**所有接口最好使用postman工具测试(有些接口必须用postman工具测试),swagger测试文件上传和查看等有会有问题
- * @author zhengja@dist.com.cn
- * @data 2019/6/19 16:33
+ * @author: zhengja
+ * @since: 2019/6/19 16:33
  */
 @Api(tags = {"GridFSController"})
 @RequestMapping(value = "rest/gridfs")

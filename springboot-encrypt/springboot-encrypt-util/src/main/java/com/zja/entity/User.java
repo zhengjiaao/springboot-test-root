@@ -7,8 +7,8 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/6/17 16:49
+ * @author: zhengja
+ * @since: 2019/6/17 16:49
  */
 @ApiModel(value = "修改用户信息")
 @Data

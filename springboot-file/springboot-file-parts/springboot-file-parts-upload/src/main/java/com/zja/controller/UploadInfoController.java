@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 
 /**前端 大文件分片上传->后端接收分片->合并分片
- * @author zhengja@dist.com.cn
- * @data 2019/9/10 11:28
+ * @author: zhengja
+ * @since: 2019/9/10 11:28
  */
 @Api(tags = {"FileUploadController"}, description = "大文件分片上传")
 @RestController

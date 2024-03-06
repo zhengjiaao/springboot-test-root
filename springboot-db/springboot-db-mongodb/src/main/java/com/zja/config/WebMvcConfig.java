@@ -6,8 +6,8 @@
 //import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 //
 ///**
-// * @author zhengja@dist.com.cn
-// * @data 2019/6/25 16:05
+// * @author: zhengja
+// * @since: 2019/6/25 16:05
 // */
 //@Configuration
 //public class WebMvcConfig extends WebMvcConfigurationSupport {

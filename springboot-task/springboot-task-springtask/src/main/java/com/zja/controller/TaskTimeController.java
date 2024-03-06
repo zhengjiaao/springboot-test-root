@@ -14,8 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/8/13 17:13
+ * @author: zhengja
+ * @since: 2019/8/13 17:13
  */
 @Api(tags = {"动态定时任务在数据库中的配置"})
 @RestController
