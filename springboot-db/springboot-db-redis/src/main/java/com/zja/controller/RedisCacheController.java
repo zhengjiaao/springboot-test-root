@@ -1,6 +1,6 @@
 package com.zja.controller;
 
-import com.zja.service.RedisMethodsCacheService;
+import com.zja.redis.cache.RedisMethodsCacheService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 /**
  * @author ZhengJa
  * @description Redis 接口和方法缓存数据
- * @data 2019/11/13
+ * @since: 2019/11/13
  */
 @RestController
 @RequestMapping(value = "rest/cache")

@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author zhengja@dist.com.cn
- * @data 2019/6/17 17:28
+ * @author: zhengja
+ * @since: 2019/6/17 17:28
  */
 @RestController
 @RequestMapping(value = "rest/redis")

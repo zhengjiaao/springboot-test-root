@@ -1,4 +1,4 @@
-package com.zja.config;
+package com.zja.redis.listener.example2;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,11 +13,13 @@ import javax.annotation.Resource;
 
 /**
  * redis 发布-接收 配置
- * @author zhengja@dist.com.cn
- * @data 2019/6/11 14:01
+ *
+ * @author: zhengja
+ * @since: 2019/6/11 14:01
  */
 @Configuration
 public class RedisSubConfig {
+
     /**
      * 这里 RedisTemplate 和 RedisConnectionFactory 对象都是 Spring Boot 自动创建的，所以这里只是
      * 把它们注入进来，只需要使用＠Autowired 注解即可 。然后定义了一个任务池 ，并设置了任务池大小
@@ -29,12 +31,14 @@ public class RedisSubConfig {
     private RedisConnectionFactory redisConnectionFactory;
 
     /**
-     *     Redis消息监听器
+     * Redis消息监听器
      */
     @Resource
     private MessageListener redisMsgListener;
 
-    //任务池
+    /**
+     * 任务池
+     */
     private ThreadPoolTaskScheduler taskScheduler;
 
     /**
@@ -52,18 +56,19 @@ public class RedisSubConfig {
 
     /**
      * 定义redis的监听器
+     *
      * @return 监听容器
      */
     @Bean
     public RedisMessageListenerContainer initRedisContainer() {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        //Redis连接工厂
+        // Redis连接工厂
         container.setConnectionFactory(redisConnectionFactory);
-        //设置运行任务的线程池
+        // 设置运行任务的线程池
         container.setTaskExecutor(initTaskScheduler());
-        //定义监听渠道，名称为topic1
+        // 定义监听渠道，名称为topic1
         Topic topic = new ChannelTopic("topic1");
-        //使用监听器监听Redis的消息
+        // 使用监听器监听Redis的消息
         container.addMessageListener(redisMsgListener, topic);
         return container;
     }
