@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/test
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    username: test
+#    password: pass
+    password: ENC(kckYu/C/NOxI8ahe2XwwIA==)
+    hikari:
+      # 1.基础配置
+      auto-commit: true     # 自动提交事务，默认为true
+      maximum-pool-size: 10 # 连接池中允许的最大连接数,默认 10
+      minimum-idle: 10      # 连接池中保持的最小空闲连接数，默认为10
+      connection-timeout: 30000 # 连接超时时间（毫秒），默认为30000（30秒）
+      idle-timeout: 600000  # 连接的最大空闲时间（毫秒），超过此时间未使用的连接将被释放，默认为600000（10分钟）
+      max-lifetime: 1800000 # 连接的最大生命周期（毫秒），超过此时间的连接将被关闭，默认为1800000（30分钟）
+      connection-test-query: "SELECT 1" # 用于测试连接是否有效的SQL查询语句，默认为SELECT 1
+      pool-name: "HikariCP"   # 连接池的名称，默认为"HikariCP"
+      validation-timeout: 5000   # 连接验证的超时时间（毫秒），默认值是5000（5秒）
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+
+# yaml 配置内容加解密
+jasypt:
+  encryptor:
+    # 必须设置，加密的密钥，自定义即可，为了安全 password属性不推荐存储在属性文件中，而应作为系统属性、命令行参数或环境变量传递。
+    password: 34ui23de34h
+    # 加解密算法，默认 PBEWithMD5AndDES，是 md5 加 des 标准加密
+    algorithm: PBEWithMD5AndDES
+    # bean名称，默认 jasyptStringEncryptor，可以使用自定义加密
+#    bean: jasyptStringEncryptor
+    property:
+      #默认 ENC(密文内容)
+      prefix: ENC(
+      suffix: )
+
+jasyptTest: ENC(z9/xqdfLNLz1SU4DId7XCw==)

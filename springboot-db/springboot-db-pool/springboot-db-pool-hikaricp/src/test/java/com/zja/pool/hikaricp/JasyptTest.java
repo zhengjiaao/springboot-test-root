@@ -1,0 +1,43 @@
+package com.zja.pool.hikaricp;
+
+import org.jasypt.encryption.StringEncryptor;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+/**
+ * yaml 配置文件内容加解密
+ *
+ * @author: zhengja
+ * @since: 2023/08/08 14:32
+ */
+@SpringBootTest
+public class JasyptTest {
+
+    @Autowired
+    StringEncryptor encryptor;
+
+    @Value("${jasyptTest}")
+    private String jasyptTest;
+
+    @Test
+    public void test(){
+        //jasypt 自动解密
+        System.out.println(jasyptTest);
+    }
+
+    @Test
+    public void encrypt_and_decrypt(){
+        //加密
+        String hello = encryptor.encrypt("pass");
+        System.out.println(hello);
+
+        //解密
+        String helloTxt = encryptor.decrypt(hello);
+        System.out.println(helloTxt);
+    }
+
+}

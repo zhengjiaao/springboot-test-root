@@ -1,0 +1,81 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/test
+    driver-class-name: org.postgresql.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: test
+#    password: pass
+    password: L5HAwCsRs0vhoJbvq/ZYTUJDIQaGkS3UZA35IN9ctHcc0OndVaiXiPueXU7L6UaxpSUwVPrP+hVfMcBrN0Tc6Q==
+    publicKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIA3UajPIb4ElNP9bIXc3bN4J3x/IOZqfuFbdYKYDSFUMtb6ybLPmTXR0Xh2xkV982dG/ZprVP3XgIWsG31lsQsCAwEAAQ==
+    druid:
+      #0.数据库有关
+      #driver-class-name: org.postgresql.Driver
+      #url: jdbc:postgresql://localhost:5433/test
+      #username: test
+      #password: pass
+      #1.druid基础配置
+      # 数据库连接池最大值
+      max-active: 20
+      # 数据库连接池初始值
+      initial-size: 5
+      # 数据库连接池最小空闲值
+      min-idle: 5
+      # 池中空闲连接大于minIdle且连接空闲时间大于该值，则关闭该连接，单位毫秒(5分钟，默认30分钟)
+      min-evictable-idle-time-millis: 300000
+      # 获取连接时最大等待超时时间，单位毫秒(1分钟)
+      max-wait: 60000
+      # 检测连接是否有效时执行的sql命令
+      #      validation-query: "SELECT 1 FROM DUAL"
+      ## pg
+      validation-query: "SELECT 1"
+      # 借用连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      test-on-borrow: false
+      # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      test-on-return: false
+      # 连接空闲时检测，如果连接空闲时间大于timeBetweenEvictionRunsMillis指定的毫秒，执行validationQuery指定的SQL来检测连接是否有效
+      test-while-idle: true
+      # 空闲连接检查、废弃连接清理、空闲连接池大小调整的操作时间间隔，单位是毫秒(1分钟)
+      time-between-eviction-runs-millis: 60000
+
+      #2.druid监控配置
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: "stat,wall"
+      filter:
+        wall:
+          enabled: true
+        stat:
+          enabled: true
+          log-slow-sql: true  # 开启慢查询
+          slow-sql-millis: 2000  # 多少秒算慢查询,默认3000毫秒，这里超过2s，就是慢，记录到日志
+        config:
+          enabled: false  # 启动配置，支持数据库密码加密
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=${spring.datasource.publicKey};dbPassword=${spring.datasource.password}
+      password-callback-class-name: com.zja.pool.druid.config.DruidDBPasswordCallback
+      # 是否启用StatFilter默认值false，用于采集 web-jdbc 关联监控的数据。
+      web-stat-filter:
+        enabled: true
+        #需要监控的 url
+        url-pattern: /*
+        #排除一些静态资源，以提高效率
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+      # 是否启用StatViewServlet（监控页面）默认值为false（考虑到安全问题默认并未启动，如需启用建议设置密码或白名单以保障安全）
+      stat-view-servlet:
+        enabled: true
+        #内置的监控页面地址，例如 /druid/*，则内置监控页面的首页是 /druid/index.html
+        url-pattern: /druid/*
+        #是否允许清空统计数据，禁用HTML页面上的“Reset All”功能
+        reset-enable: false
+        #IP白名单(没有配置或者为空，则允许所有访问) 127.0.0.1
+        allow:
+        #IP黑名单 (存在共同时，deny优先于allow)
+        deny:
+        #登录名
+        login-username: admin
+        #登录密码
+        login-password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+# druid 访问地址 http://localhost:8080/druid/
