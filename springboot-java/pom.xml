@@ -17,6 +17,7 @@
 
     <modules>
         <module>springboot-java-juc</module>
+        <module>springboot-java-optional</module>
     </modules>
 
 </project>
