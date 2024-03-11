@@ -16,6 +16,7 @@
     </properties>
 
     <modules>
+        <module>springboot-java-function</module>
         <module>springboot-java-juc</module>
         <module>springboot-java-optional</module>
     </modules>
