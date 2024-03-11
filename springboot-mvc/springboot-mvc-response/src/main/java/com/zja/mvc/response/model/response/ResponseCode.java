@@ -1,22 +1,19 @@
-package com.zja.vo.response;
+package com.zja.mvc.response.model.response;
 
 import lombok.Getter;
 
 /**
- * Company: 上海数慧系统技术有限公司
- * Department: 数据中心
- * Date: 2020-09-16 14:20
+ * 自定义响应code和说明信息
  * Author: zhengja
- * Email: zhengja@dist.com.cn
- * Desc：自定义响应code和说明信息
+ * Date: 2024/03/11 15:21
  */
 @Getter
 public enum ResponseCode {
 
-    //1000系列通用成功
+    // 1000系列通用成功
     SUCCESS(1000, "请求成功"),
 
-    //2000系列通用失败,因为业务逻辑错误导致操作失败，如邮箱已存在，年龄不满足条件等
+    // 2000系列通用失败,因为业务逻辑错误导致操作失败，如邮箱已存在，年龄不满足条件等
     FAILED(2000, "业务逻辑错误,请求失败"),
     VALIDATE_FAILED(2001, "参数校验失败"),
     USER_NOT_EXIST(2002, "用户不存在"),
@@ -24,7 +21,7 @@ public enum ResponseCode {
     USER_NOT_LOGIN(2004, "用户还未登录,请先登录"),
     NO_PERMISSION(2005, "权限不足,请联系管理员"),
 
-    //3000系列通用错误 错误 因为一些不可预计的、系统级的错误导致的操作失败，如数据库断电，服务器内存溢出等
+    // 3000系列通用错误 错误 因为一些不可预计的、系统级的错误导致的操作失败，如数据库断电，服务器内存溢出等
     ERROR(3000, "系统内部错误,请求失败"),
     SYS_RUN_ERROR(3001, "系统运行错误,请求失败");
 

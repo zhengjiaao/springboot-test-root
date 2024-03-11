@@ -1,14 +1,10 @@
-package com.zja.vo.response;
+package com.zja.mvc.response.model.response;
 
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * Company: 上海数慧系统技术有限公司
- * Department: 数据中心
- * Date: 2020-09-16 15:56
  * Author: zhengja
- * Email: zhengja@dist.com.cn
- * Desc：自定义响应工具类
+ * Date: 2024/03/11 15:21
  */
 public abstract class ResponseUtil {
 
@@ -22,14 +18,14 @@ public abstract class ResponseUtil {
     public static final String RESULT_STATUS_FAIL = "fail";
 
 
-    //返回数据
+    // 返回数据
     public static ResponseVO instance(Object data, String status) {
         return new ResponseVO<>(data, status);
     }
 
     /**
      * @param responseCode 自定义状态码和提示消息
-     * @param data       返回数据
+     * @param data         返回数据
      */
     public static ResponseVO instance(ResponseCode responseCode, Object data, String status) {
         return new ResponseVO<>(responseCode, data, status);

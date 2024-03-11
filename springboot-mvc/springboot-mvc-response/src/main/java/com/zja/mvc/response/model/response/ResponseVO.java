@@ -1,4 +1,4 @@
-package com.zja.vo.response;
+package com.zja.mvc.response.model.response;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,13 +8,9 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * Company: 上海数慧系统技术有限公司
- * Department: 数据中心
- * Date: 2020-09-16 14:16
+ * 自定义统一响应体
  * Author: zhengja
- * Email: zhengja@dist.com.cn
- * Desc：自定义统一响应体
- * 显示层对象，通常是Web向模板渲染引擎层传输的对象
+ * Date: 2024/03/11 15:21
  */
 @Getter
 @Setter
