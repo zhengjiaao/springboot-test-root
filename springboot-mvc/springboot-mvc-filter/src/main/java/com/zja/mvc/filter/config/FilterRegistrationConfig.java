@@ -14,7 +14,7 @@ import java.io.IOException;
  * @author: zhengja
  * @since: 2024/03/12 9:19
  */
-// @Configuration
+@Configuration
 public class FilterRegistrationConfig {
 
     @Bean
@@ -57,7 +57,7 @@ public class FilterRegistrationConfig {
         FilterRegistrationBean<MyFilter2> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new MyFilter2());
         registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(2); // 设置过滤器执行顺序
+        registrationBean.setOrder(3); // 设置过滤器执行顺序
 
         return registrationBean;
     }
@@ -88,7 +88,7 @@ public class FilterRegistrationConfig {
 
         @Override
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-            System.out.println("MyFilter2的实现 init 方法");
+            System.out.println("MyFilter2的实现 doFilter 方法");
             // 将请求和响应传递给过滤器链中的下一个过滤器
             chain.doFilter(request, response);
         }

@@ -11,7 +11,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author: zhengja
  * @since: 2024/03/11 15:09
  */
-// @ServletComponentScan // 自动注册过滤器，需配合 @WebFilter 使用
+@ServletComponentScan // 自动注册过滤器，需配合 @WebFilter 使用
 @SpringBootApplication
 public class MvcFilterApplication extends SpringBootServletInitializer {
 

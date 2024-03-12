@@ -1,28 +1,51 @@
 package com.zja.mvc.filter.filter;
 
+import com.zja.mvc.filter.model.UserDTO;
+import com.zja.mvc.filter.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
 import java.io.IOException;
 
 /**
  * @author: zhengja
  * @since: 2024/03/11 16:11
  */
-// @WebFilter(urlPatterns = "/*")
+// @Order(2) // @Order 注解中的值越小，优先级越高，会先执行
 // @Component
 public class MyFilter implements Filter {
+
+    // 预研 注入bean为null情况
+    // @Autowired
+    // @Autowired(required = false)
+    private UserService userService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // 初始化代码放在这里
         System.out.println("MyFilter的实现 init 方法");
+
+        ServletContext servletContext = filterConfig.getServletContext();
+        ApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+
+        // 通过上下文获取其他的Bean实例
+        this.userService = applicationContext.getBean(UserService.class);
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        // 输出业务Bean读取到的数据
+        UserDTO userDTO = userService.findById("1");
+        System.out.println(userDTO);
+
         // 预处理代码放在这里
         System.out.println("MyFilter的实现 doFilter 方法");
         // 将请求和响应传递给过滤器链中的下一个过滤器

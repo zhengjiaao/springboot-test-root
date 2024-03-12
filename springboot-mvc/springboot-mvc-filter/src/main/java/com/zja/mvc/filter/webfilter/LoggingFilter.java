@@ -1,5 +1,7 @@
 package com.zja.mvc.filter.webfilter;
 
+import org.springframework.core.annotation.Order;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -15,22 +17,29 @@ import java.util.Date;
  * @author: zhengja
  * @since: 2024/03/11 16:25
  */
-// @WebFilter(urlPatterns = "/*")
+// @Order(3) // @WebFilter 无法与@Order搭配设置过滤器的优先级
+@WebFilter(urlPatterns = "/*")  // 需配合 @ServletComponentScan 使用
 public class LoggingFilter implements Filter {
+    @Override
+    public void init(javax.servlet.FilterConfig filterConfig) throws ServletException {
+        // 初始化代码放在这里
+        System.out.println("LoggingFilter的实现 init 方法");
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        System.out.println("LoggingFilter的实现 doFilter 方法");
 
         // 记录请求信息
-        logRequest(httpRequest);
+        // logRequest(httpRequest);
 
         chain.doFilter(request, response);
 
         // 记录响应信息
-        logResponse(httpRequest, httpResponse);
+        // logResponse(httpRequest, httpResponse);
     }
 
     // 其他方法：init() 和 destroy()

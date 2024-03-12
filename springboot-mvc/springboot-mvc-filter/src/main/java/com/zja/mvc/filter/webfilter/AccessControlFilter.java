@@ -13,6 +13,7 @@ import java.io.IOException;
  * @author: zhengja
  * @since: 2024/03/11 16:34
  */
+// @Order(2) // @WebFilter 无法与@Order搭配设置过滤器的优先级
 // @WebFilter(urlPatterns = "/admin/*")
 public class AccessControlFilter implements Filter {
 

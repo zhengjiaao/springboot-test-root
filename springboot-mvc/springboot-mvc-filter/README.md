@@ -77,6 +77,7 @@ public class MvcFilterApplication extends SpringBootServletInitializer {
 通过@Bean注解注册的过滤器不需要显式声明过滤器的顺序，Spring Boot会根据@Bean方法的调用顺序自动确定过滤器链的顺序
 
 ```java
+
 @Configuration
 public class FilterConfig {
 
@@ -88,9 +89,9 @@ public class FilterConfig {
         return registrationBean;
     }
 
-   public class MyFilter implements Filter {
-      // MyFilter的实现
-   }
+    public class MyFilter implements Filter {
+        // MyFilter的实现
+    }
 }
 ```
 
@@ -157,6 +158,75 @@ public class FilterConfig {
 
     private static class MyFilter2 implements Filter {
         // MyFilter2的实现
+    }
+}
+```
+
+### Filter 执行顺序
+
+1. 优先级：`FilterRegistrationBean 注入的Filter`  > `@WebFilter 注入的Filter`
+2. 优先级：`FilterRegistrationBean + setOrder(1)` > `@Component + @Order(2)` > `FilterRegistrationBean + setOrder(3)` > `FilterRegistrationBean`
+
+注：
+
+* @WebFilter 可以设置拦截路径，不支持设置优先级，不能与 @Order(1) 搭配
+* @Component 不支持设置拦截路径，支持设置优先级：可以与 @Order(1) 搭配
+* FilterRegistrationBean 支持设置拦截路径，支持设置优先级：FilterRegistrationBean.setOrder()
+
+### Filter实现类获取 spring Bean
+
+Filter不能直接获取到spring Bean原因：在Servlet规范中，过滤器是在Servlet容器级别上运行的，而不是在Spring容器中。因此，在过滤器中无法直接使用Spring的依赖注入来获取其他的Bean实例。
+
+方式一：使用WebApplicationContextUtils
+
+```java
+public class MyFilter implements Filter {
+    private UserService userService;
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        ServletContext servletContext = filterConfig.getServletContext();
+        ApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+
+        // 通过上下文获取其他的Bean实例
+        this.userService = applicationContext.getBean(UserService.class);
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        // 输出业务Bean读取到的数据
+        UserDTO userDTO = userService.findById("1");
+        System.out.println(userDTO);
+
+        // 将请求和响应传递给过滤器链中的下一个过滤器
+        chain.doFilter(request, response);
+    }
+}
+```
+
+方式二：使用DelegatingFilterProxy
+
+```java
+
+@Configuration
+public class AppConfig {
+    @Bean
+    public MyFilter myFilter() {
+        return new MyFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean<DelegatingFilterProxy> filterRegistrationBean() {
+        FilterRegistrationBean<DelegatingFilterProxy> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new DelegatingFilterProxy("myFilter"));
+        registrationBean.addUrlPatterns("/*");
+        return registrationBean;
+    }
+
+    @Bean
+    public MyService myService() {
+        return new MyServiceImpl();
     }
 }
 ```
