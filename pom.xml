@@ -25,7 +25,7 @@
         <module>springboot-captcha</module>
         <module>springboot-db</module>
         <module>springboot-encrypt</module>
-        <module>springboot-exception</module>
+        <!--<module>springboot-exception</module>-->
         <module>springboot-file</module>
         <module>springboot-gis</module>
         <module>springboot-git</module>
@@ -35,6 +35,7 @@
         <module>springboot-mapping</module>
         <module>springboot-monitor</module>
         <module>springboot-mq</module>
+        <module>springboot-mvc</module>
         <module>springboot-ocr</module>
         <module>springboot-nlp</module>
         <module>springboot-obfuscated</module>
