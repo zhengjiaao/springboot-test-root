@@ -8,6 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author: zhengja
@@ -18,7 +21,7 @@ public class JdkZipFileAttributesTest {
     @Test
     public void test() {
         Instant zipFileCreationTime = getZipFileCreationTime("D:\\temp\\zip\\测试目录.zip");
-        System.out.println(zipFileCreationTime);
+        System.out.println(formatInstant(zipFileCreationTime, "Asia/Shanghai", "yyyy-MM-dd HH:mm:ss"));
     }
 
     /**
@@ -39,4 +42,15 @@ public class JdkZipFileAttributesTest {
             return null;
         }
     }
+
+    public String formatInstant(Instant instant, String timeZoneId, String pattern) {
+        if (null == instant) {
+            return null;
+        }
+        ZoneId zoneId = ZoneId.of(timeZoneId);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zoneId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        return localDateTime.format(formatter);
+    }
+
 }
