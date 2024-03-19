@@ -19,11 +19,12 @@
     <modules>
         <module>springboot-ai</module>
         <module>springboot-api</module>
-        <module>springboot-asr</module>
+        <!--<module>springboot-asr</module>-->
         <module>springboot-baidu</module>
         <module>springboot-bigdata</module>
         <module>springboot-captcha</module>
         <module>springboot-db</module>
+        <module>springboot-distributed</module>
         <module>springboot-encrypt</module>
         <!--<module>springboot-exception</module>-->
         <module>springboot-file</module>
@@ -36,8 +37,8 @@
         <module>springboot-monitor</module>
         <module>springboot-mq</module>
         <module>springboot-mvc</module>
-        <module>springboot-ocr</module>
-        <module>springboot-nlp</module>
+        <!--<module>springboot-ocr</module>-->
+        <!--<module>springboot-nlp</module>-->
         <module>springboot-obfuscated</module>
         <module>springboot-patterns</module>
         <module>springboot-process</module>

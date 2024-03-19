@@ -16,7 +16,10 @@
 	</properties>
 
 	<modules>
+		<module>springboot-ai-asr</module>
 		<module>springboot-ai-chatgpt</module>
+		<module>springboot-ai-nlp</module>
+		<module>springboot-ai-ocr</module>
 	</modules>
 
 </project>
