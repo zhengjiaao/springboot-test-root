@@ -12,16 +12,19 @@ import com.zja.dto.UserDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 
 /**
  * http://localhost:19000/swagger-ui/index.html#/
@@ -33,7 +36,7 @@ import java.net.URLEncoder;
 @RequestMapping
 public class WebFileController {
 
-    //上传文件
+    // 上传文件
 
     @PostMapping(value = "/post/upload/v1")
     @ApiOperation(value = "post-上传单文件", notes = "返回 true")
@@ -63,7 +66,7 @@ public class WebFileController {
         return true;
     }
 
-    @Deprecated //MultipartFile multipart/form-data 优先级高于 @RequestBody application/json，去掉 @RequestBody 就好
+    @Deprecated // MultipartFile multipart/form-data 优先级高于 @RequestBody application/json，去掉 @RequestBody 就好
     @PostMapping(value = "/post/upload/v4")
     @ApiOperation(value = "post-上传单文件和json对象", notes = "返回 true")
     public Object postFile(@ApiParam("上传文件") @RequestPart(value = "file") MultipartFile file,
@@ -104,7 +107,7 @@ public class WebFileController {
     }
 
 
-    //下载文件
+    // 下载文件
 
     @GetMapping(value = "get/download/v1")
     @ApiOperation(value = "下载文件-文件URL")
@@ -129,9 +132,83 @@ public class WebFileController {
         downloadFile(response, filename);
     }
 
+    @GetMapping("get/download/stream/v1")
+    @ApiOperation(value = "下载大文件-采用文件流", notes = "确保文件在下载完成后被删除，以避免临时文件的累积和资源浪费")
+    public ResponseEntity<StreamingResponseBody> downloadFileStreamV1(String filePath) {
+        // 获取文件对象
+        File downloadFile = new File(filePath);
+        // 检查文件是否存在
+        if (!downloadFile.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 设置响应头，指定文件名等信息
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename(downloadFile.getName()).build());
+
+        // 设置文件长度
+        long fileSize = downloadFile.length();
+        headers.setContentLength(fileSize);
+
+        // 创建StreamingResponseBody + InputStream 减少内存占用
+        StreamingResponseBody responseBody = response -> {
+            try (InputStream inputStream = Files.newInputStream(downloadFile.toPath())) {
+                byte[] buffer = new byte[4 * 1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    response.write(buffer, 0, bytesRead);
+                }
+            } finally {
+                // 下载完成后删除文件
+                downloadFile.delete();
+            }
+        };
+
+        return new ResponseEntity<>(responseBody, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("get/download/stream/v2")
+    @ApiOperation(value = "下载大文件-文件流-采用通道", notes = "确保文件在下载完成后被删除，以避免临时文件的累积和资源浪费")
+    public ResponseEntity<StreamingResponseBody> downloadFileStreamV2(String filePath) {
+        // 获取文件对象
+        File downloadFile = new File(filePath);
+        // 检查文件是否存在
+        if (!downloadFile.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 设置响应头，指定文件名等信息
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename(downloadFile.getName()).build());
+
+        // 设置文件长度
+        long fileSize = downloadFile.length();
+        headers.setContentLength(fileSize);
+
+        // 创建StreamingResponseBody + FileChannel 减少内存占用
+        StreamingResponseBody responseBody = outputStream -> {
+            try (FileInputStream fis = new FileInputStream(downloadFile)) {
+                FileChannel fileChannel = fis.getChannel();
+                ByteBuffer buffer = ByteBuffer.allocate(1024);
+                while (fileChannel.read(buffer) != -1) {
+                    buffer.flip();
+                    outputStream.write(buffer.array(), 0, buffer.limit());
+                    buffer.clear();
+                }
+            } finally {
+                // 下载完成后删除文件
+                downloadFile.delete();
+            }
+        };
+
+        return new ResponseEntity<>(responseBody, headers, HttpStatus.OK);
+    }
+
     public void downloadFile(HttpServletResponse response, String filename) throws IOException {
 
-        //打成jar时，无法读取流
+        // 打成jar时，无法读取流
         /*File file = null;
         try {
             file=ResourceUtils.getFile("classpath:file/"+filename);
@@ -139,7 +216,7 @@ public class WebFileController {
             throw new RuntimeException("资源文件不存在！");
         }*/
 
-        //支持读取jar中的文件流
+        // 支持读取jar中的文件流
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("file/" + filename);
 
         assert inputStream != null;
