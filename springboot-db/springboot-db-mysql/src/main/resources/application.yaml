@@ -9,3 +9,4 @@ spring:
     database: mysql
     hibernate:
       ddl-auto: update
+    show-sql: true # 默认 false

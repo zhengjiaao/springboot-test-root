@@ -9,6 +9,7 @@ spring:
     database: h2
     hibernate:
       ddl-auto: update
+    show-sql: true # 默认 false
   h2:
     console:
       enabled: true       # 默 false
