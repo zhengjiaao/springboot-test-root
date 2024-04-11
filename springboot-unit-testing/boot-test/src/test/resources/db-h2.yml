@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:./test   # 自定生成的数据库存储位置：当前项目根目录./test、当前磁盘根目录/test、当前系统盘用户目录下~/test
+    #    url: jdbc:h2:file:D:/database/h2/data/db/test   # 数据库持久化配置
+    username: test
+    password: pass
+    driver-class-name: org.h2.Driver
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  h2:
+    console:
+      enabled: true       # 默 false
+      path: /h2-console   # http://localhost:8080/h2-console
+      settings:
+        web-allow-others: false
+        trace: false
+

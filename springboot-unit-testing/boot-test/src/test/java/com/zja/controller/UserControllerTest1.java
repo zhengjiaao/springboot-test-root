@@ -30,20 +30,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * // @WebMvcTest 单元测试实例
+ * Controller 层，使用模拟对象,创建 UserService 模拟对象
+ * </p>
+ * 使用 @WebMvcTest 不需要启动项目
  *
  * @author: zhengja
  * @since: 2023/10/13 14:52
  */
 @WebMvcTest(UserController.class)
-public class UserControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+public class UserControllerTest1 {
 
     @MockBean
     private UserService userService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private MockMvc mockMvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Test
     public void testGetUserById() throws Exception {
@@ -69,11 +73,11 @@ public class UserControllerTest {
         // 创建一个新用户
         User newUser = new User(2L, "New User");
 
-        //Mockito.when() 方法模拟了 userService.createUser() 方法的行为，并返回了预期的 User 对象。
+        // Mockito.when() 方法模拟了 userService.createUser() 方法的行为，并返回了预期的 User 对象。
         Mockito.when(userService.createUser(Mockito.any(User.class))).thenReturn(newUser);
 
-        //方式1：输出打印结果
-        //使用 mockMvc.perform() 方法执行 POST 请求
+        // 方式1：输出打印结果
+        // 使用 mockMvc.perform() 方法执行 POST 请求
         MvcResult result = mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newUser)))
@@ -84,7 +88,7 @@ public class UserControllerTest {
         String responseJson = result.getResponse().getContentAsString();
         System.out.println("Response JSON: " + responseJson);
 
-        //方式二：直接进行验证返回结果
+        // 方式二：直接进行验证返回结果
         // 发起POST请求，验证返回结果
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)

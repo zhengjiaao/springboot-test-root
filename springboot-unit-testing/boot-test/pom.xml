@@ -36,7 +36,17 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <!-- 在单元测试中使用外部数据库-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

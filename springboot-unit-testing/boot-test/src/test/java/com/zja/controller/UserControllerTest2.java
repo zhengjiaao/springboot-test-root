@@ -22,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
- * TestRestTemplate 单元测试实例
+ * Controller 层，单元测试实例
+ * </p>
+ * 使用 TestRestTemplate，需用先启动项目，可以通过 UnittestJunitApplication.java 类启动
  *
  * @author: zhengja
  * @since: 2023/10/13 16:28
