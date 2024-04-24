@@ -8,6 +8,7 @@
  */
 package com.zja.web;
 
+import com.zja.auth.UnAuth;
 import com.zja.dto.UserDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +36,7 @@ public class WebFileController {
 
     //上传文件
 
+    @UnAuth
     @PostMapping(value = "/post/upload/v1")
     @ApiOperation(value = "post-上传单文件", notes = "返回 true")
     public Object postFile(@ApiParam("上传文件") @RequestPart(value = "file") MultipartFile file) {
