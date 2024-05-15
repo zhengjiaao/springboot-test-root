@@ -18,6 +18,7 @@
 	<modules>
 		<module>springboot-ai-asr</module>
 		<module>springboot-ai-chatgpt</module>
+		<module>springboot-ai-langchain4j</module>
 		<module>springboot-ai-nlp</module>
 		<module>springboot-ai-ocr</module>
 	</modules>
