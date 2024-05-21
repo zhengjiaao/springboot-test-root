@@ -14,30 +14,21 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <!--ocr opencv-->
+        <!--opencv-->
         <dependency>
             <groupId>org.openpnp</groupId>
             <artifactId>opencv</artifactId>
-            <version>4.7.0-0</version>
+            <version>4.9.0-0</version>
         </dependency>
-
-        <!--ocr tesseract-->
-        <dependency>
-            <groupId>net.sourceforge.tess4j</groupId>
-            <artifactId>tess4j</artifactId>
-            <version>5.8.0</version>
-        </dependency>
-
-        <!--图像识别：人脸识别，车牌识别等-->
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>opencv</artifactId>
-            <version>4.7.0-1.5.9</version>
+            <version>4.9.0-1.5.10</version>
         </dependency>
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>opencv-platform</artifactId>
-            <version>4.7.0-1.5.9</version>
+            <version>4.9.0-1.5.10</version>
         </dependency>
 
         <dependency>

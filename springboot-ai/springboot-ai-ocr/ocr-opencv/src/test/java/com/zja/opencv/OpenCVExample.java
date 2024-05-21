@@ -18,22 +18,24 @@ import org.opencv.imgcodecs.Imgcodecs;
  * @since: 2023/11/06 10:28
  */
 public class OpenCVExample {
-    public static void main(String[] args) {
+
+    static {
         //先把 E:\App\opencv-4.7.0\build\java\x64\opencv_java470.dll 父目录添加到系统环境变量中。
-
-        // 加载本机OpenCV库
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    }
 
-        // 读取图像
-        Mat image = Imgcodecs.imread("D:\\temp\\ocr\\input.png");
+    public static void main(String[] args) {
 
-        // 显示图像
-        HighGui.imshow("Original Image", image);
+        if ((1 == args.length) && (0 == args[0].compareTo("--build"))) {
 
-        // 等待按键事件
-        HighGui.waitKey();
+            System.out.println(Core.getBuildInformation());
+        } else if ((1 == args.length) && (0 == args[0].compareTo("--help"))) {
 
-        // 关闭图像窗口
-        HighGui.destroyAllWindows();
+            System.out.println("\t--build\n\t\tprint complete build info");
+            System.out.println("\t--help\n\t\tprint this help");
+        } else {
+
+            System.out.println("Welcome to OpenCV " + Core.VERSION);
+        }
     }
 }
