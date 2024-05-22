@@ -132,17 +132,45 @@ OpenCV提供了一系列的Haar级联分类器（Haar cascades），用于对象
 
 ## 安装部署
 
+1. 安装OpenCV：
+
 - [opencv.org 官网下载 Windows](https://opencv.org/releases/)
 
-双击`opencv-4.7.0-windows.exe`,得到目录`opencv`
+双击`opencv-4.9.0-windows.exe`,得到目录`opencv`
 
-配置系统环境变量(以java为例)：`E:\App\opencv-4.7.0\build\java\x64` ，主要是把opencv_java470.dll父目录配置环境变量中。
+配置系统环境变量(以java为例)：`E:\App\opencv-4.9.0\build\java\x64` ，主要是把opencv_java470.dll父目录配置环境变量中。
+
+2. 下载OpenCV Haar级联分类器：
 
 - [haarcascades Haar级联分类器的XML文件](https://github.com/opencv/opencv/blob/4.x/data/haarcascades)
 
-## 代码示例
+## 应用示例
 
-## 校验版本
+### 引入依赖
+
+```xml
+
+<dependencies>
+    <!--opencv-->
+    <dependency>
+        <groupId>org.openpnp</groupId>
+        <artifactId>opencv</artifactId>
+        <version>4.9.0-0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.bytedeco</groupId>
+        <artifactId>opencv</artifactId>
+        <version>4.9.0-1.5.10</version>
+    </dependency>
+    <dependency>
+        <groupId>org.bytedeco</groupId>
+        <artifactId>opencv-platform</artifactId>
+        <version>4.9.0-1.5.10</version>
+    </dependency>
+</dependencies>
+```
+
+### 校验版本
 
 ```java
 public class OpenCVExample {
@@ -169,52 +197,259 @@ public class OpenCVExample {
 }
 ```
 
-## 简单图像监测
+### 基于图像检测人脸
 
 ```java
-public class OpenCVExample {
-    @Test
-    public void detectFace_v1() throws Exception {
-        // 加载 OpenCV 库
-        OpenCV.loadShared();
+/**
+ * 人脸检测：图片、视频、摄像头
+ *
+ * @Author: zhengja
+ * @Date: 2024-05-21 10:45
+ */
+public class FaceDetectionTest {
 
-        // 读取图像
-        String imagePath = "D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1.png";  // 要检测的图片路径
+    @Test
+    public void test() {
+        // 加载OpenCV库
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        // 加载人脸级联分类器
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_default.xml"); // 尽可能检测更多人脸，存在不正确检查情况
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt_tree.xml"); // 存在检测不全情况
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt.xml"); // 检测效果较好
+        CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt2.xml"); // 检测效果最好
+
+        // 图片人脸检测
+        detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1.png", faceCascade);
+
+        // 视频人脸检测
+        // detectFacesInVideo("D:\\temp\\opencv\\Video\\1.mp4", faceCascade);
+
+        // 摄像头人脸检测 todo 待测试，没条件
+        // detectFacesFromCamera(faceCascade);
+    }
+
+    private static void detectFacesInImage(String imagePath, CascadeClassifier faceCascade) {
+        // 读取图像文件
         Mat image = Imgcodecs.imread(imagePath);
 
-        // 加载人脸分类器
-        //String haarFilePath = "D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_default.xml";
-        //String haarFilePath = "D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt_tree.xml";
-        //String haarFilePath = "D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt.xml";
-        String haarFilePath = "D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt2.xml";
-        CascadeClassifier faceDetector = new CascadeClassifier(haarFilePath);
+        // 灰度转换
+        Mat gray = new Mat();
+        Imgproc.cvtColor(image, gray, Imgproc.COLOR_BGR2GRAY);
 
         // 人脸检测
-        MatOfRect faceDetections = new MatOfRect();
-        faceDetector.detectMultiScale(image, faceDetections);
+        MatOfRect faces = new MatOfRect();
+        faceCascade.detectMultiScale(gray, faces);
 
-        // 绘制人脸框
-        for (Rect rect : faceDetections.toArray()) {
-            Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+        // 在检测到的人脸区域绘制矩形框
+        System.out.println("Number of faces detected: " + faces.toArray().length);
+        // System.out.println("Number of faces detected: " + faces.size());
+        int i = 0;
+        for (Rect rect : faces.toArray()) {
+            Imgproc.rectangle(image, rect.tl(), rect.br(), new Scalar(0, 0, 255), 2);
+            i = i + 1;
+            System.out.println("Face " + i + ": " + rect.x + ", " + rect.y + ", " + rect.width + ", " + rect.height);
         }
 
-        // 输出图像
-        String outFile = "D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1-detectFace.png";
-        // 存储
-        Imgcodecs.imwrite(outFile, image);
+        // 输出识别结果图片
+        String outputImagePath = "target/output.png";
+        Imgcodecs.imwrite(outputImagePath, image);
+        System.out.println("人脸检测完成，结果保存在：" + outputImagePath);
 
-        // 显示结果
-        HighGui.imshow("Detected Face", image);
+        // 显示结果图像
+        HighGui.imshow("Face Detection", image);
         HighGui.waitKey();
-
-        // 释放资源
-        image.release();
     }
 
 }
 ```
 
+### 基于视频检测人脸
 
+```java
+/**
+ * 人脸检测：图片、视频、摄像头
+ *
+ * @Author: zhengja
+ * @Date: 2024-05-21 10:45
+ */
+public class FaceDetectionTest {
+
+    @Test
+    public void test() {
+        // 加载OpenCV库
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        // 加载人脸级联分类器
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_default.xml"); // 尽可能检测更多人脸，存在不正确检查情况
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt_tree.xml"); // 存在检测不全情况
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt.xml"); // 检测效果较好
+        CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt2.xml"); // 检测效果最好
+
+        // 图片人脸检测
+        // detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1.png", faceCascade);
+
+        // 视频人脸检测
+        detectFacesInVideo("D:\\temp\\opencv\\Video\\1.mp4", faceCascade);
+
+        // 摄像头人脸检测 todo 待测试，没条件
+        // detectFacesFromCamera(faceCascade);
+    }
+
+    private static void detectFacesInVideo(String videoPath, CascadeClassifier faceCascade) {
+        // 打开视频文件
+        VideoCapture videoCapture = new VideoCapture(videoPath);
+
+        // 检查视频是否成功打开
+        if (!videoCapture.isOpened()) {
+            System.out.println("无法打开视频文件");
+            return;
+        }
+
+        // 获取视频的基本信息
+        // 获取视频帧率和尺寸
+        double frameRate = videoCapture.get(Videoio.CAP_PROP_FPS); // fps
+        int frameWidth = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_WIDTH); // width
+        int frameHeight = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_HEIGHT); // height
+
+        // 创建输出视频的编码器和写入器,使用VideoWriter时，确保已经正确安装了FFmpeg并将其添加到系统的环境变量中。
+        // int fourcc = VideoWriter.fourcc('M', 'J', 'P', 'G'); // 无效编码，输出存在问题
+        int fourcc = VideoWriter.fourcc('X', '2', '6', '4');  // 使用H.264编码器
+        String outputVideoPath = "target/output.mp4";
+        VideoWriter videoWriter = new VideoWriter(outputVideoPath, fourcc, frameRate, new Size(frameWidth, frameHeight));
+
+        // 创建窗口来显示结果
+        HighGui.namedWindow("Face Detection");
+
+        // 逐帧读取视频并进行人脸检测
+        Mat frame = new Mat();
+        while (videoCapture.read(frame)) {
+            // 转换为灰度图像
+            Mat grayFrame = new Mat();
+            Imgproc.cvtColor(frame, grayFrame, Imgproc.COLOR_BGR2GRAY);
+
+            // 人脸检测
+            MatOfRect faces = new MatOfRect();
+            faceCascade.detectMultiScale(grayFrame, faces);
+
+            // 在检测到的人脸区域绘制矩形框
+            System.out.println("Frame: " + videoCapture.get(Videoio.CAP_PROP_POS_FRAMES));
+            System.out.println("Number of faces detected: " + faces.toArray().length);
+            // System.out.println("Number of faces detected: " + faces.size());
+            int i = 0;
+            for (Rect rect : faces.toArray()) {
+                Imgproc.rectangle(frame, rect.tl(), rect.br(), new Scalar(0, 0, 255), 2);
+                i = i + 1;
+                System.out.println("Face " + i + ": " + rect.x + ", " + rect.y + ", " + rect.width + ", " + rect.height);
+            }
+
+            // 写入输出视频
+            videoWriter.write(frame);
+
+            // 显示结果帧
+            HighGui.imshow("Face Detection", frame);
+
+            // 按ESC键退出
+            if (HighGui.waitKey((int) Math.round(1000 / frameRate)) == 27) {
+                break;
+            }
+        }
+
+        // 释放视频捕获资源
+        videoCapture.release();
+        // 释放资源
+        videoWriter.release();
+        HighGui.destroyAllWindows();
+
+        System.out.println("人脸检测完成，结果保存在：" + outputVideoPath);
+    }
+}
+```
+
+### 基于摄像头检测人脸
+
+```java
+/**
+ * 人脸检测：图片、视频、摄像头
+ *
+ * @Author: zhengja
+ * @Date: 2024-05-21 10:45
+ */
+public class FaceDetectionTest {
+
+    @Test
+    public void test() {
+        // 加载OpenCV库
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        // 加载人脸级联分类器
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_default.xml"); // 尽可能检测更多人脸，存在不正确检查情况
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt_tree.xml"); // 存在检测不全情况
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt.xml"); // 检测效果较好
+        CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt2.xml"); // 检测效果最好
+
+        // 图片人脸检测
+        // detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1.png", faceCascade);
+
+        // 视频人脸检测
+        // detectFacesInVideo("D:\\temp\\opencv\\Video\\1.mp4", faceCascade);
+
+        // 摄像头人脸检测 todo 待测试，暂时没条件
+        detectFacesFromCamera(faceCascade);
+    }
+
+    private static void detectFacesFromCamera(CascadeClassifier faceCascade) {
+        // 打开摄像头
+        VideoCapture videoCapture = new VideoCapture(0);
+
+        // 检查摄像头是否成功打开
+        if (!videoCapture.isOpened()) {
+            System.out.println("无法打开摄像头");
+            return;
+        }
+
+        // 获取摄像头的默认帧率和尺寸
+        double frameRate = videoCapture.get(Videoio.CAP_PROP_FPS);
+        int frameWidth = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_WIDTH); // width
+        int frameHeight = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_HEIGHT); // height
+
+        // 创建窗口来显示结果
+        HighGui.namedWindow("Face Detection");
+
+        // 逐帧读取摄像头图像并进行人脸检测
+        Mat frame = new Mat();
+        while (true) {
+            // 读取摄像头图像
+            videoCapture.read(frame);
+
+            // 转换为灰度图像
+            Mat gray = new Mat();
+            Imgproc.cvtColor(frame, gray, Imgproc.COLOR_BGR2GRAY);
+
+            // 人脸检测
+            MatOfRect faces = new MatOfRect();
+            faceCascade.detectMultiScale(gray, faces);
+
+            // 在检测到的人脸区域绘制矩形框
+            for (Rect rect : faces.toArray()) {
+                Imgproc.rectangle(frame, rect.tl(), rect.br(), new Scalar(0, 0, 255), 2);
+            }
+
+            // 显示结果帧
+            HighGui.imshow("Face Detection", frame);
+
+            // 按ESC键退出
+            if (HighGui.waitKey((int) Math.round(1000 / frameRate)) == 27) {
+                break;
+            }
+        }
+
+        // 释放视频捕获资源
+        videoCapture.release();
+    }
+
+}
+```
 
 
 
