@@ -153,8 +153,8 @@ public class FaceDetectionTest {
 
         // 获取摄像头的默认帧率和尺寸
         double frameRate = videoCapture.get(Videoio.CAP_PROP_FPS);
-        //int frameWidth = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_WIDTH);
-        //int frameHeight = (int) videoCapture.get(Videoio.CAPROP_FRAME_HEIGHT);
+        int frameWidth = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_WIDTH); // width
+        int frameHeight = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_HEIGHT); // height
 
         // 创建窗口来显示结果
         HighGui.namedWindow("Face Detection");
