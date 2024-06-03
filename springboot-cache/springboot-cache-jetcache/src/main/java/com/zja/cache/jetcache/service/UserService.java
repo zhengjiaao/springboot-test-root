@@ -32,7 +32,7 @@ public interface UserService {
     @CacheUpdate(name = "userCache-", key = "#user.userId", value = "#user")
     void updateUser(User user);
 
-    @CacheInvalidate(name = "userCache-111", key = "#userId")
+    @CacheInvalidate(name = "userCache-", key = "#userId")
     void deleteUser(String userId);
 
     // 自动刷新
