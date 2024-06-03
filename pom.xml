@@ -21,6 +21,7 @@
         <module>springboot-api</module>
         <module>springboot-baidu</module>
         <module>springboot-bigdata</module>
+        <module>springboot-cache</module>
         <module>springboot-captcha</module>
         <module>springboot-db</module>
         <!--<module>springboot-distributed</module>-->
