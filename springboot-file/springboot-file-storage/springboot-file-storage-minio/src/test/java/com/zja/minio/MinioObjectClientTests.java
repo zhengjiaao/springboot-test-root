@@ -9,7 +9,9 @@
 package com.zja.minio;
 
 import com.zja.FileMinioApplicationTests;
+import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
+import io.minio.StatObjectResponse;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,6 +47,23 @@ public class MinioObjectClientTests extends FileMinioApplicationTests {
                 bucketName,
                 objectName,
                 "D:\\temp\\3840x2160-minio.jpg");
+    }
+
+    @Test
+    public void getObject() throws Exception {
+        GetObjectResponse objectResponse = minioObjectClient.getObject(
+                bucketName,
+                objectName);
+    }
+
+    @Test
+    public void getObjectInfo() throws Exception {
+        StatObjectResponse objectInfo = minioObjectClient.getObjectInfo(
+                bucketName,
+                objectName);
+        System.out.println(objectInfo);
+
+        System.out.println(objectInfo.etag()); // md5
     }
 
     @Test

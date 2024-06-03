@@ -9,11 +9,16 @@
 package com.zja.minio;
 
 import io.minio.*;
+import io.minio.errors.*;
 import io.minio.http.Method;
+import io.minio.messages.Retention;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 public class MinioObjectClient {
@@ -61,6 +66,21 @@ public class MinioObjectClient {
                         .bucket(bucketName)
                         .object(objectName)
                         .build());
+    }
+
+    public GetObjectResponse getObject(String bucketName, String objectName) throws Exception {
+        return minioClient.getObject(
+                GetObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(objectName)
+                        .build());
+    }
+
+    public StatObjectResponse getObjectInfo(String bucketName, String objectName) throws Exception {
+        return minioClient.statObject(StatObjectArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .build());
     }
 
     public void deleteObject(String bucketName, String objectName) throws Exception {
