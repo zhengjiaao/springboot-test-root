@@ -264,7 +264,7 @@ public class FaceDetectionTest {
         CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt2.xml"); // 检测效果最好
 
         // 图片人脸检测
-        detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1.png", faceCascade);
+        detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\Brush1.png", faceCascade);
 
         // 视频人脸检测
         // detectFacesInVideo("D:\\temp\\opencv\\Video\\1.mp4", faceCascade);
@@ -331,7 +331,7 @@ public class FaceDetectionTest {
         CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt2.xml"); // 检测效果最好
 
         // 图片人脸检测
-        // detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1.png", faceCascade);
+        // detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\Brush1.png", faceCascade);
 
         // 视频人脸检测
         detectFacesInVideo("D:\\temp\\opencv\\Video\\1.mp4", faceCascade);
@@ -433,7 +433,7 @@ public class FaceDetectionTest {
         CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt2.xml"); // 检测效果最好
 
         // 图片人脸检测
-        // detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1.png", faceCascade);
+        // detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\Brush1.png", faceCascade);
 
         // 视频人脸检测
         // detectFacesInVideo("D:\\temp\\opencv\\Video\\1.mp4", faceCascade);

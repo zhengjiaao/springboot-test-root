@@ -30,7 +30,7 @@ public class FaceDetectionExample {
         Loader.load(org.bytedeco.opencv.presets.opencv_videoio.class);
 
         // 要检测的图片路径
-        String imagePath = "D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1.png";
+        String imagePath = "D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\Brush1.png";
         // 要检测的视频路径
         String videoPath = "D:\\temp\\opencv\\Video\\1.mp4";
         // 输出结果文件路径

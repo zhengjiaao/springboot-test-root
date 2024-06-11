@@ -1,4 +1,4 @@
-package com.zja.opencv;
+package com.zja.opencv.haarcascade.rtsp;
 
 import org.junit.jupiter.api.Test;
 import org.opencv.core.*;
@@ -10,35 +10,42 @@ import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.VideoWriter;
 import org.opencv.videoio.Videoio;
 
-import static org.opencv.imgcodecs.Imgcodecs.imwrite;
-
 /**
+ * 摄像头(RTSP流)
+ * <p>
  * 人脸检测：图片、视频、摄像头
  *
  * @Author: zhengja
  * @Date: 2024-05-21 10:45
  */
-public class FaceDetectionTest {
+@Deprecated // todo 无法打开视频流
+public class FaceRecognition {
+
+    static {
+        // 加载OpenCV库
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    }
 
     @Test
     public void test() {
-        // 加载OpenCV库
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
         // 加载人脸级联分类器
-        //CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_default.xml"); // 尽可能检测更多人脸，存在不正确检查情况
-        //CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt_tree.xml"); // 存在检测不全情况
-        //CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt.xml"); // 检测效果较好
-        CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt2.xml"); //检测效果最好
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_default.xml"); // 尽可能检测更多人脸，存在不正确检查情况
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt_tree.xml"); // 存在检测不全情况
+        // CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt.xml"); // 检测效果较好
+        CascadeClassifier faceCascade = new CascadeClassifier("D:\\temp\\opencv\\haarcascade\\haarcascade_frontalface_alt2.xml"); // 检测效果最好
 
         // 图片人脸检测
-        //detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\Brush1.png", faceCascade);
+        // detectFacesInImage("D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\Brush1.png", faceCascade);
 
-        // 视频人脸检测
-        detectFacesInVideo("D:\\temp\\opencv\\Video\\1.mp4", faceCascade);
+        // 视频人脸检测(本地视频)
+        // detectFacesInVideo("D:\\temp\\opencv\\Video\\1.mp4", faceCascade);
 
-        // 摄像头人脸检测 todo 待测试，没条件
-        //detectFacesFromCamera(faceCascade);
+        // 摄像头人脸检测(主机摄像头)
+        // detectFacesFromCamera(faceCascade);
+
+        // 摄像头人脸检测(RTSP流) todo 测试未通过，无法打开视频流，原因可能是opencv组件在编译时，未把FFmpeg库一起打包。
+        String rtspUrl = "rtsp://your_rtsp_stream_url";
+        detectFacesFromRtspStream(faceCascade, rtspUrl);
     }
 
     private static void detectFacesInImage(String imagePath, CascadeClassifier faceCascade) {
@@ -55,7 +62,7 @@ public class FaceDetectionTest {
 
         // 在检测到的人脸区域绘制矩形框
         System.out.println("Number of faces detected: " + faces.toArray().length);
-        //System.out.println("Number of faces detected: " + faces.size());
+        // System.out.println("Number of faces detected: " + faces.size());
         int i = 0;
         for (Rect rect : faces.toArray()) {
             Imgproc.rectangle(image, rect.tl(), rect.br(), new Scalar(0, 0, 255), 2);
@@ -90,7 +97,7 @@ public class FaceDetectionTest {
         int frameHeight = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_HEIGHT); // height
 
         // 创建输出视频的编码器和写入器,使用VideoWriter时，确保已经正确安装了FFmpeg并将其添加到系统的环境变量中。
-        //int fourcc = VideoWriter.fourcc('M', 'J', 'P', 'G'); // 无效编码，输出存在问题
+        // int fourcc = VideoWriter.fourcc('M', 'J', 'P', 'G'); // 无效编码，输出存在问题
         int fourcc = VideoWriter.fourcc('X', '2', '6', '4');  // 使用H.264编码器
         String outputVideoPath = "target/output.mp4";
         VideoWriter videoWriter = new VideoWriter(outputVideoPath, fourcc, frameRate, new Size(frameWidth, frameHeight));
@@ -112,7 +119,7 @@ public class FaceDetectionTest {
             // 在检测到的人脸区域绘制矩形框
             System.out.println("Frame: " + videoCapture.get(Videoio.CAP_PROP_POS_FRAMES));
             System.out.println("Number of faces detected: " + faces.toArray().length);
-            //System.out.println("Number of faces detected: " + faces.size());
+            // System.out.println("Number of faces detected: " + faces.size());
             int i = 0;
             for (Rect rect : faces.toArray()) {
                 Imgproc.rectangle(frame, rect.tl(), rect.br(), new Scalar(0, 0, 255), 2);
@@ -153,8 +160,8 @@ public class FaceDetectionTest {
 
         // 获取摄像头的默认帧率和尺寸
         double frameRate = videoCapture.get(Videoio.CAP_PROP_FPS);
-        int frameWidth = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_WIDTH); // width
-        int frameHeight = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_HEIGHT); // height
+        // int frameWidth = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_WIDTH);
+        // int frameHeight = (int) videoCapture.get(Videoio.CAPROP_FRAME_HEIGHT);
 
         // 创建窗口来显示结果
         HighGui.namedWindow("Face Detection");
@@ -190,4 +197,59 @@ public class FaceDetectionTest {
         // 释放视频捕获资源
         videoCapture.release();
     }
+
+    @Deprecated // todo 无法打开RTSP视频流，原因可能是opencv组件在编译时，未把FFmpeg库一起打包。
+    private static void detectFacesFromRtspStream(CascadeClassifier faceCascade, String rtspUrl) {
+        // 打开RTSP视频流
+        VideoCapture videoCapture = new VideoCapture(rtspUrl);
+
+        // 检查视频流是否成功打开
+        if (!videoCapture.isOpened()) {
+            System.out.println("无法打开RTSP视频流");
+            return;
+        }
+
+        // 获取视频的帧率和尺寸
+        double frameRate = videoCapture.get(Videoio.CAP_PROP_FPS);
+        int frameWidth = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_WIDTH);
+        int frameHeight = (int) videoCapture.get(Videoio.CAP_PROP_FRAME_HEIGHT);
+
+        // 创建窗口来显示结果
+        HighGui.namedWindow("Face Detection from RTSP Stream");
+
+        // 逐帧读取视频流并进行人脸检测
+        Mat frame = new Mat();
+        while (true) {
+            // 读取视频流图像
+            if (!videoCapture.read(frame)) {
+                System.out.println("无法读取视频流帧");
+                break;
+            }
+
+            // 转换为灰度图像
+            Mat gray = new Mat();
+            Imgproc.cvtColor(frame, gray, Imgproc.COLOR_BGR2GRAY);
+
+            // 人脸检测
+            MatOfRect faces = new MatOfRect();
+            faceCascade.detectMultiScale(gray, faces);
+
+            // 在检测到的人脸区域绘制矩形框
+            for (Rect rect : faces.toArray()) {
+                Imgproc.rectangle(frame, rect.tl(), rect.br(), new Scalar(0, 0, 255), 2);
+            }
+
+            // 显示结果帧
+            HighGui.imshow("Face Detection from RTSP Stream", frame);
+
+            // 按ESC键退出
+            if (HighGui.waitKey((int) Math.round(1000 / frameRate)) == 27) {
+                break;
+            }
+        }
+
+        // 释放视频捕获资源
+        videoCapture.release();
+    }
+
 }

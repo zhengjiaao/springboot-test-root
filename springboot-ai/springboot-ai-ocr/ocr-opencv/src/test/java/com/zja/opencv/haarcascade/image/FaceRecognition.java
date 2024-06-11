@@ -22,7 +22,7 @@ public class FaceRecognition {
         OpenCV.loadShared();
 
         // 读取图像
-        String imagePath = "D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\1.png";  // 要检测的图片路径
+        String imagePath = "D:\\temp\\opencv\\Images\\people\\fuchouzhelianmeng\\Brush1.png";  // 要检测的图片路径
         Mat image = Imgcodecs.imread(imagePath);
 
         // 加载人脸分类器
