@@ -1,4 +1,4 @@
-package com.zja.javacv;
+package com.zja.javacv.rtsp;
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;

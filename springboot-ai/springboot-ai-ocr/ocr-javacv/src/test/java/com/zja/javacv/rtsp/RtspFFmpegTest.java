@@ -1,10 +1,6 @@
-package com.zja.javacv;
+package com.zja.javacv.rtsp;
 
-import org.apache.commons.io.FileUtils;
-import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.javacv.*;
-import org.bytedeco.opencv.global.opencv_imgcodecs;
-import org.bytedeco.opencv.opencv_core.Mat;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
