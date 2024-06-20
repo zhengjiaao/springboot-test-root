@@ -2,6 +2,12 @@
 
 ## GDAL 安装
 
+### GDAL 安装(推荐)
+ 
+* 推荐通过 [gisinternals](https://www.gisinternals.com/release.php) 安装 GDAL
+
+### GDAL官网安装(不推荐)
+
 要在Java中使用GDAL，您需要按照以下步骤进行设置：
 
 1. 官方网下载GDAL库进行安装：https://gdal.org/

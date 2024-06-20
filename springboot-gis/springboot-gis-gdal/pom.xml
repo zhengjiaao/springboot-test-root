@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.gdal</groupId>
             <artifactId>gdal</artifactId>
-            <version>1.11.2</version>
+            <version>3.8.0</version>
         </dependency>
 
         <dependency>

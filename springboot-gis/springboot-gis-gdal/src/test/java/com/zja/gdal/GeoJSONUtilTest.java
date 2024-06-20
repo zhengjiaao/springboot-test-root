@@ -9,6 +9,7 @@
 package com.zja.gdal;
 
 import org.gdal.ogr.Geometry;
+import org.gdal.ogr.ogr;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +24,7 @@ public class GeoJSONUtilTest {
     public void testWktToGeometry() {
         String wkt = "POINT (30 10)";
         Geometry geometry = GeoJSONUtil.wktToGeometry(wkt);  // 需要先安装 gdal
-        assertEquals("Point", geometry.GetGeometryName());
+        assertEquals("POINT", geometry.GetGeometryName());
         assertEquals(30.0, geometry.GetX(), 0.0001);
         assertEquals(10.0, geometry.GetY(), 0.0001);
         System.out.println(geometry); //
@@ -31,10 +32,11 @@ public class GeoJSONUtilTest {
 
     @Test
     public void testGeometryToWkt() {
-//        Geometry geometry = new Geometry();
-//        geometry.AddPoint(30, 10);
-//        String wkt = GeoJSONUtil.geometryToWkt(geometry);
-//        assertEquals("POINT (30 10)", wkt);
+        Geometry geometry = new Geometry(ogr.wkbPoint);
+        geometry.AddPoint_2D(30, 10); // 使用AddPoint_2D来明确创建二维点
+        String wkt = GeoJSONUtil.geometryToWkt(geometry);
+        assertEquals("POINT (30 10)", wkt);
+        System.out.println("Generated WKT: " + wkt);
     }
 
 }
