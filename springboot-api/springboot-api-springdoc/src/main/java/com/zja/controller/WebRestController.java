@@ -9,6 +9,7 @@
 package com.zja.controller;
 
 import com.zja.dto.UserDTO;
+import com.zja.dto.UserExtensionDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -181,6 +182,11 @@ public class WebRestController {
         return getUserDto();
     }
 
+    @DeleteMapping(value = "/delete/object/v2")
+    @Operation(summary = "delete-对象参数", description = "返回对象")
+    public Object deleteObject(@ParameterObject UserExtensionDTO userExtensionDTO) {
+        return userExtensionDTO;
+    }
 
     /**
      * 获取userdto 信息
