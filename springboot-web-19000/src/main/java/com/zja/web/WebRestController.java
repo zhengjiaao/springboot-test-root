@@ -9,9 +9,11 @@
 package com.zja.web;
 
 import com.zja.dto.UserDTO;
+import com.zja.dto.UserExtensionDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -175,6 +177,11 @@ public class WebRestController {
         return getUserDto();
     }
 
+    @DeleteMapping(value = "/delete/object/v2")
+    @Operation(summary = "delete-对象参数", description = "返回对象")
+    public Object deleteObject(UserExtensionDTO userExtensionDTO) {
+        return userExtensionDTO;
+    }
 
     /**
      * 获取userdto 信息
