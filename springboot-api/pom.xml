@@ -16,6 +16,7 @@
 	</properties>
 
 	<modules>
+		<module>springboot-api-springdoc</module>
 		<module>springboot-api-swagger2</module>
 		<module>springboot-api-swagger2-knife4j</module>
 		<module>springboot-api-swagger2-modules</module>

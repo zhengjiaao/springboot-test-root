@@ -1,0 +1,50 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+
+springdoc:
+  version: v1.0.0
+  swagger-ui:
+    enabled: true   # 默认是 true，启用 swagger-ui
+    path: /swagger-ui.html  # swagger-ui custom path. 访问：http://server:port/context-path/swagger-ui.html
+    display-request-duration: true # 默认false，显示请求持续时间
+    default-models-expand-depth: 0 # 默认1，默认情况下，所有模型将展开，展开深度为1，0表示不展开
+    doc-expansion: 0 # 默认1，默认情况下，所有API将折叠，折叠深度为1，0表示不折叠
+  api-docs:
+    enabled: true   # 默认是 true，启用 springdoc-openapi端点
+    path: /api-docs # /api-docs endpoint custom path. 访问：http://server:port/context-path/v3/api-docs
+    version: openapi_3_1
+
+  # 配置分组
+#  group-configs:
+#    - group: 'default'
+#      paths-to-match: '/**'
+#      packages-to-scan: com.zja.controller
+#    - group: 'group-xml'
+#      paths-to-match: '/xml/**'
+#      packages-to-scan: com.zja.controller
+  # 选择要包含在文档中的 Rest 控制器
+#  packagesToScan: com.package1, com.package2  # 对于要包含的包列表
+#  pathsToMatch: /v1, /api/balance/** # 对于要包含的路径列表
+  # 排除在文档中的 Rest 控制器,也可以使用 @Hidden 限制申城
+#  packages-to-exclude: com.package1, com.package2 # 对于要排除的包列表
+#  paths-to-exclude: /v1, /api/balance/** # 对于要排除的路径列表
+  # 以下是默认配置(可选的)
+  default-flat-param-object: false # 默认false 扁平化参数对象，true就不需要添加额外的@ParameterObject和@Parameter注解
+  auto-tag-classes: true # 自动 tag
+  show-actuator: false # 显示 actuator
+  model-and-view-allowed: false # 默认 false，允许 RestControllers 与 ModelAndView 返回出现在 OpenAPI 描述中
+  writer-with-default-pretty-printer: false # 默认false，规范的漂亮打印输出
+  # ... ... 还有很多其他配置，具体看官方文档
+
+
+
+
