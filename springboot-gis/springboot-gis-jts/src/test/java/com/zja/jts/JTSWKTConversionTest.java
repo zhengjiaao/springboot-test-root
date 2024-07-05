@@ -8,6 +8,7 @@
  */
 package com.zja.jts;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
@@ -19,7 +20,11 @@ import org.locationtech.jts.io.WKTWriter;
  */
 public class JTSWKTConversionTest {
 
-    public static void main(String[] args) {
+    /**
+     * 测试几何对象转换
+     */
+    @Test
+    public void GeometryConversion_test() {
         // 创建点
         Point point = createPoint(10, 20);
         testGeometryConversion(point);
@@ -75,12 +80,12 @@ public class JTSWKTConversionTest {
     // 测试几何对象和 WKT 的互相转换
     private static void testGeometryConversion(Geometry geometry) {
         // 将 Geometry 对象转换为 WKT
-        String wkt = geometryToWKT(geometry);
+        String wkt = GeometryUtil.geometryToWKT(geometry);
         System.out.println("Geometry: " + geometry);
         System.out.println("WKT: " + wkt);
 
         // 将 WKT 转换为 Geometry 对象
-        Geometry convertedGeometry = wktToGeometry(wkt);
+        Geometry convertedGeometry = GeometryUtil.wktToGeometry(wkt);
         System.out.println("Converted Geometry: " + convertedGeometry);
         System.out.println("----------------------------------------");
     }
@@ -88,7 +93,7 @@ public class JTSWKTConversionTest {
     // 测试 Envelope 对象的边界框与 WKT 的转换
     private static void testGeometryConversion(Polygon polygon, Envelope envelope) {
         // 将 Polygon 对象转换为 WKT
-        String polygonWKT = geometryToWKT(polygon);
+        String polygonWKT = GeometryUtil.geometryToWKT(polygon);
         System.out.println("Polygon: " + polygon);
         System.out.println("Polygon WKT: " + polygonWKT);
 
@@ -98,7 +103,7 @@ public class JTSWKTConversionTest {
         System.out.println("Envelope WKT: " + envelopeWKT);
 
         // 将 Envelope 的 WKT 转换为 Polygon 对象
-        Geometry convertedGeometry = wktToGeometry(envelopeWKT);
+        Geometry convertedGeometry = GeometryUtil.wktToGeometry(envelopeWKT);
         System.out.println("Converted Geometry: " + convertedGeometry);
         System.out.println("----------------------------------------");
     }
@@ -115,20 +120,4 @@ public class JTSWKTConversionTest {
         return sb.toString();
     }
 
-    // 将 Geometry 对象转换为 WKT
-    private static String geometryToWKT(Geometry geometry) {
-        WKTWriter writer = new WKTWriter();
-        return writer.write(geometry);
-    }
-
-    // 将 WKT 转换为 Geometry 对象
-    private static Geometry wktToGeometry(String wkt) {
-        WKTReader reader = new WKTReader();
-        try {
-            return reader.read(wkt);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

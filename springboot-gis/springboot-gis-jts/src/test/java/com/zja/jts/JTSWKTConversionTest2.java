@@ -22,33 +22,55 @@ import static org.junit.Assert.assertEquals;
  */
 public class JTSWKTConversionTest2 {
 
+    /**
+     * 测试将坐标点转换为WKT（Well-known text）表示的函数。
+     * WKT是一种用于表示几何对象的文本表示法，这里我们验证创建的点对象是否能被正确地转换为WKT格式。
+     */
     @Test
     public void convertPointToWKT() {
+        // 创建一个坐标点，横坐标为1，纵坐标为2
         Coordinate coordinate = new Coordinate(1, 2);
+
+        // 使用GeometryFactory来创建一个点对象
         GeometryFactory geometryFactory = new GeometryFactory();
         Point point = geometryFactory.createPoint(coordinate);
 
+        // 使用WKTWriter将点对象转换为WKT格式的字符串
         WKTWriter wktWriter = new WKTWriter();
         String wkt = wktWriter.write(point);
 
+        // 验证转换的结果是否符合预期的WKT格式
         assertEquals("POINT (1 2)", wkt);
     }
 
+
+    /**
+     * 测试将LineString对象转换为WKT（Well-known Text）表示形式的功能。
+     * WKT是一种用于表示几何对象的文本表示法，这里我们验证创建的LineString对象是否能被正确地转换为WKT格式。
+     */
     @Test
     public void convertLineStringToWKT() {
+        // 初始化LineString的坐标点数组
         Coordinate[] lineCoordinates = new Coordinate[]{
                 new Coordinate(0, 0),
                 new Coordinate(1, 1),
                 new Coordinate(2, 2)
         };
+
+        // 创建GeometryFactory，用于构造几何对象
         GeometryFactory geometryFactory = new GeometryFactory();
+        // 使用坐标点数组创建一个LineString对象
         LineString lineString = geometryFactory.createLineString(lineCoordinates);
 
+        // 创建WKTWriter，用于将几何对象转换为WKT格式
         WKTWriter wktWriter = new WKTWriter();
+        // 将LineString对象转换为WKT字符串
         String wkt = wktWriter.write(lineString);
 
+        // 验证转换结果是否符合预期的WKT格式
         assertEquals("LINESTRING (0 0, 1 1, 2 2)", wkt);
     }
+
 
     @Test
     public void convertPolygonToWKT() {
