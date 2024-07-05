@@ -272,14 +272,17 @@ public class VectorOverlayAnalysisTest {
         // 创建一条复杂的线
         // Coordinate[] lineCoords = { /* 复杂线的坐标 */};
         // 创建一条复杂的线，这里以一个曲折的折线为例
-        Coordinate[] lineCoords = {new Coordinate(0, 0), new Coordinate(0, 10), new Coordinate(10, 10), new Coordinate(10, 20), new Coordinate(20, 20), new Coordinate(20, 15), new Coordinate(30, 15), new Coordinate(30, 0), new Coordinate(0, 0)};
-        LineString line = factory.createLineString(lineCoords);
+        LineString complexLine = factory.createLineString(new Coordinate[]{
+                new Coordinate(0, 0), new Coordinate(0, 1), new Coordinate(0, 2),
+                new Coordinate(1, 2), new Coordinate(2, 2), new Coordinate(3, 2),
+                new Coordinate(3, 1), new Coordinate(3, 0)
+        });
 
         // 简化线，指定简化容差为0.5（具体值应根据实际应用场景调整）
         double simplifyTolerance = 0.5;
-        Geometry simplifiedLine = TopologyPreservingSimplifier.simplify(line, simplifyTolerance);
+        Geometry simplifiedLine = TopologyPreservingSimplifier.simplify(complexLine, simplifyTolerance);
 
-        System.out.println("Original Line: " + line);
+        System.out.println("Original Line: " + complexLine);
         System.out.println("Simplified Line: " + simplifiedLine);
     }
 
