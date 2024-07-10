@@ -15,9 +15,9 @@ springdoc:
   swagger-ui:
     enabled: true   # 默认是 true，启用 swagger-ui
     path: /swagger-ui.html  # swagger-ui custom path. 访问：http://server:port/context-path/swagger-ui.html
-    display-request-duration: true # 默认false，显示请求持续时间
-    default-models-expand-depth: 0 # 默认1，默认情况下，所有模型将展开，展开深度为1，0表示不展开
-    doc-expansion: 0 # 默认1，默认情况下，所有API将折叠，折叠深度为1，0表示不折叠
+    display-request-duration: true # 默认false，true显示请求持续时间
+    default-models-expand-depth: 1 # 默认是 1仅展开列表(Schemas)，支持设置Schemas展开深度：0表示不展开、1展开到类级别、2展开Schemas属性级别、3展开Schemas属性详情级别
+    doc-expansion: 'list' # 默认是 list表示展开列表(含API/Schemas)，none 表示不展开(含API/Schemas)，full表示展开全部（含API/API请求参数/Schemas）、支持设置API深度：0表示API不折叠、1 API折叠
   api-docs:
     enabled: true   # 默认是 true，启用 springdoc-openapi端点
     path: /api-docs # /api-docs endpoint custom path. 访问：http://server:port/context-path/v3/api-docs
