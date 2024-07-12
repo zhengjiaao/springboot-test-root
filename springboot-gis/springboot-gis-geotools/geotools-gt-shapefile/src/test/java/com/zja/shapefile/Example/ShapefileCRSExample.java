@@ -3,25 +3,25 @@
  * @Department: 数据中心
  * @Author: 郑家骜[ào]
  * @Email: zhengja@dist.com.cn
- * @Date: 2023-10-20 15:28
+ * @Date: 2023-10-20 15:21
  * @Since:
  */
-package com.zja.shapefile.other;
+package com.zja.shapefile.Example;
 
 import com.zja.shapefile.util.ResourceUtil;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 /**
- * 查看Shapefile文件中有多少个图层
+ * 获取 Shapefile 的坐标参考系统（CRS）
  *
  * @author: zhengja
- * @since: 2023/10/20 15:28
+ * @since: 2023/10/20 15:21
  */
-public class ShapefileLayerCountExample {
+public class ShapefileCRSExample {
     public static void main(String[] args) {
         String shapefilePath = ResourceUtil.getResourceFilePath("310000_full/310000_full.shp");
         try {
@@ -29,11 +29,13 @@ public class ShapefileLayerCountExample {
             File shapefile = new File(shapefilePath);
             ShapefileDataStore dataStore = new ShapefileDataStore(shapefile.toURI().toURL());
 
-            // 获取图层名称列表
-            List<String> layerNames = Arrays.asList(dataStore.getTypeNames());
+            // 获取 Shapefile 的 FeatureCollection
+            SimpleFeatureCollection featureCollection = dataStore.getFeatureSource().getFeatures();
 
-            System.out.println("Number of Layers: " + layerNames.size());
-            System.out.println("Layer Names: " + layerNames);
+            // 获取 Shapefile 的 CRS
+            CoordinateReferenceSystem crs = featureCollection.getSchema().getCoordinateReferenceSystem();
+
+            System.out.println("Shapefile CRS: " + crs);
 
             // 关闭数据源
             dataStore.dispose();

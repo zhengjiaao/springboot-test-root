@@ -6,7 +6,7 @@
  * @Date: 2023-10-19 13:49
  * @Since:
  */
-package com.zja.shapefile.other;
+package com.zja.shapefile.Example;
 
 import com.zja.shapefile.util.ResourceUtil;
 
