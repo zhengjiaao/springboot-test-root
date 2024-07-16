@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test
+    username: test
+    password: pass
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect # 原 postgresql 驱动
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG10Dialect # postgis10 驱动
+    hibernate:
+      ddl-auto: update
+    # sql 日志
+    show-sql: true # 这将使Hibernate显示它生成的SQL语句到标准输出，默认是false
+    properties:
+      hibernate:
+        format_sql: false # 默认false，true格式化输出的SQL，使其更易读
+        generate_statistics: false # 默认false，true开启统计信息收集，可用于进一步分析SQL执行情况
+    # true一直开启session，避免导致懒加载失败
+    open-in-view: false # 默认false，会导致懒加载失效 @Basic(fetch = FetchType.LAZY)
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa:
+            support: DEBUG
