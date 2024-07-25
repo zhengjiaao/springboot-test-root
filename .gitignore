@@ -25,6 +25,3 @@
 target/
 */*.iml
 */target/
-
-## ignoring data folder
-data/
