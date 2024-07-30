@@ -20,6 +20,9 @@
         <module>springboot-gis-geotools</module>
         <module>springboot-gis-jts</module>
         <module>springboot-gis-proj4J</module>
+        <module>springboot-gis-supermap</module>
+        <!--<module>springboot-gis-supermap-sqlite</module>-->
+        <module>springboot-gis-supermap-xgis</module>
     </modules>
 
     <!-- add repositories for JTS and Hibernate Spatial and Hibernate (JBoss) -->

@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+
+# 超图认证配置
+gdal:
+  enabled: false
+superMap:
+  enabled: true
+  web-licence:
+    enabled: true
+    ip: 192.168.200.61
+    module: 65400
+    port: 9183

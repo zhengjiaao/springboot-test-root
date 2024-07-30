@@ -1,0 +1,23 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+# 超图许可配置
+supermap:
+  cloud-license:
+    enabled: true
+    # 超图许可服务器地址 10.x 版本
+#    ip: 192.168.200.61
+#    module: 65400
+#    port: 9183
+    # 超图许可服务器地址 11.x 版本
+    ip: 192.168.200.60
+    module: 65400
+    port: 9183
