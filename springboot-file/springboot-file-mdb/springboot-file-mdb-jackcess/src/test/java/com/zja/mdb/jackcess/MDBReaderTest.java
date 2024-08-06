@@ -1,6 +1,8 @@
 package com.zja.mdb.jackcess;
 
 import com.healthmarketscience.jackcess.*;
+import com.healthmarketscience.jackcess.complex.ComplexColumnInfo;
+import com.healthmarketscience.jackcess.complex.ComplexValue;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -32,27 +34,29 @@ public class MDBReaderTest {
                 Table table = database.getTable(tableName);
                 System.out.println("Table: " + tableName);
 
+                // 输出表属性
+                PropertyMap tablePropertyMap = table.getProperties();
+                for (PropertyMap.Property property : tablePropertyMap) {
+                    System.out.println("Table Property Name: " + property.getName() + ", Value: " + property.getValue());
+                }
+
+                List<? extends Column> tableColumns = table.getColumns();
                 int columnCount = table.getColumnCount();
                 System.out.println("Column Count: " + columnCount);
 
-                List<? extends Column> tableColumns = table.getColumns();
-
-                // 输出字段别名
                 for (Column column : tableColumns) {
                     System.out.println("Column Name: " + column.getName());
-                    // System.out.println("Column Type: " + column.getType());
-                    // System.out.println("Column Length: " + column.getLength());
-
-                    // String fieldAlias = column.getAlias(); // 不存在字段别名
-                    // System.out.println("Field Name: " + column.getName() + ", Alias: " + fieldAlias);
+                    // 输出字段属性
+                    PropertyMap properties = column.getProperties();
+                    for (PropertyMap.Property property : properties) {
+                        System.out.println("Column Property Name: " + property.getName() + ", Value: " + property.getValue());
+                    }
                 }
-
-                System.out.println("--------------------");
 
                 // 查询表中的所有数据
                 for (Row row : table) {
                     for (Column column : table.getColumns()) {
-                        System.out.print(column.getName() + ": " +   row.get(column.getName()) + " | ");
+                        System.out.print(column.getName() + ": " + row.get(column.getName()) + " | ");
                     }
                     System.out.println();
                 }
