@@ -4,10 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +15,7 @@ import java.util.Comparator;
  */
 @Service
 public class ChunkUploadService {
+
     /**
      * 上传具有给定参数的文件块。
      *
@@ -47,12 +45,15 @@ public class ChunkUploadService {
      * @throws IOException 如果发生I/O错误
      */
     public void merge(String identifier, String filename, Integer totalChunks) throws IOException {
-        if (!isUploadComplete(identifier, totalChunks)) {
-            // 处理未上传所有块的情况
-            return;
-        }
         Path dirPath = Paths.get("uploads", identifier);
         Path filePath = Paths.get("uploads", filename);
+
+        if (!isUploadComplete(dirPath, totalChunks)) {
+            // 处理未上传所有块的情况
+            System.err.println("Not all chunks uploaded.");
+            return;
+        }
+
         try (OutputStream out = Files.newOutputStream(filePath)) {
             Files.list(dirPath)
                     .filter(path -> !Files.isDirectory(path))
@@ -70,13 +71,12 @@ public class ChunkUploadService {
     /**
      * 此方法检查是否已上传给定文件标识符和总块数的所有块。
      * 如果已上传所有块，则返回true。否则，返回false。
-     * @param identifier 正在上传的文件的标识符
+     * @param dirPath 块文件目录存储路径
      * @param totalChunks 文件分成的总块数
      * @return 如果已上传所有块，则为true，否则为false
      * @throws IOException 如果发生I/O错误
      */
-    public boolean isUploadComplete(String identifier, Integer totalChunks) throws IOException {
-        Path dirPath = Paths.get("uploads", identifier);
+    public boolean isUploadComplete(Path dirPath, Integer totalChunks) throws IOException {
         long count = Files.list(dirPath)
                 .filter(path -> !Files.isDirectory(path))
                 .count();

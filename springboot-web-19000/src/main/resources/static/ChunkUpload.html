@@ -19,7 +19,7 @@
             const totalChunks = Math.ceil(totalSize / chunkSize); // 总块数
             const identifier = file.name + '-' + totalSize + '-' + Date.now(); // 文件标识符
             const filename = file.name; // 文件名
-            for (let currentChunk = 0; currentChunk < totalChunks; currentChunk++) { // 循环上传每一块
+            for (let currentChunk = 1; currentChunk <= totalChunks; currentChunk++) { // 循环上传每一块
                 const chunk = file.slice(currentChunk * chunkSize, (currentChunk + 1) * chunkSize); // 获取当前块
                 const formData = new FormData(); // 创建表单数据
                 formData.append('file', chunk); // 添加文件块
