@@ -1,8 +1,6 @@
 package com.zja.mdb.jackcess;
 
 import com.healthmarketscience.jackcess.*;
-import com.healthmarketscience.jackcess.complex.ComplexColumnInfo;
-import com.healthmarketscience.jackcess.complex.ComplexValue;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -32,26 +30,10 @@ public class MDBReaderTest {
             // 遍历所有表
             for (String tableName : tableNames) {
                 Table table = database.getTable(tableName);
-                System.out.println("Table: " + tableName);
+                System.out.println("Table: " + tableName); // GSZTGNQML
 
-                // 输出表属性
-                PropertyMap tablePropertyMap = table.getProperties();
-                for (PropertyMap.Property property : tablePropertyMap) {
-                    System.out.println("Table Property Name: " + property.getName() + ", Value: " + property.getValue());
-                }
-
-                List<? extends Column> tableColumns = table.getColumns();
-                int columnCount = table.getColumnCount();
-                System.out.println("Column Count: " + columnCount);
-
-                for (Column column : tableColumns) {
-                    System.out.println("Column Name: " + column.getName());
-                    // 输出字段属性
-                    PropertyMap properties = column.getProperties();
-                    for (PropertyMap.Property property : properties) {
-                        System.out.println("Column Property Name: " + property.getName() + ", Value: " + property.getValue());
-                    }
-                }
+                // 输出表和字段的属性
+                printTableAndColumnProperty(table);
 
                 // 查询表中的所有数据
                 for (Row row : table) {
@@ -66,6 +48,8 @@ public class MDBReaderTest {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -77,10 +61,9 @@ public class MDBReaderTest {
             Database dbFile = DatabaseBuilder.open(new File(mdbFilePath));
             // 获取数据库中的所有表
             dbFile.getTableNames().forEach(tableName -> {
-                System.out.println("Table name: " + tableName);
                 try {
                     Table table = dbFile.getTable(tableName);
-                    printFieldAliases(table);
+                    printTableAndColumnProperty(table);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -92,25 +75,29 @@ public class MDBReaderTest {
         }
     }
 
-    private static void printFieldAliases(Table table) throws Exception {
+    private static void printTableAndColumnProperty(Table table) throws Exception {
         PropertyMap properties = table.getProperties();
+        // 输出表名称
+        System.out.println("Table name: " + table.getName());
+        System.out.println("Table Column Count: " + table.getColumnCount());
+
         if (properties != null) {
-            System.out.println("  Properties:");
+            // 输出表属性
             for (PropertyMap.Property property : properties) {
-                System.out.println("Table    " + property.getName() + ": " + property.getValue());
+                System.out.println("Table Properties " + property.getName() + ": " + property.getValue());
             }
         }
 
         List<? extends Column> tableColumns = table.getColumns();
         for (Column column : tableColumns) {
             // 输出字段名称
-            System.out.println("  Column name: " + column.getName());
+            System.out.println("Column name: " + column.getName());
 
             PropertyMap propertyMap = column.getProperties();
             if (propertyMap != null) {
-                System.out.println("  Properties:");
+                // 输出字段属性
                 for (PropertyMap.Property property : propertyMap) {
-                    System.out.println("Column    " + property.getName() + ": " + property.getValue());
+                    System.out.println("Column Properties " + property.getName() + ": " + property.getValue());
                 }
             }
         }
