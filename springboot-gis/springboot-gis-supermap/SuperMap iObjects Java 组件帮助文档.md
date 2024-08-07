@@ -18,12 +18,12 @@
 
 4、验证安装成功
 
-
 ### 模块介绍
 
 1、获取模块
 
-添加 JAR：用来将项目内的 jar 包加入到库引用中。首先在项目内创建lib文件夹，然后将组件产品提供的 jar 文件（位于安装目录的`iObjectsJava\Bin`文件夹内）拷贝到 lib 文件夹内，最后通过“添加 JAR”按钮将这些 jar 包加入到库引用中。
+添加 JAR：用来将项目内的 jar 包加入到库引用中。首先在项目内创建lib文件夹，然后将组件产品提供的 jar
+文件（位于安装目录的`iObjectsJava\Bin`文件夹内）拷贝到 lib 文件夹内，最后通过“添加 JAR”按钮将这些 jar 包加入到库引用中。
 
 把所需的jar包安装到本地仓库：
 
@@ -59,12 +59,38 @@ mvn install:install-file -Dfile='com.supermap.ui.controls.jar' -DgroupId='com.su
 
 ```
 
+或者,通过配置超图远程仓库：
+
+```xml
+
+<repositories>
+    <repository>
+        <id>supermap</id>
+        <url>https://maven.supermap.io/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+    </repository>
+</repositories>
+```
+
+```xml
+
+<dependency>
+    <groupId>com.supermap.iobjects</groupId>
+    <artifactId>com.supermap.mapping</artifactId>
+    <version>11.1.0</version>
+</dependency>
+```
+
 2、模块说明：[开发组件模块说明](./开发组件模块说明.md)
 
 ## 许可配置
 
 - [开发指南-许可配置说明](http://support.supermap.com.cn/DataWarehouse/WebDocHelp/iObjectsJava/index.html)
-
 
 1、获取许可
 

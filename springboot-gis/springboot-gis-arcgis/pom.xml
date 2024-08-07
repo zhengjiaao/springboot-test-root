@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.zja</groupId>
+        <artifactId>springboot-gis</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.zja</groupId>
+    <artifactId>springboot-gis-arcgis</artifactId>
+    <packaging>war</packaging>
+
+    <repositories>
+        <repository>
+            <id>arcgis</id>
+            <url>https://esri.jfrog.io/artifactory/arcgis</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <arcgis.version>100.15.0</arcgis.version>
+    </properties>
+
+    <dependencies>
+        <!--ArcGIS dependencies -->
+        <dependency>
+            <groupId>com.esri.arcgisruntime</groupId>
+            <artifactId>arcgis-java</artifactId>
+            <version>${arcgis.version}</version>
+        </dependency>
+        <!--JavaFX dependencies -->
+        <!--  <dependency>
+              <groupId>org.openjfx</groupId>
+              <artifactId>javafx-controls</artifactId>
+              <version>21.0.3</version>
+          </dependency>-->
+        <!-- <dependency>
+             <groupId>com.esri.arcgisruntime</groupId>
+             <artifactId>arcgis-java-jnilibs</artifactId>
+             <version>${arcgis.version}</version>
+             <type>zip</type>
+         </dependency>
+         <dependency>
+             <groupId>com.esri.arcgisruntime</groupId>
+             <artifactId>arcgis-java-resources</artifactId>
+             <version>${arcgis.version}</version>
+             <type>zip</type>
+         </dependency>-->
+        <!--SLF4J dependencies-->
+        <!-- <dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-nop</artifactId>
+             <version>2.0.13</version>
+         </dependency>-->
+
+        <!-- AE jar包依赖 -->
+        <!-- <dependency>
+             <groupId>com.esri.arcgis</groupId>
+             <artifactId>arcobjects</artifactId>
+             <version>${arcgis.version}</version>
+         </dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
