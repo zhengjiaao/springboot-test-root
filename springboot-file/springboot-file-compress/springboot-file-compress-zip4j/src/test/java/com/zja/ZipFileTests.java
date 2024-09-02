@@ -14,6 +14,7 @@ import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.AesKeyStrength;
 import net.lingala.zip4j.model.enums.EncryptionMethod;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -195,4 +196,38 @@ public class ZipFileTests {
         new ZipFile("encrypted_zip_file.zip").isEncrypted();
     }
 
+    /**
+     * 检查ZIP文件中是否存在指定的文件。
+     */
+    @Test
+    public void shouldCheckIfFileExistsInZip() throws ZipException {
+        // 给定
+        ZipFile zipFile = new ZipFile("filename.zip");
+        String fileNameToCheck = "importantFile.txt";
+
+        // 当
+        boolean exists = zipFile.getFileHeaders().stream()
+                .anyMatch(header -> header.getFileName().equals(fileNameToCheck));
+
+        // 然后
+        Assert.assertTrue("The file should exist in the ZIP.", exists);
+    }
+
+    /**
+     * 检查ZIP文件中是否存在具有特定扩展名的文件。
+     */
+    @Test
+    public void shouldCheckIfFilesWithSpecificExtensionExistInZip() throws ZipException {
+        // 给定
+        ZipFile zipFile = new ZipFile("filename.zip");
+        String extensionToCheck = ".txt";
+
+        // 当
+        long count = zipFile.getFileHeaders().stream()
+                .filter(header -> header.getFileName().endsWith(extensionToCheck))
+                .count();
+
+        // 然后
+        Assert.assertTrue("There should be at least one file with the specified extension in the ZIP.", count > 0);
+    }
 }
