@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * @author: zhengja
@@ -12,11 +13,16 @@ import java.io.IOException;
  */
 public class FileInputStreamExample {
 
+    static final String filePath_source = Paths.get("target", "example_io.txt").toString();
+
+    static final String filePath_destination = Paths.get("target", "example_io_destination.txt").toString();
+
+
     // 使用FileInputStream和FileOutputStream进行文件读写
     @Test
     public void test() {
-        try (FileInputStream fis = new FileInputStream("source.txt");
-             FileOutputStream fos = new FileOutputStream("destination.txt")) {
+        try (FileInputStream fis = new FileInputStream(filePath_source);
+             FileOutputStream fos = new FileOutputStream(filePath_destination)) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = fis.read(buffer)) != -1) {

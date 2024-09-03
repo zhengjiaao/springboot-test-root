@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
 
 /**
  * @author: zhengja
@@ -13,9 +14,11 @@ import java.nio.channels.FileChannel;
  */
 public class ByteBufferExample {
 
+    static final String filePath = Paths.get("target", "example_nio.txt").toString();
+
     @Test
-    public void test() {
-        try (FileChannel channel = new FileInputStream("source.txt").getChannel()) {
+    public void test_FileChannel_Read() {
+        try (FileChannel channel = new FileInputStream(filePath).getChannel()) {
             ByteBuffer buffer = ByteBuffer.allocate(1024);
             int bytesRead = channel.read(buffer);
             while (bytesRead != -1) {

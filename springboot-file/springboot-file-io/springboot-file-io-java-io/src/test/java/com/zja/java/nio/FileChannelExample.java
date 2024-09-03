@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
 
 /**
  * @author: zhengja
@@ -13,10 +14,14 @@ import java.nio.channels.FileChannel;
  */
 public class FileChannelExample {
 
+    static final String filePath = Paths.get("target", "example_nio.txt").toString();
+
+    static final String filePath_destination = Paths.get("target", "example_nio_destination.txt").toString();
+
     @Test
-    public void test() {
-        try (FileChannel sourceChannel = new FileInputStream("source.txt").getChannel();
-             FileChannel destinationChannel = new FileOutputStream("destination.txt").getChannel()) {
+    public void test_FileChannel_Copy() {
+        try (FileChannel sourceChannel = new FileInputStream(filePath).getChannel();
+             FileChannel destinationChannel = new FileOutputStream(filePath_destination).getChannel()) {
             destinationChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
         } catch (IOException e) {
             e.printStackTrace();
