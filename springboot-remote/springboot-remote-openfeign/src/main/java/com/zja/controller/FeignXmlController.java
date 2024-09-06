@@ -8,8 +8,8 @@
  */
 package com.zja.controller;
 
-import com.zja.dto.ResultXml;
-import com.zja.dto.UserXmlDTO;
+import com.zja.model.dto.ResultXml;
+import com.zja.model.dto.UserXmlDTO;
 import com.zja.remote.XmlFegin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

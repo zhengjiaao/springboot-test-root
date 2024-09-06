@@ -1,4 +1,4 @@
-package com.zja.dto;
+package com.zja.model.dto;
 
 import feign.Param;
 import io.swagger.annotations.ApiModel;

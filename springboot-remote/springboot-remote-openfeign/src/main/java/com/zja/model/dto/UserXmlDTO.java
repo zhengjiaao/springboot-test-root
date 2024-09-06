@@ -3,22 +3,18 @@
  * @Department: 数据中心
  * @Author: 郑家骜[ào]
  * @Email: zhengja@dist.com.cn
- * @Date: 2022-07-14 17:08
+ * @Date: 2022-07-13 16:31
  * @Since:
  */
-package com.zja.dto;
+package com.zja.model.dto;
 
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
 @Data
-@XmlRootElement(name = "ResultXml")
-public class ResultXml {
-
-    private UserXmlDTO userXmlDTO;
-
-    private List<UserXmlDTO> userXmlDTOList;
-
+@XmlRootElement(name = "UserXmlDTO")
+public class UserXmlDTO {
+    private String username;
+//    private String password;
 }

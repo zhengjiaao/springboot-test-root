@@ -8,7 +8,8 @@
  */
 package com.zja.controller;
 
-import com.zja.dto.UserDTO;
+import com.zja.model.dto.UserDTO;
+import com.zja.model.request.FileUploadRequest;
 import com.zja.remote.SpringFileFeignClient;
 import feign.Response;
 import io.swagger.annotations.Api;
@@ -57,6 +58,14 @@ public class SpringFileFeignClientController {
     public Object postFile(@ApiParam("上传文件") @RequestPart(value = "file") MultipartFile file,
                            @ApiParam("新文件名称") @RequestParam String filename) {
         fileFeignClient.postFile(file, filename);
+        return true;
+    }
+
+    @PostMapping(value = "/post/upload/v3/2")
+    @ApiOperation(value = "post-上传单文件和字符串", notes = "返回 true")
+    public Object postFileV3(@ApiParam("上传文件") @RequestPart(value = "file") MultipartFile file,
+                           @ApiParam("新文件名称") @RequestParam String filename) {
+        fileFeignClient.postFile(FileUploadRequest.builder().file(file).filename(filename).build());
         return true;
     }
 

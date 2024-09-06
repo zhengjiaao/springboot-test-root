@@ -8,7 +8,8 @@
  */
 package com.zja.remote;
 
-import com.zja.dto.UserDTO;
+import com.zja.model.dto.UserDTO;
+import com.zja.model.request.FileUploadRequest;
 import feign.Response;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -24,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface SpringFileFeignClient {
 
-    //文件上传
+    // 文件上传
 
     /**
      * consume为： MULTIPART_FORM_DATA_VALUE，表明只接收FormData这个类型的数据
@@ -42,14 +43,16 @@ public interface SpringFileFeignClient {
     @PostMapping(value = "/post/upload/v3", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "post-上传单文件和字符串", notes = "返回 true")
     Object postFile(@ApiParam("上传文件") @RequestPart(value = "file") MultipartFile file,
-                    //RequestParam.value() was empty on parameter 1
-//                    @ApiParam("新文件名称") @RequestParam String filename);
                     @ApiParam("新文件名称") @RequestParam("filename") String filename);
+
+    @PostMapping(value = "/post/upload/v3", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "post-上传单文件和字符串", notes = "返回 true")
+    Object postFile(@ApiParam("上传文件") FileUploadRequest uploadRequest);
 
     @PostMapping(value = "/post/upload/v4", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "post-上传单文件和json对象", notes = "返回 true")
-        //Body parameters cannot be used with form parameters
-        //feign 不支持 @RequestPart与@RequestBody 共同使用
+        // Body parameters cannot be used with form parameters
+        // feign 不支持 @RequestPart与@RequestBody 共同使用
     Object postFile(@ApiParam("上传文件") @RequestPart(value = "file") MultipartFile file,
 //                    @ApiParam("对象") @RequestBody UserDTO userDTO);
                     @ApiParam("对象") @RequestPart("jsondata") UserDTO userDTO);
@@ -65,7 +68,7 @@ public interface SpringFileFeignClient {
                     @ApiParam("对象") @RequestPart("jsondata") UserDTO userDTO);
 
 
-    //文件下载
+    // 文件下载
 
     @GetMapping(value = "get/download/v1")
     @ApiOperation(value = "下载文件-文件URL")

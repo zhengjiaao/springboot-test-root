@@ -1,6 +1,6 @@
 package com.zja.controller;
 
-import com.zja.dto.UserDTO;
+import com.zja.model.dto.UserDTO;
 import com.zja.remote.SpringRestFeignClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

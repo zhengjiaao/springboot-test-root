@@ -8,10 +8,12 @@
  */
 package com.zja.remote;
 
-import com.zja.dto.UserDTO;
+import com.zja.model.dto.UserDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * feign 常用 rest api 测试
@@ -40,6 +42,11 @@ public interface SpringRestFeignClient {
     @GetMapping(value = "/get/param/v2")
     @ApiOperation(value = "get-对象参数", notes = "返回对象")
     String getParam2(UserDTO userDto);
+
+    // cloud openfeign 支持设置 @SpringQueryMap
+    // @GetMapping(value = "/get/param/v2")
+    // @ApiOperation(value = "get-对象参数", notes = "返回对象")
+    // String getParam3(@SpringQueryMap UserDTO userDto);
 
     @GetMapping(value = "/get/object/v1")
     @ApiOperation(value = "get-无参数", notes = "返回对象")

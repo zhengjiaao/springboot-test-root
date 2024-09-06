@@ -1,6 +1,6 @@
 package com.zja.controller;
 
-import com.zja.dto.UserDTO;
+import com.zja.model.dto.UserDTO;
 import com.zja.remote.FileFeignClient;
 import feign.Response;
 import feign.form.FormData;

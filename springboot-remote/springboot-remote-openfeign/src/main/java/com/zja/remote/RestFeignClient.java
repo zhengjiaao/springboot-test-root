@@ -8,7 +8,7 @@
  */
 package com.zja.remote;
 
-import com.zja.dto.UserDTO;
+import com.zja.model.dto.UserDTO;
 import feign.Headers;
 import feign.Param;
 import feign.QueryMap;

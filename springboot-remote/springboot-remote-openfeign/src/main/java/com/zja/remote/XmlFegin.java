@@ -8,8 +8,8 @@
  */
 package com.zja.remote;
 
-import com.zja.dto.ResultXml;
-import com.zja.dto.UserXmlDTO;
+import com.zja.model.dto.ResultXml;
+import com.zja.model.dto.UserXmlDTO;
 import feign.RequestLine;
 
 import java.util.List;
