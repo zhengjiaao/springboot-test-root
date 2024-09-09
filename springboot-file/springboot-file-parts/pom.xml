@@ -16,7 +16,7 @@
     </properties>
 
     <modules>
-        <!--<module>springboot-file-parts-download</module>-->
+        <module>springboot-file-parts-download</module>
         <module>springboot-file-parts-upload</module>
     </modules>
 

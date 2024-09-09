@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download File</title>
+    <!-- Import Vue@3 -->
+    <script src="https://unpkg.com/vue@3"></script>
+    <!-- Import Element Plus -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"/>
+    <script src="https://unpkg.com/element-plus"></script>
+    <!-- Import Axios -->
+    <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+</head>
+<body>
+<h1>支持分片下载 + 取消下载</h1>
+<div id="app">
+    <el-button @click="downloadFile">Download File</el-button>
+    <el-button @click="cancelDownload">Cancel Download</el-button>
+    <el-progress v-if="isDownloading" :percentage="downloadProgress" :show-text="false"></el-progress>
+</div>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                isDownloading: false,
+                downloadProgress: 0,
+                fileUrl: '/large/file/parts/download',
+                fileName: '建筑方案比选.zip',
+                fileBlob: null,
+                isCancelled: false,
+                downloadPromise: null,
+                abortController: null
+            };
+        },
+        methods: {
+            async downloadFile() {
+                console.log("downloadFile");
+                this.isDownloading = true;
+                this.downloadProgress = 0;
+                this.isCancelled = false;
+
+                try {
+                    this.abortController = new AbortController();
+                    const signal = this.abortController.signal;
+
+                    const {fileSize} = await this.getFileSize(signal);
+                    const {blobParts, totalDownloaded} = await this.downloadChunks(fileSize, signal);
+
+                    // 合并分块
+                    this.fileBlob = new Blob(blobParts, {type: 'application/octet-stream'});
+                    const url = window.URL.createObjectURL(this.fileBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = this.fileName;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+
+                    console.log('File downloaded successfully');
+                    this.isDownloading = false;
+                    this.downloadProgress = 0;
+                } catch (error) {
+                    console.error('Error downloading file:', error);
+                    this.isDownloading = false;
+                    this.downloadProgress = 0;
+                }
+            },
+
+            async getFileSize(signal) {
+                const headers = {
+                    Range: `bytes=0-0`
+                };
+                const response = await axios.head(this.fileUrl, {
+                    headers: headers,
+                    params: {
+                        fileName: this.fileName
+                    },
+                    signal: signal
+                });
+
+                if (response.status === 200) {
+                    return {fileSize: parseInt(response.headers['content-range'].split('/')[1], 10)};
+                } else {
+                    throw new Error('Failed to get file size');
+                }
+            },
+
+            async downloadChunks(fileSize, signal) {
+                const chunkSize = 1024 * 1024; // 1MB chunks
+                let start = 0;
+                let end = chunkSize - 1;
+                let totalDownloaded = 0;
+                const blobParts = [];
+
+                while (start < fileSize && !signal.aborted) {
+                    if (end > fileSize - 1) {
+                        end = fileSize - 1;
+                    }
+
+                    const headers = {
+                        Range: `bytes=${start}-${end}`
+                    };
+
+                    const response = await axios.get(this.fileUrl, {
+                        responseType: 'arraybuffer',
+                        headers: headers,
+                        params: {
+                            fileName: this.fileName
+                        },
+                        signal: signal
+                    });
+
+                    blobParts.push(new Blob([response.data], {type: 'application/octet-stream'}));
+                    totalDownloaded += response.data.byteLength;
+                    this.downloadProgress = Math.round((totalDownloaded / fileSize) * 100);
+
+                    start = end + 1;
+                    end += chunkSize;
+                }
+
+                return {blobParts, totalDownloaded};
+            },
+
+            cancelDownload() {
+                if (this.abortController) {
+                    this.abortController.abort();
+                    this.isDownloading = false;
+                    this.downloadProgress = 0;
+                    console.log("Download cancelled");
+                }
+            }
+        }
+    });
+
+    // 使用 Element Plus
+    app.use(ElementPlus);
+
+    // 挂载 Vue 实例
+    app.mount('#app');
+</script>
+</body>
+</html>
