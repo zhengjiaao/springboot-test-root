@@ -2,10 +2,9 @@
 server:
   port: 8080
   servlet:
-    context-path: /springboot-test-redis
+    context-path: /
 spring:
   redis:
-    #host: 129.204.207.127
     database: 0  # Redis数据库索引（默认为0）,如果设置为1，那么存入的key-value都存放在select 1中
     host: 127.0.0.1
     port: 6379

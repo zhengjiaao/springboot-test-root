@@ -14,7 +14,7 @@ import java.io.UnsupportedEncodingException;
  * @author: zhengja
  * @since: 2024/03/06 16:39
  */
-@Component
+// @Component
 public class RedisSubscribeMessageListener implements MessageListener {
     /**
      * 这里的 onMessage 方法是得到消息后的处理方法， 其中 message 参数代表 Redis 发送过来的消息，
