@@ -61,7 +61,7 @@ springboot 项目中常用到的一些技术集成示例，可以快速开始开
     - [springboot-file-io](./springboot-file/springboot-file-io)
     - [springboot-file-json](./springboot-file/springboot-file-json)
     - [springboot-file-monitor](./springboot-file/springboot-file-monitor)
-    - [springboot-file-parts 分片上传](./springboot-file/springboot-file-parts)
+    - [springboot-file-parts 大文件分片上传/下载](./springboot-file/springboot-file-parts)
     - [springboot-file-pdf](./springboot-file/springboot-file-pdf)
     - [springboot-file-preview 文件预览](./springboot-file/springboot-file-preview)
     - [springboot-file-storage 文件存储](./springboot-file/springboot-file-storage)
@@ -129,6 +129,15 @@ springboot 项目中常用到的一些技术集成示例，可以快速开始开
     - [springboot-utils-id](./springboot-utils/springboot-utils-id)
 - [springboot-web-19000 REST接口提供者](./springboot-web-19000)
 
+## 本地运行环境搭建
+
+> 以下是你必须要安装的基础软件,可以使项目正常打包及运行.
+
+|       | 官网文档                                                                              | github | 使用版本下载                                                                       | 详细 | 是否必须安装 |
+|-------|-----------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------|----|--------| 
+| java  | [www.oracle.com/java8](https://www.oracle.com/java/technologies/downloads/#java8) |        | [java8 downloads](https://www.oracle.com/java/technologies/downloads/#java8) |    | **必须** |
+| maven | [maven.apache.org](https://maven.apache.org/)                                     |        | [maven3.6.2 downloads](https://maven.apache.org/download.cgi)                |    | **必须** |
+
 ## 适配的中间件版本
 
 > 以下是你可能会用到的中间件
@@ -145,26 +154,17 @@ springboot 项目中常用到的一些技术集成示例，可以快速开始开
 | prometheus | [prometheus.io 官网](https://prometheus.io/)                        | [prometheus/prometheus](https://github.com/prometheus/prometheus) | [2.46.0](https://github.com/prometheus/prometheus/releases)                                                                     |    |    |
 | xxl-job    | [xxl-job](https://www.xuxueli.com/xxl-job)                        | [xuxueli/xxl-job](https://github.com/xuxueli/xxl-job/)            | [v2.4.0](https://github.com/xuxueli/xxl-job/releases)                                                                           |    |    |
 
-## 本地运行环境搭建
-
-> 以下是你必须要安装的基础软件,可以使项目正常打包及运行.
-
-|       | 官网文档                                                                              | github | 使用版本下载                                                                       | 详细 | 是否必须安装 |
-|-------|-----------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------|----|--------| 
-| java  | [www.oracle.com/java8](https://www.oracle.com/java/technologies/downloads/#java8) |        | [java8 downloads](https://www.oracle.com/java/technologies/downloads/#java8) |    | **必须** |
-| maven | [maven.apache.org](https://maven.apache.org/)                                     |        | [maven3.6.2 downloads](https://maven.apache.org/download.cgi)                |    | **必须** |
-
 ## 后续计划
 
-> 以下是后续计划预研的技术
+> 以下是后续计划预研的技术，不分先后顺序
 
 |                     | 说明                                         | 是否完成    | 
 |---------------------|--------------------------------------------|---------|
-| cloud-stream        | 预研消息中间件kafka、rabbit、rocketmq等              | 计划中     |
+| springboot-mq       | 预研消息中间件kafka、rabbit、rocketmq等              | 进行中     |
 | springboot-patterns | 重学Java设计模式                                 | **已完成** |
 | springboot-login    | 预研接入第三方平台登录(QQ、微信、企业微信、...)                | 计划中     |
 | springboot-payment  | 预研接入第三方平台支付(微信、支付宝、QQ、银联、...)              | 计划中     |
-| springboot-gis      | 预研Gis空间数据处理(GeoTools、gdal、JTS、PostGis、...) | 进行中     |
+| springboot-gis      | 预研Gis空间数据处理(GeoTools、gdal、JTS、PostGis、...) | **已完成** |
 | springboot-ai       | 预研Ai相关技术(ChatGPT、ChatGLM、...)              | 计划中     |
 | springboot-ocr      | 预研OCR相关技术(图文识别、音频识别、...)                   | **已完成** |
 
