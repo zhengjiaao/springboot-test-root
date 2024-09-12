@@ -1,8 +1,5 @@
 package com.zja.poitl.factory;
 
-import cn.hutool.core.lang.Pair;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.deepoove.poi.data.PictureType;
@@ -10,8 +7,9 @@ import com.deepoove.poi.data.Pictures;
 import com.zja.poitl.entity.PlanCondition;
 import com.zja.poitl.util.PoiTLUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -48,7 +46,7 @@ public class WordGenerationStrategy implements GenerationStrategy {
 
         // 处理附图
         Object futuObject = model.get("FUTU");
-        if (ObjectUtil.isNotEmpty(futuObject)) {
+        if (ObjectUtils.isNotEmpty(futuObject)) {
             model.put("FUTU", futu(futuObject));
         } else {
             model.put("FUTU", null);
@@ -60,15 +58,15 @@ public class WordGenerationStrategy implements GenerationStrategy {
     private Map<String, Object> futu(Object futuObject) {
         Map<String, Object> futuList = new HashMap<>((Map<String, Object>) futuObject);
         List<Map<String, Object>> children = new ArrayList<>((List<Map<String, Object>>) futuList.get("children"));
-        if (ObjectUtil.isNotEmpty(children)) {
+        if (ObjectUtils.isNotEmpty(children)) {
             children.forEach(futuMapObject -> {
                 Object picsObject = futuMapObject.get("pics");
-                if (ObjectUtil.isNotEmpty(picsObject)) {
+                if (ObjectUtils.isNotEmpty(picsObject)) {
                     List<Map<String, Object>> picsList = (List<Map<String, Object>>) picsObject;
                     picsList.forEach(map -> {
                         String id = String.valueOf(map.get("id"));
                         // 下载附图
-                        if (StrUtil.isNotBlank(id)) {
+                        if (StringUtils.isNotBlank(id)) {
                             // Pair<String, String> pair = blockResourceStorage.downloadFile(id);
                             try {
                                 // map.put("image", Pictures.ofStream(Files.newInputStream(Paths.get(pair.getValue())), PictureType.PNG)

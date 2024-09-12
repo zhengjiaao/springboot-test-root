@@ -55,12 +55,6 @@
             <artifactId>poi-tl</artifactId>
             <version>1.12.1</version>
         </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.8.22</version>
-            <scope>compile</scope>
-        </dependency>
 
     </dependencies>
 

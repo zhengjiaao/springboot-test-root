@@ -1,7 +1,5 @@
 package com.zja.poitl.factory;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.deepoove.poi.data.PictureType;
 import com.deepoove.poi.data.Pictures;
@@ -9,6 +7,8 @@ import com.zja.poitl.entity.PlanCondition;
 import com.zja.poitl.entity.PlanConditionData;
 import com.zja.poitl.util.PoiTLUtil;
 import lombok.Getter;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -43,7 +43,8 @@ public class QuzhouWordGenerationStrategy implements GenerationStrategy {
         if (!dataList.isEmpty()) {
             String dkName = "";
             for (Map o : dataList) {
-                if (ObjectUtil.isNotNull(o)) {
+                // if (ObjectUtils.isNotEmpty(o)) {
+                if (ObjectUtils.isNotEmpty(o)) {
                     if (o.equals(dataList.get(dataList.size() - 1))) {
                         dkName += o.get("DKMC");
                     } else {
@@ -69,19 +70,19 @@ public class QuzhouWordGenerationStrategy implements GenerationStrategy {
         model.put("SEQ", calendar.get(Calendar.YEAR) + "seq");
         // 用地情况
         Map<String, String> YDQK = (Map<String, String>) info.get("YDQK");
-        if (ObjectUtil.isNotNull(YDQK)) {
+        if (ObjectUtils.isNotEmpty(YDQK)) {
             model.put("YDWZ", YDQK.get("YDWZ"));// 用地位置
             model.put("ZYDMJ", YDQK.get("ZYDMJ"));// 总用地面积
         }
         // 用地强度与建筑控制指标
         Map<String, String> KZZB = (Map<String, String>) info.get("KZZB");
-        if (ObjectUtil.isNotNull(KZZB)) {
+        if (ObjectUtils.isNotEmpty(KZZB)) {
             model.put("ZRJL", KZZB.get("ZRJL"));// 地块整体容积率
             model.put("ZJZMD", KZZB.get("ZJZMD"));// 总建筑密度
         }
         // 规划及建筑设计要求
         Map<String, String> JZSJYQ = (Map<String, String>) info.get("JZSJYQ");
-        if (ObjectUtil.isNotNull(JZSJYQ)) {
+        if (ObjectUtils.isNotEmpty(JZSJYQ)) {
             model.put("GHDW", JZSJYQ.get("GHDW"));// 规划定位
             model.put("ZJZMJ", JZSJYQ.get("ZJZMJ"));// 总建筑面积
         }
@@ -98,7 +99,8 @@ public class QuzhouWordGenerationStrategy implements GenerationStrategy {
         if (imageList != null) {
             //
             String DKYDHXT = imageList.get("DKYDHXT");
-            if (StrUtil.isNotBlank(DKYDHXT)) {
+            // if (StringUtils.isNotBlank(DKYDHXT)) {
+            if (StringUtils.isNotBlank(DKYDHXT)) {
                 // Pair<String, String> pair = blockResourceStorage.downloadFile(DKYDHXT);
                 // try {
                 //     model.put("YDHX", Pictures.ofStream(new FileInputStream(pair.getValue())));
@@ -114,7 +116,7 @@ public class QuzhouWordGenerationStrategy implements GenerationStrategy {
             }
             //
             String XXGHT = imageList.get("XXGHT");
-            if (StrUtil.isNotBlank(XXGHT)) {
+            if (StringUtils.isNotBlank(XXGHT)) {
                 // Pair<String, String> pair = blockResourceStorage.downloadFile(XXGHT);
                 // try {
                 //     model.put("XXGHT", Pictures.ofStream(new FileInputStream(pair.getValue())));
@@ -131,7 +133,7 @@ public class QuzhouWordGenerationStrategy implements GenerationStrategy {
             }
             //
             String DKCBSJFA = imageList.get("DKCBSJFA");
-            if (StrUtil.isNotBlank(DKCBSJFA)) {
+            if (StringUtils.isNotBlank(DKCBSJFA)) {
                 // Pair<String, String> pair = blockResourceStorage.downloadFile(DKCBSJFA);
                 // try {
                 //     model.put("CBSJFA", Pictures.ofStream(new FileInputStream(pair.getValue())));
@@ -153,11 +155,11 @@ public class QuzhouWordGenerationStrategy implements GenerationStrategy {
     private List<Map<String, String>> handleTitle(Map<String, String> map) {
         List<Map<String, String>> result = new ArrayList<>();
         int i = 1;
-        if (ObjectUtil.isNotNull(map)) {
+        if (ObjectUtils.isNotEmpty(map)) {
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 Map<String, String> title = new HashMap<>();
-                if (StrUtil.isNotBlank(entry.getValue())) {
-                    if (StrUtil.isNotBlank(TitleEnum.getDescByAbbr(entry.getKey()))) {
+                if (StringUtils.isNotBlank(entry.getValue())) {
+                    if (StringUtils.isNotBlank(TitleEnum.getDescByAbbr(entry.getKey()))) {
                         title.put("title", i + "、" + TitleEnum.getDescByAbbr(entry.getKey()) + "：");
                     } else {
                         title.put("title", i + "、");
@@ -204,7 +206,7 @@ public class QuzhouWordGenerationStrategy implements GenerationStrategy {
 
         public static String getDescByAbbr(String abbr) {
             for (TitleEnum title : TitleEnum.values()) {
-                if (StrUtil.equals(title.getAbbr(), abbr)) {
+                if (StringUtils.equals(title.getAbbr(), abbr)) {
                     return title.getDesc();
                 }
             }
