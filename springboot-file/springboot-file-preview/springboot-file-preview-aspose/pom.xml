@@ -97,6 +97,19 @@
             <version>23.10.0</version>
         </dependency>
 
+<!--
+        <dependency>
+            <groupId>com.groupdocs</groupId>
+            <artifactId>groupdocs-viewer</artifactId>
+            <version>24.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.groupdocs</groupId>
+            <artifactId>groupdocs-conversion</artifactId>
+            <version>24.8</version>
+        </dependency>
+-->
+
         <!--动态字节技术-->
         <dependency>
             <groupId>org.javassist</groupId>
