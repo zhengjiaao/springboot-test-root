@@ -24,29 +24,33 @@ public class ChunkUploadController {
 
     /**
      * 上传文件的一个分片
-     * @param file 文件分片
+     *
+     * @param file        文件分片
      * @param chunkNumber 当前分片编号
      * @param totalChunks 总分片数
-     * @param identifier 文件唯一标识
-     * @param filename 文件名
-     * @throws IOException
+     * @param identifier  文件唯一标识
+     * @param filename    文件名
      */
     @ApiOperation(value = "上传文件的一个分片", notes = "上传文件的一个分片以便稍后合并")
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
-                                     @RequestParam("chunkNumber") Integer chunkNumber,
-                                     @RequestParam("totalChunks") Integer totalChunks,
-                                     @RequestParam("identifier") String identifier,
-                                     @RequestParam("filename") String filename) throws IOException {
-        chunkUploadService.upload(file, chunkNumber, totalChunks, identifier, filename);
+                                    @RequestParam("chunkNumber") Integer chunkNumber,
+                                    @RequestParam("totalChunks") Integer totalChunks,
+                                    @RequestParam("identifier") String identifier,
+                                    @RequestParam("filename") String filename) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        chunkUploadService.upload(identifier, file, chunkNumber, totalChunks, filename);
         return ResponseEntity.ok().build();
     }
 
     /**
      * 合并上传的文件分片
+     *
      * @param identifier 文件唯一标识
-     * @param filename 文件名
-     * @throws IOException
+     * @param filename   文件名
      */
     @ApiOperation(value = "合并上传的文件分片", notes = "将所有上传的文件分片合并成一个文件")
     @PostMapping("/merge")

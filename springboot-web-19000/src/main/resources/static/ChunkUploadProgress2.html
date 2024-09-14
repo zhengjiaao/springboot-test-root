@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Chunk Upload-带进度条</title>
+    <title>Chunk Upload-带进度条-更精准的进度条</title>
 </head>
 <body>
     <input type="file" id="file">
     <button onclick="upload()">Upload</button>
 
-    <!--带进度条：每分块上传进度、总体进度-->
+    <!-- 带进度条：每分块上传进度、总体进度 -->
     <p>块进度条：</p>
     <progress id="progressBar" value="0" max="100"></progress>
     <p>总体进度条：</p>
@@ -19,9 +19,7 @@
         // 假设存在一个配置对象，用于提高可配置性和可维护性
         const uploadConfig = {
             chunkUploadUrl: 'http://localhost:19000/chunk/upload', // 上传url
-            chunkMergedUrl: 'http://localhost:19000/chunk/merge', // 上传url
-            progressBarId: 'progressBar', // 块进度条
-            totalProgressBarId: 'totalProgressBar', // 总体进度条
+            chunkMergedUrl: 'http://localhost:19000/chunk/merge', // 合并url
             chunkSize: 1024 * 1024 * 3 // 分块大小，示例 chunkSize=3MB，根据实际情况调整
         };
 
@@ -35,6 +33,10 @@
             const totalChunks = Math.ceil(totalSize / chunkSize); // 总块数
             const identifier = file.name + '-' + totalSize + '-' + Date.now(); // 文件标识符
             const filename = file.name; // 文件名
+
+            // 初始化总体进度为0
+            document.getElementById('totalProgressBar').value = 0;
+
             for (let currentChunk = 1; currentChunk <= totalChunks; currentChunk++) { // 循环上传每一块
                 let start = (currentChunk - 1) * chunkSize;
                 let end = currentChunk === totalChunks ? file.size : currentChunk * chunkSize;
@@ -45,12 +47,13 @@
                 formData.append('totalChunks', totalChunks); // 添加总块数
                 formData.append('identifier', identifier); // 添加文件标识符
                 formData.append('filename', filename); // 添加文件名
+
                 try {
                     // 发送上传请求
                     const response = await axios.post(uploadConfig.chunkUploadUrl, formData, {
                         // 上传进度回调
                         onUploadProgress: function(progressEvent) {
-                            updateProgress(progressEvent, currentChunk, totalChunks, uploadConfig.progressBarId, uploadConfig.totalProgressBarId);
+                            updateProgress(progressEvent, currentChunk, totalChunks, 'progressBar', 'totalProgressBar');
                         }
                     });
 
@@ -62,6 +65,7 @@
                     throw new Error('Upload failed'); // 抛出异常
                 }
             }
+
             const formData = new FormData(); // 创建表单数据
             formData.append('identifier', identifier); // 添加文件标识符
             formData.append('filename', filename); // 添加文件名
@@ -78,18 +82,15 @@
         }
 
         // 更新进度条：在文件分块上传的过程中，可能会有一个进度条显示当前块的上传进度，另一个进度条则显示整体文件上传的进度。
-        // 即一个进度条显示当前文件块的上传进度 (progressBar)，而另一个进度条 (totalProgressBar) 显示整个文件上传的总体进度。
         function updateProgress(progressEvent, currentChunk, totalChunks, progressElementId, totalProgressElementId) {
-            // 优化进度条更新逻辑，减少直接在上传进度回调中的 DOM 操作
-
             // 计算并更新当前块的进度
-            var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             const progressElement = document.getElementById(progressElementId);
             progressElement.value = percentCompleted;
 
             // 计算并更新总体进度
-            var totalPercentCompleted = Math.round((currentChunk * 100) / totalChunks);
             const totalProgressElement = document.getElementById(totalProgressElementId);
+            const totalPercentCompleted = Math.round(((currentChunk * percentCompleted) / 100) * (100 / totalChunks));
             totalProgressElement.value = totalPercentCompleted;
         }
     </script>
