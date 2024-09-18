@@ -1,5 +1,6 @@
 package com.zja.service.parts;
 
+import com.zja.service.parts1.LargeFilePartsUploadImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +19,7 @@ import java.nio.file.Files;
 public class MyFileUploaderTest {
 
     @Autowired
-    MyFileUpload myFileUploader;
+    LargeFilePartsUploadImpl myFileUploader;
 
     @Test
     public void test() throws IOException {

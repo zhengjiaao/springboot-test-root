@@ -1,13 +1,12 @@
 server:
-  port: 8082
+  port: 8080
   servlet:
-    context-path: /springboot-test-file
+    context-path: /
 spring:
- servlet:
-   multipart:
-     enabled: true
-     max-file-size: 500MB # 上传单个最大文件
-     max-request-size: 1000MB  # 多文件上传最大
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
 
 source:
   fileStorageLocation: D://FileTest//文件存储位置

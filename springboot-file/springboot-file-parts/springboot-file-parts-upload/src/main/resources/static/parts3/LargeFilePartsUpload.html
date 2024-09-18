@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download File</title>
+    <!-- Import Vue@3 -->
+    <script src="https://unpkg.com/vue@3"></script>
+    <!-- Import Element Plus -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"/>
+    <script src="https://unpkg.com/element-plus"></script>
+    <!-- Import Axios -->
+    <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+</head>
+<body>
+<h1>支持大文件分片上传 + 暂停上传 + 继续上传 + 取消上传 + 分片上传进度 + 上传总进度</h1>
+<div id="app">
+    <el-button @click="downloadOrResume">Download File</el-button>
+    <el-button @click="pauseDownload">Pause Download</el-button>
+    <el-button @click="resumeDownload">Resume Download</el-button>
+    <el-button @click="cancelDownload">Cancel Download</el-button>
+
+    <el-progress v-if="isDownloading" :percentage="downloadProgress" :show-text="false"></el-progress>
+</div>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                isDownloading: false, // 是否正在下载
+                downloadProgress: 0, // 下载进度
+                fileUrl: '/large/file/parts/download',
+                fileName: '建筑方案比选.zip',
+                fileBlob: null, // Blob 对象
+                isCancelled: false, // 是否取消下载
+                isPaused: false, // 是否暂停下载
+                downloadPromise: null, // Promise 对象
+                abortController: null, // AbortController 对象
+                currentStart: 0, // 当前下载的起始位置
+                blobParts: [], // 存储下载的分片
+                fileSize: 0 // 文件总大小
+            };
+        },
+        methods: {
+            async downloadOrResume() {
+                console.log("downloadOrResume");
+                if (this.isPaused && this.fileSize > 0 && this.currentStart < this.fileSize) {
+                    console.log("Resuming download...");
+                } else {
+                    console.log("Starting download...");
+                    this.isDownloading = true;
+                    this.downloadProgress = 0;
+                    this.isCancelled = false;
+                    this.isPaused = false;
+                    this.currentStart = 0;
+                    this.blobParts = [];
+                }
+
+                try {
+                    this.abortController = new AbortController();
+                    const signal = this.abortController.signal;
+
+                    this.fileSize = await this.getFileSize(signal); // 获取文件大小
+                    await this.downloadChunks(signal); // 开始下载分片
+                    await this.combineAndDownload(); // 合并下载的分片
+
+                    console.log('File downloaded successfully');
+                    this.isDownloading = false; // 重置下载
+                    this.downloadProgress = 0; // 重置下载进度
+                } catch (error) {
+                    console.error('Error downloading file:', error);
+                    this.isDownloading = false;
+                    this.downloadProgress = 0;
+                }
+            },
+
+            async getFileSize(signal) {
+                const headers = {
+                    Range: `bytes=0-0`
+                };
+                try {
+                    const response = await axios.head(this.fileUrl, {
+                        headers: headers,
+                        params: {
+                            fileName: this.fileName
+                        },
+                        signal: signal
+                    });
+
+                    if (response.status === 200) {
+                        return parseInt(response.headers['content-range'].split('/')[1], 10);
+                    } else {
+                        throw new Error('Failed to get file size');
+                    }
+                } catch (error) {
+                    console.error('Error getting file size:', error);
+                    throw error;
+                }
+            },
+
+            async downloadChunks(signal) {
+                const chunkSize = 1024 * 1024; // 1MB chunks
+                let start = this.currentStart;
+                let end = start + chunkSize - 1;
+                let totalDownloaded = this.blobParts.reduce((acc, part) => acc + part.size, 0);
+
+                while (start < this.fileSize && !signal.aborted) {
+                    if (end > this.fileSize - 1) {
+                        end = this.fileSize - 1;
+                    }
+
+                    const headers = {
+                        Range: `bytes=${start}-${end}`
+                    };
+
+                    const response = await axios.get(this.fileUrl, {
+                        responseType: 'arraybuffer',
+                        headers: headers,
+                        params: {
+                            fileName: this.fileName
+                        },
+                        signal: signal
+                    });
+
+                    this.blobParts.push(new Blob([response.data], {type: 'application/octet-stream'}));
+                    totalDownloaded += response.data.byteLength;
+                    this.downloadProgress = Math.round((totalDownloaded / this.fileSize) * 100);
+                    start = end + 1;
+                    this.currentStart = start;
+                    end += chunkSize;
+                }
+            },
+
+            combineAndDownload() {
+                this.fileBlob = new Blob(this.blobParts, {type: 'application/octet-stream'});
+                const url = window.URL.createObjectURL(this.fileBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = this.fileName;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                console.log("Download completed");
+            },
+
+            pauseDownload() {
+                if (this.abortController) {
+                    this.abortController.abort();
+                    this.isPaused = true;
+                    console.log("Download paused");
+                }
+            },
+
+            resumeDownload() {
+                if (this.isPaused) {
+                    this.downloadOrResume();
+                } else {
+                    console.log("Download already in progress");
+                }
+            },
+
+            cancelDownload() {
+                if (this.abortController) {
+                    this.abortController.abort();
+                    this.isDownloading = false;
+                    this.downloadProgress = 0;
+                    this.blobParts = [];
+                    this.currentStart = 0;
+                    console.log("Download cancelled");
+                }
+            }
+        }
+    });
+
+    // 使用 Element Plus
+    app.use(ElementPlus);
+
+    // 挂载 Vue 实例
+    app.mount('#app');
+</script>
+</body>
+</html>

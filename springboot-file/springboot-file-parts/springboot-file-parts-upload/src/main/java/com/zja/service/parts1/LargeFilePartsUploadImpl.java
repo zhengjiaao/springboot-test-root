@@ -1,4 +1,4 @@
-package com.zja.service.parts;
+package com.zja.service.parts1;
 
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import java.nio.file.Paths;
  * @since: 2024/01/19 16:31
  */
 @Component
-public class MyFileUpload implements LargeFileUpload {
+public class LargeFilePartsUploadImpl implements LargeFilePartsUpload {
 
     @Override
     public void upload(InputStream inputStream, String fileName, long fileSize, long chunkSize,

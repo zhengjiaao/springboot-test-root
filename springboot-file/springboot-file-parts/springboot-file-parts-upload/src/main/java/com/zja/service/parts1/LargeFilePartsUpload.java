@@ -1,4 +1,4 @@
-package com.zja.service.parts;
+package com.zja.service.parts1;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.nio.file.*;
  * @author: zhengja
  * @since: 2024/01/19 16:28
  */
-public interface LargeFileUpload {
+public interface LargeFilePartsUpload {
 
     void upload(InputStream inputStream, String fileName, long fileSize, long chunkSize,
                 long totalChunks, long currentChunk, String uploadDir, String uploadId) throws IOException;

@@ -1,4 +1,4 @@
-package com.zja.controller.parts1;
+package com.zja.controller;
 
 import com.zja.util.FileUtil;
 import com.zja.util.ZipUtils;
@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -23,13 +25,15 @@ import java.util.Enumeration;
 @Api(tags = {"FileDownloadController"}, description = "普通文件下载")
 @RestController
 @RequestMapping(value = "rest/file")
-public class DownloadFileController extends BaseController {
+public class DownloadFileController {
 
     /****************************** 文件下载 *****************************/
 
     @ApiOperation(value = "文件下载/切片下载", httpMethod = "GET")
     @RequestMapping(value = "v1/downloadFile", method = RequestMethod.GET)
-    public void getFile(@ApiParam(value = "下载文件路径名称") @RequestParam String pathName) {
+    public void getFile(@ApiParam(value = "下载文件路径名称") @RequestParam String pathName,
+                        HttpServletRequest request,
+                        HttpServletResponse response) {
         long begin = System.currentTimeMillis();
         try {
             System.out.println("下载的文件地址：" + pathName);
@@ -44,11 +48,11 @@ public class DownloadFileController extends BaseController {
             // 断点分部下载起始点
             long startPos = 0;
             long endPos = -1;
-            Enumeration<String> names = this.request.getHeaderNames();
+            Enumeration<String> names = request.getHeaderNames();
             while (names.hasMoreElements()) {
                 String n = names.nextElement();
-                String rangeData = this.request.getHeader(n);
-                System.out.println(n + "---" + this.request.getHeader(n));
+                String rangeData = request.getHeader(n);
+                System.out.println(n + "---" + request.getHeader(n));
                 if ("range".equalsIgnoreCase(n)) {
                     if (rangeData != null && rangeData.indexOf("=") != -1) {
                         String[] arr = rangeData.substring(rangeData.indexOf("=") + 1).split("-");
@@ -68,11 +72,11 @@ public class DownloadFileController extends BaseController {
             }
 
             // 设置返回类型
-            this.response.setContentType("multipart/form-data");
+            response.setContentType("multipart/form-data");
             // 文件名转码一下，不然会出现中文乱码
-            this.response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("--chenparty下载站--" + file.getName(), "UTF-8"));
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("--chenparty下载站--" + file.getName(), "UTF-8"));
             // 设置返回的文件的大小
-            this.response.setContentLength((int) file.length());
+            response.setContentLength((int) file.length());
 
             byte[] b = new byte[10 * 1024 * 1024];
             int len = 0;
@@ -104,7 +108,8 @@ public class DownloadFileController extends BaseController {
 
     @ApiOperation(value = "下载本地文件或下载切片文件", notes = "适合下载小型文件 大概100M 以内，如果文件大于100M，建议分片下载", httpMethod = "GET")
     @RequestMapping(value = "v1/downloadLocalFile", method = RequestMethod.GET)
-    public void downloadLocalFile(@ApiParam(value = "文件绝对路径", required = true) @RequestParam("filePathName") String filePathName) throws Exception {
+    public void downloadLocalFile(@ApiParam(value = "文件绝对路径", required = true) @RequestParam("filePathName") String filePathName,
+                                  HttpServletResponse response) throws Exception {
 
         //将文件路径中的 \\或// 替换成 /
         filePathName = filePathName.replace("\\", "/").replace("//", "/");
@@ -113,39 +118,39 @@ public class DownloadFileController extends BaseController {
         String browser = "";
 
         // 清空response
-        this.response.reset();
+        response.reset();
         //告知客户端响应正文类型-以流的方式下载
-        this.response.setContentType("application/octet-stream");
+        response.setContentType("application/octet-stream");
         //自动判断下载文件类型
-        //this.response.setContentType("multipart/form-data");
+        //response.setContentType("multipart/form-data");
         // 设置类型强制下载不打开 使用图片下载
-        //this.response.setContentType("application/force-download");
+        //response.setContentType("application/force-download");
 
         //获得请求头中的User-Agent，根据不同浏览器解决文件名中文乱码
-        browser = this.response.getHeader("User-Agent");
+        browser = response.getHeader("User-Agent");
         if (-1 < browser.indexOf("MSIE 6.0") || -1 < browser.indexOf("MSIE 7.0")) {
             // IE6, IE7 浏览器
-            this.response.addHeader("content-disposition", "attachment;filename="
+            response.addHeader("content-disposition", "attachment;filename="
                     + new String(fileName.getBytes(), "ISO8859-1"));
         } else if (-1 < browser.indexOf("MSIE 8.0")) {
             // IE8
-            this.response.addHeader("content-disposition", "attachment;filename="
+            response.addHeader("content-disposition", "attachment;filename="
                     + URLEncoder.encode(fileName, "UTF-8"));
         } else if (-1 < browser.indexOf("MSIE 9.0")) {
             // IE9
-            this.response.addHeader("content-disposition", "attachment;filename="
+            response.addHeader("content-disposition", "attachment;filename="
                     + URLEncoder.encode(fileName, "UTF-8"));
         } else if (-1 < browser.indexOf("Chrome")) {
             // 谷歌
-            this.response.addHeader("content-disposition",
+            response.addHeader("content-disposition",
                     "attachment;filename*=UTF-8''" + URLEncoder.encode(fileName, "UTF-8"));
         } else if (-1 < browser.indexOf("Safari")) {
             // 苹果
-            this.response.addHeader("content-disposition", "attachment;filename="
+            response.addHeader("content-disposition", "attachment;filename="
                     + new String(fileName.getBytes(), "ISO8859-1"));
         } else {
             // 火狐或者其他的浏览器
-            this.response.addHeader("content-disposition",
+            response.addHeader("content-disposition",
                     "attachment;filename*=UTF-8''" + URLEncoder.encode(fileName, "UTF-8"));
         }
 
@@ -168,7 +173,7 @@ public class DownloadFileController extends BaseController {
                 response.getOutputStream().write(b, 0, len);
             }
             //前端可能获取不到长度
-            this.response.setContentLength((int) file.length());
+            response.setContentLength((int) file.length());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -181,15 +186,16 @@ public class DownloadFileController extends BaseController {
 
     @ApiOperation(value = "下载文件", notes = "下载文件")
     @RequestMapping(value = "download/byFileName", method = {RequestMethod.GET})
-    public void downloadFileByFileName(@PathVariable @ApiParam(value = "文件名称") String fileName) {
+    public void downloadFileByFileName(@PathVariable @ApiParam(value = "文件名称") String fileName,
+                                       HttpServletResponse response) {
 
         String filePathName ="D://FileTest//文件分片位置"+File.separator+fileName;
         if (!fileName.equals("") && fileName !=null) {
             try {
                 InputStream in = new ByteArrayInputStream(FileUtil.File2byte(filePathName));
-                OutputStream out = this.response.getOutputStream();
-                this.response.setContentType("application/force-download");
-                this.response.addHeader("Content-Disposition",
+                OutputStream out = response.getOutputStream();
+                response.setContentType("application/force-download");
+                response.addHeader("Content-Disposition",
                         "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
                 StreamUtils.copy(in, out);
                 in.close();
@@ -205,7 +211,8 @@ public class DownloadFileController extends BaseController {
 
     @ApiOperation(value = "下载本地文件2", notes = "适合下载小型文件 大概100M 以内，如果文件大于100M，建议分片下载", httpMethod = "GET")
     @RequestMapping(value = "v1/downloadLocalFile2", method = RequestMethod.GET)
-    public void downloadLocalFile2(@ApiParam(value = "文件绝对路径", required = true) @RequestParam("filePathName") String filePathName) throws Exception {
+    public void downloadLocalFile2(@ApiParam(value = "文件绝对路径", required = true) @RequestParam("filePathName") String filePathName,HttpServletResponse response
+    ) throws Exception {
 
         //将文件路径中的 \\或// 替换成 /
         filePathName = filePathName.replace("\\", "/").replace("//", "/");
@@ -221,46 +228,46 @@ public class DownloadFileController extends BaseController {
         OutputStream os = null;
         try {
             // 清空response
-            this.response.reset();
+            response.reset();
             //自动判断下载文件类型
-            //this.httpServletResponse.setContentType("multipart/form-data");
+            //httpServletResponse.setContentType("multipart/form-data");
             // 设置类型强制下载不打开 一般图片下载
-            //this.response.setContentType("application/force-download");
+            //response.setContentType("application/force-download");
             //告知客户端响应正文类型 -流方式下载
-            this.response.setContentType("application/octet-stream");
+            response.setContentType("application/octet-stream");
             //获得请求头中的User-Agent，根据不同浏览器解决文件名中文乱码
-            browser = this.response.getHeader("User-Agent");
+            browser = response.getHeader("User-Agent");
 
             if (-1 < browser.indexOf("MSIE 6.0") || -1 < browser.indexOf("MSIE 7.0")) {
                 // IE6, IE7 浏览器 content-disposition通知客户端已下载的方式接受数据
-                this.response.addHeader("content-disposition", "attachment;filename="
+                response.addHeader("content-disposition", "attachment;filename="
                         + new String(fileName.getBytes(), "ISO8859-1"));
             } else if (-1 < browser.indexOf("Chrome")) {
                 // 谷歌
-                this.response.addHeader("content-disposition",
+                response.addHeader("content-disposition",
                         "attachment;filename*=UTF-8''" + URLEncoder.encode(fileName, "UTF-8"));
             } else if (-1 < browser.indexOf("MSIE 8.0")) {
                 // IE8
-                this.response.addHeader("content-disposition", "attachment;filename="
+                response.addHeader("content-disposition", "attachment;filename="
                         + URLEncoder.encode(fileName, "UTF-8"));
             } else if (-1 < browser.indexOf("MSIE 9.0")) {
                 // IE9
-                this.response.addHeader("content-disposition", "attachment;filename="
+                response.addHeader("content-disposition", "attachment;filename="
                         + URLEncoder.encode(fileName, "UTF-8"));
             } else if (-1 < browser.indexOf("Safari")) {
                 // 苹果
-                this.response.addHeader("content-disposition", "attachment;filename="
+                response.addHeader("content-disposition", "attachment;filename="
                         + new String(fileName.getBytes(), "ISO8859-1"));
             } else {
                 // 火狐或者其他的浏览器
-                this.response.addHeader("content-disposition",
+                response.addHeader("content-disposition",
                         "attachment;filename*=UTF-8''" + URLEncoder.encode(fileName, "UTF-8"));
             }
             //获取文件的所有字节
             buffer = downloadFile(filePath);
             //前端能够成功获取长度
-            this.response.setContentLength(buffer.length);
-            os = this.response.getOutputStream();
+            response.setContentLength(buffer.length);
+            os = response.getOutputStream();
             os.write(buffer, 0, buffer.length);
             os.flush();
         } catch (UnsupportedEncodingException e) {
@@ -298,7 +305,8 @@ public class DownloadFileController extends BaseController {
 
     @ApiOperation(value = "http下载本地文件以流的方式", notes = "适合下载小型文件 大概100M 以内，如果文件大于100M，建议分片下载", httpMethod = "GET")
     @RequestMapping(value = "v1/downloadLocalFileByFlow", method = RequestMethod.GET)
-    public void downloadLocalFileByFlow(@ApiParam(value = "文件绝对路径", required = true) @RequestParam("filePathName") String filePathName) throws Exception {
+    public void downloadLocalFileByFlow(@ApiParam(value = "文件绝对路径", required = true) @RequestParam("filePathName") String filePathName,
+                                        HttpServletResponse response) throws Exception {
         try {
             // path是指欲下载的文件的路径。
             File file = new File(filePathName);
@@ -404,7 +412,8 @@ public class DownloadFileController extends BaseController {
     @ApiOperation(value = "下载文件或在线打开文件", notes = "适合下载小型文件 大概100M 以内，如果文件大于100M，建议分片下载", httpMethod = "GET")
     @RequestMapping(value = "v1/downloadOrOnlineOpen", method = RequestMethod.GET)
     public void downloadOrOnlineOpen(@ApiParam(value = "文件绝对路径", required = true) @RequestParam("filePathName") String filePathName,
-                                     @ApiParam(value = "是否在线打开true/false", required = true) @RequestParam("isOnLine") boolean isOnLine) throws Exception {
+                                     @ApiParam(value = "是否在线打开true/false", required = true) @RequestParam("isOnLine") boolean isOnLine,
+                                     HttpServletResponse response) throws Exception {
         File f = new File(filePathName);
         if (!f.exists()) {
             response.sendError(404, "File not found!");
@@ -434,7 +443,8 @@ public class DownloadFileController extends BaseController {
 
     @ApiOperation(value = "下载文件,有返回结果", notes = "适合下载小型文件 大概100M 以内，如果文件大于100M，建议分片下载", httpMethod = "GET")
     @RequestMapping(value = "v1/return/downloadfile", method = RequestMethod.GET)
-    public Object downloadFileByReturn(@ApiParam(value = "文件绝对路径", required = true) @RequestParam("filePathName") String filePathName) throws Exception {
+    public Object downloadFileByReturn(@ApiParam(value = "文件绝对路径", required = true) @RequestParam("filePathName") String filePathName,
+                                       HttpServletResponse response) throws Exception {
 
         //被下载的文件在服务器中的路径
         File file = new File(filePathName);
@@ -483,7 +493,8 @@ public class DownloadFileController extends BaseController {
     @ApiOperation(value = "文件压缩后下载", notes = "适合下载小型文件 大概100M 以内，如果文件大于100M，建议分片下载", httpMethod = "GET")
     @RequestMapping(value = "v1/downloadCompressedFile", method = RequestMethod.GET)
     public Object downloadCompressedFile(@ApiParam(value = "下载的文件绝对路径", required = true) @RequestParam("filePathName") String filePathName,
-                                         @ApiParam(value = "压缩文件绝对路径", required = true) @RequestParam("zipPath") String zipPath) throws Exception {
+                                         @ApiParam(value = "压缩文件绝对路径", required = true) @RequestParam("zipPath") String zipPath,
+                                         HttpServletResponse response) throws Exception {
         //提供下载文件前进行压缩，即服务端生成压缩文件
         File file = new File(zipPath);
         FileOutputStream fos = new FileOutputStream(file);

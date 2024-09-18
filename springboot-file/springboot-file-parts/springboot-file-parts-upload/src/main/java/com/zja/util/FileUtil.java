@@ -1,6 +1,5 @@
 package com.zja.util;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,20 +49,6 @@ public class FileUtil {
 
         NEED_DOWNLOAD_FILTER.add("zip");
         NEED_DOWNLOAD_FILTER.add("rar");
-
-    }
-
-
-    public static void main(String[] args) {
-        //目标位置  将该位置下的文件生成树的形状
-        String path = "D:\\FileTest\\文件合成位置";
-        //过滤掉path目录下的文件/文件夹等
-        List<String> ignore = new ArrayList<>(Arrays.asList("9839783-200201.prj", "107M视频.wmv"));
-        System.out.println("ignore-过滤掉: " + ignore);
-        Node tree = createTree(path, ignore);
-        String jsonString = JSON.toJSONString(tree);
-        //打印出json数据 可以使用-json在线格式化工具查看
-        System.out.println(jsonString);
 
     }
 

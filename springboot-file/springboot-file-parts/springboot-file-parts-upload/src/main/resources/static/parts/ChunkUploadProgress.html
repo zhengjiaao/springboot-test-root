@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chunk Upload-有进度条</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        #progress {
+            width: 300px;
+            height: 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+<input type="file" id="file">
+<button onclick="upload()">Upload</button>
+<div id="progress">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+<script>
+    // 配置对象，用于提高可配置性和可维护性
+    const uploadConfig = {
+        chunkUploadUrl: 'http://localhost:8080/chunk/upload',
+        chunkMergedUrl: 'http://localhost:8080/chunk/merge',
+        chunkSize: 1024 * 1024 * 3 // 分块大小，示例 chunkSize=3MB，根据实际情况调整
+    };
+
+    /**
+     * 上传文件
+     */
+    async function upload() {
+        const file = document.getElementById('file').files[0];
+        if (!file) {
+            alert('请选择文件');
+            return;
+        }
+
+        const chunkSize = uploadConfig.chunkSize;
+        const totalSize = file.size;
+        const totalChunks = Math.ceil(totalSize / chunkSize);
+        const identifier = `${file.name}-${totalSize}-${Date.now()}`;
+        const fileName = file.name;
+
+        try {
+            await uploadChunks(file, chunkSize, totalChunks, identifier, fileName);
+            await mergeChunks(identifier, fileName, totalChunks, totalSize);
+            alert('上传成功');
+        } catch (error) {
+            console.error('上传或合并失败:', error);
+            alert('上传或合并失败，请重试');
+        }
+    }
+
+    /**
+     * 上传文件块
+     * @param {File} file - 要上传的文件
+     * @param {number} chunkSize - 块大小
+     * @param {number} totalChunks - 总块数
+     * @param {string} identifier - 文件标识符
+     * @param {string} fileName - 文件名
+     */
+    async function uploadChunks(file, chunkSize, totalChunks, identifier, fileName) {
+        let progress = 0;
+        const progressBar = document.getElementById('progressBar');
+
+        for (let currentChunk = 1; currentChunk <= totalChunks; currentChunk++) {
+            let start = (currentChunk - 1) * chunkSize;
+            let end = currentChunk === totalChunks ? file.size : currentChunk * chunkSize;
+            const chunk = file.slice(start, end);
+
+            const formData = new FormData();
+            formData.append('file', chunk);
+            formData.append('chunkNumber', currentChunk);
+            formData.append('totalChunks', totalChunks);
+            formData.append('identifier', identifier);
+            formData.append('fileName', fileName);
+
+            try {
+                const response = await axios.post(uploadConfig.chunkUploadUrl, formData);
+                if (response.status !== 200) {
+                    throw new Error('Upload failed');
+                }
+                progress += (100 / totalChunks);
+                progressBar.style.width = `${progress}%`;
+            } catch (error) {
+                console.error('上传块失败:', error);
+                throw new Error('Upload failed');
+            }
+        }
+    }
+
+    /**
+     * 合并文件块
+     * @param {string} identifier - 文件标识符
+     * @param {string} fileName - 文件名
+     * @param {number} totalChunks - 总块数
+     * @param {number} totalSize - 文件总大小
+     */
+    async function mergeChunks(identifier, fileName, totalChunks, totalSize) {
+        const formData = new FormData();
+        formData.append('identifier', identifier);
+        formData.append('fileName', fileName);
+        formData.append('totalChunks', totalChunks);
+        formData.append('totalSize', totalSize);
+
+        try {
+            const response = await axios.post(uploadConfig.chunkMergedUrl, formData);
+            if (response.status !== 200) {
+                throw new Error('Merge failed');
+            }
+        } catch (error) {
+            console.error('合并块失败:', error);
+            throw new Error('Merge failed');
+        }
+    }
+</script>
+</body>
+</html>

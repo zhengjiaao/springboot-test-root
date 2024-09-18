@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chunk Upload - 带进度条</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <input type="file" id="file">
+    <button onclick="upload()">Upload</button>
+
+    <!-- 带进度条：每分块上传进度、总体进度 -->
+    <p>块进度条：</p>
+    <progress id="progressBar" value="0" max="100"></progress>
+    <p>总体进度条：</p>
+    <progress id="totalProgressBar" value="0" max="100"></progress>
+
+    <script>
+        // 配置对象，用于提高可配置性和可维护性
+        const uploadConfig = {
+            chunkUploadUrl: 'http://localhost:8080/chunk/upload', // 上传URL
+            chunkMergedUrl: 'http://localhost:8080/chunk/merge', // 合并URL
+            progressBarId: 'progressBar', // 块进度条ID
+            totalProgressBarId: 'totalProgressBar', // 总体进度条ID
+            chunkSize: 1024 * 1024 * 3 // 分块大小，示例 chunkSize=20MB
+        };
+
+        /**
+         * 上传文件
+         */
+        async function upload() {
+            const file = document.getElementById('file').files[0]; // 获取文件
+            if (!file) {
+                alert('请选择文件');
+                return;
+            }
+
+            const chunkSize = uploadConfig.chunkSize; // 20MB
+            const totalSize = file.size; // 文件总大小
+            const totalChunks = Math.ceil(totalSize / chunkSize); // 总块数
+            const identifier = `${file.name}-${totalSize}-${Date.now()}`; // 文件标识符
+            const fileName = file.name; // 文件名
+
+            try {
+                await uploadChunks(file, chunkSize, totalChunks, identifier, fileName);
+                await mergeChunks(identifier, fileName, totalChunks, totalSize);
+                alert('上传成功');
+            } catch (error) {
+                console.error('上传或合并失败:', error);
+                alert('上传或合并失败，请重试');
+            }
+        }
+
+        /**
+         * 上传文件块
+         * @param {File} file - 要上传的文件
+         * @param {number} chunkSize - 块大小
+         * @param {number} totalChunks - 总块数
+         * @param {string} identifier - 文件标识符
+         * @param {string} fileName - 文件名
+         */
+        async function uploadChunks(file, chunkSize, totalChunks, identifier, fileName) {
+            const progressBar = document.getElementById(uploadConfig.progressBarId);
+            const totalProgressBar = document.getElementById(uploadConfig.totalProgressBarId);
+
+            for (let currentChunk = 1; currentChunk <= totalChunks; currentChunk++) {
+                let start = (currentChunk - 1) * chunkSize;
+                let end = currentChunk === totalChunks ? file.size : currentChunk * chunkSize;
+                const chunk = file.slice(start, end); // 获取当前块
+
+                const formData = new FormData();
+                formData.append('file', chunk); // 添加文件块
+                formData.append('chunkNumber', currentChunk); // 添加当前块数
+                formData.append('totalChunks', totalChunks); // 添加总块数
+                formData.append('identifier', identifier); // 添加文件标识符
+                formData.append('fileName', fileName); // 添加文件名
+
+                try {
+                    const response = await axios.post(uploadConfig.chunkUploadUrl, formData, {
+                        onUploadProgress: function(progressEvent) {
+                            updateProgress(progressEvent, currentChunk, totalChunks, progressBar, totalProgressBar);
+                        }
+                    });
+
+                    if (response.status !== 200) {
+                        throw new Error('Upload failed');
+                    }
+                } catch (error) {
+                    console.error('上传块失败:', error);
+                    throw new Error('Upload failed');
+                }
+            }
+        }
+
+        /**
+         * 合并文件块
+         * @param {string} identifier - 文件标识符
+         * @param {string} fileName - 文件名
+         * @param {number} totalChunks - 总块数
+         * @param {number} totalSize - 文件总大小
+         */
+        async function mergeChunks(identifier, fileName, totalChunks, totalSize) {
+            const formData = new FormData();
+            formData.append('identifier', identifier);
+            formData.append('fileName', fileName);
+            formData.append('totalChunks', totalChunks);
+            formData.append('totalSize', totalSize);
+
+            try {
+                const response = await axios.post(uploadConfig.chunkMergedUrl, formData);
+                if (response.status !== 200) {
+                    throw new Error('Merge failed');
+                }
+            } catch (error) {
+                console.error('合并块失败:', error);
+                throw new Error('Merge failed');
+            }
+        }
+
+        /**
+         * 更新进度条
+         * @param {ProgressEvent} progressEvent - 进度事件
+         * @param {number} currentChunk - 当前块数
+         * @param {number} totalChunks - 总块数
+         * @param {HTMLProgressElement} progressBar - 块进度条
+         * @param {HTMLProgressElement} totalProgressBar - 总体进度条
+         */
+        function updateProgress(progressEvent, currentChunk, totalChunks, progressBar, totalProgressBar) {
+            // 计算并更新当前块的进度
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            progressBar.value = percentCompleted;
+
+            // 计算并更新总体进度
+            const totalPercentCompleted = Math.round((currentChunk * 100) / totalChunks);
+            totalProgressBar.value = totalPercentCompleted;
+        }
+    </script>
+</body>
+</html>

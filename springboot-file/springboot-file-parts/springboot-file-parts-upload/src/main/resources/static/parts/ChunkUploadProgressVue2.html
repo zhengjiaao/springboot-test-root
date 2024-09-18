@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chunk Upload - 支持前端自定义唯一标识</title>
+    <!-- Import Vue@3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <!-- Import Element Plus -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"/>
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <input type="file" ref="fileInput" @change="handleFileChange">
+    <el-button @click="upload">Upload</el-button>
+    <el-progress :percentage="progress" :show-text="false"></el-progress>
+</div>
+
+<script>
+    // 配置对象，用于提高可配置性和可维护性
+    const uploadConfig = {
+        chunkUploadUrl: 'http://localhost:8080/chunk/upload',   // 上传URL
+        chunkMergedUrl: 'http://localhost:8080/chunk/merge',    // 合并URL
+        chunkSize: 1024 * 1024 * 3  // 分块大小，推荐 chunkSize=3MB，推荐范围【1MB~10MB】，最大支持10MB
+    };
+
+    const app = Vue.createApp({
+        data() {
+            return {
+                file: null,         // 文件
+                progress: 0,        // 上传进度
+                totalChunks: 0,     // 总块数
+                currentChunk: 0,    // 当前块
+                identifier: '',     // 文件唯一标识
+                fileName: ''        // 文件名
+            };
+        },
+        methods: {
+            handleFileChange(event) {
+                this.file = event.target.files[0];
+                if (!this.file) {
+                    this.$message.error('请选择文件');
+                    return;
+                }
+                this.fileName = this.file.name;
+                this.generateIdentifier(this.fileName);
+            },
+            async generateIdentifier() {
+                const uuid = await this.generateUUID();
+                const shortUuid = uuid.substring(uuid.length - 12);
+                const timestamp = Date.now();
+                const identifier = shortUuid + "_" + timestamp;
+                this.identifier = identifier;
+                console.log('生成唯一标识成功:', identifier);
+            },
+            async upload() {
+                if (!this.file) {
+                    this.$message.error('请选择文件');
+                    return;
+                }
+
+                const chunkSize = uploadConfig.chunkSize;
+                const totalSize = this.file.size;
+                this.totalChunks = Math.ceil(totalSize / chunkSize);
+
+                try {
+                    await this.uploadChunks(this.file, chunkSize, this.totalChunks, this.identifier, this.fileName);
+                    await this.mergeChunks(this.identifier, this.fileName, this.totalChunks, totalSize);
+                    this.$message.success('上传成功');
+                } catch (error) {
+                    console.error('上传或合并失败:', error);
+                    this.$message.error('上传或合并失败，请重试');
+                }
+            },
+            async uploadChunks(file, chunkSize, totalChunks, identifier, fileName) {
+                this.currentChunk = 0;
+                this.progress = 0;
+
+                for (let currentChunk = 1; currentChunk <= totalChunks; currentChunk++) {
+                    let start = (currentChunk - 1) * chunkSize;
+                    let end = currentChunk === totalChunks ? file.size : currentChunk * chunkSize;
+                    const chunk = file.slice(start, end);
+
+                    const formData = new FormData();
+                    formData.append('file', chunk);
+                    formData.append('chunkNumber', currentChunk);
+                    formData.append('totalChunks', totalChunks);
+                    formData.append('identifier', identifier);
+                    formData.append('fileName', fileName);
+
+                    try {
+                        const response = await axios.post(uploadConfig.chunkUploadUrl, formData);
+                        if (response.status !== 200) {
+                            throw new Error('Upload failed');
+                        }
+                        this.currentChunk++;
+                        this.progress = Math.round((this.currentChunk / totalChunks) * 100);
+                    } catch (error) {
+                        console.error('上传块失败:', error);
+                        throw new Error('Upload failed');
+                    }
+                }
+            },
+            async mergeChunks(identifier, fileName, totalChunks, totalSize) {
+                const formData = new FormData();
+                formData.append('identifier', identifier);
+                formData.append('fileName', fileName);
+                formData.append('totalChunks', totalChunks);
+                formData.append('totalSize', totalSize);
+
+                try {
+                    const response = await axios.post(uploadConfig.chunkMergedUrl, formData);
+                    if (response.status !== 200) {
+                        throw new Error('Merge failed');
+                    }
+                } catch (error) {
+                    console.error('合并块失败:', error);
+                    throw new Error('Merge failed');
+                }
+            },
+            async generateUUID() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    const r = (Math.random() * 16) | 0,
+                        v = c === 'x' ? r : (r & 0x3) | 0x8;
+                    return v.toString(16);
+                });
+            }
+        }
+    });
+
+    app.use(ElementPlus);
+    app.mount('#app');
+</script>
+</body>
+</html>

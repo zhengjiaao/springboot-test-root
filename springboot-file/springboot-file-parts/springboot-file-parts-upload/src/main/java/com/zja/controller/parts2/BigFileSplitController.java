@@ -1,4 +1,4 @@
-package com.zja.controller.parts1;
+package com.zja.controller.parts2;
 
 import com.zja.model.BigFileSplit;
 import com.zja.util.BigFileSplitUtil;
@@ -28,7 +28,7 @@ import java.net.URLEncoder;
 @Api(tags = {"BigFileSplitController"}, description = "本地大文件分片、下载、合并")
 @RestController
 @RequestMapping(value = "file/split")
-public class BigFileSplitController extends BaseController {
+public class BigFileSplitController {
 
     //文件分片位置：分片后的文件路径  D:/FileTest/文件分片位置
     @Value("${source.fileFragmentationLocation}")
@@ -56,35 +56,36 @@ public class BigFileSplitController extends BaseController {
 
     @ApiOperation(value = "下载文件分片版本1-支持前端异步多线程下载", notes = "建议使用，前端可以获取到分片的文件长度,做下载进度条用", httpMethod = "GET")
     @RequestMapping(value = "v1/downloadLocalFile", method = RequestMethod.GET)
-    public void downloadLocalFile(@ApiParam(value = "分片列表中的相对路径", required = true) @RequestParam("splitFileName") String splitFileName) throws IOException {
+    public void downloadLocalFile(@ApiParam(value = "分片列表中的相对路径", required = true) @RequestParam("splitFileName") String splitFileName,
+                                  HttpServletResponse response) throws IOException {
 
         String fileName = splitFileName.substring(splitFileName.lastIndexOf("/") + 1);
-        log.info(fileName +"_ 线程: _"+ Thread.currentThread().getName());
+        log.info(fileName + "_ 线程: _" + Thread.currentThread().getName());
 
         String filePath = fileFragmentationLocation + File.separator + splitFileName;
         File file = new File(filePath);
         if (file.exists()) {
             InputStream in = null;
-            ServletOutputStream out =null;
+            ServletOutputStream out = null;
             try {
                 byte[] buffer = FileUtil.File2byte(filePath);
                 in = new ByteArrayInputStream(buffer);
-                this.response.reset(); //必要的清除 response 缓存
-                this.response.setContentType("application/force-download");
-                this.response.addHeader("Content-Disposition",
+                response.reset(); //必要的清除 response 缓存
+                response.setContentType("application/force-download");
+                response.addHeader("Content-Disposition",
                         "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
                 //前端可以获取到分片的文件长度,做下载进度条用
-                this.response.setContentLength(buffer.length);
-                out = this.response.getOutputStream();
+                response.setContentLength(buffer.length);
+                out = response.getOutputStream();
                 StreamUtils.copy(in, out);
-                log.info("分片下载-成功: ",fileName);
+                log.info("分片下载-成功: ", fileName);
             } catch (Exception e) {
                 log.error("分片下载-失败: " + fileName + " 错误", e);
-            }finally {
+            } finally {
                 if (in != null) {
                     in.close();
                 }
-                if (out !=null){
+                if (out != null) {
                     out.flush();
                     out.close();
                 }
@@ -101,7 +102,7 @@ public class BigFileSplitController extends BaseController {
 
         //文件名称
         String fileName = splitFileName.substring(splitFileName.lastIndexOf("/") + 1);
-        log.info(fileName +"_ 线程: _"+ Thread.currentThread().getName());
+        log.info(fileName + "_ 线程: _" + Thread.currentThread().getName());
         //分片文件绝对路径
         String filePath = fileFragmentationLocation + File.separator + splitFileName;
         File file = new File(filePath);
@@ -118,12 +119,12 @@ public class BigFileSplitController extends BaseController {
                 outputStream.write(buffer);
                 outputStream.flush();
                 outputStream.close();
-                log.info("分片下载-成功: ",fileName);
+                log.info("分片下载-成功: ", fileName);
             } catch (Exception e) {
                 log.error("分片下载-失败: " + fileName + " 错误", e);
             }
         } else {
-            throw new RuntimeException("沒有找到指定分片文件: "+fileName);
+            throw new RuntimeException("沒有找到指定分片文件: " + fileName);
         }
     }
 }

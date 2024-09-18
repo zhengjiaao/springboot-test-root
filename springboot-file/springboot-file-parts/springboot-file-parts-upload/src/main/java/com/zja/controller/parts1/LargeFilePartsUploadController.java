@@ -1,6 +1,6 @@
-package com.zja.controller.parts;
+package com.zja.controller.parts1;
 
-import com.zja.service.parts.MyFileUpload;
+import com.zja.service.parts1.LargeFilePartsUploadImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -24,7 +24,7 @@ import java.io.InputStream;
 public class LargeFilePartsUploadController {
 
     @Autowired
-    MyFileUpload myFileUploader;
+    LargeFilePartsUploadImpl myFileUploader;
 
     public static final String uploadDir = "D:\\temp\\parts";
 
