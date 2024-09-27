@@ -1,5 +1,6 @@
 package com.zja.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zja.dto.ShopDTO;
 import com.zja.dto.UserDTO;
 import com.mongodb.client.result.DeleteResult;
@@ -161,5 +162,71 @@ public class MongoTemplateController {
         return map;
     }
 
+
+    // ----------- 非结构数据存储 例如：Map、 JSONObject 类型的数据---------------
+
+    @ApiOperation(value = "保存非结构化的 JSON 数据", notes = "保存到mongo", httpMethod = "POST")
+    @PostMapping(value = "v1/json/save")
+    public Map<String, Object> saveJson(@ApiParam(value = "具体参考：Model") @RequestBody JSONObject jsonData) {
+        // 将 JSONObject 对象保存到 MongoDB 集合中
+        JSONObject jsonObject = mongoTemplate.save(jsonData, "nonStructuredJson");
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", jsonObject.get("_id"));
+        response.put("集合nonStructuredJson", mongoTemplate.getCollection("nonStructuredJson"));
+        response.put("List<JSONObject>", mongoTemplate.findAll(JSONObject.class, "nonStructuredJson"));
+
+        return response;
+    }
+
+    @ApiOperation(value = "根据_id查询非结构化的 JSON 数据", notes = "查询非结构化的 JSON 数据", httpMethod = "GET")
+    @GetMapping(value = "v1/json/getById")
+    public JSONObject getJsonById(@ApiParam(value = "文档_id") @RequestParam String id) {
+        // 根据条件查询
+        Query query = new Query(Criteria.where("_id").is(id));
+
+        List<JSONObject> jsonDocuments = mongoTemplate.find(query, JSONObject.class, "nonStructuredJson");
+
+        if (!jsonDocuments.isEmpty()) {
+            return jsonDocuments.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @ApiOperation(value = "查询所有非结构化的 JSON 数据", notes = "查询所有非结构化的 JSON 数据", httpMethod = "GET")
+    @GetMapping(value = "v1/json/getAll")
+    public List<JSONObject> getAllJson() {
+        return mongoTemplate.findAll(JSONObject.class, "nonStructuredJson");
+    }
+
+    @ApiOperation(value = "删除单条非结构化的 JSON 数据", notes = "删除单条文档数据", httpMethod = "DELETE")
+    @DeleteMapping(value = "v1/json/deleteById")
+    public Map<String, Object> deleteJsonById(@ApiParam(value = "文档_id") @RequestParam String id) {
+        // 根据条件查询
+        Query query = new Query(Criteria.where("_id").is(id));
+
+        DeleteResult deleteResult = mongoTemplate.remove(query, "nonStructuredJson");
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("wasAcknowledged", deleteResult.wasAcknowledged());
+        response.put("getDeletedCount", deleteResult.getDeletedCount());
+
+        return response;
+    }
+
+    @ApiOperation(value = "删除所有非结构化的 JSON 数据", notes = "删除所有文档数据", httpMethod = "DELETE")
+    @DeleteMapping(value = "v1/json/deleteAll")
+    public Map<String, Object> deleteAllJson() {
+        Map<String, Object> response = new HashMap<>();
+        List<JSONObject> allJson = getAllJson();
+        int count = 0;
+        for (JSONObject jsonDoc : allJson) {
+            Object o = deleteJsonById(jsonDoc.getString("_id"));
+            response.put("删除的第几条数据-" + count, o);
+            count++;
+        }
+        return response;
+    }
 }
 
