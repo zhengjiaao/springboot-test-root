@@ -29,6 +29,7 @@
         <module>springboot-file</module>
         <module>springboot-gis</module>
         <module>springboot-git</module>
+        <module>springboot-hanbian</module>
         <module>springboot-java</module>
         <module>springboot-log</module>
         <module>springboot-login</module>
