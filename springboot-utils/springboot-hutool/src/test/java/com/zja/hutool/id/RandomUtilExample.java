@@ -6,7 +6,7 @@
  * @Date: 2023-08-09 17:47
  * @Since:
  */
-package com.zja.util;
+package com.zja.hutool.id;
 
 import cn.hutool.core.util.RandomUtil;
 

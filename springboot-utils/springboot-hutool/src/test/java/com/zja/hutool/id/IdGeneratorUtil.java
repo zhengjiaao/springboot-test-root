@@ -6,7 +6,7 @@
  * @Date: 2023-08-09 16:20
  * @Since:
  */
-package com.zja.util;
+package com.zja.hutool.id;
 
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
