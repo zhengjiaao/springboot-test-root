@@ -1,23 +1,25 @@
-/**
- * @Company: 上海数慧系统技术有限公司
- * @Department: 数据中心
- * @Author: 郑家骜[ào]
- * @Email: zhengja@dist.com.cn
- * @Date: 2022-11-18 16:09
- * @Since:
- */
 package com.zja;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-@EnableJpaAuditing
+/**
+ * 启动类
+ * @swagger: <a href="http://localhost:8080/swagger-ui/index.html">...</a>
+ * @author: zhengja
+ * @since: 2024/09/24 17:36
+ */
 @SpringBootApplication
-public class DbPostgresqlApplication {
+public class DbPostgresqlApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(DbPostgresqlApplication.class, args);
     }
 
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(DbPostgresqlApplication.class);
+    }
 }

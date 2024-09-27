@@ -10,6 +10,7 @@ create table if not exists t_project
     internal           bool NULL,
     last_modified_date timestamp NULL,
     "name"             varchar(100) NOT NULL,
+    "type"             varchar(100) NULL,
     remarks            varchar(255) NULL,
     sort               int8         NOT NULL UNIQUE,
     "state"              int4 NULL

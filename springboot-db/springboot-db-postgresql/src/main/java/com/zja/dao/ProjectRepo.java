@@ -1,5 +1,4 @@
 package com.zja.dao;
-
 import com.zja.entity.Project;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.CrudRepository;
@@ -9,9 +8,8 @@ import java.util.Optional;
 
 /**
  * Project SQL
- *
  * @author: zhengja
- * @since: 2024/07/01 15:31
+ * @since: 2024/09/27 9:28
  */
 @Repository
 public interface ProjectRepo extends JpaRepository<Project, String>, CrudRepository<Project, String>,

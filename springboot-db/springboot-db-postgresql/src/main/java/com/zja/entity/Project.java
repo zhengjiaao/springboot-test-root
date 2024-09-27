@@ -2,12 +2,14 @@ package com.zja.entity;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.*;
-import org.springframework.context.annotation.Lazy;
+import org.hibernate.engine.spi.PersistentAttributeInterceptable;
+import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -21,7 +23,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "t_project")
 @EntityListeners(value = AuditingEntityListener.class)
-public class Project {
+public class Project implements Serializable, PersistentAttributeInterceptable {
 
     @Id
     private String id = String.valueOf(System.currentTimeMillis());
@@ -35,6 +37,11 @@ public class Project {
     /**
      * 项目周期
      */
+    private String type;
+
+    /**
+     * 项目周期
+     */
     private int cycle;
 
     /**
@@ -42,13 +49,15 @@ public class Project {
      */
     @Lob
     // @Lazy
-    @Basic(fetch = FetchType.LAZY) // FetchType.LAZY 似乎未生效
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "config_json")
     private JSONObject configJson;  // jpa默认生成字段类型为错误的oid，正确应是text
+    // private String configJson;  // 注意：JSONObject 与 String 不能互换
 
     /**
      * 文本 or json字符串存储字段
      */
+    // @Lazy
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "config_text")
@@ -90,4 +99,50 @@ public class Project {
     @Column(name = "last_modified_date")
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
+
+
+    // 以下是实现懒加载
+
+    @Transient
+    private PersistentAttributeInterceptor interceptor;
+
+    @Override
+    public PersistentAttributeInterceptor $$_hibernate_getInterceptor() {
+        return interceptor;
+    }
+
+    @Override
+    public void $$_hibernate_setInterceptor(PersistentAttributeInterceptor interceptor) {
+        this.interceptor = interceptor;
+    }
+
+    public JSONObject getConfigJson() {
+        if (this.configJson != null) {
+            return this.configJson;
+        }
+
+        return (JSONObject) interceptor.readObject(this, "configJson", this.configJson);
+    }
+
+    public String getConfigText() {
+        // 避免二次读取数据库
+        if (this.configText != null) {
+            return this.configText;
+        }
+        return (String) interceptor.readObject(this, "configText", this.configText);
+    }
+
+    public void setConfigJson(JSONObject configJson) {
+        if (configJson != null) {
+            interceptor.writeObject(this, "configJson", this.configJson, configJson);
+        }
+        this.configJson = configJson;
+    }
+
+    public void setConfigText(String configText) {
+        if (configText != null) {
+            interceptor.writeObject(this, "configText", this.configText, configText);
+        }
+        this.configText = configText;
+    }
 }
