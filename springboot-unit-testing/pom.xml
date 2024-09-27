@@ -17,6 +17,7 @@
 
     <modules>
         <module>boot-test</module>
+        <module>boot-test-jar</module>
         <module>boot-test-junit5</module>
     </modules>
 
