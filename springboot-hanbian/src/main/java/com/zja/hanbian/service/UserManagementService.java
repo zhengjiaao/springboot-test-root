@@ -21,7 +21,7 @@ public class UserManagementService {
         usernamePasswordMap.put(username, password);
         System.out.println("User added successfully: " + username);
 
-        return "成功";
+        return "success";
     }
 
     public String updateUser(String username, String newPassword) {
@@ -32,14 +32,14 @@ public class UserManagementService {
         usernamePasswordMap.put(username, newPassword);
         System.out.println("User updated successfully: " + username);
 
-        return "成功";
+        return "success";
     }
 
     public String deleteUser(String username) {
         usernamePasswordMap.remove(username);
         System.out.println("User deleted successfully: " + username);
 
-        return "成功";
+        return "success";
     }
 
     public boolean validateUser(String username, String password) {
