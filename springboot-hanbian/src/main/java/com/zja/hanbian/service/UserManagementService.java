@@ -17,24 +17,30 @@ public class UserManagementService {
         usernamePasswordMap = new HashMap<>();
     }
 
-    public void addUser(String username, String password) {
+    public String addUser(String username, String password) {
         usernamePasswordMap.put(username, password);
         System.out.println("User added successfully: " + username);
+
+        return "成功";
     }
 
-    public void updateUser(String username, String newPassword) {
+    public String updateUser(String username, String newPassword) {
         if (usernamePasswordMap.containsKey(username)) {
             System.err.println("User does not exist: " + username);
-            return;
+            return "失败";
         }
 
         usernamePasswordMap.put(username, newPassword);
         System.out.println("User updated successfully: " + username);
+
+        return "成功";
     }
 
-    public void deleteUser(String username) {
+    public String deleteUser(String username) {
         usernamePasswordMap.remove(username);
         System.out.println("User deleted successfully: " + username);
+
+        return "成功";
     }
 
     public boolean validateUser(String username, String password) {

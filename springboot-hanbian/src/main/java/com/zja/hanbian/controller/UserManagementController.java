@@ -2,6 +2,7 @@ package com.zja.hanbian.controller;
 
 import com.zja.hanbian.service.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -17,22 +18,30 @@ public class UserManagementController {
     UserManagementService userManagementService;
 
     @PostMapping(value = "/addUser")
-    public void addUser() {
-        userManagementService.addUser("李四", "123456");
+    public ResponseEntity<?> addUser() {
+        String result = userManagementService.addUser("李四", "123456");
+
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping(value = "/updateUser")
-    public void updateUser() {
-        userManagementService.updateUser("李四", "654321");
+    public ResponseEntity<?> updateUser() {
+        String result = userManagementService.updateUser("李四", "654321");
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping(value = "/validateUser")
-    public void validateUser() {
-        userManagementService.validateUser("李四", "123456");
+    public ResponseEntity<?> validateUser() {
+        boolean result = userManagementService.validateUser("李四", "123456");
+
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping(value = "/deleteUser")
-    public void deleteUser() {
-        userManagementService.deleteUser("李四");
+    public ResponseEntity<?> deleteUser() {
+        String result = userManagementService.deleteUser("李四");
+
+        return ResponseEntity.ok(result);
     }
 }

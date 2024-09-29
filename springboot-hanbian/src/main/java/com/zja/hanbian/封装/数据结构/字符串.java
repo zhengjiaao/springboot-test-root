@@ -13,16 +13,40 @@ public class 字符串 {
         this.value = s;
     }
 
+    public String 值() {
+        return this.value;
+    }
+
+    public static boolean 相等(Object o1, Object o2) {
+        return o1.equals(o2);
+    }
+
+    public static 字符串 属于(String s) {
+        return new 字符串(s);
+    }
+
+    public int 长度() {
+        return this.value.length();
+    }
+
+    public 字符串 拼接(Object o) {
+        return new 字符串(this.value + o);
+    }
+
+    public boolean 包含(Object o) {
+        return this.value.contains(o.toString());
+    }
+
     // 重写 toString 方法
     @Override
     public String toString() {
-        return value;
+        return this.value;
     }
 
     // 重写 hashCode 方法
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return this.value.hashCode();
     }
 
     // 重写 equals 方法
@@ -35,11 +59,7 @@ public class 字符串 {
             return false;
         }
         字符串 other = (字符串) obj;
-        return value.equals(other.value);
-    }
-
-    public static 字符串 值(String s) {
-        return new 字符串(s);
+        return this.value.equals(other.value);
     }
 
     public static void main(String[] args) {

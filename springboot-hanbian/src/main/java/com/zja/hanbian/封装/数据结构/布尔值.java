@@ -23,11 +23,11 @@ public class 布尔值 {
         this.value = value;
     }
 
-    public boolean getValue() {
+    public boolean 值() {
         return value;
     }
 
-    public void setValue(boolean value) {
-        this.value = value;
+    public 布尔值 逻辑与(布尔值 other) {
+        return new 布尔值(this.value && other.value);
     }
 }
