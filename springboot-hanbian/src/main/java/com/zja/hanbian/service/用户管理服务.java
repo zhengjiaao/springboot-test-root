@@ -1,8 +1,8 @@
 package com.zja.hanbian.service;
 
+import com.zja.hanbian.封装.工具.异常;
 import com.zja.hanbian.封装.工具.控制台;
 import com.zja.hanbian.封装.工具.比较;
-import com.zja.hanbian.封装.异常.运行时异常;
 import com.zja.hanbian.封装.数据结构.*;
 import com.zja.hanbian.封装.注解.服务;
 import com.zja.hanbian.封装.工具.条件真假;
@@ -33,7 +33,7 @@ public class 用户管理服务 {
     public 字符串 更新用户(字符串 用户名, 字符串 新密码) {
         布尔值 条件 = 布尔值.属于(用户名密码映射.包含密钥(用户名));
         条件真假.操作 假操作 = () -> {
-            throw new 运行时异常("用户不存在：" + 用户名);
+            异常.抛出运行时异常("用户不存在：" + 用户名);
         };
 
         条件真假.执行条件假操作(条件, 假操作);
