@@ -6,23 +6,23 @@ package com.zja.hanbian.封装.数据结构;
  */
 public class 字符串 {
 
-    private String data;
+    private String value;
 
     // 构造函数：初始化字符串
     public 字符串(String s) {
-        this.data = s;
+        this.value = s;
     }
 
     // 重写 toString 方法
     @Override
     public String toString() {
-        return data;
+        return value;
     }
 
     // 重写 hashCode 方法
     @Override
     public int hashCode() {
-        return data.hashCode();
+        return value.hashCode();
     }
 
     // 重写 equals 方法
@@ -35,7 +35,7 @@ public class 字符串 {
             return false;
         }
         字符串 other = (字符串) obj;
-        return data.equals(other.data);
+        return value.equals(other.value);
     }
 
     public static 字符串 值(String s) {

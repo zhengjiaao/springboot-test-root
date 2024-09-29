@@ -2,10 +2,7 @@ package com.zja.hanbian.service;
 
 import com.zja.hanbian.封装.工具.控制台;
 import com.zja.hanbian.封装.工具.比较;
-import com.zja.hanbian.封装.数据结构.哈希字典;
-import com.zja.hanbian.封装.数据结构.字典;
-import com.zja.hanbian.封装.数据结构.字符串;
-import com.zja.hanbian.封装.数据结构.布尔值;
+import com.zja.hanbian.封装.数据结构.*;
 import com.zja.hanbian.封装.注解.服务;
 
 import java.lang.String;
@@ -18,14 +15,14 @@ import java.lang.String;
  */
 @服务
 public class 用户管理服务 {
-    private 字典<字符串, Object> 用户名密码映射;
+    private 字典<字符串, 任何对象> 用户名密码映射;
 
     public 用户管理服务() {
         用户名密码映射 = new 哈希字典<>();
     }
 
     public void 添加用户(字符串 用户名, 字符串 密码) {
-        用户名密码映射.添加(用户名, 密码);
+        用户名密码映射.添加(用户名, 任何对象.属于(密码));
         控制台.输出("用户添加成功：" + 用户名);
     }
 
