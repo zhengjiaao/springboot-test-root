@@ -12,9 +12,9 @@ import java.lang.annotation.*;
  */
 @CrossOrigin
 @RestController
-@RequestMapping
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface 控制器请求映射 {
+public @interface 请求控制器 {
+
 }

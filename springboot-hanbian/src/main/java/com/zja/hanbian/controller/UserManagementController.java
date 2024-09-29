@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.*;
  * @Author: zhengja
  * @Date: 2024-09-20 17:39
  */
+@CrossOrigin
 @RestController
-@RequestMapping
+@RequestMapping(value = "/user")
 public class UserManagementController {
 
     @Autowired

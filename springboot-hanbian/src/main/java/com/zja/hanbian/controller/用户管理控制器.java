@@ -9,7 +9,9 @@ import com.zja.hanbian.封装.注解.*;
  * @Author: zhengja
  * @Date: 2024-09-19 17:30
  */
-@控制器请求映射
+@请求跨域
+@请求控制器
+@请求映射(路径 = "/用户")
 public class 用户管理控制器 {
 
     @自动装配
