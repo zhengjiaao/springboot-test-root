@@ -25,9 +25,8 @@ public class UserManagementService {
     }
 
     public String updateUser(String username, String newPassword) {
-        if (usernamePasswordMap.containsKey(username)) {
-            System.err.println("User does not exist: " + username);
-            return "失败";
+        if (!usernamePasswordMap.containsKey(username)) {
+            throw new RuntimeException("User does not exist: " + username);
         }
 
         usernamePasswordMap.put(username, newPassword);

@@ -15,10 +15,6 @@ public class 布尔值 {
         return new 布尔值(value.equals("真") ? true : false);
     }
 
-    public 布尔值() {
-        this.value = false;
-    }
-
     public 布尔值(boolean value) {
         this.value = value;
     }
@@ -30,4 +26,11 @@ public class 布尔值 {
     public 布尔值 逻辑与(布尔值 other) {
         return new 布尔值(this.value && other.value);
     }
+
+    // 重写 toString 方法
+    @Override
+    public String toString() {
+        return Boolean.toString(this.value);
+    }
+
 }
