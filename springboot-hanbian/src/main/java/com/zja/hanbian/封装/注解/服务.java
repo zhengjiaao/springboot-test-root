@@ -1,4 +1,4 @@
-package com.zja.hanbian.注解;
+package com.zja.hanbian.封装.注解;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;

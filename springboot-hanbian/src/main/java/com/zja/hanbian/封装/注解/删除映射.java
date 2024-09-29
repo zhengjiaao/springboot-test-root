@@ -1,4 +1,4 @@
-package com.zja.hanbian.注解;
+package com.zja.hanbian.封装.注解;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,15 +8,15 @@ import java.lang.annotation.*;
 
 /**
  * @Author: zhengja
- * @Date: 2024-09-19 17:42
+ * @Date: 2024-09-19 17:43
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @RequestMapping(
-        method = {RequestMethod.GET}
+        method = {RequestMethod.DELETE}
 )
-public @interface 获取映射 {
+public @interface 删除映射 {
     @AliasFor(
             annotation = RequestMapping.class
     )

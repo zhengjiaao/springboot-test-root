@@ -1,6 +1,5 @@
 package com.zja.hanbian.service;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -47,5 +46,7 @@ public class UserManagementService {
         service.validateUser("JaneSmith", "wrongpassword");
 
         service.deleteUser("JohnDoe");
+
+        service.validateUser("JohnDoe", "password123");
     }
 }
