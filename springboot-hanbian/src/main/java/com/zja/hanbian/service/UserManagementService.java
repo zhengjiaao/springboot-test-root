@@ -22,6 +22,16 @@ public class UserManagementService {
         System.out.println("User added successfully: " + username);
     }
 
+    public void updateUser(String username, String newPassword) {
+        if (usernamePasswordMap.containsKey(username)) {
+            System.err.println("User does not exist: " + username);
+            return;
+        }
+
+        usernamePasswordMap.put(username, newPassword);
+        System.out.println("User updated successfully: " + username);
+    }
+
     public void deleteUser(String username) {
         usernamePasswordMap.remove(username);
         System.out.println("User deleted successfully: " + username);

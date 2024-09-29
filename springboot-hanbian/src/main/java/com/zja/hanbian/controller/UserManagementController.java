@@ -20,6 +20,11 @@ public class UserManagementController {
         userManagementService.addUser("李四", "123456");
     }
 
+    @PutMapping(value = "/updateUser")
+    public void updateUser() {
+        userManagementService.updateUser("李四", "654321");
+    }
+
     @GetMapping(value = "/validateUser")
     public void validateUser() {
         userManagementService.validateUser("李四", "123456");

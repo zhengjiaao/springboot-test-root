@@ -8,15 +8,15 @@ import java.lang.annotation.*;
 
 /**
  * @Author: zhengja
- * @Date: 2024-09-19 17:42
+ * @Date: 2024-09-29 13:48
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @RequestMapping(
-        method = {RequestMethod.POST}
+        method = {RequestMethod.PUT}
 )
-public @interface 存储映射 {
+public @interface 修改映射 {
     @AliasFor(
             annotation = RequestMapping.class
     )
