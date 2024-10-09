@@ -2,7 +2,7 @@
 
 liteflow:
   #规则文件路径
-  rule-source: config/flow.el.xml
+  rule-source: liteflow/*.el.xml
   #-----------------以下非必须-----------------
   #liteflow是否开启，默认为true
   enable: true
@@ -20,14 +20,22 @@ liteflow:
   request-id-generator-class: com.yomahub.liteflow.flow.id.DefaultRequestIdGenerator
   #并行节点的线程池Builder，LiteFlow提供了默认的Builder
   thread-executor-class: com.yomahub.liteflow.thread.LiteFlowDefaultWhenExecutorBuilder
-  #异步线程最长的等待时间秒(只用于when)，默认值为15
-  when-max-wait-seconds: 15
+  #异步线程最长的等待时间(只用于when)，默认值为15000
+  when-max-wait-time: 15000
+  #异步线程最长的等待时间(只用于when)，默认值为MILLISECONDS，毫秒
+  when-max-wait-time-unit: MILLISECONDS
   #when节点全局异步线程池最大线程数，默认为16
   when-max-workers: 16
+  #并行循环子项线程池最大线程数，默认为16
+  parallel-max-workers: 16
+  #并行循环子项线程池等待队列数，默认为512
+  parallel-queue-limit: 512
+  #并行循环子项的线程池Builder，LiteFlow提供了默认的Builder
+  parallel-loop-executor-class: com.yomahub.liteflow.thread.LiteFlowDefaultParallelLoopExecutorBuilder
   #when节点全局异步线程池等待队列数，默认为512
   when-queue-limit: 512
-  #是否在启动的时候就解析规则，默认为true
-  parse-on-start: true
+  #设置解析模式，一共有三种模式，PARSE_ALL_ON_START | PARSE_ALL_ON_FIRST_EXEC | PARSE_ONE_ON_FIRST_EXEC
+  parse-mode: PARSE_ALL_ON_START
   #全局重试次数，默认为0
   retry-count: 0
   #是否支持不同类型的加载方式混用，默认为false
@@ -36,6 +44,10 @@ liteflow:
   node-executor-class: com.yomahub.liteflow.flow.executor.DefaultNodeExecutor
   #是否打印执行中过程中的日志，默认为true
   print-execution-log: true
+  #是否开启本地文件监听，默认为false
+  enable-monitor-file: false
+  #是否开启快速解析模式，默认为false
+  fast-load: false
   #简易监控配置选项
   monitor:
     #监控是否开启，默认不开启
