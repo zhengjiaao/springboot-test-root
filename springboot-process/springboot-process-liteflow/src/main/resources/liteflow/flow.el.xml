@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow>
+    <!--串行编排-->
+    <chain name="chain1">
+        THEN(a, b, c);
+
+        <!--组件名包装：a本身和node("a")是等价的-->
+        <!--THEN(node("a"), b, c);-->
+    </chain>
+    <!--并行编排-->
+    <chain name="chain2">
+        WHEN(a, b, c);
+    </chain>
+    <!--选择编排，支持id、tag用法-->
+    <chain name="chain3">
+        <!--SWITCH(e).to(b, c, d);-->
+        SWITCH(e).to(b.tag("bt"), c.tag("ct"), d.tag("dt"));
+        <!--SWITCH(e).TO(a, c).DEFAULT(d);-->
+    </chain>
+    <!--条件编排-->
+    <chain name="chain4">
+        <!--其中x为条件节点，为真的情况下，执行链路就为x->a->b，为假链路就为x->b。-->
+        <!--IF三元表达式-->
+        THEN(IF(x, a), b);
+        <!--THEN(IF(x, a, b), c);-->
+
+        <!--ELSE表达式-->
+        <!--IF(x, a).ELSE(b);-->
+        <!--IF(x, a, b);-->
+    </chain>
+
+    <!--循环编排-->
+    <chain name="chain5">
+        <!--FOR循环 把a->b这个链路固定循环了5次-->
+        <!--FOR(5).DO(THEN(a, b));-->
+        FOR(f).DO(THEN(a, b));
+
+        <!--ITERATOR迭代循环-->
+        <!--ITERATOR(g).DO(THEN(a, b));-->
+
+        <!--WHILE循环-->
+        <!--WHILE(w).DO(THEN(a, b));-->
+
+        <!--BREAK 退出循环-->
+        <!--FOR(f).DO(THEN(a, b)).BREAK(x);-->
+        <!--WHILE(w).DO(THEN(a, b)).BREAK(x);-->
+    </chain>
+
+    <!--捕获异常表达式-->
+    <chain name="chain6">
+        <!--如果a组件出现异常并抛出，则不会执行b组件，会直接执行c组件-->
+        CATCH(THEN(a,b)).DO(c);
+        <!--THEN(CATCH(THEN(a,b)), c);-->
+    </chain>
+
+    <!--与或非表达式-->
+    <chain name="chain7">
+        IF(AND(x,y), a, b);
+        <!--IF(OR(x,y), a, b);-->
+        <!--IF(NOT(x), a, b);-->
+    </chain>
+
+    <!--定义子流程，拆分复杂写法-->
+    <chain name="chain8">
+        THEN(a, b, WHEN(chain1, d, chain2), SWITCH(e).to(a, c, chain2.tag("bt")));
+    </chain>
+
+    <!--使用子变量，其实使用子流程都是多此一举-->
+    <chain name="chain9">
+        t1 = THEN(a, b);
+        w1 = WHEN(c, d);
+
+        THEN(t1, w1);
+
+        <!--t1 = THEN(a, b);
+        w1 = WHEN(chain1, d, chain2).tag("bt");
+        w2 = WHEN(chain1, d, chain2);
+
+        THEN(t1, w2, SWITCH(e).to(a, c, w1));-->
+    </chain>
+
+    <!--类声明式组件-串行编排-->
+    <chain name="chain10">
+        THEN(A, B, WHEN(C, D));
+    </chain>
+
+    <!--类声明式组件-选择编排，支持id、tag用法-->
+    <chain name="chain11">
+        <!--SWITCH(E).to(B, C, D);-->
+        SWITCH(E).to(B.tag("BT"), C.tag("CT"), D.tag("DT"));
+        <!--SWITCH(E).TO(A, C).DEFAULT(D);-->
+    </chain>
+
+    <!--方法级别声明式组件-串行编排-->
+    <chain name="chain12">
+        THEN(AA, BB, WHEN(CC, DD));
+    </chain>
+
+    <!--方法级别声明式组件-选择编排，支持id、tag用法-->
+    <chain name="chain13">
+        <!--SWITCH(EE).to(BB, CC, DD);-->
+        SWITCH(EE).to(BB.tag("BT"), CC.tag("CT"), DD.tag("DT"));
+        <!--SWITCH(EE).TO(AA, CC).DEFAULT(DD);-->
+    </chain>
+
+</flow>
