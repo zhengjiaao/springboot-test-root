@@ -1,7 +1,5 @@
 package com.zja.java.lambda;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -12,7 +10,7 @@ import java.util.stream.IntStream;
  * @author: zhengja
  * @since: 2024/03/27 13:57
  */
-public class LambdaListPersonExample {
+public class ListPersonExample {
 
     // 条件筛选
     @Test

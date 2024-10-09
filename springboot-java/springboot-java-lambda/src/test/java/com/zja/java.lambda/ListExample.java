@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @author: zhengja
  * @since: 2024/03/27 13:31
  */
-public class LambdaListExample {
+public class ListExample {
 
     // 集合元素的转换
     @Test
