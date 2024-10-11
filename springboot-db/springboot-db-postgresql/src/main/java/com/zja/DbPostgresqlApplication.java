@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * 启动类
@@ -11,6 +12,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author: zhengja
  * @since: 2024/09/24 17:36
  */
+@EnableJpaAuditing
 @SpringBootApplication
 public class DbPostgresqlApplication extends SpringBootServletInitializer {
 
