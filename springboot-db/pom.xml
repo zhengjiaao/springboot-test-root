@@ -16,6 +16,7 @@
 	</properties>
 
 	<modules>
+		<module>springboot-db-dm</module>
 		<module>springboot-db-pool</module>
 		<module>springboot-db-elasticsearch</module>
 		<module>springboot-db-flywaydb</module>
