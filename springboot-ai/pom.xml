@@ -16,6 +16,7 @@
 	</properties>
 
 	<modules>
+		<module>springboot-ai-alibaba</module>
 		<module>springboot-ai-asr</module>
 		<module>springboot-ai-chatgpt</module>
 		<module>springboot-ai-langchain4j</module>
