@@ -16,6 +16,8 @@
     </properties>
 
     <modules>
+        <module>springboot-file-pdf-itext5</module>
+        <module>springboot-file-pdf-itext8</module>
         <module>springboot-file-pdf-pdfbox</module>
     </modules>
 
