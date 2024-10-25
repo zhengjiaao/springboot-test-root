@@ -1,0 +1,171 @@
+{
+  "status": "success",
+  "code": 1000,
+  "data": {
+    "results": [
+      {
+        "schemeId": "370113211000282155",
+        "analysisResult": {
+          "geoPositionAnalysisResult": {
+            "positionAnalysisResult": {
+              "rule": "坐落位置分析",
+              "administrativeRegions": [
+                {
+                  "city": "济南市",
+                  "county": "长清区",
+                  "town": "崮云湖街道",
+                  "village": "大刘庄村"
+                }
+              ],
+              "area": null
+            },
+            "czkfbjAnalysisResult": {
+              "rule": "城镇开发边界分析",
+              "sumArea": {
+                "value": 0,
+                "unit": "平方米"
+              },
+              "statisticResults": []
+            }
+          },
+          "landClassAnalysisResult": {
+            "tdlyxzdlAnalysisResult": {
+              "rule": "历年土地利用现状地类分析",
+              "sumArea": {
+                "value": 1932.228826165414,
+                "unit": "平方米"
+              },
+              "statisticResults": [],
+              "threeCategoriesResult": [],
+              "secondaryCategoriesResult": []
+            },
+            "czcAnalysisResult": {
+              "rule": "城镇村等用地套合分析",
+              "sumArea": {
+                "value": 0.0004918045516592853,
+                "unit": "平方米"
+              },
+              "statisticResults": []
+            }
+          },
+          "planningAnalysisResult": {
+            "tdghdlAnalysisResult": {
+              "rule": "土地规划地类分析",
+              "sumArea": {
+                "value": 1932.2288262066588,
+                "unit": "平方米"
+              },
+              "statisticResults": []
+            },
+            "jsydgzAnalysisResult": {
+              "rule": "建设用地管制区分析",
+              "sumArea": {
+                "value": 0,
+                "unit": "平方米"
+              },
+              "statisticResults": []
+            },
+            "csghAnalysisResult": null
+          },
+          "geologicalAnalysisResult": {
+            "ckqAnalysisResult": {
+              "rule": "采矿权分析",
+              "sumArea": {
+                "value": 0,
+                "unit": "平方米"
+              },
+              "statisticResults": []
+            },
+            "cmtxdAnalysisResult": null,
+            "dzzhyhAnalysisResult": {
+              "rule": "地质灾害隐患分析",
+              "sumArea": {
+                "value": 0,
+                "unit": "平方米"
+              },
+              "statisticResults": []
+            }
+          },
+          "terrainAnalysisResult": null,
+          "managerInformationAnalysisResult": {
+            "jsydspAnalysisResult": {
+              "sjjsydAnalysisResult": {
+                "rule": "省级建设用地审批信息分析",
+                "sumArea": {
+                  "value": 0,
+                  "unit": "平方米"
+                },
+                "statisticResults": []
+              },
+              "sjrmzfshAnalysisResult": {
+                "rule": "省级人民政府审核的城市用地实施方案信息分析",
+                "sumArea": {
+                  "value": 0,
+                  "unit": "平方米"
+                },
+                "statisticResults": []
+              },
+              "sjrmzfpzAnalysisResult": {
+                "rule": "省级人民政府批准的建设用地项目信息分析",
+                "sumArea": {
+                  "value": 0,
+                  "unit": "平方米"
+                },
+                "statisticResults": []
+              },
+              "gwypzAnalysisResult": {
+                "rule": "国务院批准的建设用地项目信息分析",
+                "sumArea": {
+                  "value": 219.86602409261832,
+                  "unit": "平方米"
+                },
+                "statisticResults": []
+              },
+              "ytgzspAnalysisResult": {
+                "rule": "用途管制审批项目范围分析",
+                "sumArea": {
+                  "value": 0,
+                  "unit": "平方米"
+                },
+                "statisticResults": []
+              },
+              "sqwtydspAnalysisResult": {
+                "rule": "授权和委托用地审批信息分析",
+                "sumArea": {
+                  "value": 0,
+                  "unit": "平方米"
+                },
+                "statisticResults": []
+              }
+            },
+            "cxjsydAnalysisResult": {
+              "rule": "城乡建设用地数据分析",
+              "sumArea": {
+                "value": 0,
+                "unit": "平方米"
+              },
+              "statisticResults": []
+            },
+            "tdgyAnalysisResult": {
+              "rule": "土地供应数据分析",
+              "sumArea": {
+                "value": 220.5451344644738,
+                "unit": "平方米"
+              },
+              "statisticResults": []
+            },
+            "slglAnalysisResult": {
+              "rule": "森林资源管理“一张图”成果数据分析",
+              "sumArea": {
+                "value": 0,
+                "unit": "平方米"
+              },
+              "statisticResults": []
+            }
+          }
+        }
+      }
+    ]
+  },
+  "message": "请求成功"
+}
