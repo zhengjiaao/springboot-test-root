@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>springboot-apache</module>
+		<module>springboot-custom</module>
 		<module>springboot-guava</module>
 		<module>springboot-hutool</module>
 		<module>springboot-utils-id</module>
