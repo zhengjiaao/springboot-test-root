@@ -19,6 +19,7 @@
         <module>springboot-file-excel-easyexcel</module>
 <!--        <module>springboot-file-excel-easypoi</module>-->
         <module>springboot-file-excel-jxls</module>
+        <module>springboot-file-excel-poi</module>
     </modules>
 
 </project>
