@@ -2,25 +2,23 @@ package com.zja.jar;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
  * @Author: zhengja
- * @Date: 2024-09-20 14:36
+ * @Date: 2024-10-29 16:34
  */
-// @SpringBootApplication
+// @SpringBootApplication // 多个冲突
 @SpringBootTest
-public class UserServiceTest {
+public class OrderServiceTest {
 
     @Autowired
-    UserService userService;
+    OrderService orderService;
 
     @Test
-    public void testGetUserName(){
-        String userName = userService.getUserName();
-        System.out.println(userName);
+    public void test(){
+        System.out.println(orderService.getOrder());
     }
 
 }
