@@ -42,6 +42,7 @@
         <module>springboot-process</module>
         <module>springboot-qrcode</module>
         <module>springboot-remote</module>
+        <module>springboot-retry</module>
         <module>springboot-sensitive-word</module>
         <module>springboot-task</module>
         <module>springboot-thread</module>
