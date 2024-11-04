@@ -1,0 +1,13 @@
+## Block's value
+let c = {
+  let a = 1;
+  let b = 2;
+
+  if a > b {
+    return a;
+  } else {
+    return b;
+  }
+};
+
+p("c is :" + type(c) +", " + c);

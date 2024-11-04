@@ -1,0 +1,8 @@
+## Block's value
+let c = {
+  let a = 1;
+  let b = 2;
+  a + b
+};
+
+p("c is :" + type(c) +", " + c);

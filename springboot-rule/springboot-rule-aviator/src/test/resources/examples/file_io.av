@@ -1,0 +1,15 @@
+## examples/file_io.av
+
+let io = require('io');
+
+## 创建文件
+let file = io.file("target/aviator_test.txt");
+
+## 写入文本
+## Write a string into file by spit
+io.spit(file, "Hello world\r\nAviator is great!");
+
+## 读取文本
+## Read fully from file by slurp
+let content = io.slurp(file);
+println("Content in file: "+ content);

@@ -1,0 +1,7 @@
+## examples/statement_value.av
+
+let a = if (true) {
+ 	1
+};
+
+p("a is :" + type(a) +", " + a);
