@@ -16,6 +16,7 @@
     </properties>
 
     <modules>
+        <module>springboot-file-cad</module>
         <module>springboot-file-compress</module>
         <module>springboot-file-csv</module>
         <module>springboot-file-excel</module>
