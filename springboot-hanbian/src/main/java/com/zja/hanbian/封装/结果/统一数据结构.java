@@ -106,6 +106,10 @@ public class 统一数据结构<T> extends HttpEntity<T> {
         return ok().body(body);
     }
 
+    public static <T> 统一数据结构<T> 数据(@Nullable T body) {
+        return ok().body(body);
+    }
+
     public static <T> 统一数据结构<T> ok(@Nullable T body) {
         return ok().body(body);
     }

@@ -621,6 +621,11 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return containsKey(键);
     }
 
+    @Override
+    public boolean 含密钥(Object 键) {
+        return containsKey(键);
+    }
+
     /**
      * Associates the specified value with the specified key in this map.
      * If the map previously contained a mapping for the key, the old

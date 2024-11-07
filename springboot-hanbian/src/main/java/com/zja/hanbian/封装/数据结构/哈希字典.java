@@ -14,6 +14,11 @@ public class 哈希字典<K, V> extends HashMap<K, V> implements 字典<K, V> {
     }
 
     @Override
+    public boolean 含密钥(Object 键) {
+        return super.containsKey(键);
+    }
+
+    @Override
     public V 获取(Object 键) {
         return super.get(键);
     }

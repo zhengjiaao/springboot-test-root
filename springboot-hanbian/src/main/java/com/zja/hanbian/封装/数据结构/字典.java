@@ -50,6 +50,9 @@ public interface 字典<K, V> {
 
     boolean 包含密钥(Object 键);
 
+    boolean 含密钥(Object 键);
+
+
     /**
      * Returns <tt>true</tt> if this map maps one or more keys to the
      * specified value.  More formally, returns <tt>true</tt> if and only if

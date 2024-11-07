@@ -1,13 +1,11 @@
-package com.zja.hanbian.service;
+package hanbian;
 
 import com.zja.hanbian.封装.工具.异常;
 import com.zja.hanbian.封装.工具.控制台;
+import com.zja.hanbian.封装.工具.条件真假;
 import com.zja.hanbian.封装.工具.比较;
 import com.zja.hanbian.封装.数据结构.*;
 import com.zja.hanbian.封装.注解.服务;
-import com.zja.hanbian.封装.工具.条件真假;
-
-import java.lang.String;
 
 /**
  * 汉编
@@ -16,10 +14,10 @@ import java.lang.String;
  * @时间: 2024-09-19 17:27
  */
 @服务
-public class 用户管理服务 {
+公共 class 用户管理服务2 {
     private 字典<字符串, 任何对象> 用户名密码映射;
 
-    public 用户管理服务() {
+    public 用户管理服务2() {
         用户名密码映射 = new 哈希字典<>();
     }
 
@@ -59,19 +57,6 @@ public class 用户管理服务 {
         条件真假.操作 假操作 = () -> 控制台.输出("用户验证失败：" + 用户名);
 
         return 条件真假.执行条件操作(条件, 真操作, 假操作);
-    }
-
-    public static void main(String[] args) {
-        用户管理服务 服务 = new 用户管理服务();
-        服务.添加用户(字符串.属于("张三"), 字符串.属于("123456"));
-        服务.添加用户(字符串.属于("李四"), 字符串.属于("abcdef"));
-
-        服务.验证用户(字符串.属于("张三"), 字符串.属于("123456"));
-        服务.验证用户(字符串.属于("李四"), 字符串.属于("wrongpassword"));
-
-        服务.删除用户(字符串.属于("张三"));
-
-        服务.验证用户(字符串.属于("张三"), 字符串.属于("123456"));
     }
 }
 
