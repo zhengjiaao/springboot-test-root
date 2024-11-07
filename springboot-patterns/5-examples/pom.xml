@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>springboot-test-root</artifactId>
+        <artifactId>springboot-patterns</artifactId>
         <groupId>com.zja</groupId>
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>springboot-patterns</artifactId>
+    <artifactId>5-examples</artifactId>
     <packaging>pom</packaging>
 
     <properties>
@@ -16,10 +16,7 @@
     </properties>
 
     <modules>
-        <module>1-creational-patterns</module>
-        <module>2-structural-patterns</module>
-        <module>3-behaviour-patterns</module>
-        <module>5-examples</module>
+        <module>springboot-report</module>
     </modules>
 
 </project>
