@@ -2,6 +2,7 @@ package com.zja.mvc.web.controller;
 
 import com.zja.mvc.web.model.*;
 import com.zja.mvc.web.service.UserService;
+import com.zja.mvc.web.util.ResourcesFileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class UserController {
     @GetMapping("/query/{id}")
     @ApiOperation("查询单个用户管理详情")
     public UserDTO queryById(@NotBlank @PathVariable("id") String id) {
+        // return ResourcesFileUtil.readJSONObjectFromFile("/mock/User.json", UserDTO.class);
         return service.findById(id);
     }
 
