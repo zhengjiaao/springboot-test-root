@@ -8,6 +8,10 @@ import java.util.HashMap;
  */
 public class 哈希字典<K, V> extends HashMap<K, V> implements 字典<K, V> {
 
+    public static <K, V> 字典<K, V> 新建() {
+        return new 哈希字典<>();
+    }
+
     @Override
     public boolean 包含密钥(Object 键) {
         return super.containsKey(键);

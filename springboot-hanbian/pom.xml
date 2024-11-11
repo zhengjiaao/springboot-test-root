@@ -10,7 +10,7 @@
 
     <groupId>com.zja</groupId>
     <artifactId>springboot-hanbian</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -46,18 +46,61 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>compile-pre-compile-task</id>
+                        <!--在编译前执行-->
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>com/zja/hanbian/封装/编译/汉编转换.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <id>execute-main-class</id>
+                        <!--在编译前执行-->
+                        <phase>generate-resources</phase>
+                        <!--在编译后执行-->
+                        <!-- <phase>compile</phase>-->
+                        <!--在打包后执行-->
                         <!-- <phase>package</phase>-->
                         <goals>
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.zja.hanbian.封装.编译.汉编转换工具</mainClass>
+                            <mainClass>com.zja.hanbian.封装.编译.汉编转换</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>execute-main-class-clean</id>
+                        <!--在打包后执行-->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.zja.hanbian.封装.编译.汉编清理</mainClass>
                         </configuration>
                     </execution>
                 </executions>
