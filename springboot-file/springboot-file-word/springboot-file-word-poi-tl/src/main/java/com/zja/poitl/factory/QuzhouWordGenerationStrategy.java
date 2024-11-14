@@ -5,7 +5,7 @@ import com.deepoove.poi.data.PictureType;
 import com.deepoove.poi.data.Pictures;
 import com.zja.poitl.entity.PlanCondition;
 import com.zja.poitl.entity.PlanConditionData;
-import com.zja.poitl.util.PoiTLUtil;
+import com.zja.poitl.util.WordPoiTLUtil;
 import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +29,7 @@ public class QuzhouWordGenerationStrategy implements GenerationStrategy {
     public String generate(String wordPath, String data, String template) throws IOException {
         PlanCondition planCondition = JSON.parseObject(data, PlanCondition.class);
         Map<String, Object> model = generateModel(planCondition);
-        PoiTLUtil.generateWord(wordPath, model, template);
+        WordPoiTLUtil.generateWord(wordPath, model, template);
         return "衢州 Generated Word Document";
     }
 
