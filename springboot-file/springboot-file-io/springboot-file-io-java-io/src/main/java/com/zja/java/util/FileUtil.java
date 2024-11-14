@@ -5,10 +5,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 /**
  * 文件工具类
+ *
  * @Author: zhengja
  * @Date: 2024-09-02 15:20
  */
@@ -19,6 +21,7 @@ public class FileUtil {
 
     /**
      * 获取文件名(包含扩展名)
+     *
      * @param filePath 文件路径，如：/Users/zhengja/Documents/test.txt
      * @return test.txt
      */
@@ -29,6 +32,7 @@ public class FileUtil {
 
     /**
      * 获取文件名(不包含扩展名)
+     *
      * @param filePath 文件路径，如：/Users/zhengja/Documents/test.txt
      * @return test
      */
@@ -38,6 +42,7 @@ public class FileUtil {
 
     /**
      * 移除文件扩展名
+     *
      * @param filePath 文件路径，如：/Users/zhengja/Documents/test.txt
      * @return test
      */
@@ -52,6 +57,7 @@ public class FileUtil {
 
     /**
      * 获取文件后缀，不包含.
+     *
      * @param fileName 文件名，如：test.txt
      * @return txt
      */
@@ -61,7 +67,8 @@ public class FileUtil {
 
     /**
      * 获取文件名（不包含后缀）和文件后缀
-     * @param fileName 文件名，如：test.txt
+     *
+     * @param fileName   文件名，如：test.txt
      * @param includeDot 是否返回带点的扩展名, 如：true返回.txt，false返回txt
      * @return .txt/txt
      */
@@ -79,6 +86,7 @@ public class FileUtil {
 
     /**
      * 获取文件路径，不包含文件名
+     *
      * @param filePath 文件路径, 如：/Users/zhengja/Documents/test.txt
      * @return /Users/zhengja/Documents/
      */
@@ -181,6 +189,26 @@ public class FileUtil {
 
     public static boolean deleteIfExists(Path path) throws IOException {
         return Files.deleteIfExists(path);
+    }
+
+    private static void deleteDirectory(Path dir) throws IOException {
+        if (!Files.exists(dir)) {
+            return;
+        }
+
+        Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     public static Path write(Path path, byte[] bytes) throws IOException {
@@ -768,7 +796,7 @@ public class FileUtil {
 
     // -----------------------io utils-end-------------------------
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String filePath = "D:\\temp\\excel\\input2.xlsx";
         System.out.println(getFileName(filePath));
         System.out.println(getFileNameWithoutExtension(filePath));
@@ -779,5 +807,11 @@ public class FileUtil {
         System.out.println(isFile(filePath));
         System.out.println(isDirectory(filePath));
         System.out.println(isExists(filePath));
+
+        // 删除文件
+        delete(filePath);
+
+        // 删除目录
+        deleteDirectory(Paths.get("D:\\temp\\excel"));
     }
 }
