@@ -11,9 +11,14 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * @author: zhengja
+ * @since: 2024/04/18 16:40
+ */
 public class ResourcesFileUtil {
 
-    private ResourcesFileUtil() {}
+    private ResourcesFileUtil() {
+    }
 
     /**
      * 读取资源文件流（支持读取jar下面的资源文件）
@@ -26,6 +31,7 @@ public class ResourcesFileUtil {
     /**
      * 读取资源文件流（注：但无法读取jar下面的资源文件）
      */
+    @Deprecated
     public static InputStream getResourcesFileInputStreamV2(String fileName) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
     }
