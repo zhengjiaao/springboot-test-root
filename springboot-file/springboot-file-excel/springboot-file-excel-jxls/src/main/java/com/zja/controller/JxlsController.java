@@ -65,7 +65,7 @@ public class JxlsController {
 
         log.info("Running Object Collection demo");
         List<Employee> employees = generateSampleEmployeeData();
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("object_collection_template.xls")) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("templates/object_collection_template.xls")) {
             //本地保存
 //            try (OutputStream os = new FileOutputStream("object_collection_output.xls")) {
             //直接下载
@@ -92,7 +92,7 @@ public class JxlsController {
         response.setHeader("Content-Disposition", "attachment;filename=" + "map_output.xlsx");
         response.setContentType("application/vnd.ms-excel");
 
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("map_template.xlsx")) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("templates/map_template.xlsx")) {
             //本地保存
 //            try (OutputStream os = new FileOutputStream("map_output.xlsx")) {
             //直接下载
@@ -141,7 +141,7 @@ public class JxlsController {
 
         log.info("Running Object Collection demo");
         List<Employee> employees = generateSampleEmployeeData();
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("function_output_template.xlsx")) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("templates/function_output_template.xlsx")) {
             //本地保存
 //            try (OutputStream os = new FileOutputStream("object_collection_output.xls")) {
             //直接下载
@@ -166,7 +166,7 @@ public class JxlsController {
 
         log.info("Running Object Collection demo");
         List<Employee> employees = generateSampleEmployeeData();
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("param_formulas_template.xls")) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("templates/param_formulas_template.xls")) {
             //本地保存
 //            try (OutputStream os = new FileOutputStream("param_formulas_output.xls")) {
             //直接下载
