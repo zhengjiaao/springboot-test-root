@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author: zhengja
@@ -18,6 +20,27 @@ import java.nio.charset.StandardCharsets;
 public class ResourcesFileUtil {
 
     private ResourcesFileUtil() {
+    }
+
+    /**
+     * 读取文件流，优先读取classpath下的文件，如未找到，则读取本地文件
+     */
+    public static InputStream getInputStream(String fileName) throws IOException {
+        try {
+            return getResourcesFileInputStream(fileName);
+        } catch (IOException e) {
+            try {
+                return getFileInputStream(fileName);
+            } catch (IOException e1) {
+                e.addSuppressed(e1);
+                throw new IOException("file not found：" + fileName, e);
+            }
+        }
+    }
+
+    // 读取本地文件流
+    private static InputStream getFileInputStream(String filePath) throws IOException {
+        return Files.newInputStream(Paths.get(filePath));
     }
 
     /**
