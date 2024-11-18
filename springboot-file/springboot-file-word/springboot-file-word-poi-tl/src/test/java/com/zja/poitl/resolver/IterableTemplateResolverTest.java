@@ -1,0 +1,71 @@
+package com.zja.poitl.resolver;
+
+import com.deepoove.poi.XWPFTemplate;
+import com.deepoove.poi.template.InlineIterableTemplate;
+import com.deepoove.poi.template.IterableTemplate;
+import com.deepoove.poi.template.MetaTemplate;
+import com.deepoove.poi.template.run.RunTemplate;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.io.InputStream;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/**
+ * 测试解析元模板
+ *
+ * @Author: zhengja
+ * @Date: 2024-11-18 11:20
+ */
+@DisplayName("Iterable template resolver test case")
+public class IterableTemplateResolverTest {
+
+    @Test
+    public void testIfResolver() throws Exception {
+        XWPFTemplate template = XWPFTemplate.compile(getResourceAsStream("templates/word/resolver/iterable_if1.docx"));
+        List<MetaTemplate> elementTemplates = template.getElementTemplates();
+
+        List<MetaTemplate> inparagraph = elementTemplates.subList(0, 2);
+        List<MetaTemplate> intable = elementTemplates.subList(2, 4);
+        List<MetaTemplate> inheader = elementTemplates.subList(4, 6);
+        testResolvedMetaTemplate(inparagraph);
+        testResolvedMetaTemplate(intable);
+        testResolvedMetaTemplate(inheader);
+
+    }
+
+    private void testResolvedMetaTemplate(List<MetaTemplate> elementTemplates) {
+        assertTrue(elementTemplates.get(0) instanceof InlineIterableTemplate);
+        assertEquals(elementTemplates.get(0).variable(), "{{?isShowTitle}}");
+        assertEquals(((IterableTemplate) elementTemplates.get(0)).getTemplates().get(0).variable(), "{{title}}");
+
+        assertTrue(elementTemplates.get(1) instanceof IterableTemplate);
+        IterableTemplate iterable = (IterableTemplate) elementTemplates.get(1);
+        assertEquals(iterable.variable(), "{{?showUser}}");
+
+        List<MetaTemplate> iterableTemplates = iterable.getTemplates();
+        assertTrue(iterableTemplates.get(0) instanceof RunTemplate);
+        assertEquals(iterableTemplates.get(0).variable(), "{{user}}");
+
+        assertTrue(iterableTemplates.get(1) instanceof InlineIterableTemplate);
+        assertEquals(iterableTemplates.get(1).variable(), "{{?showDate}}");
+        assertEquals(((IterableTemplate) iterableTemplates.get(1)).getTemplates().get(0).variable(), "{{date}}");
+
+        assertTrue(iterableTemplates.get(2) instanceof IterableTemplate);
+        assertEquals(iterableTemplates.get(2).variable(), "{{?showDate}}");
+        assertEquals(((IterableTemplate) iterableTemplates.get(2)).getTemplates().get(0).variable(), "{{date}}");
+
+        assertTrue(iterableTemplates.get(3) instanceof InlineIterableTemplate);
+        assertEquals(iterableTemplates.get(3).variable(), "{{?showDate}}");
+        assertEquals(((IterableTemplate) iterableTemplates.get(3)).getTemplates().get(0).variable(), "{{date}}");
+    }
+
+    private static InputStream getResourceAsStream(String fileName) {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+    }
+
+
+}
