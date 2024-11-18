@@ -1,4 +1,4 @@
-package com.zja.poitl;
+package com.zja.poitl.pictures;
 
 import com.deepoove.poi.XWPFTemplate;
 import com.deepoove.poi.data.PictureType;
