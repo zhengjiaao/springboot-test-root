@@ -4,7 +4,34 @@ server:
     context-path: /
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   servlet:
     multipart:
       max-file-size: 2049MB     # 设置单文件大小 2G
       max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+  # 数据库
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    # sql 日志
+    show-sql: true # 这将使Hibernate显示它生成的SQL语句到标准输出，默认是false
+    properties:
+      hibernate:
+        format_sql: true # 默认false，true格式化输出的SQL，使其更易读
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa:
+            support: DEBUG
