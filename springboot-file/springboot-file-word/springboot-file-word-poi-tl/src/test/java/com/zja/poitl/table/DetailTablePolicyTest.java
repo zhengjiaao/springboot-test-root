@@ -51,13 +51,35 @@ public class DetailTablePolicyTest {
         datas.setOrder(table);
 
         DetailData detailTable = new DetailData();
-        RowRenderData good = Rows.of("4", "墙纸", "书房+卧室", "1500", "/", "400", "1600").center().create();
-        List<RowRenderData> goods = Arrays.asList(good, good, good);
-        RowRenderData labor = Rows.of("油漆工", "2", "200", "400").center().create();
+        RowRenderData good1 = Rows.of("1", "墙纸", "书房+卧室", "1500", "/", "400", "1600").center().create();
+        RowRenderData good2 = Rows.of("2", "墙纸", "书房+卧室", "1500", "/", "400", "1600").center().create();
+        RowRenderData good3 = Rows.of("3", "墙纸", "书房+卧室", "1500", "/", "400", "1600").center().create();
+        List<RowRenderData> goods = Arrays.asList(good1, good2, good3);
+        RowRenderData labor = Rows.of("油漆工", "1", "200", "400").center().create();
         List<RowRenderData> labors = Arrays.asList(labor, labor, labor);
+        Collections.reverse(goods); // 反正序列
         detailTable.setGoods(goods);
         detailTable.setLabors(labors);
         datas.setDetailTable(detailTable);
+
+        // 创建第一个表格数据
+        List<RowRenderData> rows1 = new ArrayList<>();
+        rows1.add(Rows.of("Row 1 Col 1", "Row 1 Col 2", "Row 1 Col 3").create());
+        rows1.add(Rows.of("Row 2 Col 1", "Row 2 Col 2", "Row 2 Col 3").create());
+        rows1.add(Rows.of("Row1", "Row 2 Col 2", "Row 2 Col 3").create());
+        rows1.add(Rows.of("Row1", "Row 2 Col 2", "Row 2 Col 3").create());
+        rows1.add(Rows.of("Row 5 Col 1", "Row 2 Col 2", "Row 2 Col 3").create());
+        Collections.reverse(rows1); // 反正序列
+        datas.setTable1(rows1);
+
+        // 创建第二个表格数据
+        List<RowRenderData> rows2 = new ArrayList<>();
+        rows2.add(Rows.of("Row 1 Col A", "Row 1 Col B", "Row 1 Col C").create());
+        rows2.add(Rows.of("Row 2 Col A", "Row 2 Col B", "Row 2 Col C").create());
+        rows2.add(Rows.of("RowA", "Row 2 Col B", "Row 2 Col C").create());
+        rows2.add(Rows.of("RowA", "Row 2 Col B", "Row 2 Col C").create());
+        rows2.add(Rows.of("Row 5 Col A", "Row 2 Col B", "Row 2 Col C").create());
+        datas.setTable2(rows2);
     }
 
     // 动态表格填充策略
@@ -68,6 +90,27 @@ public class DetailTablePolicyTest {
         template.writeToFile("target/out_example_payment.docx");
     }
 
+    // 动态表格填充策略2
+    @Test
+    public void testPaymentExample2() throws Exception {
+        Configure config = Configure.builder()
+                .bind("detail_table", new DetailTablePolicy2())
+                .build();
+        XWPFTemplate template = XWPFTemplate.compile(getResourceAsStream(resource), config).render(datas);
+        template.writeToFile("target/out_example_payment_2.docx");
+    }
+
+    // 动态表格填充策略3
+    @Test
+    public void testPaymentExample3() throws Exception {
+        Configure config = Configure.builder()
+                .bind("detail_table", new DetailTablePolicy2())
+                .bind("detail_table1", new DetailTablePolicy3())
+                .bind("detail_table2", new DetailTablePolicy3())
+                .build();
+        XWPFTemplate template = XWPFTemplate.compile(getResourceAsStream("templates/word/table/payment_3.docx"), config).render(datas);
+        template.writeToFile("target/out_example_payment_3.docx");
+    }
 
     private static InputStream getResourceAsStream(String fileName) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);

@@ -23,16 +23,19 @@ import java.util.List;
  */
 public class DetailTablePolicy extends DynamicTableRenderPolicy {
 
+    // 初始化变量：定义了货品和人工费数据在表格中的起始行数
     // 货品填充数据所在行数
     int goodsStartRow = 2;
     // 人工费填充数据所在行数
     int laborsStartRow = 5;
 
+    // 注意，需要从下往上插入行，否则会报异常。
     @Override
     public void render(XWPFTable table, Object data) throws Exception {
         if (null == data) return;
         DetailData detailData = (DetailData) data;
 
+        // 人工费数据：如果 labors 不为空，移除表格中指定行，然后逐行插入新的行，并创建单元格。合并部分单元格，并渲染数据。
         List<RowRenderData> labors = detailData.getLabors();
         if (null != labors) {
             table.removeRow(laborsStartRow);
@@ -47,6 +50,7 @@ public class DetailTablePolicy extends DynamicTableRenderPolicy {
             }
         }
 
+        // 货品数据：如果 goods 不为空，移除表格中指定行，然后逐行插入新的行，并创建单元格。渲染数据。
         List<RowRenderData> goods = detailData.getGoods();
         if (null != goods) {
             table.removeRow(goodsStartRow);
