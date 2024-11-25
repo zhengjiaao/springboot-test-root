@@ -100,4 +100,44 @@ public class FastjsonTest {
     }
 
 
+    @Test
+    public void test3() {
+        // String jsonString = "{\"ServiceType\":\"压占分析服务\",\"imgString\":\"{\\\"envelope\\\":{\\\"xMax\\\":113.076753379,\\\"xMin\\\":112.961187699,\\\"yMax\\\":28.090095543,\\\"yMin\\\":28.005448417},\\\"imgData\\\":\\\"data:image/png;base64,5oiq5Zu+6IyD5Zu06L+H5aSnLCDmuIXmo4Dmn6Xlj4LmlbAK\\\"}\",\"ServiceName\":\"SCGTDCY2021G\",\"Results\":\"Read timed out\",\"CurrentYear\":\"2021\",\"status\":-1,\"ServiceAlias\":\"2021年国土调查年度变更地类图斑\",\"order\":1,\"ServiceId\":\"684e8165-4291-4efc-8def-f87d94f1dd8c\"}";
+        String jsonString = "{\"ServiceType\":\"压占分析服务\",\"imgString\":\"{\\\"envelope\\\":{\\\"xMax\\\":113.082670726,\\\"xMin\\\":113.028793156,\\\"yMax\\\":28.08438304,\\\"yMin\\\":28.032028777},\\\"imgData\\\":\\\"data:image/png;base64,5oiq5Zu+6IyD5Zu06L+H5aSnLCDmuIXmo4Dmn6Xlj4LmlbAK\\\"}\",\"ServiceName\":\"LXGHGKJSGK\",\"Results\":[{\"OBJECTID\":1,\"DK_ID\":\"123\",\"DISTANCE\":50.0,\"YZBL\":0.010220384425120039,\"DK_MJ\":1.6637114268221118E7,\"YZMJ\":32459.83565148942,\"MJ\":3177521,\"GKFQ\":\"临水区\"},{\"OBJECTID\":2,\"DK_ID\":\"123\",\"DISTANCE\":100.0,\"YZBL\":0.009017127273083176,\"DK_MJ\":1.6637114268221118E7,\"YZMJ\":91349.35339975063,\"MJ\":10138638,\"GKFQ\":\"近水区\"}],\"CurrentYear\":\"2024\",\"status\":1,\"ServiceAlias\":\"长株潭绿心管控近水管控\",\"order\":12,\"ServiceId\":\"cf10b006-886b-4a23-a47b-94efc1ef71f4\"}";
+
+        // Parse JSON string into JSONObject
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+
+        // Access top-level properties
+        String ServiceType = jsonObject.getString("ServiceType");
+        JSONObject imgString = jsonObject.getJSONObject("imgString");
+        String imgData = imgString.getString("imgData");
+        String Results = jsonObject.getString("Results");
+
+        System.out.println("ServiceType: " + ServiceType);
+        System.out.println("imgData: " + imgData);
+        System.out.println("Results: " + Results);
+
+        if (Results.equals("Read timed out")) {
+            System.out.println("Results: " + Results);
+        } else {
+            JSONArray resultsArray = JSON.parseArray(Results);
+            for (int i = 0; i < resultsArray.size(); i++) {
+                JSONObject resultObject = resultsArray.getJSONObject(i);
+                String DK_ID = resultObject.getString("DK_ID");
+                String DISTANCE = resultObject.getString("DISTANCE");
+                String YZBL = resultObject.getString("YZBL");
+                String YZMJ = resultObject.getString("YZMJ");
+                String DLBM = resultObject.getString("DLBM");
+                String DLMC = resultObject.getString("DLMC");
+
+                System.out.println("DK_ID: " + DK_ID);
+                System.out.println("DISTANCE: " + DISTANCE);
+                System.out.println("YZBL: " + YZBL);
+                System.out.println("YZMJ: " + YZMJ);
+                System.out.println("DLBM: " + DLBM);
+                System.out.println("DLMC: " + DLMC);
+            }
+        }
+    }
 }
