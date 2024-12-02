@@ -96,7 +96,7 @@ public class WordPoiTLUtil {
         Path wordFilePath = Paths.get(wordPath);
         createParentDirectories(wordFilePath);
 
-        try (InputStream templateStream = getResourceAsStream(templatePath)) {
+        try (InputStream templateStream = getInputStream(templatePath)) {
             if (templateStream == null) {
                 throw new FileNotFoundException("Template not found: " + templatePath);
             }
@@ -113,10 +113,34 @@ public class WordPoiTLUtil {
         }
     }
 
-    private static InputStream getResourceAsStream(String fileName) {
-        return Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+    /**
+     * 读取文件流，优先读取classpath下的文件，如未找到，则读取本地文件
+     */
+    public static InputStream getInputStream(String fileName) throws IOException {
+        try {
+            return getResourcesFileInputStream(fileName);
+        } catch (IOException e) {
+            try {
+                return getFileInputStream(fileName);
+            } catch (IOException e1) {
+                e.addSuppressed(e1);
+                throw new IOException("file not found：" + fileName, e);
+            }
+        }
     }
 
+    // 读取本地文件流
+    private static InputStream getFileInputStream(String filePath) throws IOException {
+        return Files.newInputStream(Paths.get(filePath));
+    }
+
+    // 读取资源文件流（支持读取jar下面的资源文件）
+    private static InputStream getResourcesFileInputStream(String fileName) throws IOException {
+        ClassPathResource resource = new ClassPathResource(fileName);
+        return resource.getInputStream();
+    }
+
+    // 创建父目录路径
     private static void createParentDirectories(Path path) throws IOException {
         Files.createDirectories(path.getParent());
     }

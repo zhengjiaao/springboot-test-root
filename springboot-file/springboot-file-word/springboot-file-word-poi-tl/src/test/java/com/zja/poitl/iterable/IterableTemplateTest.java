@@ -197,7 +197,7 @@ public class IterableTemplateTest {
                 put("name", "Deepoove");
                 put("list", new NumberingRenderData(NumberingFormat.DECIMAL, textRenderData, textRenderData));
                 put("image", new FilePictureRenderData(120, 120, "src/test/resources/sayi.png"));
-
+                put("imageUrl", new UrlPictureRenderData("http://deepoove.com/images/icecream.png"));
             }
         });
         Map<String, Object> datas = new HashMap<String, Object>() {

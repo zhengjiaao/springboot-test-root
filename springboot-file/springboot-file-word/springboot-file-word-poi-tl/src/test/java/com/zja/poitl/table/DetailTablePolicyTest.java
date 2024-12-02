@@ -82,7 +82,7 @@ public class DetailTablePolicyTest {
         datas.setTable2(rows2);
     }
 
-    // 动态表格填充策略
+    // 动态表格填充策略：循环行
     @Test
     public void testPaymentExample() throws Exception {
         Configure config = Configure.builder().bind("detail_table", new DetailTablePolicy()).build();
@@ -90,7 +90,7 @@ public class DetailTablePolicyTest {
         template.writeToFile("target/out_example_payment.docx");
     }
 
-    // 动态表格填充策略2
+    // 动态表格填充策略2：循环行、优化版
     @Test
     public void testPaymentExample2() throws Exception {
         Configure config = Configure.builder()
@@ -100,7 +100,7 @@ public class DetailTablePolicyTest {
         template.writeToFile("target/out_example_payment_2.docx");
     }
 
-    // 动态表格填充策略3
+    // 动态表格填充策略3：循环行、合并行、合并列
     @Test
     public void testPaymentExample3() throws Exception {
         Configure config = Configure.builder()
