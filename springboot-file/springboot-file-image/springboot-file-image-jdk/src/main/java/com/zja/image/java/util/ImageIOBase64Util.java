@@ -1,4 +1,6 @@
-package com.zja.file.image.thum.util;
+package com.zja.image.java.util;
+
+import org.apache.commons.codec.binary.Base64;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -6,14 +8,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-// import java.util.Base64;
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * @Author: zhengja
  * @Date: 2024-12-04 10:00
  */
-public class ImageIOUtil {
+public class ImageIOBase64Util {
 
     // 图片转为 Base64
     public static String imageToBase64(String imagePath, String format) throws IOException {
