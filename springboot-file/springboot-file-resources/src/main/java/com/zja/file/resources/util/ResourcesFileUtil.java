@@ -59,6 +59,32 @@ public class ResourcesFileUtil {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
     }
 
+    public static String readFileByUTF8(String pathName) {
+        return readFile(pathName, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 读取文件全部内容，例如：txt、json等
+     *
+     * @param pathName 文件路径
+     * @param charset  编码格式
+     * @return 文件内容
+     */
+    public static String readFile(String pathName, Charset charset) {
+        try (InputStream inputStream = getInputStream(pathName)) {
+            // 读取文件内容
+            StringBuilder content = new StringBuilder();
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                content.append(new String(buffer, 0, length, charset));
+            }
+            return content.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to read file: " + pathName, e);
+        }
+    }
+
     public static JSONObject readJSONObjectFromFile(String pathName) {
         return readJSONObjectFromFile(pathName, JSONObject.class);
     }
