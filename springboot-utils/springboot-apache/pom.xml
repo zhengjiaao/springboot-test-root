@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>springboot-apache-commons-codec</module>
         <module>springboot-apache-commons-io</module>
         <module>springboot-apache-commons-lang3</module>
     </modules>
