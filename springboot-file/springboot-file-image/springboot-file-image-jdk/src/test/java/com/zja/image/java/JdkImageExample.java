@@ -374,12 +374,17 @@ public class JdkImageExample {
         }
     }
 
-    // 图像缩放、合并: 加载一张图像，将其缩放到指定大小，然后将另一张图像合成到缩放后的图像上，并保存为新的图像文件。
+    // 叠加图像：将图像缩放、合并，加载一张图像，将其缩放到指定大小，然后将另一张图像合成到缩放后的图像上，并保存为新的图像文件。
     @Test
-    public void merge_test_1() throws Exception {
+    public void CombinedImage_test_1() throws Exception {
         try {
             // 加载第一张图像
-            BufferedImage image1 = ImageIO.read(new File("target/created_image.jpg"));
+            // BufferedImage image1 = ImageIO.read(new File("target/created_image.jpg"));
+            // 加载第二张图像
+            // BufferedImage image2 = ImageIO.read(new File("target/created_image.png"));
+
+            BufferedImage image1 = ImageIO.read(new File("D:\\temp\\images\\test.png"));
+            BufferedImage image2 = ImageIO.read(new File("D:\\temp\\images\\test.jpg"));
 
             // 创建一个新的 BufferedImage 用于缩放
             int newWidth = 200;
@@ -391,26 +396,66 @@ public class JdkImageExample {
             g2d.drawImage(image1, 0, 0, newWidth, newHeight, null);
             g2d.dispose();
 
-            // 加载第二张图像
-            BufferedImage image2 = ImageIO.read(new File("target/created_image.png"));
-
-            // 合成第二张图像到缩放后的图像上
+            // 合成第二张图像到缩放后的图像上，并指定合成位置，这里是在左上角，你可以根据需要调整位置
             Graphics2D g2dCombined = scaledImage.createGraphics();
             g2dCombined.drawImage(image2, 50, 50, null); // 在坐标 (50, 50) 处合成第二张图像
             g2dCombined.dispose();
 
             // 保存合成后的图像
-            File outputImage = new File("target/combined_image.png");
+            File outputImage = new File("target/combined_image_1.png");
             ImageIO.write(scaledImage, "png", outputImage);
-            System.out.println("合成后的图像已保存为 target/combined_image.png");
+            System.out.println("合成后的图像已保存为 target/combined_image_1.png");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    // 叠加图像：加载两张图像，缩放第二张图像为第一张图像的十分之一，然后将第二张图像叠加到第一张图像的右下角，并保存为新的图像文件。
+    @Test
+    public void CombinedImage_test_2() throws Exception {
+        // 加载第一张图像
+        // BufferedImage image1 = ImageIO.read(new File("target/created_image.png"));
+        // 加载第二张图像
+        // BufferedImage image2 = ImageIO.read(new File("target/created_image.jpg"));
+
+        BufferedImage image1 = ImageIO.read(new File("D:\\temp\\images\\test.png"));
+        BufferedImage image2 = ImageIO.read(new File("D:\\temp\\images\\test.jpg"));
+
+        // 计算缩放后的第二张图像的宽度和高度
+        int scaledWidth = image1.getWidth() / 10;
+        int scaledHeight = image1.getHeight() / 10;
+
+        // 创建一个缩放后的第二张图像
+        BufferedImage scaledImage2 = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = scaledImage2.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.drawImage(image2, 0, 0, scaledWidth, scaledHeight, null);
+        g2d.dispose();
+
+        // 创建一个新的图像，其大小与第一张图像相同
+        BufferedImage combinedImage = new BufferedImage(
+                image1.getWidth(),
+                image1.getHeight(),
+                BufferedImage.TYPE_INT_ARGB);
+
+        // 绘制第一张图像到新图像的左上角
+        g2d = combinedImage.createGraphics();
+        g2d.drawImage(image1, 0, 0, null);
+
+        // 绘制缩放后的第二张图像到新图像的右下角
+        g2d.drawImage(scaledImage2, image1.getWidth() - scaledWidth, image1.getHeight() - scaledHeight, null);
+
+        // 释放资源
+        g2d.dispose();
+
+        // 保存新图像
+        File outputFile = new File("target/combined_image_2.jpg");
+        ImageIO.write(combinedImage, "jpg", outputFile);
+    }
+
     // 图像合并：合并多个图像并保存为新的图像文件，将第一张图像放在左侧，第二张图像放在右侧，并将合并后的图像保存为新的 PNG 格式的图像文件。
     @Test
-    public void ImageMerge_test_2() throws Exception {
+    public void ImageMerge_test_1() throws Exception {
         try {
             // 加载两张图像
             BufferedImage image1 = ImageIO.read(new File("target/created_image.jpg"));

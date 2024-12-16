@@ -6,6 +6,7 @@ import net.coobird.thumbnailator.name.Rename;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -299,6 +300,38 @@ public class ThumbnailatorTest {
         BufferedImage image = ImageIO.read(new File(image_filePath));
         System.out.println("Width: " + image.getWidth());
         System.out.println("Height: " + image.getHeight());
+    }
+
+    // 加载两张图像，将第二张图像缩放到第一张图像的十分之一大小，然后将其叠加到第一张图像的右下角，并保存为新的图像文件。
+    @Test
+    public void test_12() throws IOException {
+        // 加载第一张图像
+        BufferedImage image1 = ImageIO.read(new File(image_filePath));
+        // 加载第二张图像
+        BufferedImage image2 = ImageIO.read(new File(image_filePath2));
+
+        // 计算第二张图像缩放到第一张图像的十分之一大小
+        int newWidth = image1.getWidth() / 5;
+        // int newHeight = image2.getHeight() / 10;
+        BufferedImage resizedImage2 = Thumbnails.of(image2).width(newWidth).keepAspectRatio(true).asBufferedImage();
+
+        int newHeight = resizedImage2.getHeight();
+
+        // 创建一个新的图像，大小与第一张图像相同
+        BufferedImage combinedImage = new BufferedImage(image1.getWidth(), image1.getHeight(), image1.getType());
+        Graphics2D g2d = combinedImage.createGraphics();
+
+        // 绘制第一张图像
+        g2d.drawImage(image1, 0, 0, null);
+        // 绘制缩放后的第二张图像到右下角
+        // g2d.drawImage(resizedImage2, image1.getWidth() - newWidth, image1.getHeight() - newHeight, null);
+        g2d.drawImage(resizedImage2, image1.getWidth() - newWidth, image1.getHeight() - newHeight, null);
+
+        // 释放资源
+        g2d.dispose();
+
+        // 保存合并后的图像到新的文件
+        ImageIO.write(combinedImage, "jpg", new File("target/thumbnail_12.jpg"));
     }
 
 }
