@@ -8,7 +8,7 @@
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>springboot-file-parts-upload</artifactId>
+    <artifactId>springboot-file-parts-local-upload</artifactId>
     <packaging>war</packaging>
 
     <properties>
