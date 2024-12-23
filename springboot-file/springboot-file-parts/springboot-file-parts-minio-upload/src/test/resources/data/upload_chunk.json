@@ -1,0 +1,8 @@
+{
+  "uploadId": "ZWNmMzdmMDAtNDg1NS00OWY0LTgzNzctZTg4MzYwMmUwZmQwLjRjNWExZDhkLWZiZDktNDlmMy04ZjE1LTJhZDdiMjE0M2RjNXgxNzM0OTMxMzU5NjE3OTk3NTY0",
+  "chunkUploadUrls": [
+    "https://play.min.io/test-zja/test.zip?uploadId=ZWNmMzdmMDAtNDg1NS00OWY0LTgzNzctZTg4MzYwMmUwZmQwLjRjNWExZDhkLWZiZDktNDlmMy04ZjE1LTJhZDdiMjE0M2RjNXgxNzM0OTMxMzU5NjE3OTk3NTY0&partNumber=1&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=Q3AM3UQ867SPQQA43P2F%2F20241223%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241223T052243Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=04e9f9fb0ccb4adc8fe6ea89e3c7af7d4c6024a993b1afe1aa467c8077d8f3ca",
+    "https://play.min.io/test-zja/test.zip?uploadId=ZWNmMzdmMDAtNDg1NS00OWY0LTgzNzctZTg4MzYwMmUwZmQwLjRjNWExZDhkLWZiZDktNDlmMy04ZjE1LTJhZDdiMjE0M2RjNXgxNzM0OTMxMzU5NjE3OTk3NTY0&partNumber=2&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=Q3AM3UQ867SPQQA43P2F%2F20241223%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241223T052243Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=d77d87c82bedb02e9f9292d894725428ed3365de4d5acad77435ce978fe73cd0",
+    "https://play.min.io/test-zja/test.zip?uploadId=ZWNmMzdmMDAtNDg1NS00OWY0LTgzNzctZTg4MzYwMmUwZmQwLjRjNWExZDhkLWZiZDktNDlmMy04ZjE1LTJhZDdiMjE0M2RjNXgxNzM0OTMxMzU5NjE3OTk3NTY0&partNumber=3&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=Q3AM3UQ867SPQQA43P2F%2F20241223%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241223T052243Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=78ca672da5a737237f17ad1ac30fa21bb7547bb17939d6804bb1f22b3cdff511"
+  ]
+}

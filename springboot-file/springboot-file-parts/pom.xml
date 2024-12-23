@@ -18,6 +18,7 @@
     <modules>
         <module>springboot-file-parts-local-download</module>
         <module>springboot-file-parts-local-upload</module>
+        <module>springboot-file-parts-minio-upload</module>
     </modules>
 
 </project>

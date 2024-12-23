@@ -1,0 +1,16 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+minio:
+  endpoint: https://play.min.io
+  access-key: Q3AM3UQ867SPQQA43P2F
+  secret-key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+  bucketName: test-zja
