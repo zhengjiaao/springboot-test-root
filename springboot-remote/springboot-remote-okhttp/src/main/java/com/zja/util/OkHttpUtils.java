@@ -34,7 +34,8 @@ public class OkHttpUtils {
 
     private static OkHttpClient client;
 
-    public static OkHttpClient getClient() {
+    // 构建客户端
+    public static OkHttpClient buildClient() {
         if (client == null) {
             synchronized (OkHttpUtils.class) {
                 if (client == null) {
@@ -54,7 +55,7 @@ public class OkHttpUtils {
     }
 
     public static String doGet(String url, Map<String, String> params) throws IOException {
-        OkHttpClient client = getClient();
+        OkHttpClient client = buildClient();
         String newUrl = buildUrlWithParams(url, params);
         Request request = new Request.Builder()
                 .url(newUrl)
@@ -73,7 +74,7 @@ public class OkHttpUtils {
     }
 
     public static String doPost(String url, String jsonBody, Map<String, String> params) throws IOException {
-        OkHttpClient client = getClient();
+        OkHttpClient client = buildClient();
         MediaType mediaType = MediaType.parse(MEDIA_TYPE);
         RequestBody requestBody = RequestBody.create(mediaType, jsonBody != null ? jsonBody : "");
         String newUrl = buildUrlWithParams(url, params);
@@ -95,7 +96,7 @@ public class OkHttpUtils {
     }
 
     public static String doPut(String url, String jsonBody, Map<String, String> params) throws IOException {
-        OkHttpClient client = getClient();
+        OkHttpClient client = buildClient();
         MediaType mediaType = MediaType.parse(MEDIA_TYPE);
         RequestBody requestBody = RequestBody.create(mediaType, jsonBody != null ? jsonBody : "");
         String newUrl = buildUrlWithParams(url, params);
@@ -113,7 +114,7 @@ public class OkHttpUtils {
     }
 
     public static String doDelete(String url, Map<String, String> params) throws IOException {
-        OkHttpClient client = getClient();
+        OkHttpClient client = buildClient();
         String newUrl = buildUrlWithParams(url, params);
         Request request = new Request.Builder()
                 .url(newUrl)
@@ -129,11 +130,23 @@ public class OkHttpUtils {
     }
 
     public static String doPostUploadFile(String url, MultipartFile multipartFile, Map<String, String> params) throws IOException {
+        return doUploadFile(url, "POST", multipartFile, params);
+    }
+
+    public static String doPutUploadFile(String url, MultipartFile multipartFile) throws IOException {
+        return doPutUploadFile(url, multipartFile, null);
+    }
+
+    public static String doPutUploadFile(String url, MultipartFile multipartFile, Map<String, String> params) throws IOException {
+        return doUploadFile(url, "PUT", multipartFile, params);
+    }
+
+    private static String doUploadFile(String url, String requestType, MultipartFile multipartFile, Map<String, String> params) throws IOException {
         if (multipartFile == null) {
             throw new IllegalArgumentException("MultipartFile cannot be null.");
         }
 
-        OkHttpClient client = getClient();
+        OkHttpClient client = buildClient();
         String newUrl = buildUrlWithParams(url, params);
 
         MediaType mediaType = MediaType.parse("application/octet-stream");
@@ -142,10 +155,21 @@ public class OkHttpUtils {
                 .addFormDataPart("file", multipartFile.getOriginalFilename(), RequestBody.create(mediaType, multipartFile.getBytes()))
                 .build();
 
-        Request request = new Request.Builder()
-                .url(newUrl)
-                .post(requestBody)
-                .build();
+        Request request = null;
+        if ("PUT".equalsIgnoreCase(requestType)) {
+            request = new Request.Builder()
+                    .url(newUrl)
+                    .put(requestBody)
+                    .build();
+        } else if ("POST".equalsIgnoreCase(requestType)) {
+            request = new Request.Builder()
+                    .url(newUrl)
+                    .post(requestBody)
+                    .build();
+        } else {
+            throw new IllegalArgumentException("requestType must be POST or PUT.");
+        }
+
         try (Response response = client.newCall(request).execute()) {
             return response.body().string();
         }
@@ -156,11 +180,23 @@ public class OkHttpUtils {
     }
 
     public static String doPostUploadFiles(String url, List<MultipartFile> multipartFiles, Map<String, String> params) throws IOException {
+        return doUploadFiles(url, "POST", multipartFiles, params);
+    }
+
+    public static String doPutUploadFiles(String url, List<MultipartFile> multipartFiles) throws IOException {
+        return doPutUploadFiles(url, multipartFiles, null);
+    }
+
+    public static String doPutUploadFiles(String url, List<MultipartFile> multipartFiles, Map<String, String> params) throws IOException {
+        return doUploadFiles(url, "PUT", multipartFiles, params);
+    }
+
+    private static String doUploadFiles(String url, String requestType, List<MultipartFile> multipartFiles, Map<String, String> params) throws IOException {
         if (multipartFiles == null || multipartFiles.isEmpty()) {
             throw new IllegalArgumentException("MultipartFiles cannot be null or empty.");
         }
 
-        OkHttpClient client = getClient();
+        OkHttpClient client = buildClient();
         String newUrl = buildUrlWithParams(url, params);
 
         MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -172,10 +208,21 @@ public class OkHttpUtils {
         }
 
         RequestBody requestBody = requestBodyBuilder.build();
-        Request request = new Request.Builder()
-                .url(newUrl)
-                .post(requestBody)
-                .build();
+
+        Request request = null;
+        if ("PUT".equalsIgnoreCase(requestType)) {
+            request = new Request.Builder()
+                    .url(newUrl)
+                    .put(requestBody)
+                    .build();
+        } else if ("POST".equalsIgnoreCase(requestType)) {
+            request = new Request.Builder()
+                    .url(newUrl)
+                    .post(requestBody)
+                    .build();
+        } else {
+            throw new IllegalArgumentException("requestType must be POST or PUT.");
+        }
 
         try (Response response = client.newCall(request).execute()) {
             return response.body().string();
@@ -183,7 +230,7 @@ public class OkHttpUtils {
     }
 
     public static void doGetDownloadFile(String url, String savePath) throws IOException {
-        OkHttpClient client = getClient();
+        OkHttpClient client = buildClient();
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -219,7 +266,7 @@ public class OkHttpUtils {
     }
 
     public static InputStream doDownloadStream(String url, Map<String, String> params, String requestMethod) throws IOException {
-        OkHttpClient client = getClient();
+        OkHttpClient client = buildClient();
         String newUrl = buildUrlWithParams(url, params);
         Request.Builder requestBuilder = new Request.Builder()
                 .url(newUrl);
