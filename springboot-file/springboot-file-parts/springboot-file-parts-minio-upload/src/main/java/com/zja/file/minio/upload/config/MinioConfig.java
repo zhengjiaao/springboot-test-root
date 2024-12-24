@@ -18,7 +18,7 @@ public class MinioConfig {
     private final MinioProperties minioProperties;
 
     /**
-     * 配置Minio客户端
+     * 配置 Minio客户端
      */
     @Bean
     public MinioClient minioClient() {
@@ -29,14 +29,21 @@ public class MinioConfig {
     }
 
     /**
+     * 配置 Minio异步客户端
+     */
+    @Bean
+    public MinioAsyncClient minioAsyncClient() {
+        return MinioAsyncClient.builder()
+                .endpoint(minioProperties.getEndpoint())
+                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                .build();
+    }
+
+    /**
      * 配置Minio多部件客户端：分片上传
      */
     @Bean
     public MinioMultipartClient minioMultipartClient() {
-        MinioAsyncClient asyncClient = MinioAsyncClient.builder()
-                .endpoint(minioProperties.getEndpoint())
-                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                .build();
-        return new MinioMultipartClient(asyncClient);
+        return new MinioMultipartClient(minioAsyncClient());
     }
 }
