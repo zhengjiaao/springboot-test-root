@@ -3,9 +3,11 @@ package com.zja.storage.minio;
 import com.zja.storage.MinioApplicationTests;
 import com.zja.storage.minio.args.*;
 import com.zja.storage.util.OkHttpUtils;
+import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.ListPartsResponse;
 import io.minio.ObjectWriteResponse;
 import io.minio.errors.*;
+import io.minio.http.Method;
 import io.minio.messages.Part;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: zhengja
@@ -166,7 +169,11 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
             System.out.println("分片" + part.partNumber() + "上传成功，etag=" + part.etag());
         }
 
-        // 5. 完成分片上传
+        // 5. 验证分片上传
+        boolean validated = validateCompleteMultipartUpload(listPartsResponse, 3);
+        System.out.println("分片上传验证：" + validated);
+
+        // 6. 完成分片上传
         ObjectWriteResponse objectWriteResponse = minioMultipartClient.completeMultipartUpload(CompleteMultipartUploadArgs.builder()
                 .bucket(bucketName)
                 .object(objectName)
@@ -174,5 +181,40 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
                 .parts(partList)
                 .build());
         System.out.println("完成分片上传 objectWriteResponse.object：" + objectWriteResponse.object());
+
+        // 7. 获取文件下载地址
+        String fileUrl = minioMultipartClient.getFileUrl(GetPresignedObjectUrlArgs.builder()
+                .method(Method.GET)
+                .bucket(bucketName)
+                .object(objectName)
+                .expiry(1, TimeUnit.DAYS).build());
+        System.out.println("fileUrl：" + fileUrl);
     }
+
+    public boolean validateCompleteMultipartUpload(ListPartsResponse partsResponse, long maxParts) throws NoSuchAlgorithmException, InsufficientDataException, IOException, InvalidKeyException, XmlParserException, InternalException, ServerException, ErrorResponseException, InvalidResponseException {
+        if (partsResponse == null || partsResponse.result() == null || partsResponse.result().partList() == null) {
+            throw new MultipartListException("分片上传未开始，请先上传分片！");
+        }
+
+        List<Part> partList = partsResponse.result().partList();
+        int size = partList.size();
+
+        if (size == maxParts) {
+            // 分片上传已结束
+            return true;
+        } else if (size < maxParts) {
+            // 分片上传未完成
+            return false;
+        } else {
+            // 分片上传已超限
+            throw new MultipartListException("分片上传已超限，请重新申请上传分片！");
+        }
+    }
+
+    public static class MultipartListException extends RuntimeException {
+        public MultipartListException(String message) {
+            super(message);
+        }
+    }
+
 }

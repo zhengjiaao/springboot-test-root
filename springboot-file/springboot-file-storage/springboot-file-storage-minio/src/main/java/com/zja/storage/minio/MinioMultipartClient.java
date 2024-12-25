@@ -7,11 +7,14 @@ import com.zja.storage.minio.args.*;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
+import io.minio.messages.ListPartsResult;
+import io.minio.messages.Part;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -87,17 +90,11 @@ public class MinioMultipartClient extends MinioAsyncClient {
         queryParams.put("uploadId", args.uploadId());
         queryParams.put("partNumber", String.valueOf(args.partNumber()));
 
-        GetPresignedObjectUrlArgs urlArgs = GetPresignedObjectUrlArgs.builder().method(Method.PUT).bucket(args.bucket()).object(args.object()).region(args.region()).expiry(args.expiry()).extraHeaders(args.extraHeaders()).versionId(args.versionId()).extraQueryParams(queryParams).build();
+        Multimap<String, String> extraQueryParams = Multimaps.unmodifiableMultimap(queryParams);
+
+        GetPresignedObjectUrlArgs urlArgs = GetPresignedObjectUrlArgs.builder().method(Method.PUT).bucket(args.bucket()).object(args.object()).region(args.region()).expiry(args.expiry()).extraHeaders(args.extraHeaders()).versionId(args.versionId()).extraQueryParams(extraQueryParams).build();
 
         return super.getPresignedObjectUrl(urlArgs);
-    }
-
-    private Multimap<String, String> copyMultimap(Multimap<String, String> multimap) {
-        Multimap<String, String> multimapCopy = HashMultimap.create();
-        if (multimap != null) {
-            multimapCopy.putAll(multimap);
-        }
-        return Multimaps.unmodifiableMultimap(multimapCopy);
     }
 
     /**
