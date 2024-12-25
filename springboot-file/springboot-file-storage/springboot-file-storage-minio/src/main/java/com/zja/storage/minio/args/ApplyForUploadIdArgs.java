@@ -6,14 +6,14 @@ import io.minio.ObjectArgs;
  * @Author: zhengja
  * @Date: 2024-12-24 15:02
  */
-public class ApplyUploadIdArgs extends ObjectArgs {
+public class ApplyForUploadIdArgs extends ObjectArgs {
     public static Builder builder() {
         return new Builder();
     }
 
-    public static final class Builder extends ObjectArgs.Builder<Builder, ApplyUploadIdArgs> {
+    public static final class Builder extends ObjectArgs.Builder<Builder, ApplyForUploadIdArgs> {
         @Override
-        protected void validate(ApplyUploadIdArgs args) {
+        protected void validate(ApplyForUploadIdArgs args) {
             super.validate(args);
         }
     }

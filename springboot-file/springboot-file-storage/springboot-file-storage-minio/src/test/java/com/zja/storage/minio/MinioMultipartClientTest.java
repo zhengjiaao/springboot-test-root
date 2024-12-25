@@ -1,21 +1,17 @@
 package com.zja.storage.minio;
 
-import com.google.common.collect.Lists;
 import com.zja.storage.MinioApplicationTests;
 import com.zja.storage.minio.args.*;
 import com.zja.storage.util.OkHttpUtils;
 import io.minio.ListPartsResponse;
 import io.minio.ObjectWriteResponse;
-import io.minio.UploadPartResponse;
 import io.minio.errors.*;
 import io.minio.messages.Part;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -41,7 +37,7 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
     @Test
     public void testUploadPart_1() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, XmlParserException, InvalidResponseException, InternalException {
         // 1. 申请上传ID
-        String uploadId = minioMultipartClient.applyForUploadId(ApplyUploadIdArgs.builder()
+        String uploadId = minioMultipartClient.applyForUploadId(ApplyForUploadIdArgs.builder()
                 .bucket(bucketName)
                 .object(objectName).build());
         System.out.println("uploadId：" + uploadId);
@@ -75,7 +71,7 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
                 .build());
 
         // 3. 验证分片上传
-        // minioMultipartClient.validateMultipartUpload(ApplyUploadIdArgs.builder()
+        // minioMultipartClient.validateMultipartUpload(ApplyForUploadIdArgs.builder()
         //         .bucket(bucketName)
         //         .object(objectName)
         //         .uploadId(uploadId)
@@ -112,7 +108,7 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
     @Test
     public void testUploadPart_2() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, XmlParserException, InvalidResponseException, InternalException {
         // 1. 申请上传ID
-        String uploadId = minioMultipartClient.applyForUploadId(ApplyUploadIdArgs.builder()
+        String uploadId = minioMultipartClient.applyForUploadId(ApplyForUploadIdArgs.builder()
                 .bucket(bucketName)
                 .object(objectName).build());
         System.out.println("uploadId：" + uploadId);

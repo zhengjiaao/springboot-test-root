@@ -12,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -32,7 +30,7 @@ public class MinioMultipartClient extends MinioAsyncClient {
     /**
      * 申请上传id（uploadId）
      */
-    public String applyForUploadId(ApplyUploadIdArgs args) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, XmlParserException, InvalidResponseException, InternalException {
+    public String applyForUploadId(ApplyForUploadIdArgs args) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, XmlParserException, InvalidResponseException, InternalException {
         CreateMultipartUploadResponse response = createMultipartUpload(args);
         if (response == null) {
             return null;
@@ -43,7 +41,7 @@ public class MinioMultipartClient extends MinioAsyncClient {
     /**
      * 创建多部分上传
      */
-    public CreateMultipartUploadResponse createMultipartUpload(ApplyUploadIdArgs args) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, XmlParserException, ServerException, ErrorResponseException, InvalidResponseException {
+    public CreateMultipartUploadResponse createMultipartUpload(ApplyForUploadIdArgs args) throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException, InternalException, XmlParserException, ServerException, ErrorResponseException, InvalidResponseException {
         try {
             CompletableFuture<CreateMultipartUploadResponse> future = super.createMultipartUploadAsync(args.bucket(), args.region(), args.object(), args.extraHeaders(), args.extraQueryParams());
             return future.get();
