@@ -6,11 +6,11 @@
  * @Date: 2022-11-28 16:42
  * @Since:
  */
-package com.zja.minio;
+package com.zja.storage.minio;
 
-import com.zja.FileMinioApplicationTests;
+import com.zja.storage.MinioApplicationTests;
 
-public class StarterMinioTests extends FileMinioApplicationTests {
+public class StarterMinioTest extends MinioApplicationTests {
 //
 //    //客户端操作类
 //    @Resource

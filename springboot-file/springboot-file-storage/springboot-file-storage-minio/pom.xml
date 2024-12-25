@@ -17,13 +17,13 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.4.3</version>
+            <version>8.5.14</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.8.1</version>
-            <scope>compile</scope>
+            <!-- minio 8.5.14 Must use okhttp >= 4.11.0 -->
+            <version>4.12.0</version>
         </dependency>
 
       <!--  <dependency>
@@ -45,6 +45,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

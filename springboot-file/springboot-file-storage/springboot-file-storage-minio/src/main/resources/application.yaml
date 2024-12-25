@@ -8,3 +8,9 @@
 #      accessKey: admin
 #      secretKey: password
 #      default-bucket: testbuket # 可选，仅支持小写字母,长度必须大于3个字符,默认桶会自动创建
+
+minio:
+  endpoint: https://play.min.io
+  access-key: Q3AM3UQ867SPQQA43P2F
+  secret-key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+  bucketName: test-zja
