@@ -7,6 +7,7 @@ import io.minio.MinioClient;
 import io.minio.UploadObjectArgs;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @Author: zhengja
@@ -17,6 +18,9 @@ public class MinioClientTest extends MinioApplicationTests {
     @Autowired
     MinioClient minioClient;
 
+    @Value("${minio.bucketName}")
+    public String bucketName;
+
     @Test
     public void test() {
         try {
@@ -25,7 +29,7 @@ public class MinioClientTest extends MinioApplicationTests {
             //         .credentials("admin", "password").build();
 
             // 桶若不存在，就新建一个桶
-            String bucketName = "test-buket";
+            // String bucketName = "test-buket";
             boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
             if (!found) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());

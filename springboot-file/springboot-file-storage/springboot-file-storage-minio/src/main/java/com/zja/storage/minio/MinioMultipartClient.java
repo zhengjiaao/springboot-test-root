@@ -7,7 +7,6 @@ import com.zja.storage.minio.args.*;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
-import io.minio.messages.ListPartsResult;
 import io.minio.messages.Part;
 import lombok.extern.slf4j.Slf4j;
 
@@ -81,7 +80,6 @@ public class MinioMultipartClient extends MinioAsyncClient {
      * 获取分片上传的预签名URL(通过此 预签名URL PUT请求进行上传分片)
      */
     public String getPresignedPartUrl(GetPresignedPartUrlArgs args) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        // Multimap<String, String> queryParams = copyMultimap(args.extraQueryParams());
         Multimap<String, String> queryParams = HashMultimap.create();
 
         if (args.extraQueryParams() != null) {
@@ -146,6 +144,66 @@ public class MinioMultipartClient extends MinioAsyncClient {
      */
     public CompletableFuture<ObjectWriteResponse> completeMultipartUploadAsync(CompleteMultipartUploadArgs args) throws IOException, NoSuchAlgorithmException, InsufficientDataException, InternalException, XmlParserException, InvalidKeyException {
         return super.completeMultipartUploadAsync(args.bucket(), args.region(), args.object(), args.uploadId(), args.parts(), args.extraHeaders(), args.extraQueryParams());
+    }
+
+    /**
+     * 验证合并分片前，进行验证分片数据量
+     */
+    public boolean validateCompleteMultipartUploadBefore(ValidateCompleteMultipartUploadBeforeArgs args) throws ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, IOException, InvalidKeyException, XmlParserException, InvalidResponseException, InternalException {
+        ListPartsResponse listPartsResponse = listParts(ListPartsArgs.builder()
+                .bucket(args.bucket())
+                .object(args.object())
+                .region(args.region())
+                .uploadId(args.uploadId())
+                .maxParts(10000)
+                .extraHeaders(args.extraHeaders())
+                .extraQueryParams(args.extraQueryParams()).build());
+        return validateListParts(listPartsResponse, args.objectPartSize());
+    }
+
+    // 完成合并分片前，进行验证分片数据量
+    public boolean validateListParts(ListPartsResponse partsResponse, long objectPartSize) {
+        if (partsResponse == null || partsResponse.result() == null || partsResponse.result().partList() == null) {
+            throw new RuntimeException("分片上传未开始，请先上传分片！");
+        }
+
+        List<Part> partList = partsResponse.result().partList();
+        int size = partList.size();
+
+        if (size == objectPartSize) {
+            // 分片上传已结束
+            return true;
+        } else if (size < objectPartSize) {
+            // 分片上传未完成
+            return false;
+        } else {
+            // 分片上传已超限
+            throw new RuntimeException("分片上传已超限，请重新申请上传分片！");
+        }
+    }
+
+    /**
+     * 验证合并分片后，进行验证对象完整性（支持按对象名称、对象ETag、对象长度等可选条件匹配验证是否上传完整）
+     */
+    public boolean validateCompleteMultipartUploadAfter(ValidateCompleteMultipartUploadAfterArgs args) throws InsufficientDataException, IOException, NoSuchAlgorithmException, InvalidKeyException, XmlParserException, InternalException, ServerException, ErrorResponseException, InvalidResponseException {
+        try {
+            StatObjectResponse objectResponse = super.statObjectAsync(StatObjectArgs.builder()
+                    .bucket(args.bucket())
+                    .region(args.region())
+                    .object(args.object())
+                    .matchETag(args.matchETag())
+                    .extraHeaders(args.extraHeaders())
+                    .extraQueryParams(args.extraQueryParams()).build()).get();
+            if (objectResponse == null || objectResponse.deleteMarker()) {
+                return false;
+            }
+            return args.matchLength() == 0 || args.matchLength() == objectResponse.size();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            super.throwEncapsulatedException(e);
+            throw new RuntimeException(e);
+        }
     }
 
     /**

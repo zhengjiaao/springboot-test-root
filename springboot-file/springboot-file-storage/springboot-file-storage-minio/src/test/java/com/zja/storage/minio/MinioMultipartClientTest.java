@@ -1,11 +1,13 @@
 package com.zja.storage.minio;
 
+import com.google.common.collect.Lists;
 import com.zja.storage.MinioApplicationTests;
 import com.zja.storage.minio.args.*;
 import com.zja.storage.util.OkHttpUtils;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.ListPartsResponse;
 import io.minio.ObjectWriteResponse;
+import io.minio.UploadPartResponse;
 import io.minio.errors.*;
 import io.minio.http.Method;
 import io.minio.messages.Part;
@@ -13,9 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.util.DigestUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -35,6 +40,9 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
     public String bucketName;
 
     public String objectName = "test.zip";
+
+    // 源文件
+    public String sourceFilePath = "D:\\temp\\zip\\test.zip";
 
     // 服务端上传分片
     @Test
@@ -73,13 +81,6 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
                 .partNumber(3)
                 .build());
 
-        // 3. 验证分片上传
-        // minioMultipartClient.validateMultipartUpload(ApplyForUploadIdArgs.builder()
-        //         .bucket(bucketName)
-        //         .object(objectName)
-        //         .uploadId(uploadId)
-        //         .build());
-
         // 3. 列出分片上传
         ListPartsResponse listPartsResponse = minioMultipartClient.listParts(ListPartsArgs.builder()
                 .bucket(bucketName)
@@ -104,6 +105,14 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
                 .parts(partList)
                 .build());
         System.out.println("完成分片上传 objectWriteResponse.object：" + objectWriteResponse.object());
+
+        // 5. 获取文件下载地址
+        String fileUrl = minioMultipartClient.getFileUrl(GetPresignedObjectUrlArgs.builder()
+                .method(Method.GET)
+                .bucket(bucketName)
+                .object(objectName)
+                .expiry(1, TimeUnit.DAYS).build());
+        System.out.println("合并后的文件下载地址 fileUrl：" + fileUrl);
     }
 
 
@@ -169,11 +178,7 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
             System.out.println("分片" + part.partNumber() + "上传成功，etag=" + part.etag());
         }
 
-        // 5. 验证分片上传
-        boolean validated = validateCompleteMultipartUpload(listPartsResponse, 3);
-        System.out.println("分片上传验证：" + validated);
-
-        // 6. 完成分片上传
+        // 5. 完成分片上传
         ObjectWriteResponse objectWriteResponse = minioMultipartClient.completeMultipartUpload(CompleteMultipartUploadArgs.builder()
                 .bucket(bucketName)
                 .object(objectName)
@@ -182,39 +187,203 @@ public class MinioMultipartClientTest extends MinioApplicationTests {
                 .build());
         System.out.println("完成分片上传 objectWriteResponse.object：" + objectWriteResponse.object());
 
+        // 6. 获取文件下载地址
+        String fileUrl = minioMultipartClient.getFileUrl(GetPresignedObjectUrlArgs.builder()
+                .method(Method.GET)
+                .bucket(bucketName)
+                .object(objectName)
+                .expiry(1, TimeUnit.DAYS).build());
+        System.out.println("合并后的文件下载地址 fileUrl：" + fileUrl);
+    }
+
+    @Test
+    public void testUploadPart_3() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        // 源文件
+        File sourceFile = new File(sourceFilePath);
+
+        // 分片文件
+        List<String> chunkFilePaths = Lists.newArrayList(
+                "D:\\temp\\zip\\test\\part1.part",
+                "D:\\temp\\zip\\test\\part2.part",
+                "D:\\temp\\zip\\test\\part3.part"
+        );
+
+        // 1. 申请上传ID
+        String uploadId = minioMultipartClient.applyForUploadId(ApplyForUploadIdArgs.builder()
+                .bucket(bucketName)
+                .object(objectName).build());
+        System.out.println("uploadId：" + uploadId);
+
+        // 2. 上传分片-通过服务端上传分片
+        for (int i = 0; i < chunkFilePaths.size(); i++) {
+            Path chunkFilePath = new File(chunkFilePaths.get(i)).toPath();
+            // 上传分片
+            UploadPartResponse uploadPartResponse = minioMultipartClient.uploadPart(UploadPartArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .uploadId(uploadId)
+                    .partData(Files.newInputStream(chunkFilePath))
+                    .partSize(Files.size(chunkFilePath))
+                    .partNumber(i + 1)
+                    .build());
+            System.out.println("分片" + uploadPartResponse.partNumber() + "上传成功，etag=" + uploadPartResponse.etag());
+        }
+
+        // 3. 列出分片上传
+        ListPartsResponse listPartsResponse = minioMultipartClient.listParts(ListPartsArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .uploadId(uploadId).build());
+        List<Part> partList = listPartsResponse.result().partList();
+        int chunkCount = listPartsResponse.result().partList().size();
+        System.out.println("分片数量：" + chunkCount);
+        if (chunkCount == 0) {
+            throw new RuntimeException("分片数量为[0].");
+        }
+        for (int i = 0; i < chunkCount; i++) {
+            Part part = partList.get(i);
+            System.out.println("分片" + part.partNumber() + "上传成功，etag=" + part.etag());
+        }
+
+        // 4. 验证合并分片前，进行验证分片数据量
+        boolean validatedUploadBefore = minioMultipartClient.validateCompleteMultipartUploadBefore(ValidateCompleteMultipartUploadBeforeArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .uploadId(uploadId)
+                .objectPartSize(3)
+                .build());
+        System.out.println("分片上传验证-验证分片数据量：" + validatedUploadBefore);
+
+        // 4.1 验证分片上传（方式2，减少一次查询）
+        boolean validatedListParts = minioMultipartClient.validateListParts(listPartsResponse, 3);
+        System.out.println("分片上传验证-validatedListParts：" + validatedListParts);
+
+        // 5. 合并分片：进行完成分片上传
+        ObjectWriteResponse objectWriteResponse = minioMultipartClient.completeMultipartUpload(CompleteMultipartUploadArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .uploadId(uploadId)
+                .parts(partList)
+                .build());
+        System.out.println("合并分片，完成分片上传 objectName：" + objectWriteResponse.object());
+        System.out.println("合并分片，完成分片上传 objectEtag：" + objectWriteResponse.etag());
+
+        // 6. 验证合并分片后，进行验证对象完整性(无法验证)
+        String sourceFileMd5 = DigestUtils.md5DigestAsHex(Files.newInputStream(sourceFile.toPath()));
+        System.out.println("sourceFileMd5：" + sourceFileMd5);
+        System.out.println("sourceFileLength：" + sourceFile.length());
+
+        boolean validateCompleteMultipartUploadAfter = minioMultipartClient.validateCompleteMultipartUploadAfter(ValidateCompleteMultipartUploadAfterArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .matchETag(objectWriteResponse.etag())
+                .matchLength(sourceFile.length())
+                .build());
+        System.out.println("分片上传验证-验证对象完整性：" + validateCompleteMultipartUploadAfter);
+
         // 7. 获取文件下载地址
         String fileUrl = minioMultipartClient.getFileUrl(GetPresignedObjectUrlArgs.builder()
                 .method(Method.GET)
                 .bucket(bucketName)
                 .object(objectName)
                 .expiry(1, TimeUnit.DAYS).build());
-        System.out.println("fileUrl：" + fileUrl);
+        System.out.println("合并后的文件下载地址 fileUrl：" + fileUrl);
     }
 
-    public boolean validateCompleteMultipartUpload(ListPartsResponse partsResponse, long maxParts) throws NoSuchAlgorithmException, InsufficientDataException, IOException, InvalidKeyException, XmlParserException, InternalException, ServerException, ErrorResponseException, InvalidResponseException {
-        if (partsResponse == null || partsResponse.result() == null || partsResponse.result().partList() == null) {
-            throw new MultipartListException("分片上传未开始，请先上传分片！");
+    // 支持验证分片上传（合并分片前验证、合并分片后验证-目前看，只能根据文件大小进行验证源完整性，推荐在合并前进行验证分片数量。）
+    @Test
+    public void testUploadPart_4() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        // 源文件
+        File sourceFile = new File(sourceFilePath);
+
+        // 分片文件
+        List<String> chunkFilePaths = Lists.newArrayList(
+                "D:\\temp\\zip\\test\\part1.part",
+                "D:\\temp\\zip\\test\\part2.part",
+                "D:\\temp\\zip\\test\\part3.part"
+        );
+
+        // 1. 申请上传ID
+        String uploadId = minioMultipartClient.applyForUploadId(ApplyForUploadIdArgs.builder()
+                .bucket(bucketName)
+                .object(objectName).build());
+        System.out.println("uploadId：" + uploadId);
+
+        // 2. 获取分片上传地址-通过客户端上传分片
+        for (int i = 0; i < chunkFilePaths.size(); i++) {
+            File chunkFile = new File(chunkFilePaths.get(i));
+            // 获取分片上传地址
+            String chunkUploadUrl = minioMultipartClient.getPresignedPartUrl(GetPresignedPartUrlArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .uploadId(uploadId)
+                    .partNumber(i + 1)
+                    .build());
+
+            System.out.println("chunkUploadUrl = " + chunkUploadUrl);
+
+            // 上传分片
+            OkHttpUtils.doPutUploadFile(chunkUploadUrl, new MockMultipartFile(objectName, Files.newInputStream(chunkFile.toPath())));
         }
 
-        List<Part> partList = partsResponse.result().partList();
-        int size = partList.size();
-
-        if (size == maxParts) {
-            // 分片上传已结束
-            return true;
-        } else if (size < maxParts) {
-            // 分片上传未完成
-            return false;
-        } else {
-            // 分片上传已超限
-            throw new MultipartListException("分片上传已超限，请重新申请上传分片！");
+        // 3. 列出分片上传
+        ListPartsResponse listPartsResponse = minioMultipartClient.listParts(ListPartsArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .uploadId(uploadId).build());
+        List<Part> partList = listPartsResponse.result().partList();
+        int chunkCount = listPartsResponse.result().partList().size();
+        System.out.println("分片数量：" + chunkCount);
+        if (chunkCount == 0) {
+            throw new RuntimeException("分片数量为[0].");
         }
+        for (int i = 0; i < chunkCount; i++) {
+            Part part = partList.get(i);
+            System.out.println("分片" + part.partNumber() + "上传成功，etag=" + part.etag());
+        }
+
+        // 4. 验证合并分片前，进行验证分片数据量
+        boolean validatedUploadBefore = minioMultipartClient.validateCompleteMultipartUploadBefore(ValidateCompleteMultipartUploadBeforeArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .uploadId(uploadId)
+                .objectPartSize(3)
+                .build());
+        System.out.println("分片上传验证-验证分片数据量：" + validatedUploadBefore);
+
+        // 4.1 验证分片上传（方式2，减少一次查询）
+        boolean validatedListParts = minioMultipartClient.validateListParts(listPartsResponse, 3);
+        System.out.println("分片上传验证-validatedListParts：" + validatedListParts);
+
+        // 5. 合并分片：进行完成分片上传
+        ObjectWriteResponse objectWriteResponse = minioMultipartClient.completeMultipartUpload(CompleteMultipartUploadArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .uploadId(uploadId)
+                .parts(partList)
+                .build());
+        System.out.println("合并分片，完成分片上传 objectName：" + objectWriteResponse.object());
+        System.out.println("合并分片，完成分片上传 objectEtag：" + objectWriteResponse.etag());
+
+        // 6. 验证合并分片后，进行验证对象完整性(验证名称存在、长度)
+        String sourceFileMd5 = DigestUtils.md5DigestAsHex(Files.newInputStream(sourceFile.toPath()));
+        System.out.println("sourceFileMd5：" + sourceFileMd5);
+        System.out.println("sourceFileLength：" + sourceFile.length());
+
+        boolean validateCompleteMultipartUploadAfter = minioMultipartClient.validateCompleteMultipartUploadAfter(ValidateCompleteMultipartUploadAfterArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .matchETag(objectWriteResponse.etag())
+                .matchLength(sourceFile.length())
+                .build());
+        System.out.println("分片上传验证-验证对象完整性：" + validateCompleteMultipartUploadAfter);
+
+        // 7. 获取文件下载地址
+        String fileUrl = minioMultipartClient.getFileUrl(GetPresignedObjectUrlArgs.builder()
+                .method(Method.GET)
+                .bucket(bucketName)
+                .object(objectName)
+                .expiry(1, TimeUnit.DAYS).build());
+        System.out.println("合并后的文件下载地址 fileUrl：" + fileUrl);
     }
-
-    public static class MultipartListException extends RuntimeException {
-        public MultipartListException(String message) {
-            super(message);
-        }
-    }
-
 }

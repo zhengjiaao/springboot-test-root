@@ -8,19 +8,19 @@ import io.minio.ObjectArgs;
  */
 public class ListPartsArgs extends ObjectArgs {
     protected String uploadId;    // 上传id
-    protected Integer maxParts;   // 分片数量
+    protected Integer maxParts;   // 查询最大分片数量, 默认1000
     protected Integer partNumberMarker;   // 分片标记
 
     public String uploadId() {
-        return this.uploadId;
+        return uploadId;
     }
 
     public Integer maxParts() {
-        return this.maxParts;
+        return maxParts;
     }
 
     public Integer partNumberMarker() {
-        return this.partNumberMarker;
+        return partNumberMarker;
     }
 
     public static Builder builder() {
