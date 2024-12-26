@@ -48,6 +48,7 @@
         },
         methods: {
             handleFileChange(event) {
+                this.resetInitState(); // 重置初始化状态
                 this.file = event.target.files[0];
                 if (!this.file) {
                     this.$message.error('请选择文件');
@@ -55,6 +56,16 @@
                 }
                 this.fileName = this.file.name;
                 this.generateIdentifier(this.fileName);
+            },
+            async resetInitState() {
+                this.identifier = '';
+                this.progress = 0;
+                this.totalChunks = 0;
+                this.currentChunk = 0;
+                this.isUploading = false;
+                this.isPaused = false;
+                this.lastChunkUploaded = 0;
+                this.isFileInputDisabled = false;  // 启用文件输入框
             },
             async generateIdentifier() {
                 const uuid = await this.generateUUID();
