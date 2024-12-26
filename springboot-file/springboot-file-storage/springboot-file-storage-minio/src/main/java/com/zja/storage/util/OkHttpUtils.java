@@ -141,12 +141,17 @@ public class OkHttpUtils {
         OkHttpClient client = buildClient();
         String newUrl = buildUrlWithParams(url, params);
 
-        MediaType mediaType = MediaType.parse("application/octet-stream");
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", multipartFile.getOriginalFilename(), RequestBody.create(mediaType, multipartFile.getBytes()))
-                .build();
+        // todo form 实现上传文件stream，会存在与源文件大小不一致情况
+        // MediaType mediaType = MediaType.parse("application/octet-stream");
+        // RequestBody requestBody = new MultipartBody.Builder()
+        //         .setType(MultipartBody.FORM)
+        //         .addFormDataPart("file", multipartFile.getOriginalFilename(), RequestBody.create(mediaType, multipartFile.getBytes()))
+        //         .build();
 
+        // 创建请求体
+        RequestBody requestBody = RequestBody.create(multipartFile.getBytes(), MediaType.parse("application/octet-stream"));
+
+        // 构建请求
         Request request = null;
         if ("PUT".equalsIgnoreCase(requestType)) {
             request = new Request.Builder()
