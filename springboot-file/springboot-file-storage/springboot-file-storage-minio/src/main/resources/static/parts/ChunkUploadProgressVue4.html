@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chunk Upload - 支持上传/暂停/继续/取消</title>
+    <!-- Import Vue@3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <!-- Import Element Plus -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"/>
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <input type="file" ref="fileInput" @change="handleFileChange" :disabled="isFileInputDisabled">
+    <el-button @click="upload">上传</el-button>
+    <el-button @click="togglePause" v-if="isUploading">
+        {{ 'isPaused' ? '继续' : '暂停' }}
+    </el-button>
+    <el-button @click="confirmCancelUpload" v-if="isUploading">取消上传</el-button>
+    <el-progress :percentage="progress" :show-text="false"></el-progress>
+</div>
+
+<script>
+    // 配置对象，用于提高可配置性和可维护性
+    const uploadConfig = {
+        chunkApplyForUploadUrl: 'http://localhost:8080/rest/minio/chunk/apply',   // 申请分片上传URL
+        chunkMergeUrl: 'http://localhost:8080/rest/minio/chunk/merge',    // 分片合并URL
+        chunkCancelUrl: 'http://localhost:8080/rest/minio/chunk/cancel',    // 取消分片上传URL
+        chunkSize: 1024 * 1024 * 5  // 分块大小，推荐 chunkSize=5MB，推荐范围【5MB~10MB】，注，S3分片最小限制为5MB，也就是分片的大小必须大于5MB，同时小于5GB
+    };
+
+    const app = Vue.createApp({
+        data() {
+            return {
+                file: null,         // 文件
+                fileName: '',       // 文件名
+                uploadId: '',       // 申请分片上传的唯一ID
+                chunkUploadUrls: null,  // 文件唯一标识
+                identifier: '',     // 文件唯一标识
+                progress: 0,        // 上传进度
+                totalChunks: 0,     // 总块数
+                currentChunk: 0,    // 当前块
+                lastChunkUploaded: 0, // 记录最后一次上传成功的块号
+                isFileInputDisabled: false,  // 控制文件输入框是否禁用
+                controller: null,   // AbortController
+                isUploading: false, // 是否正在上传
+                isPaused: false,    // 是否暂停
+                isMergeComplete: false // 是否合并完成
+            };
+        },
+        methods: {
+            handleFileChange(event) {
+                this.resetInitState(); // 重置初始化状态
+                this.file = event.target.files[0];
+                if (!this.file) {
+                    this.$message.error('请选择文件');
+                    return;
+                }
+                this.fileName = this.file.name;
+                this.generateIdentifier(this.fileName);
+            },
+            async resetInitState() {
+                this.identifier = '';
+                this.uploadId = '';
+                this.chunkUploadUrls = [];
+                this.progress = 0;
+                this.totalChunks = 0;
+                this.currentChunk = 0;
+                this.lastChunkUploaded = 0;
+                this.isFileInputDisabled = false;  // 启用文件输入框
+                this.isUploading = false;
+                this.isPaused = false;
+                this.isMergeComplete = false;
+            },
+            async generateIdentifier() {
+                const uuid = await this.generateUUID();
+                const shortUuid = uuid.substring(uuid.length - 12);
+                const timestamp = Date.now();
+                const identifier = shortUuid + "_" + timestamp;
+                this.identifier = identifier;
+                console.log('生成唯一标识成功:', identifier);
+            },
+            async upload() {
+                if (!this.file) {
+                    this.$message.error('请选择文件');
+                    return;
+                }
+                if (this.isUploading) {
+                    this.$message.warning('文件正在上传中，请勿重复上传');
+                    return;
+                }
+                if (this.isMergeComplete) {
+                    this.$message.warning('文件已上传成功，请勿重复上传');
+                    return;
+                }
+
+                this.isUploading = true;
+                this.isPaused = false;
+                this.isFileInputDisabled = true;  // 禁用文件输入框
+                const chunkSize = uploadConfig.chunkSize;
+                const totalSize = this.file.size;
+                this.totalChunks = Math.ceil(totalSize / chunkSize);
+
+                try {
+                    this.controller = new AbortController();
+                    await this.chunkApplyForUpload(this.fileName, this.totalChunks)
+                    await this.uploadChunks(this.uploadId, this.chunkUploadUrls, this.file, chunkSize, this.totalChunks, this.identifier, this.fileName);
+                    await this.mergeChunks(this.uploadId, this.fileName, this.totalChunks, totalSize);
+
+                    if (this.controller && this.controller.signal.aborted) {
+                        this.$message.warning('上传已取消');
+                    } else {
+                        this.$message.success('上传成功');
+                    }
+                } catch (error) {
+                    if (error.name !== 'CanceledError') {
+                        console.error('上传或合并失败:', error);
+                        this.$message.error('上传或合并失败，请重试');
+                    }
+                } finally {
+                    this.isUploading = false;
+                    this.controller = null;
+                    this.isFileInputDisabled = false;  // 启用文件输入框
+                }
+            },
+            async chunkApplyForUpload(fileName, totalChunks) {
+                const formData = new FormData();
+                formData.append('objectName', fileName);
+                formData.append('totalChunks', totalChunks);
+
+                try {
+                    const response = await axios.post(uploadConfig.chunkApplyForUploadUrl, formData, {
+                        signal: this.controller.signal
+                    });
+                    if (response.status !== 200) {
+                        throw new Error('Upload failed');
+                    }
+                    // 处理响应数据
+                    this.uploadId = response.data.uploadId;
+                    this.chunkUploadUrls = response.data.chunkUploadUrls;
+                    console.log('申请分片上传URL成功:', response.data);
+                } catch (error) {
+                    console.error('申请分片上传URL失败:', error);
+                    throw error;
+                }
+            },
+            async uploadChunks(uploadId, chunkUploadUrls, file, chunkSize, totalChunks, identifier, fileName) {
+                this.validateUploadId(uploadId);
+                this.validateChunkUploadUrls(chunkUploadUrls, totalChunks);
+
+                this.currentChunk = this.lastChunkUploaded + 1;
+                this.progress = Math.round((this.lastChunkUploaded / totalChunks) * 100);
+
+                console.log(`Starting from chunk ${this.currentChunk}`);
+
+                for (let currentChunk = this.currentChunk; currentChunk <= totalChunks; currentChunk++) {
+                    if (this.isPaused) {
+                        console.log(`Upload Pausing at chunk ${currentChunk}`);
+                        await this.pause();
+                    }
+                    if (this.controller && this.controller.signal.aborted) {
+                        console.log(`Upload Canceled at chunk ${currentChunk}`)
+                        throw new CanceledError('Upload canceled');
+                    }
+
+                    console.log(`Starting Upload currentChunk ${currentChunk}`);
+
+                    let start = (currentChunk - 1) * chunkSize;
+                    let end = currentChunk === totalChunks ? file.size : currentChunk * chunkSize;
+                    const chunk = file.slice(start, end);
+                    const chunkUploadUrl = this.chunkUploadUrls[currentChunk - 1];
+
+                    try {
+                        const response = await axios.put(chunkUploadUrl, chunk, {
+                            headers: {
+                                'Content-Type': 'application/octet-stream'
+                            },
+                            signal: this.controller.signal
+                        });
+
+                        if (response.status !== 200) {
+                            throw new Error('Upload failed');
+                        }
+
+                        this.updateProgress(currentChunk, totalChunks);
+                        this.lastChunkUploaded = currentChunk;
+                        console.log(`Chunk ${currentChunk} uploaded successfully`);
+                    } catch (error) {
+                        if (error.name === 'CanceledError') {
+                            console.log('上传已取消');
+                            return;
+                        } else {
+                            console.error('上传块失败:', error);
+                            throw new Error('Upload failed');
+                        }
+                    }
+                }
+            },
+            async mergeChunks(uploadId, fileName, totalChunks, totalSize) {
+                this.validateUploadId(uploadId);
+
+                const formData = new FormData();
+                formData.append('uploadId', uploadId);
+                formData.append('objectName', fileName);
+                formData.append('totalChunks', totalChunks);
+                formData.append('fileSize', totalSize);
+
+                try {
+                    if (this.isPaused) {
+                        await this.pause();
+                    }
+                    if (this.controller && this.controller.signal.aborted) {
+                        throw new CanceledError('Merge canceled');
+                    }
+
+                    const response = await axios.post(uploadConfig.chunkMergeUrl, formData, {
+                        signal: this.controller.signal
+                    });
+                    if (response.status !== 200) {
+                        throw new Error('Merge failed');
+                    }
+                    this.isMergeComplete = true;
+                    console.log('合并块成功');
+                } catch (error) {
+                    if (error.name === 'CanceledError') {
+                        console.log('合并已取消');
+                        return;
+                    } else {
+                        console.error('合并块失败:', error);
+                        throw new Error('Merge failed');
+                    }
+                }
+            },
+            async generateUUID() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    const r = (Math.random() * 16) | 0,
+                        v = c === 'x' ? r : (r & 0x3) | 0x8;
+                    return v.toString(16);
+                });
+            },
+            async confirmCancelUpload() {
+                this.pauseUpload(); // 先暂停上传
+                const confirmResult = await this.$confirm('确定要取消上传吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).catch(err => err);
+
+                if (confirmResult === 'confirm') {
+                    await this.cancelUpload(this.uploadId, this.fileName);
+                } else {
+                    this.resumeUpload(); // 继续上传
+                }
+            },
+            async cancelUpload(uploadId, fileName) {
+                if (this.controller) {
+                    const formData = new FormData();
+                    formData.append('uploadId', uploadId);
+                    formData.append('objectName', fileName);
+
+                    try {
+                        const response = await axios.post(uploadConfig.chunkCancelUrl, formData, {
+                            signal: this.controller.signal
+                        });
+                        if (response.status !== 200) {
+                            throw new Error('Cancel failed');
+                        }
+                        // 处理响应数据
+                        console.log('取消分片上传成功');
+                    } catch (error) {
+                        console.error('取消分片上传失败:', error);
+                        throw error;
+                    }
+
+                    this.controller.abort();
+                    await this.resetState();
+                }
+            },
+            async resetState() {
+                this.file = null;
+                this.fileName = '';
+                this.identifier = '';
+                this.uploadId = '';
+                this.chunkUploadUrls = [];
+                this.progress = 0;
+                this.totalChunks = 0;
+                this.currentChunk = 0;
+                this.lastChunkUploaded = 0;
+                this.isFileInputDisabled = false;  // 启用文件输入框
+                this.$refs.fileInput.value = '';  // 清空文件输入框的值
+
+                this.isUploading = false;
+                this.isPaused = false;
+                this.isMergeComplete = false;
+            },
+            updateProgress(currentChunk, totalChunks) {
+                this.progress = Math.round((currentChunk / totalChunks) * 100);
+            },
+            // 暂停上传
+            pauseUpload() {
+                this.isPaused = true;
+                console.log('Upload paused');
+            },
+            // 恢复上传
+            resumeUpload() {
+                this.isPaused = false;
+                console.log('Upload resumed');
+            },
+            // 暂停和恢复上传切换
+            togglePause() {
+                if (this.isPaused) {
+                    this.isPaused = false;
+                    console.log('Resuming upload');
+                } else {
+                    this.isPaused = true;
+                    console.log('Pausing upload');
+                }
+            },
+            async pause() {
+                while (this.isPaused) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            },
+            validateUploadId(uploadId) {
+                if (uploadId === null) {
+                    throw new Error('uploadId 不能为null');
+                }
+            },
+            validateChunkUploadUrls(chunkUploadUrls, totalChunks) {
+                if (chunkUploadUrls === null) {
+                    throw new Error('chunkUploadUrls 不能为null');
+                }
+                if (chunkUploadUrls.length !== totalChunks) {
+                    throw new Error('chunkUploadUrls 集合大小 与 totalChunks不相等');
+                }
+            }
+        }
+    });
+
+    // 自定义错误类
+    class CanceledError extends Error {
+        constructor(message) {
+            super(message);
+            this.name = 'CanceledError';
+        }
+    }
+
+    app.use(ElementPlus);
+    app.mount('#app');
+</script>
+</body>
