@@ -1,15 +1,13 @@
 package com.zja.poitl;
 
 import com.deepoove.poi.XWPFTemplate;
-import com.deepoove.poi.config.Configure;
-import com.deepoove.poi.config.ConfigureBuilder;
+import com.deepoove.poi.data.Texts;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author: zhengja
@@ -24,7 +22,7 @@ public class PoiTlTest {
         XWPFTemplate template = XWPFTemplate.compile("template.docx").render(
                 new HashMap<String, Object>() {{
                     put("title", "Hi, poi-tl Word模板引擎");
-                    put("name", "John Doe");
+                    put("name", "John Doe" + Texts.of(",你好").color("000000").create() + "世界");
                     // put("age", 30);
                 }});
         template.writeAndClose(Files.newOutputStream(Paths.get("output1.docx")));
@@ -34,7 +32,7 @@ public class PoiTlTest {
     @Test
     public void template2_test() throws IOException {
         // 方式2：
-        try (FileInputStream fis = new FileInputStream("template.docx");
+        try (FileInputStream fis = new FileInputStream("templates/word/template.docx");
              FileOutputStream fos = new FileOutputStream("output2.docx")) {
             XWPFTemplate template = XWPFTemplate.compile(fis).render(
                     new HashMap<String, Object>() {{

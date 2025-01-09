@@ -53,7 +53,10 @@
         <dependency>
             <groupId>com.deepoove</groupId>
             <artifactId>poi-tl</artifactId>
+            <!-- poi 5.2.2 -->
             <version>1.12.1</version>
+            <!-- poi 4.1.2 -->
+            <!-- <version>1.10.5</version> -->
         </dependency>
 
     </dependencies>
