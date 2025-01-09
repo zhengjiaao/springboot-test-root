@@ -79,4 +79,20 @@ public class WordPoiUtilTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    public void test_2() throws IOException {
+        try (XWPFDocument xwpfDocument = WordPoiUtil.readDocument(new File("D:\\temp\\word\\绿心准入合规性检测报告 - 2024-12-30T155549.729.docx"))) {
+            // WordPoiUtil.replaceText(xwpfDocument, "{{word_0}}", "新文本");
+            // WordPoiUtil.replaceTextWithStyle(xwpfDocument, "{{word_0}}", "新文本",null);
+            // WordPoiUtil.replaceTextAndSetStyle(xwpfDocument, "{{word_0}}", "新文本",  false, "FF0000");
+            // WordPoiUtil.replaceTextColor( "{{word_0}}",xwpfDocument,  "FF0000");
+            // WordPoiUtil.replaceTextAndSetStyle(xwpfDocument, "{{word_0}}", "新文本", "" ,0,false, "FF0000");
+            // WordPoiUtil.replaceText(xwpfDocument, "{{word_0}}", "新文本", "FF0000" ,12, false);
+            // WordPoiUtil.replaceTextAndSetColor(xwpfDocument, "{{word_0}}", "新文本", "FF0000");
+            // WordPoiUtil.replaceTextAndSetColor(xwpfDocument, "{{word_0}}", "新文本", "FF0000");
+
+            WordPoiUtil.saveDocument(xwpfDocument, new File("D:\\temp\\word\\test_create2.docx"));
+        }
+    }
 }

@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * poi 用于操作Microsoft Office格式文件（如Word、Excel和PowerPoint）的Java库。它提供了一组API，使开发者可以读取、修改和创建这些文件。
@@ -27,7 +28,7 @@ public class WordPOITest {
 
     // poi 创建 word
     @Test
-    public void test1() {
+    public void test1_create() {
         File tempFile = tempDir.resolve("test1.docx").toFile();
 
         // 创建一个新的文档对象
@@ -47,6 +48,29 @@ public class WordPOITest {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    // 读
+    @Test
+    public void test1_getText() {
+        File tempFile = tempDir.resolve("test1.docx").toFile();
+        try (FileInputStream fis = new FileInputStream(tempFile);
+             XWPFDocument document = new XWPFDocument(fis)) {
+
+            for (XWPFParagraph paragraph : document.getParagraphs()) {
+                List<XWPFRun> runs = paragraph.getRuns();
+                for (XWPFRun run : runs) {
+                    System.out.println("Text: " + run.getText(0));
+                    System.out.println("Font Family: " + run.getFontFamily());
+                    System.out.println("Font Size: " + run.getFontSize());
+                    System.out.println("Bold: " + run.isBold());
+                    System.out.println("Color: " + run.getColor());
+                    System.out.println("-----------------------------");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

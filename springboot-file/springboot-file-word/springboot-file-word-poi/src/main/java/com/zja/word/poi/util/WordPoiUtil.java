@@ -1,16 +1,24 @@
 package com.zja.word.poi.util;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.StringUtil;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Author: zhengja
@@ -20,6 +28,27 @@ public class WordPoiUtil {
 
     private WordPoiUtil() {
 
+    }
+
+    /**
+     * 读取文档
+     *
+     * @param inputFile 输入文件
+     */
+    public static XWPFDocument readDocument(File inputFile) throws IOException {
+        return new XWPFDocument(Files.newInputStream(inputFile.toPath()));
+    }
+
+    /**
+     * 保存文档
+     *
+     * @param document   文档对象
+     * @param outputFile 输出文件
+     */
+    public static void saveDocument(XWPFDocument document, File outputFile) throws IOException {
+        FileOutputStream out = new FileOutputStream(outputFile);
+        document.write(out);
+        out.close();
     }
 
     /**
