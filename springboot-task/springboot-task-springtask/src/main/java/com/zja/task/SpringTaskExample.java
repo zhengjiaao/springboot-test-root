@@ -8,10 +8,13 @@
  */
 package com.zja.task;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Spring Task  @Scheduled 定时任务
@@ -53,5 +56,29 @@ public class SpringTaskExample {
     @Scheduled(initialDelay = 2000, fixedDelay = 5000)
     public void run3() {
         System.out.println("SpringTaskExample " + Thread.currentThread().getName() + "=====>>>>>使用initialDelay  {}" + "时间：" + new Date() + "-" + (System.currentTimeMillis() / 1000));
+    }
+
+    // 延迟删除文件
+    private final Map<String, Long> delayedFiles = new ConcurrentHashMap<>();
+
+    public void deleteFileByDelayed(String fileId, long delayInMillis) {
+        long deleteTime = System.currentTimeMillis() + delayInMillis;
+        delayedFiles.put(fileId, deleteTime);
+    }
+
+    @Async
+    @Scheduled(fixedDelay = 60000) // 每分钟执行一次，可根据需求调整
+    public void deleteFilesScheduled() {
+        long currentTime = System.currentTimeMillis();
+
+        for (Map.Entry<String, Long> entry : delayedFiles.entrySet()) {
+            String fileId = entry.getKey();
+            Long deleteTime = entry.getValue();
+
+            if (currentTime >= deleteTime) {
+                // deleteFile(fileId); // 删除文件
+                delayedFiles.remove(fileId);
+            }
+        }
     }
 }
