@@ -10,7 +10,7 @@
 - [springboot-mq-rabbitmq-spring](springboot-mq-rabbitmq-spring)
 - [springboot-mq-rabbitmq-starter](springboot-mq-rabbitmq-starter)
 - [springboot-mq-rocketmq](springboot-mq-rocketmq)
-- [springboot-mq-rocketmq-starter](springboot-mq-rocketmq-starter)
+- [springboot-mq-rocketmq-starter](springboot-mq-rocketmq4x-starter)
 
 
 ## 适配的中间件版本

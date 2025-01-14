@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>springboot-test-root</artifactId>
+		<artifactId>springboot-mq</artifactId>
 		<groupId>com.zja</groupId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>springboot-mq</artifactId>
+	<artifactId>springboot-mq-rocketmq5x</artifactId>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -16,12 +16,10 @@
 	</properties>
 
 	<modules>
-<!--		<module>springboot-mq-kafka</module>-->
-		<module>springboot-mq-rabbitmq</module>
-		<module>springboot-mq-rabbitmq-spring</module>
-		<module>springboot-mq-rabbitmq-starter</module>
-		<module>springboot-mq-rocketmq</module>
-		<module>springboot-mq-rocketmq5x</module>
+		<!-- <module>springboot-mq-rocketmq5x-consumer-a</module> -->
+		<!-- <module>springboot-mq-rocketmq5x-consumer-b</module> -->
+		<!-- <module>springboot-mq-rocketmq5x-producer</module> -->
+		<module>springboot-mq-rocketmq5x-starter</module>
 	</modules>
 
 </project>

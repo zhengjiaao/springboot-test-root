@@ -1,0 +1,27 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+# rocketmq-spring-boot-starter 2.2.0及其以上版本：
+rocketmq:
+#  name-server: localhost:9876  # NameServer 地址，集群使用';'隔开
+  name-server: 192.168.159.148:9876  # NameServer 地址，集群使用';'隔开
+  producer:
+    group: springboot-producer-group  # 生产者组名称
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 2   # 发送失败重试次数
+    retry-next-server: true   # 发送失败是否重试到下一个服务器
+#    access-key: RocketMQ    # 若启用了 ACL 功能
+#    secret-key: 12345678    # 若启用了 ACL 功能
+  consumer:
+    group: springboot-consumer-group  # 消费者组名称
+    topic: test-topic         # 订阅的主题
+#    access-key: RocketMQ    # 若启用了 ACL 功能
+#    secret-key: 12345678    # 若启用了 ACL 功能
