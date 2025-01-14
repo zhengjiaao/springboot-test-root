@@ -17,6 +17,8 @@
 
     <modules>
         <module>springboot-rule-aviator</module>
+        <module>springboot-rule-commons-jexl3</module>
+        <module>springboot-rule-groovy</module>
         <module>springboot-rule-qlexpress</module>
     </modules>
 

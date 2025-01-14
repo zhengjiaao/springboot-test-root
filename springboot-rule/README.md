@@ -4,6 +4,16 @@
 规则引擎（表达式/脚本等）：
 
 
+## spring-boot 集成(组件)示例
+
+> 以下是已经完成的示例模块
+
+- [springboot-rule-aviator](./springboot-rule-aviator)
+- [springboot-rule-commons-jexl3](./springboot-rule-commons-jexl3)
+- [springboot-rule-groovy](./springboot-rule-groovy)
+- [springboot-rule-liteflow](./springboot-rule-liteflow)
+- [springboot-rule-qlexpress](./springboot-rule-qlexpress)
+
 
 ## 规则引擎特性对比：Drools、Aviator、EasyRule与QLExpress
 
