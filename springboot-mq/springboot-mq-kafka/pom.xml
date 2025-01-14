@@ -16,11 +16,18 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
+        <!-- <dependency>
+            &lt;!&ndash;支持Java17 spring-kafka 内置了 kafka-clients 3.8.1&ndash;&gt;
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
-            <version>2.9.0</version>
+            <version>3.3.1</version>
+        </dependency> -->
+
+        <dependency>
+            <!--支持Java8 spring-kafka 内置了 kafka-clients 3.2.3-->
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>2.9.13</version>
         </dependency>
 
         <dependency>
@@ -38,14 +45,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
             <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

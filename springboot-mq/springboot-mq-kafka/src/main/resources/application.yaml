@@ -2,7 +2,7 @@
 spring:
   kafka:
     # kafka连接接地址
-    bootstrap-servers: 192.168.159.136:9092
+    bootstrap-servers: 192.168.159.148:9092
     # 生产者配置
     producer:
       # 序列化key的类

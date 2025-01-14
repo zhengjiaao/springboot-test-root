@@ -6,7 +6,7 @@
  * @Date: 2022-12-19 10:29
  * @Since:
  */
-package com.zja.controller;
+package com.zja.kafka.controller;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * http://localhost:8080/swagger-ui/index.html#/
- */
 @RestController
 @RequestMapping("/kafka")
 public class KafkaController {
