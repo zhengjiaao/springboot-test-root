@@ -15,7 +15,7 @@ spring:
       hibernate:
         format_sql: false # 默认false，true格式化输出的SQL，使其更易读
         generate_statistics: false # 默认false，true开启统计信息收集，可用于进一步分析SQL执行情况
-#        enable_lazy_load_no_trans: true
+        enable_lazy_load_no_trans: true # 默认false，true开启懒加载，避免懒加载失败
 #        default_batch_fetch_size: 10
 #    # true一直开启session，避免导致懒加载失败
 #    open-in-view: true # 默认false，会导致懒加载失效 @Basic(fetch = FetchType.LAZY)

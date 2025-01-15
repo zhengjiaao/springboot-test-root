@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "t_project")
 @EntityListeners(value = AuditingEntityListener.class)
-public class Project implements Serializable, PersistentAttributeInterceptable {
+public class Project implements Serializable/*, PersistentAttributeInterceptable*/ {
 
     @Id
     private String id = String.valueOf(System.currentTimeMillis());
@@ -48,20 +48,18 @@ public class Project implements Serializable, PersistentAttributeInterceptable {
      * json 字符串存储字段
      */
     @Lob
-    // @Lazy
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "config_json")
-    private JSONObject configJson;  // jpa默认生成字段类型为错误的oid，正确应是text
+    private JSONObject configJson;  // jpa 默认把JSONObject字段类型生成为错误的oid，正确应是text(建议手动更改)
     // private String configJson;  // 注意：JSONObject 与 String 不能互换
 
     /**
      * 文本 or json字符串存储字段
      */
-    // @Lazy
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "config_text")
-    private String configText; // jpa默认生成正确的字段类型为text
+    private String configText; // jpa 默认把String字段类型生成为text
 
     /**
      * 当前状态 正常 1，已删除 -1
@@ -103,7 +101,7 @@ public class Project implements Serializable, PersistentAttributeInterceptable {
 
     // 以下是实现懒加载
 
-    @Transient
+/*    @Transient
     private PersistentAttributeInterceptor interceptor;
 
     @Override
@@ -144,5 +142,5 @@ public class Project implements Serializable, PersistentAttributeInterceptable {
             interceptor.writeObject(this, "configText", this.configText, configText);
         }
         this.configText = configText;
-    }
+    }*/
 }

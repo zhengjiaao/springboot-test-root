@@ -100,14 +100,14 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-<!--            <plugin>
+           <plugin>
                 <groupId>org.hibernate.orm.tooling</groupId>
                 <artifactId>hibernate-enhance-maven-plugin</artifactId>
                 <version>${hibernate.version}</version>
                 <executions>
                     <execution>
                         <configuration>
-                            &lt;!&ndash;启用简单字段的延迟加载&ndash;&gt;
+                            <!--启用简单字段的延迟加载-->
                             <enableLazyInitialization>true</enableLazyInitialization>
                         </configuration>
                         <goals>
@@ -115,7 +115,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 
