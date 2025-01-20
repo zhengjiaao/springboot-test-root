@@ -241,4 +241,90 @@ public class WordPoiUtil {
         }
     }
 
+    /**
+     * 设置整个表格的单元格内容垂直居中
+     */
+    public static void centerTableVertically(XWPFTable table) {
+        for (XWPFTableRow row : table.getRows()) {
+            for (XWPFTableCell cell : row.getTableCells()) {
+                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                    paragraph.setVerticalAlignment(TextAlignment.CENTER); // 垂直居中
+                }
+                cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER); // 垂直
+            }
+        }
+    }
+
+    /**
+     * 设置指定列的单元格内容垂直居中
+     */
+    public static void centerColumnVertically(XWPFTable table, int columnIndex) {
+        int rowCount = table.getRows().size();
+        for (int i = 0; i < rowCount; i++) {
+            XWPFTableCell cell = table.getRow(i).getCell(columnIndex);
+            if (cell != null) {
+                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                    paragraph.setVerticalAlignment(TextAlignment.CENTER); // 垂直居中
+                }
+                cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER); // 垂直
+            }
+        }
+    }
+
+    /**
+     * 设置指定行的单元格内容垂直居中
+     */
+    public static void centerRowVertically(XWPFTable table, int rowIndex) {
+        XWPFTableRow row = table.getRow(rowIndex);
+        if (row != null) {
+            for (XWPFTableCell cell : row.getTableCells()) {
+                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                    paragraph.setVerticalAlignment(TextAlignment.CENTER); // 垂直居中
+                }
+                cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER); // 垂直
+            }
+        }
+    }
+
+    /**
+     * 设置指定单元格的单元格内容垂直居中
+     */
+    public static void centerCellVertically(XWPFTable table, int rowIndex, int columnIndex) {
+        XWPFTableRow row = table.getRow(rowIndex);
+        if (row != null) {
+            XWPFTableCell cell = row.getCell(columnIndex);
+            if (cell != null) {
+                for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                    paragraph.setVerticalAlignment(TextAlignment.CENTER); // 垂直居中
+                }
+                cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER); // 垂直
+            }
+        }
+    }
+
+    // 设置指定单元格的新值
+    private void setCellNewValue(XWPFTable table, int rowIndex, int columnIndex, String newValue) {
+        XWPFTableRow row = table.getRow(rowIndex);
+        if (row != null) {
+            XWPFTableCell cell = row.getCell(columnIndex);
+            if (cell == null) {
+                cell = row.createCell();
+            }
+            // 清空单元格文本内容
+            clearCellText(cell);
+            cell.setText(newValue);
+        }
+    }
+
+    // 清空单元格文本内容
+    private void clearCellText(XWPFTableCell cell) {
+        // 清空所有段落的文本内容
+        for (XWPFParagraph paragraph : cell.getParagraphs()) {
+            // 删除段落中的所有运行（runs）
+            for (XWPFRun run : paragraph.getRuns()) {
+                run.setText("", 0);
+            }
+        }
+    }
+
 }
