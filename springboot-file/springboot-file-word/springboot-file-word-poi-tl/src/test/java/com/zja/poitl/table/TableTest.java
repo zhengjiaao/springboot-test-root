@@ -4,9 +4,12 @@ import com.deepoove.poi.XWPFTemplate;
 import com.deepoove.poi.data.*;
 import com.deepoove.poi.policy.TableRenderPolicy;
 import com.deepoove.poi.util.TableTools;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.junit.jupiter.api.Test;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -448,4 +451,230 @@ public class TableTest {
     private static InputStream getResourceAsStream(String fileName) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
     }
+
+
+    // 动态单个表格(合并相同值的行)
+    @Test
+    public void test7() throws IOException {
+        // 创建表格数据
+        List<RowRenderData> rows = new ArrayList<>();
+        rows.add(Rows.of("Header 1", "Header 2", "Header 3").create());
+        rows.add(Rows.of("Row 1 Col 1", "1.5", "Row 1 Col 3").create());
+        rows.add(Rows.of("Row 2 Col 1", "1.2", "Row 2 Col 3").create());
+        rows.add(Rows.of("Row 2 Col 1", "1.5", "Row 3 Col 3").create());
+        rows.add(Rows.of("Row 4 Col 1", "2", "Row 4 Col 3").create());
+
+        // 创建表格对象
+        TableRenderData table = new TableRenderData();
+        table.setRows(rows);
+
+        // 创建数据模型
+        Map<String, Object> data = new HashMap<>();
+        data.put("table", table);
+
+        // 加载模板文件
+        XWPFTemplate template = XWPFTemplate.compile(getResourceAsStream("templates/word/table/Table_Test_1.docx")).render(data);
+
+        // 获取模板中的第一个表格
+        XWPFTable xwpfTable = template.getXWPFDocument().getTables().get(0);
+
+        // 合并指定列的单元格
+        List<String> mergedRows = mergeCellsV2(xwpfTable, 0); // 合并第一列
+
+        // 合并其他列，保持与第0列合并行一致
+        // mergeColumnsBasedOnMergedRows(xwpfTable, mergedRows, 1); // 合并第二列
+        mergeColumnsBasedOnMergedRows(xwpfTable, mergedRows, 2); // 合并第3列，并且读取计算第2列值，填入第3列
+
+        // 设置合并后的单元格内容居中
+        centerMergedCells(xwpfTable, 0); // 第一列
+        centerMergedCells(xwpfTable, 1); // 第二列
+        centerMergedCells(xwpfTable, 2); // 第三列
+
+        // 输出合并信息
+        System.out.println("Merged rows: " + mergedRows);
+        // Merged rows: [1-1, 2-2, 3-4, 5-5]
+
+        // 设置合并后的单元格新值
+        setCellNewValue(xwpfTable, 1, 0, "New Value 1"); // 设置第1行第0列的新值
+        setCellNewValue(xwpfTable, 2, 0, "New Value 2"); // 设置第2行第0列的新值
+
+        // 输出生成的文档
+        template.writeToFile("target/out_Table_Test_7.docx");
+    }
+
+    // 合并单元格-合并指定列具有相同值的行，并返回合并后的行信息
+    private List<String> mergeCellsV2(XWPFTable table, int columnIndex) {
+        int rowCount = table.getRows().size();
+        if (rowCount <= 1) {
+            return new ArrayList<>(); // 如果只有一行，不需要合并
+        }
+
+        String previousValue = null;
+        boolean isMergeStarted = false;
+        List<String> mergedRows = new ArrayList<>();
+        int startRow = 0;
+
+        for (int i = 0; i < rowCount; i++) {
+            XWPFTableRow row = table.getRow(i);
+            XWPFTableCell cell = row.getCell(columnIndex);
+
+            String currentValue = cell.getText();
+
+            if (i == 0 || !currentValue.equals(previousValue)) {
+                // 新的值，开始新的合并
+                if (isMergeStarted) {
+                    // 结束上一次的合并
+                    mergedRows.add((startRow + 1) + "-" + i);
+                    isMergeStarted = false;
+                }
+                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);
+                previousValue = currentValue;
+                startRow = i;
+                isMergeStarted = true;
+            } else {
+                // 相同的值，继续合并
+                cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+            }
+        }
+
+        // 处理最后一组合并
+        if (isMergeStarted) {
+            mergedRows.add((startRow + 1) + "-" + rowCount);
+        }
+
+        return mergedRows;
+    }
+
+    // 根据合并行信息合并指定列，并清空值
+    /*private void mergeColumnsBasedOnMergedRows(XWPFTable table, List<String> mergedRows, int columnIndex) {
+        for (String mergedRow : mergedRows) {
+            // [1-1, 2-2, 3-4, 5-5]
+            String[] range = mergedRow.split("-");
+            int startRow = Integer.parseInt(range[0]);
+            int endRow = Integer.parseInt(range[1]);
+            System.out.println("startRow:" + startRow + ",endRow:" + endRow);
+
+            if (startRow != endRow) {
+                startRow = startRow - 1;
+                endRow = endRow - 1;
+                for (int i = startRow; i <= endRow; i++) {
+                    XWPFTableRow row1 = table.getRow(i);
+                    XWPFTableCell cell = row1.getCell(columnIndex);
+                    if (cell == null) {
+                        cell = row1.createCell();
+                    }
+                    // 设置合并标记
+                    cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+
+                    // 清理单元格文本内容
+                    clearCellText(cell);
+                }
+            }
+        }
+    }*/
+
+    // 根据合并行信息合并指定列，并设置新值
+    private void mergeColumnsBasedOnMergedRows(XWPFTable table, List<String> mergedRows, int columnIndex) {
+        for (String mergedRow : mergedRows) {
+            // [1-1, 2-2, 3-4, 5-5]
+            String[] range = mergedRow.split("-");
+            int startRow = Integer.parseInt(range[0]);
+            int endRow = Integer.parseInt(range[1]);
+            System.out.println("startRow:" + startRow + ",endRow:" + endRow);
+
+            if (startRow != endRow) {
+                startRow = startRow - 1;
+                endRow = endRow - 1;
+                for (int i = startRow; i <= endRow; i++) {
+                    XWPFTableRow row1 = table.getRow(i);
+                    XWPFTableCell cell = row1.getCell(columnIndex);
+                    if (cell == null) {
+                        cell = row1.createCell();
+                    }
+                    // 设置合并标记
+                    cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+
+                    // 清理单元格文本内容
+                    clearCellText(cell);
+
+                    // 设置新值
+                    // cell.setText("666");
+                    // 设置前一列的值
+                    int prevColumnIndex = columnIndex - 1;
+                    cell.setText(getCellValue(table, prevColumnIndex, startRow, endRow));
+                }
+            }
+        }
+    }
+
+
+    // 获取指定列在指定行范围内的文本内容, 并返回合并后的文本内容
+ /*   private String getCellValue(XWPFTable table, int columnIndex, int startRow, int endRow) {
+        StringBuilder textValue = new StringBuilder();
+        for (int i = startRow; i <= endRow; i++) {
+            XWPFTableRow row = table.getRow(i);
+            if (row != null) {
+                XWPFTableCell cell = row.getCell(columnIndex);
+                if (cell == null) {
+                    cell = row.createCell();
+                }
+                textValue.append(cell.getText());
+            }
+        }
+        return textValue.toString();
+    }*/
+
+    // 获取指定列在指定行范围内的文本内容，并将数字相加
+    private String getCellValue(XWPFTable table, int columnIndex, int startRow, int endRow) {
+        double sum = 0.0;
+        boolean hasValidValue = false;
+
+        for (int i = startRow; i <= endRow; i++) {
+            XWPFTableRow row = table.getRow(i);
+            if (row != null) {
+                XWPFTableCell cell = row.getCell(columnIndex);
+                if (cell == null) {
+                    cell = row.createCell();
+                }
+                String text = cell.getText();
+                if (StringUtils.isNotEmpty(text)) {
+                    try {
+                        sum += Double.parseDouble(text);
+                        hasValidValue = true;
+                    } catch (NumberFormatException e) {
+                        // 忽略无法解析的数字
+                        System.err.println("无法解析数字: " + text);
+                    }
+                }
+            }
+        }
+
+        return hasValidValue ? String.valueOf(sum) : "";
+    }
+
+    // 设置指定单元格的新值
+    private void setCellNewValue(XWPFTable table, int rowIndex, int columnIndex, String newValue) {
+        XWPFTableRow row = table.getRow(rowIndex);
+        if (row != null) {
+            XWPFTableCell cell = row.getCell(columnIndex);
+            if (cell == null) {
+                cell = row.createCell();
+            }
+            // 清空单元格文本内容
+            clearCellText(cell);
+            cell.setText(newValue);
+        }
+    }
+
+    // 清空单元格文本内容
+    private void clearCellText(XWPFTableCell cell) {
+        // 清空所有段落的文本内容
+        for (XWPFParagraph paragraph : cell.getParagraphs()) {
+            // 删除段落中的所有运行（runs）
+            for (XWPFRun run : paragraph.getRuns()) {
+                run.setText("", 0);
+            }
+        }
+    }
+
 }
