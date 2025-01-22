@@ -5,6 +5,9 @@ import com.deepoove.poi.config.Configure;
 import com.zja.poitl.mdoel.Goods;
 import com.zja.poitl.mdoel.Labor;
 import com.zja.poitl.mdoel.PaymentHackData;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -66,6 +69,18 @@ public class CustomLoopRowTableRenderPolicyTest {
                 .bind("labors", customLoopTableRenderPolicy).bind("goods2", customLoopSameLineTableRenderPolicy)
                 .bind("labors2", customLoopSameLineTableRenderPolicy).build();
         XWPFTemplate template = XWPFTemplate.compile(getResourceAsStream(resource), config).render(data);
+
+        // 测试输出数据
+        // List<XWPFTable> tables = template.getXWPFDocument().getTables();
+        // XWPFTable table = tables.get(0);
+        // List<XWPFTableRow> rows = table.getRows();
+        // for (XWPFTableRow xwpfTableRow : rows) {
+        //     List<XWPFTableCell> tableCells = xwpfTableRow.getTableCells();
+        //     for (XWPFTableCell xwpfTableCell : tableCells) {
+        //         System.out.println(xwpfTableCell.getText());
+        //     }
+        // }
+
         template.writeToFile("target/out_render_looprow2.docx");
     }
 

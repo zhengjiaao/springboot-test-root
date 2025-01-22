@@ -70,11 +70,13 @@ public class TableTest {
         List<RowRenderData> rows1 = new ArrayList<>();
         rows1.add(Rows.of("Row 1 Col 1", "Row 1 Col 2", "Row 1 Col 3").create());
         rows1.add(Rows.of("Row 2 Col 1", "Row 2 Col 2", "Row 2 Col 3").create());
+        rows1.add(Rows.of("Row 3 Col 1", "Row 3 Col 2", "Row 3 Col 3").create());
 
         // 创建第二个表格数据
         List<RowRenderData> rows2 = new ArrayList<>();
         rows2.add(Rows.of("Row 1 Col A", "Row 1 Col B", "Row 1 Col C").create());
         rows2.add(Rows.of("Row 2 Col A", "Row 2 Col B", "Row 2 Col C").create());
+        rows2.add(Rows.of("Row 3 Col A", "Row 3 Col B", "Row 3 Col C").create());
 
         // 创建表格对象
         TableRenderData table1 = new TableRenderData();
@@ -462,7 +464,9 @@ public class TableTest {
         rows.add(Rows.of("Row 1 Col 1", "1.5", "Row 1 Col 3").create());
         rows.add(Rows.of("Row 2 Col 1", "1.2", "Row 2 Col 3").create());
         rows.add(Rows.of("Row 2 Col 1", "1.5", "Row 3 Col 3").create());
-        rows.add(Rows.of("Row 4 Col 1", "2", "Row 4 Col 3").create());
+        rows.add(Rows.of("Row 3 Col 1", "1.5", "Row 4 Col 3").create());
+        rows.add(Rows.of("Row 3 Col 1", "1.3", "Row 5 Col 3").create());
+        rows.add(Rows.of("Row 4 Col 1", "2", "Row 6 Col 3").create());
 
         // 创建表格对象
         TableRenderData table = new TableRenderData();
@@ -483,7 +487,7 @@ public class TableTest {
 
         // 合并其他列，保持与第0列合并行一致
         // mergeColumnsBasedOnMergedRows(xwpfTable, mergedRows, 1); // 合并第二列
-        mergeColumnsBasedOnMergedRows(xwpfTable, mergedRows, 2); // 合并第3列，并且读取计算第2列值，填入第3列
+        mergeColumnsBasedOnMergedRowsSetNewValue(xwpfTable, mergedRows, 2); // 合并第3列，并且读取计算第2列值，填入第3列
 
         // 设置合并后的单元格内容居中
         centerMergedCells(xwpfTable, 0); // 第一列
@@ -574,17 +578,19 @@ public class TableTest {
     }*/
 
     // 根据合并行信息合并指定列，并设置新值
-    private void mergeColumnsBasedOnMergedRows(XWPFTable table, List<String> mergedRows, int columnIndex) {
+    private void mergeColumnsBasedOnMergedRowsSetNewValue(XWPFTable table, List<String> mergedRows, int columnIndex) {
+        int lastMergedEndRow = -1;
         for (String mergedRow : mergedRows) {
-            // [1-1, 2-2, 3-4, 5-5]
+            // [1-1, 2-2, 3-5, 6-6]
             String[] range = mergedRow.split("-");
-            int startRow = Integer.parseInt(range[0]);
-            int endRow = Integer.parseInt(range[1]);
-            System.out.println("startRow:" + startRow + ",endRow:" + endRow);
+            int startRow = Integer.parseInt(range[0]) - 1;
+            int endRow = Integer.parseInt(range[1]) - 1;
 
             if (startRow != endRow) {
-                startRow = startRow - 1;
-                endRow = endRow - 1;
+                // 如果当前合并区域与上一个合并区域相邻，则合并
+                if (startRow <= lastMergedEndRow + 1) {
+                    startRow = lastMergedEndRow + 1;
+                }
                 for (int i = startRow; i <= endRow; i++) {
                     XWPFTableRow row1 = table.getRow(i);
                     XWPFTableCell cell = row1.getCell(columnIndex);
@@ -592,17 +598,20 @@ public class TableTest {
                         cell = row1.createCell();
                     }
                     // 设置合并标记
-                    cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+                    if (i > startRow) {
+                        cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+                    } else {
+                        cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);
+                    }
 
                     // 清理单元格文本内容
                     clearCellText(cell);
 
-                    // 设置新值
-                    // cell.setText("666");
                     // 设置前一列的值
                     int prevColumnIndex = columnIndex - 1;
                     cell.setText(getCellValue(table, prevColumnIndex, startRow, endRow));
                 }
+                lastMergedEndRow = endRow;
             }
         }
     }
