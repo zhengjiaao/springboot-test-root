@@ -14,9 +14,10 @@ import lombok.Data;
 @Data
 public class UserEntity {
 
+    @CsvBindByName(column = "名称")
     private String name;
+    // todo 注，没有@CsvBindByName注解的属性将不会参与导入导出
     private int age;
-    //注意，需要一旦加了一个注解，其他没有添加注解的属性将不会参与导入导出
     @CsvBindByName(column = "密码")
     private String pwd;
 
@@ -25,6 +26,11 @@ public class UserEntity {
 
     public UserEntity(String name) {
         this.name = name;
+    }
+
+    public UserEntity(String name, String pwd) {
+        this.name = name;
+        this.pwd = pwd;
     }
 
     public UserEntity(String name, int age, String pwd) {
