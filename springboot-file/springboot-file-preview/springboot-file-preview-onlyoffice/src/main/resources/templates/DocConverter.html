@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>文件转换</title>
+</head>
+<body>
+    <h1>文件转换</h1>
+    <form method="POST" action="/rest/onlyoffice/converter" enctype="multipart/form-data">
+        <label for="url">文件URL:</label>
+        <input type="text" id="url" name="url" required><br><br>
+        <label for="filename">文件名:</label>
+        <input type="text" id="filename" name="filename" required><br><br>
+
+        <label for="outputType">输出格式:</label>
+        <select id="outputType" name="outputType" required>
+            <option value="pdf">PDF</option>
+            <option value="docx">DOCX</option>
+            <option value="xlsx">XLSX</option>
+            <!-- 可以添加更多选项 -->
+        </select><br><br>
+
+        <button type="submit">转换</button>
+    </form>
+</body>
+</html>

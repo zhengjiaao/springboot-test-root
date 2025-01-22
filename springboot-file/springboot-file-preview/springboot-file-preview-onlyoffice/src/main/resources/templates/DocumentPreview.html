@@ -5,20 +5,20 @@
     <title>文档预览</title>
     <!-- 引入外部JavaScript文件 -->
     <!-- documentserver替换为部署环境的[IP:PORTS]或者[代理域名地址]-->
-    <script type="text/javascript" src="http://192.168.1.29/web-apps/apps/api/documents/api.js"></script>
+    <script type="text/javascript" src="http://192.168.159.148:8999/web-apps/apps/api/documents/api.js"></script>
 </head>
 <body>
 <div id="placeholder"></div>
 
 <script lang="javascript" type="text/javascript">
-    const previewUrl = 'http://localhost:19000/file/docx.docx'; //要预览文件的访问地址
+    const previewUrl = 'https://example.com/url-to-example-document.docx'; //要预览文件的访问地址
 
     var docEditor = new DocsAPI.DocEditor("placeholder", {
         "document": {
             "fileType": "docx", //文档类型
             //key 定义用于服务识别文档的唯一文档标识符。每次编辑和保存文档时，都必须重新生成密钥。长度限制为128个符号。指定文档唯一的文档标识符。
             //如果指定了同一标标识符，则从缓存中获取文档。
-            "key": "",
+            "key": "Khirz6zTPdfd7",
             //title 为查看或编辑的文档定义所需的文件名，该文件名也将在下载文档时用作文件名。长度限制为128个符号。
             //指定在编辑器中显示的文件名称
             "title": "Example Document Title.docx",

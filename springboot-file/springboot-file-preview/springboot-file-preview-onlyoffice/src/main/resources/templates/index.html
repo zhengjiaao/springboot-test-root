@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Service</title>
+</head>
+<body>
+    <h1>Service</h1>
+    <p>Welcome to Service!</p>
+    <a href="http://localhost:8080">Go to Service</a>
+    <div id="content"></div>
+
+    <script>
+    fetch('/api/service')
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('content').innerHTML += `<p>${data}</p>`;
+    });
+    </script>
+</body>
+</html>

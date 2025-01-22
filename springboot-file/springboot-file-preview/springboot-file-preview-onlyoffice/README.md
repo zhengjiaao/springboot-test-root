@@ -1,7 +1,10 @@
 # springboot-file-preview-onlyoffice
 
 - [onlyoffice.com 官网](https://helpcenter.onlyoffice.com/)
-- [onlyoffice.org.cn 中文官网-推荐](https://www.onlyoffice.org.cn/)
+- [onlyoffice API文档](https://api.onlyoffice.com/docs/docs-api/get-started/how-it-works/)
+
+
+下载测试文件：https://example.com/url-to-example-document.docx
 
 ## 安装部署
 
