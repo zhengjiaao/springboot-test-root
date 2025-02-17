@@ -10,6 +10,7 @@ AI 赋能，通过预研各种ai相关技术，实现给业务系统赋能。
 
 - [springboot-ai-asr ASR语音识别](./springboot-ai-asr)
 - [springboot-ai-chatgpt](./springboot-ai-chatgpt)
+- [springboot-ai-deepseek](./springboot-ai-deepseek)
 - [springboot-ai-langchain4j](./springboot-ai-langchain4j)
 - [springboot-ai-nlp NLP自然语言分析](springboot-ai-nlp)
 - [springboot-ai-ocr OCR图文识别提取](springboot-ai-ocr)
