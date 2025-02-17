@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Chat</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.2.4/marked.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="chat-container">
+            <!-- 左侧历史记录 -->
+            <div class="history-panel">
+                <div class="new-chat" @click="createNewChat">新对话</div>
+                <div v-for="(chat, index) in chatHistory" 
+                     :key="index" 
+                     class="history-item"
+                     @click="selectChat(index)"
+                     :class="{ active: currentChatIndex === index }">
+                    <div v-if="editingIndex === index" class="edit-title">
+                        <input v-model="editingTitle" 
+                               @blur="saveTitle"
+                               @keyup.enter="saveTitle"
+                               ref="titleInput"
+                               type="text">
+                    </div>
+                    <div v-else @dblclick="startEditing(index, chat.title)">
+                        {{ chat.title }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧对话内容 -->
+            <div class="chat-panel">
+                <div class="messages" ref="messageContainer">
+                    <div v-for="(msg, index) in currentMessages" 
+                         :key="index"
+                         :class="['message', msg.role]">
+                        <div class="content" v-html="renderMessage(msg.content)"></div>
+                        <div v-if="msg.error" class="error-message">
+                            <div class="error-content">{{ msg.error }}</div>
+                            <button @click="retryMessage(index)" class="retry-btn">重试</button>
+                        </div>
+                        <div class="message-actions">
+                            <button @click="copyMessage(msg.content)" class="action-btn">复制</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <textarea 
+                        v-model="userInput"
+                        @keyup.enter.ctrl="debouncedSendMessage"
+                        placeholder="输入消息，Ctrl + Enter 发送"
+                    ></textarea>
+                    <button @click="() => {debouncedSendMessage(); userInput.value = '';}" :disabled="isLoading">
+                        {{ isLoading ? '发送中...' : '发送' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted, nextTick } = Vue
+
+        createApp({
+            setup() {
+                const API_KEY = 'sk-62aa54bcf5b2478e88c4bcd4c6d855d1'
+                const API_URL = 'https://api.deepseek.com/v1/chat/completions'
+                const MAX_RETRIES = 3
+                const RETRY_DELAY = 1000
+
+                const userInput = ref('')
+                const chatHistory = ref([])
+                const currentChatIndex = ref(0)
+                const messageContainer = ref(null)
+                const currentMessages = ref([])
+                const isLoading = ref(false)
+                const editingIndex = ref(-1)
+                const editingTitle = ref('')
+                const titleInput = ref(null)
+
+                // 创建新对话
+                const createNewChat = () => {
+                    chatHistory.value.unshift({
+                        title: '新对话',
+                        messages: []
+                    })
+                    currentChatIndex.value = 0
+                    currentMessages.value = []
+                    userInput.value = ''
+                    saveHistory()
+                }
+
+                // 开始编辑标题
+                const startEditing = (index, title) => {
+                    editingIndex.value = index
+                    editingTitle.value = title
+                    nextTick(() => {
+                        titleInput.value.focus()
+                    })
+                }
+
+                // 保存标题
+                const saveTitle = () => {
+                    if (editingTitle.value.trim()) {
+                        chatHistory.value[editingIndex.value].title = editingTitle.value
+                        saveHistory()
+                    }
+                    editingIndex.value = -1
+                }
+
+                // 从 localStorage 加载历史记录
+                const loadHistory = () => {
+                    const savedHistory = localStorage.getItem('chatHistory')
+                    if (savedHistory) {
+                        chatHistory.value = JSON.parse(savedHistory)
+                        if (chatHistory.value.length > 0) {
+                            currentMessages.value = chatHistory.value[0].messages
+                        }
+                    }
+                }
+
+                // 保存历史记录到 localStorage
+                const saveHistory = () => {
+                    localStorage.setItem('chatHistory', JSON.stringify(chatHistory.value))
+                }
+
+                const selectChat = (index) => {
+                    currentChatIndex.value = index
+                    currentMessages.value = chatHistory.value[index].messages
+                }
+
+                // 消息渲染（支持 Markdown 和代码高亮）
+                const renderMessage = (content) => {
+                    const html = marked.parse(content)
+                    return html
+                }
+
+                // 复制消息
+                const copyMessage = async (content) => {
+                    try {
+                        await navigator.clipboard.writeText(content)
+                        alert('已复制到剪贴板')
+                    } catch (err) {
+                        console.error('复制失败:', err)
+                    }
+                }
+
+                // 处理流式响应
+                const handleStreamResponse = async (reader, aiMessage) => {
+                    const decoder = new TextDecoder()
+                    while (true) {
+                        const { done, value } = await reader.read()
+                        if (done) break
+                        
+                        const chunk = decoder.decode(value)
+                        try {
+                            const lines = chunk.split('\n')
+                            for (const line of lines) {
+                                if (line.startsWith('data: ')) {
+                                    // 检查是否是结束标记
+                                    if (line.includes('[DONE]')) {
+                                        continue
+                                    }
+                                    const data = JSON.parse(line.slice(6))
+                                    aiMessage.content += data.choices[0].delta.content || ''
+                                }
+                            }
+                        } catch (e) {
+                            console.error('解析响应出错:', e)
+                            aiMessage.error = '解析响应出错: ' + e.message
+                        }
+                    }
+                }
+
+                // 重试消息
+                const retryMessage = async (index) => {
+                    const messages = currentMessages.value.slice(0, index + 1)
+                    currentMessages.value = messages
+                    await sendMessage()
+                }
+
+                // 发送消息（带重试机制）
+                const sendMessage = async (retryCount = 0) => {
+                    if (!userInput.value.trim() || isLoading.value) return
+
+                    isLoading.value = true
+                    const userMessage = {
+                        role: 'user',
+                        content: userInput.value
+                    }
+                    
+                    currentMessages.value.push(userMessage)
+
+                    if (currentMessages.value.length === 1) {
+                        chatHistory.value[currentChatIndex.value].title = userInput.value.slice(0, 20) + '...'
+                    }
+                    chatHistory.value[currentChatIndex.value].messages = [...currentMessages.value]
+
+                    try {
+                        const response = await fetch(API_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${API_KEY}`
+                            },
+                            body: JSON.stringify({
+                                messages: currentMessages.value,
+                                model: 'deepseek-chat',
+                                temperature: 0.7,
+                                stream: true
+                            })
+                        })
+
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+
+                        const aiMessage = {
+                            role: 'assistant',
+                            content: ''
+                        }
+                        currentMessages.value.push(aiMessage)
+
+                        const reader = response.body.getReader()
+                        await handleStreamResponse(reader, aiMessage)
+                        
+                        chatHistory.value[currentChatIndex.value].messages = [...currentMessages.value]
+                        saveHistory()
+                        
+                        userInput.value = ''
+                        
+                        await nextTick()
+                        messageContainer.value.scrollTop = messageContainer.value.scrollHeight
+
+                    } catch (error) {
+                        console.error('Error:', error)
+                        const aiMessage = {
+                            role: 'assistant',
+                            content: '',
+                            error: error.message
+                        }
+                        currentMessages.value.push(aiMessage)
+                        chatHistory.value[currentChatIndex.value].messages = [...currentMessages.value]
+                        saveHistory()
+                    } finally {
+                        isLoading.value = false
+                    }
+                }
+
+                // 防抖处理
+                const debouncedSendMessage = _.debounce(sendMessage, 300)
+
+                onMounted(() => {
+                    loadHistory()
+                    // if (chatHistory.value.length === 0) {
+                    //     chatHistory.value.push({
+                    //         title: '新对话',
+                    //         messages: []
+                    //     })
+                    // }
+                    // 初始化代码高亮
+                    hljs.highlightAll()
+                })
+
+                return {
+                    userInput,
+                    chatHistory,
+                    currentChatIndex,
+                    messageContainer,
+                    currentMessages,
+                    isLoading,
+                    selectChat,
+                    createNewChat,
+                    debouncedSendMessage,
+                    renderMessage,
+                    copyMessage,
+                    editingIndex,
+                    editingTitle,
+                    titleInput,
+                    startEditing,
+                    saveTitle,
+                    retryMessage
+                }
+            }
+        }).mount('#app')
+    </script>
+
+    <style>
+        .chat-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .history-panel {
+            width: 250px;
+            background-color: #f5f5f5;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+        }
+
+        .new-chat {
+            padding: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #007AFF;
+            color: white;
+            text-align: center;
+        }
+
+        .new-chat:hover {
+            background-color: #0056b3;
+        }
+
+        .history-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .history-item:hover {
+            background-color: #e0e0e0;
+        }
+
+        .history-item.active {
+            background-color: #e0e0e0;
+        }
+
+        .edit-title input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .chat-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            margin-left: auto;
+        }
+
+        .message.assistant {
+            margin-right: auto;
+        }
+
+        .content {
+            padding: 10px 15px;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+        }
+
+        .message.user .content {
+            background-color: #007AFF;
+            color: white;
+        }
+
+        .error-message {
+            margin-top: 5px;
+            color: #ff4444;
+            font-size: 14px;
+        }
+
+        .error-content {
+            margin-bottom: 5px;
+        }
+
+        .retry-btn {
+            padding: 2px 8px;
+            font-size: 12px;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .retry-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .message-actions {
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .action-btn {
+            padding: 2px 8px;
+            font-size: 12px;
+            background-color: transparent;
+            border: 1px solid #ddd;
+            color: #666;
+        }
+
+        .action-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            flex: 1;
+            height: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+        }
+
+        button {
+            padding: 0 20px;
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        pre code {
+            display: block;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</body>
+</html>
