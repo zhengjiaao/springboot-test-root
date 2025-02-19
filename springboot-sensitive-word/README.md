@@ -12,6 +12,15 @@
 * Bloom Filter：布隆过滤器，用于快速判断一个元素是否在一个集合中，可以用来过滤大规模的敏感词库。
 * 机器学习算法：如基于深度学习的文本分类模型，可以训练模型来识别和过滤敏感词，具有一定的智能化和泛化能力。
 
+
+## spring-boot 集成(组件)示例
+
+> 以下是已经完成的示例模块
+
+* [springboot-sensitive-word-custom](./springboot-sensitive-word-custom)
+* [springboot-sensitive-word-houbb](./springboot-sensitive-word-houbb)
+* [springboot-sensitive-word-hutool](./springboot-sensitive-word-hutool)
+
 ## 敏感词过滤算法思路
 
 下面是几种常用的敏感词过滤算法的实现思路、优缺点等：
