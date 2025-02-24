@@ -32,6 +32,7 @@
 		<module>springboot-db-postgresql</module>
 		<module>springboot-db-postgresql-postgis</module>
 		<module>springboot-db-redis</module>
+		<module>springboot-db-redis-redisson</module>
 		<module>springboot-db-shardingsphere-jpa</module>
 
 	</modules>

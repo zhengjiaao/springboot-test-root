@@ -32,4 +32,5 @@
   - [springboot-db-pool-druid](springboot-db-pool/springboot-db-pool-druid)
 - [springboot-db-postgresql 数据存储](./springboot-db-postgresql)
 - [springboot-db-redis 缓存数据存储](./springboot-db-redis)
+- [springboot-db-redis-redisson 分布式缓存数据存储](./springboot-db-redis-redisson)
 - [springboot-db-shardingsphere-jpa 分库分表](./springboot-db-shardingsphere-jpa)
