@@ -52,6 +52,7 @@ springboot 项目中常用到的一些技术集成示例，可以快速开始开
     - [springboot-db-postgresql](./springboot-db/springboot-db-postgresql)
     - [springboot-db-postgresql-postgis Gis地理数据库](./springboot-db/springboot-db-postgresql-postgis)
     - [springboot-db-redis](./springboot-db/springboot-db-redis)
+    - [springboot-db-redis-redisson 分布式缓存应用](./springboot-db/springboot-db-redis-redisson)
     - [springboot-db-shardingsphere-jpa 分库分表](./springboot-db/springboot-db-shardingsphere-jpa)
 - [springboot-encrypt 加解密](./springboot-encrypt)
     - [springboot-encrypt-aes](./springboot-encrypt/springboot-encrypt-aes)
