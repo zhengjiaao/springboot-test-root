@@ -1,9 +1,12 @@
 package com.zja.poitl.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +14,7 @@ import java.util.List;
  * @Author: zhengja
  * @Date: 2025-01-22 9:33
  */
+@Slf4j
 public class WordPoiUtil {
 
     private WordPoiUtil() {
@@ -32,6 +36,13 @@ public class WordPoiUtil {
         for (int i = 0; i < rowCount; i++) {
             XWPFTableRow row = table.getRow(i);
             XWPFTableCell cell = row.getCell(columnIndex);
+
+            // 检查单元格是否为 null
+            if (cell == null) {
+                log.warn("警告: 第 {} 行, columnIndex {} 的单元格为空", i, columnIndex);
+                continue;
+            }
+            // System.out.println("当前行数" + i + " ,columnIndex" + columnIndex);
 
             String currentValue = cell.getText();
 
@@ -87,7 +98,7 @@ public class WordPoiUtil {
         }
     }
 
-    // 根据合并行信息合并指定列，并设置新值
+    // 合并指定列，并设置前一列计算的新值
     public static void mergeColumnsBasedOnMergedRowsSetNewValue(XWPFTable table, List<String> mergedRows, int columnIndex) {
         int lastMergedEndRow = -1;
         for (String mergedRow : mergedRows) {
@@ -114,12 +125,14 @@ public class WordPoiUtil {
                         cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);
                     }
 
+                    // 设置前一列的值
+                    int prevColumnIndex = columnIndex - 1;
+                    String cellValue = getCellValue(table, prevColumnIndex, startRow, endRow);
+
                     // 清理单元格文本内容
                     clearCellText(cell);
 
-                    // 设置前一列的值
-                    int prevColumnIndex = columnIndex - 1;
-                    cell.setText(getCellValue(table, prevColumnIndex, startRow, endRow));
+                    cell.setText(cellValue);
                 }
                 lastMergedEndRow = endRow;
             } else {
@@ -132,14 +145,82 @@ public class WordPoiUtil {
                 if (cell == null) {
                     cell = row1.createCell();
                 }
-                cell.setText(getCellValue(table, columnIndex - 1, startRow, endRow));
+
+                // 设置前一列的值
+                String cellValue = getCellValue(table, columnIndex - 1, startRow, endRow);
+
+                // 清理单元格文本内容
+                clearCellText(cell);
+
+                cell.setText(cellValue);
+            }
+        }
+    }
+
+    // 合并指定列，并设置当前列计算的新值
+    public static void mergeColumnsBasedOnMergedRowsSetNewValueV2(XWPFTable table, List<String> mergedRows, int columnIndex) {
+        int lastMergedEndRow = -1;
+        for (String mergedRow : mergedRows) {
+            // [1-1, 2-2, 3-5, 6-6]
+            String[] range = mergedRow.split("-");
+            int startRow = Integer.parseInt(range[0]) - 1;
+            int endRow = Integer.parseInt(range[1]) - 1;
+
+            if (startRow != endRow) {
+                // 如果当前合并区域与上一个合并区域相邻，则合并
+                if (startRow <= lastMergedEndRow + 1) {
+                    startRow = lastMergedEndRow + 1;
+                }
+                for (int i = startRow; i <= endRow; i++) {
+                    XWPFTableRow row1 = table.getRow(i);
+                    XWPFTableCell cell = row1.getCell(columnIndex);
+                    if (cell == null) {
+                        continue;
+                        // cell = row1.createCell();
+                    }
+                    // 设置合并标记
+                    if (i > startRow) {
+                        cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+                    } else {
+                        cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);
+                    }
+
+                    // 设置当前列的值
+                    String cellValue = getCellValue(table, columnIndex, startRow, endRow);
+
+                    // 清理单元格文本内容
+                    clearCellText(cell);
+
+                    // 设置当前列的值
+                    cell.setText(cellValue);
+                }
+                lastMergedEndRow = endRow;
+            } else {
+                // 若是同一行，则直接设置当前列的值，需要排除掉首行，最后两行
+                if (startRow == 0 || startRow >= table.getRows().size() - 2) {
+                    continue;
+                }
+
+                XWPFTableRow row1 = table.getRow(startRow);
+                XWPFTableCell cell = row1.getCell(columnIndex);
+                if (cell == null) {
+                    cell = row1.createCell();
+                }
+
+                // 设置当前列的值
+                String cellValue = getCellValue(table, columnIndex, startRow, endRow);
+
+                // 清理单元格文本内容
+                clearCellText(cell);
+
+                cell.setText(cellValue);
             }
         }
     }
 
     // 获取指定列在指定行范围内的文本内容，并将数字相加
     private static String getCellValue(XWPFTable table, int columnIndex, int startRow, int endRow) {
-        double sum = 0.0;
+        BigDecimal sum = BigDecimal.ZERO;
         boolean hasValidValue = false;
 
         for (int i = startRow; i <= endRow; i++) {
@@ -152,7 +233,8 @@ public class WordPoiUtil {
                 String text = cell.getText();
                 if (StringUtils.isNotEmpty(text)) {
                     try {
-                        sum += Double.parseDouble(text);
+                        BigDecimal value = new BigDecimal(text);
+                        sum = sum.add(value);
                         hasValidValue = true;
                     } catch (NumberFormatException e) {
                         // 忽略无法解析的数字
@@ -162,7 +244,8 @@ public class WordPoiUtil {
             }
         }
 
-        return hasValidValue ? String.valueOf(sum) : "";
+        // 格式化输出，保留小数点后四位，并且逢五进一
+        return hasValidValue ? sum.setScale(4, RoundingMode.HALF_UP).toString() : "";
     }
 
     // 清空单元格文本内容

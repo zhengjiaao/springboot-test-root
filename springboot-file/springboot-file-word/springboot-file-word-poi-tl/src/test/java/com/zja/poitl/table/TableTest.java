@@ -1,9 +1,16 @@
 package com.zja.poitl.table;
 
+import com.alibaba.fastjson.JSONObject;
 import com.deepoove.poi.XWPFTemplate;
+import com.deepoove.poi.config.Configure;
 import com.deepoove.poi.data.*;
+import com.deepoove.poi.plugin.table.LoopRowTableRenderPolicy;
 import com.deepoove.poi.policy.TableRenderPolicy;
 import com.deepoove.poi.util.TableTools;
+import com.zja.poitl.util.ContextPathUtil;
+import com.zja.poitl.util.ResourcesFileUtil;
+import com.zja.poitl.util.WordPoiTLUtil;
+import com.zja.poitl.util.WordPoiUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.junit.jupiter.api.Test;
@@ -686,4 +693,39 @@ public class TableTest {
         }
     }
 
+    // 动态单个表格(合并相同值的行)
+    @Test
+    public void test8() throws IOException {
+
+        // 构建报告数据
+        JSONObject jsonObject = ResourcesFileUtil.readJSONObjectFromFile("data/json/合规性检测报告-内审模版.json");
+        Map<String, Object> data = jsonObject.getInnerMap();
+
+        String templatePath = "templates/word/table/合规性检测报告-内审模版.docx";
+        String wordPath = ContextPathUtil.getTempFilePath("合规性检测报告-内审.docx");
+
+        // 加载模板文件
+        Configure config = Configure.builder()
+                .useSpringEL(true)
+                .bind("theStatusQuoList", new LoopRowTableRenderPolicy()).build();
+        XWPFTemplate template = XWPFTemplate
+                .compile(WordPoiTLUtil.getInputStream(templatePath), config)
+                .render(data);
+
+        // 获取模板中的第一个表格
+        XWPFTable xwpfTable = template.getXWPFDocument().getTables().get(0);
+
+        // 处理表格，合并列，计算数据
+        List<String> mergeCells = WordPoiUtil.mergeCells(xwpfTable, 0); // 合并第1列
+        WordPoiUtil.mergeColumnsBasedOnMergedRowsSetNewValue(xwpfTable, mergeCells, 4); // 合并第5列，并且读取计算第4列值，填入第5列
+        WordPoiUtil.mergeColumnsBasedOnMergedRows(xwpfTable, mergeCells, 5); // 合并第6列
+
+        // 处理表格，合并列，计算数据
+        List<String> mergeCells2 = WordPoiUtil.mergeCells(xwpfTable, 1); // 合并第2列
+        List<String> mergeCells3 = WordPoiUtil.mergeCells(xwpfTable, 2); // 合并第3列
+        WordPoiUtil.mergeColumnsBasedOnMergedRowsSetNewValueV2(xwpfTable, mergeCells2, 3); // 合并第4列，并且读取计算第4列值，填入第4列
+
+        // 输出生成的文档
+        template.writeToFile(wordPath);
+    }
 }
