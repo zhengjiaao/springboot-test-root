@@ -3,6 +3,8 @@ package com.zja.poitl.util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.usermodel.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHeight;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHeightRule;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 
 import java.math.BigDecimal;
@@ -182,7 +184,8 @@ public class WordPoiUtil {
                     // 设置合并标记
                     if (i > startRow) {
                         cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
-                        row1.setHeight((short) -1); // 设置行高为-1，表示自动
+                        // row1.setHeight((short) -1);     // 设置行高为-1，表示自动，适配office
+                        row1.setHeight((short) 1);     // 设置行高为1，表示自动，适配wps
                     } else {
                         cell.getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.RESTART);
                     }
