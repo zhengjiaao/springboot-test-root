@@ -80,6 +80,9 @@ public class UserServiceImpl implements UserService {
                 predicates.add(cb.like(root.get("name"), request.getName() + "%"));
                 // predicates.add(cb.equal(root.get("name"), request.getName()));
             }
+            if (!StringUtils.isEmpty(request.getAge())) {
+                predicates.add(cb.equal(root.get("age"), request.getAge()));
+            }
             // 将条件连接在一起
             return query.where(predicates.toArray(new Predicate[0])).getRestriction();
         };
