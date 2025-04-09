@@ -111,7 +111,7 @@ public class WebFileController {
 
     @GetMapping(value = "get/download/v1")
     @ApiOperation(value = "下载文件-文件URL")
-    public String downloadfile(@ApiParam(value = "filename", defaultValue = "jpg.jpg") @RequestParam String filename,
+    public String downloadfile(@ApiParam(value = "filename", defaultValue = "test.jpg") @RequestParam String filename,
                                HttpServletRequest request) {
         String urlContextPath = getUrlContextPath(request);
         String fileUrl = urlContextPath + "/file/" + filename;
@@ -121,14 +121,14 @@ public class WebFileController {
     @GetMapping(value = "get/download/v2")
     @ApiOperation(value = "下载文件-文件流")
     public void downloadFileByGet(HttpServletResponse response,
-                                  @ApiParam(value = "filename", defaultValue = "jpg.jpg") @RequestParam String filename) throws IOException {
+                                  @ApiParam(value = "filename", defaultValue = "test.jpg") @RequestParam String filename) throws IOException {
         downloadFile(response, filename);
     }
 
     @PostMapping(value = "post/download/v1")
     @ApiOperation(value = "下载文件-文件流")
     public void downloadFileByPost(HttpServletResponse response,
-                                   @ApiParam(value = "filename", defaultValue = "jpg.jpg") @RequestParam String filename) throws IOException {
+                                   @ApiParam(value = "filename", defaultValue = "test.jpg") @RequestParam String filename) throws IOException {
         downloadFile(response, filename);
     }
 
