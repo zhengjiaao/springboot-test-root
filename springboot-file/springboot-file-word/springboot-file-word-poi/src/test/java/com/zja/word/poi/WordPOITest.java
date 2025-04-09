@@ -74,6 +74,28 @@ public class WordPOITest {
         }
     }
 
+    @Test
+    public void test2_getText() {
+        File tempFile = tempDir.resolve("test1.docx").toFile();
+        String extractedText = extractTextFromWord(tempFile.getAbsolutePath());
+        System.out.println("Extracted Text: " + extractedText);
+    }
+
+    public String extractTextFromWord(String filePath) {
+        StringBuilder content = new StringBuilder();
+        try (FileInputStream fis = new FileInputStream(filePath);
+             XWPFDocument document = new XWPFDocument(fis)) {
+            List<XWPFParagraph> paragraphs = document.getParagraphs();
+            for (XWPFParagraph para : paragraphs) {
+                content.append(para.getText()).append("\n"); // 或者其他分隔符，例如空格或<br>标签等HTML格式。
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Error reading Word document";
+        }
+        return content.toString();
+    }
+
     // poi 编辑 word
     @Test
     public void test2() {
