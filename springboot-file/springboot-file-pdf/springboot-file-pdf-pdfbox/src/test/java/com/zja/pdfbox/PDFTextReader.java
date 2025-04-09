@@ -13,6 +13,8 @@ import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -35,6 +37,20 @@ public class PDFTextReader {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        // 提取内容
+        String extractedTextFromPDF = extractTextFromPDF(pdfFilePath);
+        System.out.println("Extracted Text: " + extractedTextFromPDF);
+    }
+
+    public static String extractTextFromPDF(String filePath) {
+        try (PDDocument document = Loader.loadPDF(new File(filePath))) {
+            PDFTextStripper stripper = new PDFTextStripper();
+            return stripper.getText(document);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Error reading PDF";
         }
     }
 }
