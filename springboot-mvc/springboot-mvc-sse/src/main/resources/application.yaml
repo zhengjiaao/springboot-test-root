@@ -1,0 +1,18 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+  redis:
+    database: 13
+#    host: 127.0.0.1
+#    port: 6379
+    host: 192.168.1.228
+    port: 43101
+  resources:
+    static-locations: classpath:/static/

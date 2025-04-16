@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receive Message</title>
+</head>
+<body>
+    <h1>Receive Message</h1>
+    <div id="messages"></div>
+
+    <script>
+        const eventSource = new EventSource('/sse/handleSse');
+
+        eventSource.onmessage = function(event) {
+            const messagesDiv = document.getElementById('messages');
+            const newMessage = document.createElement('div');
+            newMessage.innerText = event.data;
+            messagesDiv.appendChild(newMessage);
+        };
+
+        eventSource.onerror = function(err) {
+            console.error("EventSource failed:", err);
+            eventSource.close();
+        };
+    </script>
+</body>
+</html>
