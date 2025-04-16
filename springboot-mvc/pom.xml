@@ -20,6 +20,7 @@
         <module>springboot-mvc-filter</module>
         <module>springboot-mvc-interceptor</module>
         <module>springboot-mvc-response</module>
+        <module>springboot-mvc-sse</module>
         <module>springboot-mvc-web</module>
     </modules>
 
