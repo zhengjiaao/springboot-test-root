@@ -22,6 +22,7 @@
         <module>springboot-mvc-response</module>
         <module>springboot-mvc-sse</module>
         <module>springboot-mvc-web</module>
+        <module>springboot-mvc-webflux</module>
     </modules>
 
 </project>

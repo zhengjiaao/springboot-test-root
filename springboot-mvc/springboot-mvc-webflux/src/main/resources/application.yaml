@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+  # 配置数据库连接信息 postgresql
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/postgres?currentSchema=public
+    username: postgres
+    password: postgres
+
+  # 配置数据库连接信息 h2
+#  r2dbc:
+#    url: r2dbc:h2:mem:///testdb;DB_CLOSE_DELAY=-1
+#    username: sa
+#    password:
+#  sql:
+#    init:
+#      mode: always  # 启动时初始化表结构
+#  h2:
+#    console:
+#      enabled: true  # 启用 H2 控制台
+#      path: /h2-console
