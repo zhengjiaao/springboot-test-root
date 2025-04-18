@@ -1,0 +1,26 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+jodconverter:
+  local:
+    enabled: true # 是否启用本地 LibreOffice，默认为 false
+    officeHome: D:\\APP\\LibreOffice # 指定 LibreOffice 或 OpenOffice 本地安装路径
+    port-numbers: 2002 # 端口（线程），默认为 2002，多个端口用英文逗号隔开
+    max-tasks-per-process: 200 # 设置最大任务数，默认为 200
+    task-execution-timeout: 120000 # 设置任务执行超时时间，默认为 120000 毫秒（2 分钟）
+    task-queue-timeout: 30000 # 设置任务队列超时时间，默认为 30000 毫秒（30 秒）
+    process-timeout: 120000 # 设置一个进程超时时间，默认为 120000 毫秒（2 分钟）
+  remote:
+    enabled: false # 是否启用远程 LibreOffice，默认为 false
+    url: http://localhost:2002 # 指定 LibreOffice 远程转换服务地址，推荐采用 Docker部署LibreOffice
+    ssl:
+      enabled: false # 是否启用 SSL，默认为 true
+

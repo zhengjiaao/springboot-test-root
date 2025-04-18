@@ -25,6 +25,7 @@
         <module>springboot-file-json</module>
         <module>springboot-file-mdb</module>
         <module>springboot-file-monitor</module>
+        <module>springboot-file-office</module>
         <module>springboot-file-pandoc</module>
         <module>springboot-file-parts</module>
         <module>springboot-file-pdf</module>
