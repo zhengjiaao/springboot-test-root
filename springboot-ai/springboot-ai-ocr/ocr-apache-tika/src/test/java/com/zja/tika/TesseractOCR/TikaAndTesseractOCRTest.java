@@ -6,7 +6,7 @@
  * @Date: 2023-11-08 13:54
  * @Since:
  */
-package com.zja;
+package com.zja.tika.TesseractOCR;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;

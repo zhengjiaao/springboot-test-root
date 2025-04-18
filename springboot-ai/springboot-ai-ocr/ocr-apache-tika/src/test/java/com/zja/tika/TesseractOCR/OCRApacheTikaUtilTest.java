@@ -6,8 +6,9 @@
  * @Date: 2023-11-08 13:14
  * @Since:
  */
-package com.zja.tika;
+package com.zja.tika.TesseractOCR;
 
+import com.zja.tika.OCRApacheTikaUtil;
 import org.junit.jupiter.api.Test;
 
 /**

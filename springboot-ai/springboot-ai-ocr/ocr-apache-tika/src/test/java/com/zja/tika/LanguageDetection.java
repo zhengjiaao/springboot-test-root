@@ -6,7 +6,7 @@
  * @Date: 2023-11-08 13:32
  * @Since:
  */
-package com.zja;
+package com.zja.tika;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.langdetect.tika.LanguageIdentifier;

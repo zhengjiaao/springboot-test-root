@@ -6,7 +6,7 @@
  * @Date: 2023-11-02 16:46
  * @Since:
  */
-package com.zja;
+package com.zja.tika;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -14,6 +14,7 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -25,8 +26,11 @@ import java.nio.file.Paths;
  * @author: zhengja
  * @since: 2023/11/02 16:46
  */
-public class ExcelContentExtractor {
-    public static void main(String[] args) {
+public class OfficeContentExtractor {
+
+
+    @Test
+    public void testExtractDocxMetadata() throws Exception {
         // 创建Tika解析器
         Parser parser = new AutoDetectParser();
 
@@ -38,7 +42,7 @@ public class ExcelContentExtractor {
         ParseContext context = new ParseContext();
 
         // 提取Excel文件内容
-        try (InputStream inputStream = Files.newInputStream(Paths.get("D:\\temp\\excel\\ocr-test.xlsx"))) {
+        try (InputStream inputStream = Files.newInputStream(Paths.get("D:\\temp\\word\\test.docx"))) {
             parser.parse(inputStream, handler, metadata, context);
         } catch (IOException | SAXException | TikaException e) {
             e.printStackTrace();
@@ -48,4 +52,11 @@ public class ExcelContentExtractor {
         String extractedContent = handler.toString();
         System.out.println(extractedContent);
     }
+
+    @Test
+    public void testExtractDocxMetadata2() throws Exception {
+        String extractedContent = ApacheTikaUtil.extractedContent("D:\\temp\\word\\test.docx");
+        System.out.println(extractedContent);
+    }
+
 }

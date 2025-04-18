@@ -6,6 +6,31 @@
 
 Apache Tika是一个开源的文本提取和内容分析工具，它支持处理多种文件格式。 它支持多种OCR引擎，包括Tesseract OCR和其他一些商业OCR引擎。
 
+## Apache Tika 为什么依赖 Tesseract？
+
+Apache Tika 在解析 包含图像或扫描件的文档 （如 PDF 图像、图片文件）时，需要通过 OCR（光学字符识别）技术提取文本。
+
+Tesseract 是 Tika 默认的 OCR 引擎，用于识别图像中的文字内容。例如：
+
+- 当解析带有嵌入图片的 PDF 或 Word 文档时，Tika 会调用 Tesseract 进行文字识别 。
+- 对于纯文本或结构化文档（如普通 Word、文本 PDF），Tika 会直接通过其他解析器（如 Apache POI 或 PDFBox）提取内容，无需 Tesseract 。
+
+#### **方案一：安装并配置 Tesseract**
+
+1. **安装 Tesseract** ：
+
+   - Windows：从 [Tesseract 官网 ](https://github.com/tesseract-ocr/tesseract)下载安装包，勾选 **"Add to PATH"** 选项。
+   - Linux：通过包管理器安装（如 `sudo apt install tesseract-ocr`）。
+   - macOS：使用 Homebrew 安装（`brew install tesseract`）。
+
+2. **验证安装** ：
+
+   ```bash
+   tesseract --version  # 应输出 Tesseract 版本信息
+   ```
+
+3. **配置语言包（可选）** ： 若需识别中文，需额外安装语言包（如 `tesseract-ocr-chi-sim`）
+
 ## Apache Tika支持的常见文件格式
 
 使用Apache Tika，你可以对不同文件格式进行内容提取、元数据提取、文本分析等操作。

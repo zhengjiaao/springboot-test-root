@@ -6,7 +6,7 @@
  * @Date: 2023-11-08 11:08
  * @Since:
  */
-package com.zja;
+package com.zja.tika;
 
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;

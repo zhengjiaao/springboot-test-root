@@ -6,9 +6,8 @@
  * @Date: 2023-11-08 9:24
  * @Since:
  */
-package com.zja;
+package com.zja.tika;
 
-import com.zja.tika.ApacheTikaUtil;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
