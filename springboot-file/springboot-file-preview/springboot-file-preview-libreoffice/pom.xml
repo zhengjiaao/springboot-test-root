@@ -13,6 +13,35 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!--jodconverter 底层支持 LibreOffice or OpenOffice-->
+
+        <!-- 默认是：OpenOffice + LibreOffice -->
+        <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-local</artifactId>
+            <version>4.4.8</version>
+        </dependency>
+
+        <!-- 支持 LibreOffice 7.6.x-->
+        <!-- <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-local-lo</artifactId>
+            <version>4.4.8</version>
+        </dependency>
+ -->
+        <!-- 支持 OpenOffice 4.1.x -->
+        <!-- <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-local-oo</artifactId>
+            <version>4.4.8</version>
+        </dependency> -->
+
+        <!-- <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-spring-boot-starter</artifactId>
+            <version>4.4.8</version>
+        </dependency> -->
+
         <!--springboot 依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -51,20 +80,6 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
             <version>5.8.20</version>
-        </dependency>
-
-        <!--LibreOffice-->
-        <!--<dependency>
-            <groupId>org.libreoffice</groupId>
-            <artifactId>libreoffice</artifactId>
-            <version>7.6.4</version>
-        </dependency>-->
-
-        <!--jodconverter 封装 api-->
-        <dependency>
-            <groupId>org.jodconverter</groupId>
-            <artifactId>jodconverter-local</artifactId>
-            <version>4.4.7</version>
         </dependency>
 
     </dependencies>
