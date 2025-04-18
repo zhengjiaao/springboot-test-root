@@ -17,11 +17,21 @@ import java.io.File;
  */
 public class LibreOfficeJodconverterTest {
 
+   // static String LibreOfficeHome = "C:\\Program Files\\LibreOffice";
+   static String LibreOfficeHome = "D:\\APP\\LibreOffice";
+
     // Word
     @Test
     public void Word_test() {
         File sourceFile = new File("D:\\temp\\word\\test.docx");
         File targetFile = new File("D:\\temp\\word\\test.docx.pdf");
+        officeConvertToPDF(sourceFile, targetFile);
+    }
+
+    @Test
+    public void Word2_test() {
+        File sourceFile = new File("D:\\temp\\word\\test.doc");
+        File targetFile = new File("D:\\temp\\word\\to\\test.docx");
         officeConvertToPDF(sourceFile, targetFile);
     }
 
@@ -62,7 +72,7 @@ public class LibreOfficeJodconverterTest {
     public static boolean officeConvertToPDF(File sourceFile, File targetFile) {
         try {
             LocalOfficeManager.Builder builder = LocalOfficeManager.builder();
-            builder.officeHome("C:\\Program Files\\LibreOffice");
+            builder.officeHome(LibreOfficeHome);
             builder.portNumbers(8100);
             long taskExecutionTimeout = 5 * 1000 * 60;
             builder.taskExecutionTimeout(taskExecutionTimeout); // minute
