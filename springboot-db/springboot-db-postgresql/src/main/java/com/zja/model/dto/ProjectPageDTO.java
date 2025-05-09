@@ -1,12 +1,12 @@
 package com.zja.model.dto;
 
-import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Project 数据传输
@@ -34,4 +34,7 @@ public class ProjectPageDTO implements Serializable {
 
     @ApiModelProperty("最后一次更新时间")
     private LocalDateTime lastModifiedDate;
+
+    @ApiModelProperty("批复时间")
+    private Date approvalTime;
 }

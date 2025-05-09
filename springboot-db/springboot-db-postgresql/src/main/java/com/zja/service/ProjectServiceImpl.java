@@ -18,6 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
@@ -71,9 +75,23 @@ public class ProjectServiceImpl implements ProjectService {
             if (!StringUtils.isEmpty(request.getName())) {
                 predicates.add(cb.like(root.get("name"), request.getName() + "%"));
             }
-            if (!StringUtils.isEmpty(request.getName())) {
-                predicates.add(cb.like(root.get("name"), request.getName() + "%"));
+
+            if (request.getCreateTimeStart() != null) {
+                // 创建时间 大于或等于
+                predicates.add(cb.greaterThanOrEqualTo(root.get("createTime"), request.getCreateTimeStart()));
             }
+            if (request.getCreateTimeEnt() != null) {
+                // 创建时间 小于或等于
+                predicates.add(cb.lessThanOrEqualTo(root.get("createTime"), request.getApprovalTimeEnt()));
+            }
+
+            if (request.getApprovalTimeStart() != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("approvalTime"), request.getApprovalTimeStart()));
+            }
+            if (request.getApprovalTimeEnt() != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("approvalTime"), request.getApprovalTimeEnt()));
+            }
+
             // 将条件连接在一起
             return query.where(predicates.toArray(new Predicate[0])).getRestriction();
         };

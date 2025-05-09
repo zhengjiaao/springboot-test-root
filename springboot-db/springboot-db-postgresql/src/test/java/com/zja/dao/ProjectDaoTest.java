@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,7 @@ public class ProjectDaoTest {
 
             p.setConfigJson(JSON.parseObject("{\"key\":\"value\"}")); // json 字段
             p.setConfigText("大文本字段"); // 大文本字段或json文本
+            p.setApprovalTime(new Date()); // 批复时间
             repo.save(p);
         }
     }

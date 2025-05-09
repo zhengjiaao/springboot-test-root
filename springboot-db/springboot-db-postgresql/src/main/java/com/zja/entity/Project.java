@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Project 实体类
@@ -97,6 +98,12 @@ public class Project implements Serializable/*, PersistentAttributeInterceptable
     @Column(name = "last_modified_date")
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
+
+    /**
+     * 批复时间
+     */
+    @Column(name = "approval_time")
+    private Date approvalTime;
 
 
     // 以下是实现懒加载
