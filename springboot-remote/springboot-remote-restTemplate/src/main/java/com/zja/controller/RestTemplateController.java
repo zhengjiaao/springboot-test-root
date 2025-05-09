@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "rest/template")
@@ -44,6 +45,8 @@ public class RestTemplateController {
     @GetMapping(value = "/get/object/v1")
     @ApiOperation(value = "get-无参数", notes = "返回对象")
     public Object getObject() {
+        // return restTemplate.getForObject("/get/object/v1", Map.class);
+
         return restTemplate.getForObject("/get/object/v1", UserDTO.class);
     }
 
