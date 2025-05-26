@@ -6,7 +6,7 @@ spring:
 #    driver-class-name: org.postgresql.Driver
     username: kingbase8
     password: kingbase8
-    url: jdbc:kingbase8://192.168.14.3:54321/kingbase8
+    url: jdbc:kingbase8://localhost:54321/kingbase8
     driver-class-name: com.kingbase8.Driver
   jpa:
 #    database: postgresql
