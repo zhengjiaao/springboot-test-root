@@ -41,6 +41,7 @@ public class CommonsCompressZipUtil {
 
     private static final String CHARSET_GBK = "GBK";
     private static final String CHARSET_UTF8 = "UTF8";
+    private static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
 
 
     /**
@@ -94,9 +95,21 @@ public class CommonsCompressZipUtil {
         try {
             log.warn("正在尝试以[UTF8]编码解压,zipPath={}", zipPath);
             unzip(zipPath, outputDir, CHARSET_UTF8);
-        } catch (Exception e) {
-            log.warn("正在尝试以[GBK]编码解压,zipPath={}", zipPath);
-            unzip(zipPath, outputDir, CHARSET_GBK);
+        } catch (Exception e1) {
+            log.error("尝试以[UTF8]编码解压失败.", e1);
+            try {
+                log.warn("正在尝试以[GBK]编码解压,zipPath={}", zipPath);
+                unzip(zipPath, outputDir, CHARSET_GBK);
+            } catch (Exception e2) {
+                log.error("尝试以[GBK]编码解压失败.", e2);
+                try {
+                    log.warn("正在尝试以[ISO-8859-1]编码解压,zipPath={}", zipPath);
+                    unzip(zipPath, outputDir, CHARSET_ISO_8859_1);
+                } catch (Exception e3) {
+                    log.error("尝试以[UTF8、GBK、ISO-8859-1]编码解压失败.", e3);
+                    throw new RuntimeException("尝试以[UTF8、GBK、ISO-8859-1]编码解压失败.", e3);
+                }
+            }
         }
         log.info("成功解压,zipPath={},outputDir={}", zipPath, outputDir);
     }
