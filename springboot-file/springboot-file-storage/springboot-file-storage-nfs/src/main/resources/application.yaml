@@ -1,0 +1,13 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+nfs:
+  mount-path: D:\\temp\\nfs # NFS挂载点路径（这里指 nfs 挂载的本机路径）

@@ -18,6 +18,7 @@
 	<modules>
 		<module>springboot-file-storage-ftp</module>
 		<module>springboot-file-storage-minio</module>
+		<module>springboot-file-storage-nfs</module>
 	</modules>
 
 </project>
