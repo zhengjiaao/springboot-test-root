@@ -21,6 +21,7 @@ public class DateTest {
         // 分别输出，年、月、日
         // 使用 LocalDateTime 获取当前日期时间
         LocalDateTime now = LocalDateTime.now();
+        System.out.println("当前时间: " + now);
         System.out.println("年: " + now.getYear());
         System.out.println("月: " + now.getMonthValue());
         System.out.println("日: " + now.getDayOfMonth());
@@ -67,5 +68,19 @@ public class DateTest {
         LocalDateTime dateTime3 = LocalDateTime.parse(dateStr2 + "T00:00:00");
         System.out.println(dateTime3);
 
+    }
+
+    @Test
+    public void test3() {
+        // 测试 Date 格式化
+        Date date = new Date();
+        System.out.println(DateUtil.formatAsDatetime(date));
+
+        System.out.println("-----------------");
+
+        System.out.println(DateUtil.formatAsDatetimeWithMs(date));
+
+        System.out.println("-----------------");
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     }
 }
