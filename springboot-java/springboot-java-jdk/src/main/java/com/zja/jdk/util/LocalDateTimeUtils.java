@@ -13,7 +13,7 @@ import java.util.Date;
  * @Author: zhengja
  * @Date: 2025-05-28 16:40
  */
-public class LocalDateTimeUtil {
+public class LocalDateTimeUtils {
 
     // 常用日期时间格式
     public static final String DATE_ONLY_FORMAT = "yyyy-MM-dd";
