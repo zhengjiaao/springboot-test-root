@@ -1,10 +1,51 @@
 spring:
+  liquibase:
+    enabled: false
+  # 不推荐采用 MySQL 数据库，初始化创建表结构时，会遇到 LocalDateTime 类型转换错误
+#  datasource:
+#    url: jdbc:mysql://127.0.0.1:3306/test
+#    username: test
+#    password: pass
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#  jpa:
+#    database: mysql
+#    database-platform: org.hibernate.dialect.MySQL8Dialect
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: none
+  # 推荐采用 PostgreSQL 数据库
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/test?characterEncoding=UTF-8
+    url: jdbc:postgresql://localhost:5432/test
     username: test
     password: pass
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
   jpa:
-    database: mysql
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none # 注意，首次启动时，需设置 ddl-auto: none，并且 database-schema-update: true 否则会报错
+
+# Flowable配置
+flowable:
+  database-schema-update: true  # 自动更新表结构（适用于开发环境），默认 true 启用，首次启动时，请将此属性设置为 true，后续请设置为 false
+  async-executor-activate: true # 启用异步执行器，默认 true 启用
+  history-level: full           # 历史记录级别，full 保存完整的历史记录，默认 audit
+  db-history-used: true         # 启用数据库历史记录，默认 true 启用
+  enable-history-cleaning: false # 启用数据库历史记录清理，默认 false 未启用，启用时，deleteHistoricProcessInstance 才会生效
+
+  # 以下配置项，可忽略
+#  check-process-definitions: true # 关闭启动时校验流程文件（开发时可设为false）
+#  process-definition-location-prefix: classpath:/processes/ # 流程定义文件路径，默认为 classpath*:/processes/
+#  process-definition-location-suffixes: .bpmn20.xml、.bpmn # 默认支持 **.bpmn20.xml 和 **.bpmn 文件
+  # 表单配置项
+#  form-field-validation-enabled: false # 表单字段验证，默认 false 禁用
+
+  # 可选的，集成 Flowable UI 用于Web UI控制台，需添加 flowable-ui-* 相关依赖
+  idm:
+    app:
+      admin: # 创建管理员用户，访问：http://localhost:8080/
+        user-id: admin  # 用户名 自定义
+        password: test # 密码 自定义
+        first-name: z   # 姓 自定义
+        last-name: ja   # 名 自定义

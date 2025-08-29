@@ -1,0 +1,17 @@
+{
+  "key": "form-C",
+  "name": "HR归档",
+  "fields": [
+    {
+      "id": "archiveStatus",
+      "name": "归档状态",
+      "type": "dropdown",
+      "required": true
+    },
+    {
+      "id": "hrComment",
+      "name": "HR备注",
+      "type": "textarea"
+    }
+  ]
+}

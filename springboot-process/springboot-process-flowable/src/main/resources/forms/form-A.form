@@ -1,0 +1,42 @@
+{
+  "key": "form-A",
+  "name": "请假申请",
+  "fields": [
+    {
+      "id": "applicant",
+      "name": "申请人",
+      "type": "string",
+      "required": true
+    },
+    {
+      "id": "leaveType",
+      "name": "请假类型",
+      "type": "dropdown",
+      "required": true
+    },
+    {
+      "id": "startDate",
+      "name": "开始日期",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "endDate",
+      "name": "结束日期",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "days",
+      "name": "请假天数",
+      "type": "number",
+      "required": true
+    },
+    {
+      "id": "reason",
+      "name": "请假事由",
+      "type": "textarea",
+      "required": true
+    }
+  ]
+}

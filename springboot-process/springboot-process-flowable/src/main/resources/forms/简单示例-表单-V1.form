@@ -1,0 +1,8 @@
+{
+  "key": "leaveForm",
+  "fields": [
+    { "id": "startDate", "type": "date" },
+    { "id": "days", "type": "number" },
+    { "id": "department", "type": "string" }
+  ]
+}

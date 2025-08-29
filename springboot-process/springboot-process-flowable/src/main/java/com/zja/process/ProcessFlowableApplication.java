@@ -1,16 +1,15 @@
-/**
- * @Company: 上海数慧系统技术有限公司
- * @Department: 数据中心
- * @Author: 郑家骜[ào]
- * @Email: zhengja@dist.com.cn
- * @Date: 2022-11-18 16:37
- * @Since:
- */
-package com.zja;
+package com.zja.process;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * 启动类
+ * @flowable-ui: <a href="http://localhost:8080">...</a>
+ * @swagger: <a href="http://localhost:8080/swagger-ui/index.html">...</a>
+ * @author: zhengja
+ * @since: 2025/08/14 13:58
+ */
 @SpringBootApplication
 public class ProcessFlowableApplication {
 

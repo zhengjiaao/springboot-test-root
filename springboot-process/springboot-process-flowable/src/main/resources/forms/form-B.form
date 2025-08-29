@@ -1,0 +1,22 @@
+{
+  "key": "form-B",
+  "name": "部门审批",
+  "fields": [
+    {
+      "id": "approvalResult",
+      "name": "审批结果",
+      "type": "radio",
+      "required": true
+    },
+    {
+      "id": "comment",
+      "name": "审批意见",
+      "type": "textarea"
+    },
+    {
+      "id": "attachment",
+      "name": "补充材料",
+      "type": "file"
+    }
+  ]
+}
