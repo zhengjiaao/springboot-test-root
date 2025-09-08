@@ -1,54 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.1">
-  <process id="simpleProcess-form-V1" name="简单示例-表单-V1" isExecutable="true">
+  <process id="simpleProcess-V1" name="简单示例V1" isExecutable="true">
     <startEvent id="startEvent1" name="开始" flowable:formFieldValidation="true"></startEvent>
-    <userTask id="sid-DC51E2E5-4432-4D8A-94D9-A3FA524C0204" name="环节A" flowable:formKey="form-A" flowable:formFieldValidation="true">
-      <extensionElements>
-        <flowable:formData>
-          <flowable:formField id="applicant" name="申请人" type="string" required="true"/>
-          <flowable:formField id="leaveType" name="请假类型" type="enum" required="true">
-            <flowable:value id="annual" name="年假"/>
-            <flowable:value id="sick" name="病假"/>
-            <flowable:value id="personal" name="事假"/>
-          </flowable:formField>
-          <flowable:formField id="startDate" name="开始日期" type="date" required="true"/>
-          <flowable:formField id="endDate" name="结束日期" type="date" required="true"/>
-          <flowable:formField id="days" name="请假天数" type="long" required="true"/>
-          <flowable:formField id="reason" name="请假事由" type="text" required="true"/>
-        </flowable:formData>
-      </extensionElements>
-    </userTask>
+    <userTask id="sid-DC51E2E5-4432-4D8A-94D9-A3FA524C0204" name="申请" flowable:formFieldValidation="true"></userTask>
     <sequenceFlow id="sid-F76CEDF4-9D1A-4A87-8FE7-B6A94DA34DE2" sourceRef="startEvent1" targetRef="sid-DC51E2E5-4432-4D8A-94D9-A3FA524C0204"></sequenceFlow>
-    <userTask id="sid-DF5065D7-BD53-4E2B-A3E5-6B57CD4F85BA" name="环节B" flowable:formKey="form-B" flowable:formFieldValidation="true">
-      <extensionElements>
-        <flowable:formData>
-          <flowable:formField id="approvalResult" name="审批结果" type="enum" required="true">
-            <flowable:value id="approved" name="同意"/>
-            <flowable:value id="rejected" name="拒绝"/>
-          </flowable:formField>
-          <flowable:formField id="comment" name="审批意见" type="text" required="false"/>
-          <flowable:formField id="attachment" name="补充材料" type="string" required="false"/>
-        </flowable:formData>
-      </extensionElements>
-    </userTask>
+    <userTask id="sid-DF5065D7-BD53-4E2B-A3E5-6B57CD4F85BA" name="审批" flowable:formFieldValidation="true"></userTask>
     <sequenceFlow id="sid-DEDDCFFE-D836-4E05-89EC-CA99CDAF8C0E" sourceRef="sid-DC51E2E5-4432-4D8A-94D9-A3FA524C0204" targetRef="sid-DF5065D7-BD53-4E2B-A3E5-6B57CD4F85BA"></sequenceFlow>
-    <userTask id="sid-B606440E-EA1C-49E2-92A9-B47BF7DA40F5" name="环节C" flowable:formKey="form-C" flowable:formFieldValidation="true">
-      <extensionElements>
-        <flowable:formData>
-          <flowable:formField id="archiveStatus" name="归档状态" type="enum" required="true">
-            <flowable:value id="archived" name="已归档"/>
-            <flowable:value id="pending" name="待处理"/>
-          </flowable:formField>
-          <flowable:formField id="hrComment" name="HR备注" type="text" required="false"/>
-        </flowable:formData>
-      </extensionElements>
-    </userTask>
+    <userTask id="sid-B606440E-EA1C-49E2-92A9-B47BF7DA40F5" name="归档" flowable:formFieldValidation="true"></userTask>
     <sequenceFlow id="sid-9E71D867-A2FD-4CA8-AB4E-7E2308239393" sourceRef="sid-DF5065D7-BD53-4E2B-A3E5-6B57CD4F85BA" targetRef="sid-B606440E-EA1C-49E2-92A9-B47BF7DA40F5"></sequenceFlow>
     <endEvent id="sid-1C19A0A6-D607-496B-95B7-DB0106031212" name="结束"></endEvent>
     <sequenceFlow id="sid-E3BFDE8B-F9C4-48F1-A2FD-E892DF7DEABC" sourceRef="sid-B606440E-EA1C-49E2-92A9-B47BF7DA40F5" targetRef="sid-1C19A0A6-D607-496B-95B7-DB0106031212"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_simpleProcess-form-V1">
-    <bpmndi:BPMNPlane bpmnElement="simpleProcess-form-V1" id="BPMNPlane_simpleProcess-form-V1">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_simpleProcess-V1">
+    <bpmndi:BPMNPlane bpmnElement="simpleProcess-V1" id="BPMNPlane_simpleProcess-V1">
       <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
         <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
