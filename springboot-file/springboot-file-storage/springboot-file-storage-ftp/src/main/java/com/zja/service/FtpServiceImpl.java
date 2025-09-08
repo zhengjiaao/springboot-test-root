@@ -5,6 +5,8 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +22,8 @@ import java.io.*;
 @Service
 public class FtpServiceImpl implements FtpService {
 
+    private static final Logger logger = LoggerFactory.getLogger(FtpServiceImpl.class);
+
     @Autowired
     private FtpServerProperties ftpServerProperties;
 
@@ -32,53 +36,61 @@ public class FtpServiceImpl implements FtpService {
     private FTPClient connect(String serverKey) {
         FtpServerProperties.ServerConfig config = ftpServerProperties.getServers().get(serverKey);
         if (config == null) {
-            System.err.println("未找到服务器配置: " + serverKey);
+            logger.error("未找到服务器配置: {}", serverKey);
             return null;
         }
 
         FTPClient ftpClient = new FTPClient();
         try {
+            // 设置连接超时时间
+            ftpClient.setConnectTimeout(5000);
+            ftpClient.setDataTimeout(30000);
+
             // 连接服务器
+            logger.debug("正在连接FTP服务器 {}:{}", config.getHost(), config.getPort());
             ftpClient.connect(config.getHost(), config.getPort());
             int replyCode = ftpClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(replyCode)) {
                 ftpClient.disconnect();
-                System.err.println("FTP 服务器连接失败: " + config.getHost() + ":" + config.getPort());
+                logger.error("FTP 服务器连接失败: {}:{}，响应码: {}", config.getHost(), config.getPort(), replyCode);
                 return null;
             }
 
             // 登录
+            logger.debug("正在登录FTP服务器 {}:{}", config.getHost(), config.getPort());
             boolean loginSuccess = ftpClient.login(config.getUsername(), config.getPassword());
             if (!loginSuccess) {
                 ftpClient.disconnect();
-                System.err.println("FTP 登录失败: " + config.getUsername() + "@" + config.getHost());
+                logger.error("FTP 登录失败: {}@{}", config.getUsername(), config.getHost());
                 return null;
             }
 
             // 设置文件类型为二进制，避免文本文件传输时出现问题
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            logger.debug("已设置FTP文件类型为二进制");
 
-            // 设置被动模式或主动模式。被动模式通常更常用，特别是在客户端有防火墙时 [[29]]
+            // 设置被动模式或主动模式。被动模式通常更常用，特别是在客户端有防火墙时
             if (config.isPassiveMode()) {
-                ftpClient.enterLocalPassiveMode(); // 设置为被动模式 [[29]]
+                ftpClient.enterLocalPassiveMode();
+                logger.debug("已设置FTP为被动模式");
             } else {
-                ftpClient.enterLocalActiveMode();  // 设置为主动模式
+                ftpClient.enterLocalActiveMode();
+                logger.debug("已设置FTP为主动模式");
             }
 
-            // 可选：设置编码，解决中文文件名乱码问题（取决于服务器配置）
+            // 设置编码，解决中文文件名乱码问题
             // ftpClient.setControlEncoding("UTF-8");
-            // FTPClient.setControlEncoding("UTF-8"); // 有时需要设置静态方法
 
-            System.out.println("成功连接到 FTP 服务器: " + serverKey);
+            logger.info("成功连接到 FTP 服务器: {}", serverKey);
             return ftpClient;
 
         } catch (IOException e) {
-            System.err.println("连接或登录 FTP 服务器时发生异常: " + e.getMessage());
+            logger.error("连接或登录 FTP 服务器时发生异常: {}:{}", config.getHost(), config.getPort(), e);
             if (ftpClient.isConnected()) {
                 try {
                     ftpClient.disconnect();
                 } catch (IOException ioEx) {
-                    ioEx.printStackTrace();
+                    logger.warn("断开FTP连接时发生异常", ioEx);
                 }
             }
             return null;
@@ -95,42 +107,37 @@ public class FtpServiceImpl implements FtpService {
             try {
                 ftpClient.logout();
                 ftpClient.disconnect();
-                System.out.println("已断开 FTP 连接");
+                logger.debug("已断开 FTP 连接");
             } catch (IOException e) {
-                System.err.println("断开 FTP 连接时发生异常: " + e.getMessage());
+                logger.warn("断开 FTP 连接时发生异常", e);
             }
         }
     }
 
     @Override
     public boolean uploadFile(String serverKey, String remotePath, File file) {
+        if (file == null || !file.exists()) {
+            logger.error("上传文件不存在: {}", file != null ? file.getAbsolutePath() : "null");
+            return false;
+        }
+
         FTPClient ftpClient = connect(serverKey);
         if (ftpClient == null) {
             return false;
         }
 
         boolean success = false;
-        FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(file);
-            // 使用 storeFile 方法上传文件
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            logger.debug("开始上传文件: {} -> {}", file.getName(), remotePath);
             success = ftpClient.storeFile(remotePath, inputStream);
             if (success) {
-                System.out.println("文件上传成功: " + remotePath);
+                logger.info("文件上传成功: {} -> {}", file.getName(), remotePath);
             } else {
-                System.err.println("文件上传失败: " + remotePath);
+                logger.error("文件上传失败: {} -> {}", file.getName(), remotePath);
             }
         } catch (IOException e) {
-            System.err.println("上传文件时发生异常: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("上传文件时发生异常: {} -> {}", file.getName(), remotePath, e);
         } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
             disconnect(ftpClient);
         }
         return success;
@@ -138,32 +145,28 @@ public class FtpServiceImpl implements FtpService {
 
     @Override
     public boolean uploadFile(String serverKey, String remotePath, MultipartFile multipartFile) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            logger.error("上传的MultipartFile为空");
+            return false;
+        }
+
         FTPClient ftpClient = connect(serverKey);
         if (ftpClient == null) {
             return false;
         }
 
         boolean success = false;
-        InputStream inputStream = null;
-        try {
-            inputStream = multipartFile.getInputStream();
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            logger.debug("开始上传MultipartFile: {} -> {}", multipartFile.getOriginalFilename(), remotePath);
             success = ftpClient.storeFile(remotePath, inputStream);
             if (success) {
-                System.out.println("文件上传成功: " + remotePath);
+                logger.info("MultipartFile上传成功: {} -> {}", multipartFile.getOriginalFilename(), remotePath);
             } else {
-                System.err.println("文件上传失败: " + remotePath);
+                logger.error("MultipartFile上传失败: {} -> {}", multipartFile.getOriginalFilename(), remotePath);
             }
         } catch (IOException e) {
-            System.err.println("上传 MultipartFile 时发生异常: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("上传 MultipartFile 时发生异常: {} -> {}", multipartFile.getOriginalFilename(), remotePath, e);
         } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
             disconnect(ftpClient);
         }
         return success;
@@ -171,33 +174,49 @@ public class FtpServiceImpl implements FtpService {
 
     @Override
     public boolean downloadFile(String serverKey, String remotePath, File localFile) {
+        if (localFile == null) {
+            logger.error("本地文件对象为空");
+            return false;
+        }
+
         FTPClient ftpClient = connect(serverKey);
         if (ftpClient == null) {
             return false;
         }
 
         boolean success = false;
-        FileOutputStream outputStream = null;
-        try {
-            outputStream = new FileOutputStream(localFile);
-            // 使用 retrieveFile 方法下载文件
+        // 确保父目录存在
+        File parentDir = localFile.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs() && !parentDir.exists()) {
+                logger.error("无法创建本地目录: {}", parentDir.getAbsolutePath());
+                return false;
+            }
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(localFile)) {
+            logger.debug("开始下载文件: {} -> {}", remotePath, localFile.getAbsolutePath());
             success = ftpClient.retrieveFile(remotePath, outputStream);
             if (success) {
-                System.out.println("文件下载成功: " + remotePath + " -> " + localFile.getAbsolutePath());
+                logger.info("文件下载成功: {} -> {}", remotePath, localFile.getAbsolutePath());
             } else {
-                System.err.println("文件下载失败: " + remotePath);
-            }
-        } catch (IOException e) {
-            System.err.println("下载文件到本地时发生异常: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                logger.error("文件下载失败: {} -> {}", remotePath, localFile.getAbsolutePath());
+                // 下载失败时删除可能创建的空文件
+                if (localFile.exists()) {
+                    if (!localFile.delete()) {
+                        logger.warn("删除本地文件失败: {}", localFile.getAbsolutePath());
+                    }
                 }
             }
+        } catch (IOException e) {
+            logger.error("下载文件到本地时发生异常: {} -> {}", remotePath, localFile.getAbsolutePath(), e);
+            // 异常时删除可能创建的文件
+            if (localFile.exists()) {
+                if (!localFile.delete()) {
+                    logger.warn("删除本地文件失败: {}", localFile.getAbsolutePath());
+                }
+            }
+        } finally {
             disconnect(ftpClient);
         }
         return success;
@@ -205,6 +224,11 @@ public class FtpServiceImpl implements FtpService {
 
     @Override
     public boolean downloadFile(String serverKey, String remotePath, OutputStream outputStream) {
+        if (outputStream == null) {
+            logger.error("输出流对象为空");
+            return false;
+        }
+
         FTPClient ftpClient = connect(serverKey);
         if (ftpClient == null) {
             return false;
@@ -212,15 +236,15 @@ public class FtpServiceImpl implements FtpService {
 
         boolean success = false;
         try {
+            logger.debug("开始下载文件到输出流: {}", remotePath);
             success = ftpClient.retrieveFile(remotePath, outputStream);
             if (success) {
-                System.out.println("文件下载成功: " + remotePath);
+                logger.info("文件下载成功: {}", remotePath);
             } else {
-                System.err.println("文件下载失败: " + remotePath);
+                logger.error("文件下载失败: {}", remotePath);
             }
         } catch (IOException e) {
-            System.err.println("下载文件到 OutputStream 时发生异常: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("下载文件到 OutputStream 时发生异常: {}", remotePath, e);
         } finally {
             disconnect(ftpClient);
         }
@@ -236,15 +260,15 @@ public class FtpServiceImpl implements FtpService {
 
         boolean success = false;
         try {
+            logger.debug("开始删除文件: {}", remotePath);
             success = ftpClient.deleteFile(remotePath);
             if (success) {
-                System.out.println("文件删除成功: " + remotePath);
+                logger.info("文件删除成功: {}", remotePath);
             } else {
-                System.err.println("文件删除失败: " + remotePath);
+                logger.error("文件删除失败: {}", remotePath);
             }
         } catch (IOException e) {
-            System.err.println("删除文件时发生异常: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("删除文件时发生异常: {}", remotePath, e);
         } finally {
             disconnect(ftpClient);
         }
@@ -260,15 +284,31 @@ public class FtpServiceImpl implements FtpService {
 
         boolean exists = false;
         try {
-            // 使用 listFiles 方法检查文件是否存在
-            FTPFile[] files = ftpClient.listFiles(remotePath);
-            exists = files != null && files.length == 1 && !files[0].isDirectory();
-            // 注意：listFiles 传入文件路径时，如果文件存在会返回一个元素的数组，如果是目录或不存在则不同
+            logger.debug("检查文件是否存在: {}", remotePath);
             // 更精确的做法是获取文件所在目录，然后遍历查找文件名
-            // 这里是简化版，对于精确判断，可能需要先获取父目录再查找
+            int lastSeparatorIndex = remotePath.lastIndexOf("/");
+            if (lastSeparatorIndex > 0) {
+                String directory = remotePath.substring(0, lastSeparatorIndex);
+                String fileName = remotePath.substring(lastSeparatorIndex + 1);
+
+                FTPFile[] files = ftpClient.listFiles(directory);
+                if (files != null) {
+                    for (FTPFile file : files) {
+                        if (file.getName().equals(fileName) && !file.isDirectory()) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                // 根目录情况
+                FTPFile[] files = ftpClient.listFiles(remotePath);
+                exists = files != null && files.length == 1 && !files[0].isDirectory();
+            }
+
+            logger.debug("文件 {} 存在性检查结果: {}", remotePath, exists);
         } catch (IOException e) {
-            System.err.println("检查文件是否存在时发生异常: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("检查文件是否存在时发生异常: {}", remotePath, e);
         } finally {
             disconnect(ftpClient);
         }
