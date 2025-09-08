@@ -32,3 +32,11 @@ ftp:
     ftpSystemType: Windows_NT
     encoding: GBK
     serverPath: topic # 由于代码逻辑问题，配置暂时无效
+
+  servers:
+    ftp:
+      host: 192.168.1.123
+      port: 21
+      username: admin
+      password: password
+      passiveMode: true # Windows IIS FTP 也常使用被动模式 [[29]]，vsftpd 通常推荐被动模式 [[26]]
