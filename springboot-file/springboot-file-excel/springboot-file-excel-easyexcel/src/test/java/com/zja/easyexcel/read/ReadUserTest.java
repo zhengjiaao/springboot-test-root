@@ -3,6 +3,7 @@ package com.zja.easyexcel.read;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.read.listener.ReadListener;
 import com.zja.easyexcel.model.UserDTO;
 import com.zja.easyexcel.model.UserDTOMockData;
 import org.junit.jupiter.api.Test;
@@ -362,6 +363,61 @@ public class ReadUserTest {
         } catch (Exception e) {
             System.err.println("读取文件时发生错误: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 读取用户数据列表 - 忽略第一行说明文字
+     */
+    @Test
+    public void readUserListData() throws Exception {
+        // 读取之前写入的文件
+        String filePath = getTargetPath("merged_header_and_data.xlsx");
+
+        // 或者从resources目录读取
+        // InputStream inputStream = getTemplateInputStream("template/doWrite/merged_header_and_data.xlsx");
+
+        // 创建用户数据接收列表
+        List<UserDTO> userList = new ArrayList<>();
+
+        // 读取Excel文件
+        EasyExcel.read(filePath, UserDTO.class, new UserDataListenerV2(userList))
+                .sheet("用户数据") // 指定sheet名称
+                .headRowNumber(2) // 跳过前两行（说明行和表头行）
+                .doRead();
+
+        // 输出读取结果
+        System.out.println("读取到 " + userList.size() + " 条用户数据:");
+        for (UserDTO user : userList) {
+            System.out.println(user);
+        }
+    }
+
+    /**
+     * 自定义读取监听器
+     */
+    public static class UserDataListenerV2 implements ReadListener<UserDTO> {
+        private final List<UserDTO> userList;
+
+        public UserDataListenerV2(List<UserDTO> userList) {
+            this.userList = userList;
+        }
+
+        /**
+         * 每读取一条数据会调用此方法
+         */
+        @Override
+        public void invoke(UserDTO userDTO, AnalysisContext analysisContext) {
+            System.out.println("读取到数据: " + userDTO);
+            userList.add(userDTO);
+        }
+
+        /**
+         * 全部读取完成后的回调
+         */
+        @Override
+        public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+            System.out.println("所有数据读取完成！");
         }
     }
 

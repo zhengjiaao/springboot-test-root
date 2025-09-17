@@ -2,10 +2,16 @@ package com.zja.easyexcel.write;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.handler.RowWriteHandler;
+import com.alibaba.excel.write.handler.SheetWriteHandler;
+import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
+import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.zja.easyexcel.model.UserDTO;
 import com.zja.easyexcel.model.UserDTOMockData;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
@@ -176,6 +182,155 @@ public class WriteUserByDoWriteTest {
         } finally {
             if (excelWriter != null) {
                 excelWriter.finish();
+            }
+        }
+    }
+
+    // 第一行合并单元格写入"说明"，然后从第二行开始追加用户数据
+    @Test
+    public void writeWithMergedHeaderAndAppendData() throws Exception {
+        String outputPath = getTargetPath("merged_header_and_data.xlsx");
+
+        // 获取模拟数据
+        List<UserDTO> userDTOList = UserDTOMockData.getUserDTOList();
+
+        ExcelWriter excelWriter = null;
+        try {
+            // 创建ExcelWriter，并添加自定义的合并单元格写入处理器
+            excelWriter = EasyExcel.write(outputPath, UserDTO.class)
+                    .registerWriteHandler(new MergeAndWriteDescriptionHandler()) // 注册自定义的合并单元格写入处理器
+                    .build();
+
+            // 创建sheet，从第二行开始写入表头和数据
+            WriteSheet writeSheet = EasyExcel.writerSheet("用户数据")
+                    .relativeHeadRowIndex(1) // 从第二行开始写入表头和数据
+                    .build();
+
+            // 写入用户数据
+            excelWriter.write(userDTOList, writeSheet);
+
+            System.out.println("数据已写入，第一行包含合并单元格的说明文字: " + outputPath);
+        } finally {
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
+        }
+    }
+
+    /**
+     * 在写入开始前就创建合并单元格
+     * 自定义写入处理器，用于在第一行合并单元格并写入说明文字
+     */
+    public static class MergeAndWriteDescriptionHandler implements SheetWriteHandler {
+
+        private final int columnCount;
+
+        public MergeAndWriteDescriptionHandler() {
+            this.columnCount = 0; // 默认值
+        }
+
+        public MergeAndWriteDescriptionHandler(int columnCount) {
+            this.columnCount = columnCount;
+        }
+
+        @Override
+        public void afterSheetCreate(SheetWriteHandlerContext context) {
+            // 在sheet创建后立即处理，此时还没有写入任何数据行
+            Sheet sheet = context.getWriteSheetHolder().getSheet();
+
+            // 动态：计算UserDTO的列数，如果构造函数没有传入，则动态计算
+            int columns = columnCount > 0 ? columnCount : calculateColumnCount(context);
+            System.out.println("列数: " + columns);
+            int lastCol = columns > 0 ? columns - 1 : 0; // 最后一列索引，默认为0
+            System.out.println("最后一列索引: " + lastCol);
+
+            // 动态：合并第一行的多个单元格（根据实际列数进行合并）
+            CellRangeAddress cellRangeAddress = new CellRangeAddress(0, 0, 0, lastCol);
+            sheet.addMergedRegion(cellRangeAddress);
+
+            // 固定：合并第一行的多个单元格（假设UserDTO有3列，索引0-2）
+            // CellRangeAddress cellRangeAddress = new CellRangeAddress(0, 0, 0, 2);
+            // sheet.addMergedRegion(cellRangeAddress);
+
+            // 在合并的单元格中写入"说明"文字
+            Row row = sheet.getRow(0);
+            if (row == null) {
+                row = sheet.createRow(0);
+            }
+
+            // 设置行高为25
+            row.setHeightInPoints(25);
+
+            Cell cell = row.getCell(0);
+            if (cell == null) {
+                cell = row.createCell(0);
+            }
+
+            // 创建红色字体样式
+            Workbook workbook = sheet.getWorkbook();
+            CellStyle cellStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setColor(Font.COLOR_RED); // 设置字体为红色
+            font.setBold(true); // 可选：设置为粗体
+            cellStyle.setFont(font);
+
+            // 设置自动换行
+            cellStyle.setWrapText(true);
+
+            // 设置垂直居中对齐
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            // 可选：设置水平居中对齐
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+            // 应用样式到单元格
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue("说明：仅支持修改评估值");
+        }
+    }
+
+    /**
+     * 动态计算UserDTO的列数
+     * 通过context获取head信息来计算列数
+     */
+    private static int calculateColumnCount(SheetWriteHandlerContext context) {
+        // 尝试从head中获取列数信息
+        if (context.getWriteSheetHolder().getExcelWriteHeadProperty() != null) {
+            return context.getWriteSheetHolder().getExcelWriteHeadProperty().getHeadMap().size();
+        }
+        // 默认返回0列
+        return 0;
+    }
+
+    /**
+     * 没生效，原因是：RowWriteHandler 只在写入数据行时触发
+     * 自定义写入处理器，用于在第一行合并单元格并写入说明文字
+     */
+    @Deprecated
+    public static class MergeAndWriteDescriptionHandlerV2 implements RowWriteHandler {
+
+        @Override
+        public void afterRowDispose(RowWriteHandlerContext context) {
+            // 只在第一行处理
+            if (context.getRowIndex() == 0) {
+                // 获取工作簿和工作表
+                Sheet sheet = context.getWriteSheetHolder().getSheet();
+
+                // 合并第一行的多个单元格（假设UserDTO有5列）
+                CellRangeAddress cellRangeAddress =
+                        new CellRangeAddress(0, 0, 0, 4);
+                sheet.addMergedRegion(cellRangeAddress);
+
+                // 在合并的单元格中写入"说明"文字
+                Row row = sheet.getRow(0);
+                if (row == null) {
+                    row = sheet.createRow(0);
+                }
+                Cell cell = row.getCell(0);
+                if (cell == null) {
+                    cell = row.createCell(0);
+                }
+                cell.setCellValue("说明");
             }
         }
     }
