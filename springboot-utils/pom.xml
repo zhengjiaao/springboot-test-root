@@ -20,6 +20,7 @@
 		<module>springboot-custom</module>
 		<module>springboot-guava</module>
 		<module>springboot-hutool</module>
+		<module>springboot-placeholder</module>
 		<module>springboot-utils-id</module>
 	</modules>
 
