@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>协同编辑表格 - 修复版本</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .status-bar {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+        }
+        .status-success { background-color: #67C23A; }
+        .status-warning { background-color: #E6A23C; }
+        .status-error { background-color: #F56C6C; }
+        .status-info { background-color: #909399; }
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .conflict-dialog {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 2000;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 400px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+        }
+        .conflict-content {
+            margin-bottom: 20px;
+        }
+        .field-conflict {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .field-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .conflict-value {
+            padding: 5px;
+            border: 1px solid transparent;
+            margin-bottom: 5px;
+        }
+        .current-value { background-color: #e6f7ff; border-color: #1890ff; }
+        .server-value { background-color: #fff2e8; border-color: #fa8c16; }
+        .merged-value { background-color: #f6ffed; border-color: #52c41a; }
+        .button-group {
+            text-align: right;
+        }
+        .button-group button {
+            margin-left: 10px;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+        .btn-primary { background-color: #409EFF; color: white; border: none; }
+        .btn-secondary { background-color: #909399; color: white; border: none; }
+        .btn-success { background-color: #67C23A; color: white; border: none; }
+        .table-controls {
+            margin-bottom: 15px;
+        }
+        .table-controls button {
+            margin-right: 10px;
+        }
+        .api-toggle {
+            margin-bottom: 15px;
+        }
+        .api-toggle label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <div class="header">
+            <h1>协同编辑表格</h1>
+            <p>当前用户ID: <strong>{{ currentUserId }}</strong></p>
+
+            <div class="api-toggle">
+                <label>
+                    <input type="checkbox" v-model="useApi" @change="onApiToggleChange">
+                    启用后台API
+                </label>
+                <span v-if="useApi"> | API地址: <input v-model="apiUrl" size="30" placeholder="例如: http://localhost:8080/api"></span>
+            </div>
+
+            <div class="status-bar" :class="statusClass" v-if="statusMessage">
+                {{ statusMessage }}
+            </div>
+
+            <div class="table-controls">
+                <el-button type="primary" @click="addNewRow">添加新行</el-button>
+                <el-button @click="batchSave">批量保存</el-button>
+                <el-button @click="refreshData" v-if="!useApi">刷新本地数据</el-button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <el-table
+                    :data="tableData"
+                    style="width: 100%"
+                    :loading="loading"
+            >
+                <el-table-column prop="id" label="ID" width="80"></el-table-column>
+                <el-table-column prop="name" label="姓名" width="180">
+                    <template #default="{ row }">
+                        <el-input
+                                v-model="row.name"
+                                @input="markRowAsDirty(row)"
+                                size="small"
+                        ></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="age" label="年龄" width="180">
+                    <template #default="{ row }">
+                        <el-input
+                                v-model="row.age"
+                                @input="markRowAsDirty(row)"
+                                size="small"
+                        ></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="email" label="邮箱" width="250">
+                    <template #default="{ row }">
+                        <el-input
+                                v-model="row.email"
+                                @input="markRowAsDirty(row)"
+                                size="small"
+                        ></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="version" label="版本" width="80" v-if="useApi"></el-table-column>
+                <el-table-column label="操作" width="250">
+                    <template #default="{ row }">
+                        <el-button
+                                type="primary"
+                                size="small"
+                                @click="saveRow(row)"
+                                :disabled="!isRowDirty(row) && !row.isNew"
+                        >
+                            保存
+                        </el-button>
+                        <el-button
+                                size="small"
+                                @click="cancelRowEdit(row)"
+                                :disabled="!isRowDirty(row) && !row.isNew"
+                        >
+                            取消
+                        </el-button>
+                        <el-button
+                                type="danger"
+                                size="small"
+                                @click="deleteRow(row)"
+                                :disabled="row.isNew"
+                        >
+                            删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div v-if="loading" class="loading-overlay">
+                <el-text type="info">正在处理...</el-text>
+            </div>
+        </div>
+    </div>
+
+    <!-- 冲突解决弹窗 -->
+    <div class="overlay" v-if="showConflictDialog">
+        <div class="conflict-dialog">
+            <h3>发现数据冲突 - 行 ID: {{ conflictRow.id }}</h3>
+            <div class="conflict-content">
+                <div v-for="field in conflictFields" :key="field.name" class="field-conflict">
+                    <div class="field-label">{{ field.label }}</div>
+                    <div class="conflict-value current-value">
+                        <strong>您的修改:</strong> {{ field.currentValue }}
+                    </div>
+                    <div class="conflict-value server-value">
+                        <strong>服务器最新:</strong> {{ field.serverValue }}
+                    </div>
+                    <div class="conflict-value merged-value">
+                        <strong>合并结果:</strong>
+                        <el-input v-model="field.mergedValue" size="small"></el-input>
+                    </div>
+                </div>
+            </div>
+            <div class="button-group">
+                <el-button @click="resolveConflict('useServer')" class="btn-secondary">使用服务器数据</el-button>
+<!--                <el-button @click="resolveConflict('useMerged')" class="btn-primary">使用合并数据</el-button>-->
+                <el-button @click="resolveConflict('refresh')" class="btn-success">刷新整行</el-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/element-plus/dist/index.full.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+    const { createApp, ref, reactive, onMounted, computed } = Vue;
+
+    const App = {
+        setup() {
+            // 模拟用户ID
+            const currentUserId = ref(Math.floor(Math.random() * 10000) + 1000);
+            const tableData = ref([]);
+            const loading = ref(false);
+            const statusMessage = ref('');
+            const statusType = ref('');
+            const useApi = ref(false); // 是否启用API
+            const apiUrl = ref('http://localhost:8080/api'); // API地址
+            const showConflictDialog = ref(false);
+            const conflictRow = ref(null);
+            const conflictFields = ref([]);
+            const nextId = ref(100); // 用于新行ID
+
+            // 存储原始数据和脏状态
+            const originalData = reactive(new Map());
+            const dirtyRows = reactive(new Set());
+
+            // 计算状态栏样式
+            const statusClass = computed(() => `status-${statusType.value}`);
+
+            // 显示状态消息
+            const showStatus = (message, type = 'info', duration = 3000) => {
+                statusMessage.value = message;
+                statusType.value = type;
+                if (duration > 0) {
+                    setTimeout(() => {
+                        statusMessage.value = '';
+                        statusType.value = '';
+                    }, duration);
+                }
+            };
+
+            // 检查行是否有变更或为新行
+            const isRowDirty = (row) => {
+                return dirtyRows.has(row.id) || row.isNew;
+            };
+
+            // 标记行为脏数据
+            const markRowAsDirty = (row) => {
+                if (row.isNew) return; // 新增行不使用 dirtyRows 逻辑，但按钮会显示为可点击
+                dirtyRows.add(row.id);
+            };
+
+            // 获取原始数据
+            const getOriginalRow = (id) => {
+                return originalData.get(id);
+            };
+
+            // 保存原始数据
+            const saveOriginalRow = (row) => {
+                originalData.set(row.id, JSON.parse(JSON.stringify(row)));
+            };
+
+            // 从原始数据恢复
+            const revertRowToOriginal = (row) => {
+                const original = getOriginalRow(row.id);
+                if (original) {
+                    Object.assign(row, original);
+                    dirtyRows.delete(row.id);
+                }
+            };
+
+            // 取消行编辑
+            const cancelRowEdit = (row) => {
+                if (row.isNew) {
+                    // 如果是新行，直接从tableData中移除
+                    const index = tableData.value.findIndex(r => r.id === row.id);
+                    if (index !== -1) {
+                        tableData.value.splice(index, 1);
+                    }
+                } else {
+                    revertRowToOriginal(row);
+                }
+                showStatus('已取消编辑', 'info');
+            };
+
+            // 生成本地数据（用于非API模式）
+            const generateLocalData = () => {
+                const mockData = [
+                    { id: 1, name: '张三', age: 28, email: 'zhangsan@example.com', version: 1 },
+                    { id: 2, name: '李四', age: 32, email: 'lisi@example.com', version: 1 },
+                    { id: 3, name: '王五', age: 25, email: 'wangwu@example.com', version: 1 }
+                ];
+                return mockData;
+            };
+
+            // 加载表格数据
+            const fetchTableData = async () => {
+                loading.value = true;
+                try {
+                    let data;
+                    if (useApi.value) {
+                        // 调用API获取数据
+                        const response = await axios.get(`${apiUrl.value}/data`);
+                        data = response.data.map(item => ({ ...item }));
+                    } else {
+                        // 使用本地生成的数据
+                        data = generateLocalData();
+                    }
+
+                    tableData.value = data.map(row => ({ ...row }));
+                    originalData.clear();
+                    data.forEach(item => {
+                        saveOriginalRow(item);
+                    });
+                    dirtyRows.clear();
+                    showStatus(`数据加载成功 (${useApi.value ? 'API' : '本地'})`, 'success');
+                } catch (error) {
+                    console.error('加载数据失败:', error);
+                    showStatus(`加载数据失败: ${error.message}`, 'error');
+                } finally {
+                    loading.value = false;
+                }
+            };
+
+            // 刷新数据
+            const refreshData = () => {
+                fetchTableData();
+            };
+
+            // API切换处理
+            const onApiToggleChange = () => {
+                if (useApi.value) {
+                    showStatus('已切换到API模式', 'info');
+                } else {
+                    showStatus('已切换到本地模式', 'info');
+                }
+                // 切换模式后重新加载数据
+                fetchTableData();
+            };
+
+            // 添加新行
+            const addNewRow = () => {
+                const newRow = {
+                    id: nextId.value++,
+                    name: '',
+                    age: '',
+                    email: '',
+                    version: 0, // 新行版本为0
+                    isNew: true
+                };
+                tableData.value.push(newRow);
+                showStatus('已添加新行，请编辑并保存', 'info');
+            };
+
+            // 删除行
+            const deleteRow = async (row) => {
+                if (confirm(`确定要删除ID为 ${row.id} 的行吗？`)) {
+                    if (row.isNew) {
+                        // 本地删除新行
+                        const index = tableData.value.findIndex(r => r.id === row.id);
+                        if (index !== -1) {
+                            tableData.value.splice(index, 1);
+                        }
+                        showStatus('已删除新行', 'info');
+                    } else {
+                        // 删除操作
+                        loading.value = true;
+                        try {
+                            if (useApi.value) {
+                                // 调用API删除
+                                await axios.delete(`${apiUrl.value}/data/${row.id}`);
+                            }
+                            // 无论是否使用API，都从本地移除
+                            const index = tableData.value.findIndex(r => r.id === row.id);
+                            if (index !== -1) {
+                                tableData.value.splice(index, 1);
+                                originalData.delete(row.id);
+                                dirtyRows.delete(row.id);
+                            }
+                            showStatus(`行 ${row.id} 已删除`, 'success');
+                        } catch (error) {
+                            console.error('删除失败:', error);
+                            showStatus(`删除失败: ${error.message}`, 'error');
+                        } finally {
+                            loading.value = false;
+                        }
+                    }
+                }
+            };
+
+            // 保存单行数据
+            const saveRow = async (row) => {
+                if (!isRowDirty(row)) {
+                    showStatus('没有变更需要保存', 'warning');
+                    return;
+                }
+
+                loading.value = true;
+                try {
+                    let response;
+                    if (useApi.value) {
+                        // 调用API保存
+                        if (row.isNew) {
+                            // 构建发送给后端的数据对象，不包含 id
+                            const payload = {
+                                name: row.name,
+                                age: row.age,
+                                email: row.email,
+                                version: row.version
+                            };
+                            response = await axios.post(`${apiUrl.value}/data`, payload);
+
+                            if (response.status === 201) { // 假设POST返回201表示创建成功
+                                const createdRow = response.data;
+                                const index = tableData.value.findIndex(item => item.id === row.id); // 使用本地临时ID查找
+                                if (index !== -1) {
+                                    // 更新本地行数据，包括后端返回的新ID
+                                    Object.assign(tableData.value[index], createdRow);
+                                    delete tableData.value[index].isNew; // 移除isNew标记
+                                    saveOriginalRow(createdRow);
+                                    showStatus(`新增行 ${createdRow.id} 成功`, 'success');
+                                }
+                            } else {
+                                throw new Error('创建行失败');
+                            }
+                        } else {
+                            // 构建发送给后端的数据对象，包含 id 和 version
+                            const payload = {
+                                id: row.id,
+                                name: row.name,
+                                age: row.age,
+                                email: row.email,
+                                version: row.version
+                            };
+                            response = await axios.put(`${apiUrl.value}/data`, payload);
+
+                            if (response.status >= 200 && response.status < 300) {
+                                const updatedRow = response.data;
+                                const index = tableData.value.findIndex(item => item.id === updatedRow.id);
+                                if (index !== -1) {
+                                    Object.assign(tableData.value[index], updatedRow);
+                                    saveOriginalRow(updatedRow);
+                                    dirtyRows.delete(updatedRow.id);
+                                    showStatus(`更新行 ${updatedRow.id} 成功`, 'success');
+                                }
+                            } else {
+                                throw new Error('更新行失败');
+                            }
+                        }
+                    } else {
+                        // 本地模式保存
+                        if (row.isNew) {
+                            // 添加新行到本地数据
+                            row.id = Math.floor(Math.random() * 10000) + 10000; // 模拟后端分配ID
+                            row.version = 1;
+                            delete row.isNew;
+                            saveOriginalRow(row);
+                            showStatus(`新增行 ${row.id} 成功`, 'success');
+                        } else {
+                            // 更新本地数据
+                            const index = tableData.value.findIndex(item => item.id === row.id);
+                            if (index !== -1) {
+                                saveOriginalRow(row);
+                                dirtyRows.delete(row.id);
+                                showStatus(`更新行 ${row.id} 成功`, 'success');
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('保存失败:', error);
+                    if (error.response && error.response.status === 409) {
+                        showConflict(row);
+                    } else {
+                        showStatus(`保存失败: ${error.message}`, 'error');
+                    }
+                } finally {
+                    loading.value = false;
+                }
+            };
+
+            // 批量保存
+            const batchSave = async () => {
+                const rowsToSave = tableData.value.filter(row => isRowDirty(row));
+                if (rowsToSave.length === 0) {
+                    showStatus('没有需要保存的数据', 'warning');
+                    return;
+                }
+
+                loading.value = true;
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (const row of rowsToSave) {
+                    try {
+                        await saveRow(row);
+                        successCount++;
+                    } catch (e) {
+                        errorCount++;
+                        console.error(`保存行 ${row.id} 失败:`, e);
+                    }
+                }
+
+                loading.value = false;
+                showStatus(`批量保存完成: ${successCount} 成功, ${errorCount} 失败`, errorCount > 0 ? 'warning' : 'success');
+            };
+
+            // 显示冲突解决弹窗
+            const showConflict = (row) => {
+                conflictRow.value = row;
+
+                // 找出冲突字段
+                const original = getOriginalRow(row.id);
+                if (!original) return;
+
+                const fields = [];
+                for (const key of ['name', 'age', 'email']) {
+                    if (row[key] !== original[key]) {
+                        // 模拟服务器最新值（这里简化为与原始值不同）
+                        const serverValue = original[key] + '_from_server_' + Date.now();
+                        fields.push({
+                            name: key,
+                            label: getKeyLabel(key),
+                            currentValue: row[key],
+                            serverValue: serverValue,
+                            mergedValue: row[key] // 默认合并值为用户输入
+                        });
+                    }
+                }
+
+                conflictFields.value = fields;
+                showConflictDialog.value = true;
+            };
+
+            // 将键名转换为中文标签
+            const getKeyLabel = (key) => {
+                const map = { name: '姓名', age: '年龄', email: '邮箱' };
+                return map[key] || key;
+            };
+
+            // 解决冲突
+            const resolveConflict = async (strategy) => {
+                if (!conflictRow.value) return;
+
+                const row = conflictRow.value;
+                const fields = conflictFields.value;
+
+                if (strategy === 'useServer') {
+                    // 使用服务器数据覆盖本地，然后重新加载该行
+                    await fetchTableData();
+                } else if (strategy === 'useMerged') {
+                    // 使用合并后的值更新本地行
+                    fields.forEach(field => {
+                        row[field.name] = field.mergedValue;
+                    });
+                    // 重新尝试保存
+                    await saveRow(row);
+                } else if (strategy === 'refresh') {
+                    // 刷新该行数据
+                    await fetchTableData();
+                }
+
+                // 关闭弹窗
+                showConflictDialog.value = false;
+                conflictRow.value = null;
+                conflictFields.value = [];
+            };
+
+            onMounted(() => {
+                // 初始化时加载本地数据
+                fetchTableData();
+            });
+
+            return {
+                currentUserId,
+                tableData,
+                loading,
+                statusMessage,
+                statusType,
+                statusClass,
+                useApi,
+                apiUrl,
+                showConflictDialog,
+                conflictRow,
+                conflictFields,
+                isRowDirty,
+                markRowAsDirty,
+                cancelRowEdit,
+                refreshData,
+                onApiToggleChange,
+                addNewRow,
+                deleteRow,
+                saveRow,
+                batchSave,
+                resolveConflict,
+                showStatus
+            };
+        }
+    };
+
+    const app = createApp(App);
+    app.use(ElementPlus);
+    app.mount('#app');
+</script>
+</body>
+</html>
+
+
+
