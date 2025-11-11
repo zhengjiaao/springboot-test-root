@@ -1,6 +1,6 @@
 package com.zja.tree.dirtree.entity;
 
-import com.zja.tree.dirtree.entity.enums.NodeType;
+import com.zja.tree.dirtree.enums.NodeType;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

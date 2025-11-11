@@ -1,6 +1,6 @@
 package com.zja.tree.dirtree.model.request;
 
-import com.zja.tree.dirtree.entity.enums.NodeType;
+import com.zja.tree.dirtree.enums.NodeType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

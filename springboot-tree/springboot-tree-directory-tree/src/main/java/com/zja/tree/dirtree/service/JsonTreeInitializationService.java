@@ -1,6 +1,6 @@
 package com.zja.tree.dirtree.service;
 
-import com.zja.tree.dirtree.entity.enums.TemplateType;
+import com.zja.tree.dirtree.enums.TemplateType;
 import com.zja.tree.dirtree.model.dto.JsonTreeDefinition;
 import com.zja.tree.dirtree.model.response.InitTreeResult;
 import org.springframework.web.multipart.MultipartFile;

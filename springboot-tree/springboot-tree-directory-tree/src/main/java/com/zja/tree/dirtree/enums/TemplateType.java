@@ -1,4 +1,4 @@
-package com.zja.tree.dirtree.entity.enums;
+package com.zja.tree.dirtree.enums;
 
 import lombok.Getter;
 

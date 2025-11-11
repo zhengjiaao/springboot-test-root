@@ -2,12 +2,10 @@ package com.zja.tree.dirtree.repository;
 
 import com.zja.tree.dirtree.DirTreeApplicationTest;
 import com.zja.tree.dirtree.entity.DirectoryNode;
-import com.zja.tree.dirtree.entity.enums.NodeType;
+import com.zja.tree.dirtree.enums.NodeType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.*;
 

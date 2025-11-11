@@ -2,7 +2,7 @@ package com.zja.tree.dirtree.service;
 
 import com.zja.tree.dirtree.DirTreeApplicationTest;
 import com.zja.tree.dirtree.entity.DirectoryNode;
-import com.zja.tree.dirtree.entity.enums.NodeType;
+import com.zja.tree.dirtree.enums.NodeType;
 import com.zja.tree.dirtree.model.dto.TreeNodeData;
 import com.zja.tree.dirtree.model.request.CreateDirectoryRequest;
 import com.zja.tree.dirtree.model.request.InitTreeRequest;
@@ -20,8 +20,6 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 /**
  * 不使用Mock的TreeInitializationService测试类

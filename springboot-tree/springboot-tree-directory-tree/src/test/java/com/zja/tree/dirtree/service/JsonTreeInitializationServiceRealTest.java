@@ -1,35 +1,23 @@
 package com.zja.tree.dirtree.service;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zja.tree.dirtree.DirTreeApplicationTest;
-import com.zja.tree.dirtree.entity.DirectoryNode;
-import com.zja.tree.dirtree.entity.enums.NodeType;
-import com.zja.tree.dirtree.entity.enums.TemplateType;
+import com.zja.tree.dirtree.enums.NodeType;
+import com.zja.tree.dirtree.enums.TemplateType;
 import com.zja.tree.dirtree.model.dto.JsonTreeDefinition;
 import com.zja.tree.dirtree.model.response.InitTreeResult;
 import com.zja.tree.dirtree.repository.DirectoryNodeRepository;
-import com.zja.tree.dirtree.service.impl.JsonTreeInitializationServiceImpl;
-import com.zja.tree.dirtree.service.impl.TreeInitializationServiceImpl;
 import com.zja.tree.dirtree.util.ResourcesFileUtil;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

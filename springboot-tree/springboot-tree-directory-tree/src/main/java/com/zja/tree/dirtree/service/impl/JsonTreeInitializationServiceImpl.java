@@ -2,7 +2,7 @@ package com.zja.tree.dirtree.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zja.tree.dirtree.entity.DirectoryNode;
-import com.zja.tree.dirtree.entity.enums.TemplateType;
+import com.zja.tree.dirtree.enums.TemplateType;
 import com.zja.tree.dirtree.model.dto.JsonTreeDefinition;
 import com.zja.tree.dirtree.model.dto.TreeNodeData;
 import com.zja.tree.dirtree.model.request.InitTreeRequest;

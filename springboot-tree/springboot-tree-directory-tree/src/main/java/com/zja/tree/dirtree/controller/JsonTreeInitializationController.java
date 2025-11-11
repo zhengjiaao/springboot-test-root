@@ -1,6 +1,6 @@
 package com.zja.tree.dirtree.controller;
 
-import com.zja.tree.dirtree.entity.enums.TemplateType;
+import com.zja.tree.dirtree.enums.TemplateType;
 import com.zja.tree.dirtree.model.response.InitTreeResult;
 import com.zja.tree.dirtree.service.JsonTreeInitializationService;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.zja.tree.dirtree.model.dto;
 
-import com.zja.tree.dirtree.entity.enums.NodeType;
+import com.zja.tree.dirtree.enums.NodeType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
