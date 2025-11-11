@@ -1,0 +1,63 @@
+{
+  "name": "公司文档目录结构",
+  "description": "企业文档管理系统目录结构",
+  "version": "1.0",
+  "businessType": "DOCUMENT",
+  "createdBy": "admin",
+  "overwrite": false,
+  "nodes": [
+    {
+      "name": "公司制度",
+      "nodeType": "DIRECTORY",
+      "sortOrder": 1,
+      "businessId": "COMPANY_POLICY",
+      "children": [
+        {
+          "name": "人力资源制度",
+          "nodeType": "DIRECTORY",
+          "sortOrder": 1,
+          "children": [
+            {
+              "name": "员工手册.pdf",
+              "nodeType": "FILE",
+              "businessId": "EMPLOYEE_HANDBOOK_2024",
+              "customAttributes": {
+                "fileType": "pdf",
+                "fileSize": "2.5MB",
+                "version": "2024.1"
+              }
+            },
+            {
+              "name": "考勤管理制度.doc",
+              "nodeType": "FILE",
+              "businessId": "ATTENDANCE_POLICY"
+            }
+          ]
+        },
+        {
+          "name": "财务制度",
+          "nodeType": "DIRECTORY",
+          "sortOrder": 2
+        }
+      ]
+    },
+    {
+      "name": "项目文档",
+      "nodeType": "DIRECTORY",
+      "sortOrder": 2,
+      "businessId": "PROJECT_DOCS",
+      "children": [
+        {
+          "name": "进行中项目",
+          "nodeType": "DIRECTORY",
+          "sortOrder": 1
+        },
+        {
+          "name": "已完成项目",
+          "nodeType": "DIRECTORY",
+          "sortOrder": 2
+        }
+      ]
+    }
+  ]
+}

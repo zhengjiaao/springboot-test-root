@@ -1,0 +1,38 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+  datasource:
+    #    url: jdbc:mysql://127.0.0.1:3306/test?characterEncoding=UTF-8
+    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: test
+    password: pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect  #使用innodb引擎，不加这句则默认为myisam引擎
+    hibernate:
+      ddl-auto: update
+    # sql 日志
+    show-sql: true # 默认false，使Hibernate显示它生成的SQL语句到标准输出，
+    properties:
+      hibernate:
+        format_sql: false # 默认false，true格式化输出的SQL，使其更易读
+        generate_statistics: false # 默认false，true开启统计信息收集，可用于进一步分析SQL执行情况
+    # 一直开启session，避免导致懒加载失败
+#    open-in-view: true # 默认false，会导致懒加载失效 @Basic(fetch = FetchType.LAZY)
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa:
+            support: DEBUG

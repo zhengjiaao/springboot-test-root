@@ -1,0 +1,88 @@
+{
+  "name": "商品分类目录树",
+  "description": "电商平台商品分类目录结构",
+  "version": "1.0",
+  "businessType": "PRODUCT_CATEGORY",
+  "createdBy": "system",
+  "overwrite": true,
+  "nodes": [
+    {
+      "name": "数码产品",
+      "alias": "电子产品",
+      "description": "各类数码电子产品",
+      "icon": "icon-electronics",
+      "nodeType": "DIRECTORY",
+      "sortOrder": 1,
+      "businessId": "ELECTRONICS",
+      "customAttributes": {
+        "categoryCode": "ELEC",
+        "displayColor": "#1890ff"
+      },
+      "children": [
+        {
+          "name": "手机通讯",
+          "nodeType": "DIRECTORY",
+          "sortOrder": 1,
+          "businessId": "MOBILE_COMM",
+          "children": [
+            {
+              "name": "智能手机",
+              "nodeType": "DIRECTORY",
+              "sortOrder": 1,
+              "businessId": "SMART_PHONE",
+              "customAttributes": {
+                "hasVariants": "true"
+              }
+            },
+            {
+              "name": "老人手机",
+              "nodeType": "DIRECTORY",
+              "sortOrder": 2,
+              "businessId": "ELDER_PHONE"
+            }
+          ]
+        },
+        {
+          "name": "电脑办公",
+          "nodeType": "DIRECTORY",
+          "sortOrder": 2,
+          "businessId": "COMPUTER_OFFICE",
+          "children": [
+            {
+              "name": "笔记本电脑",
+              "nodeType": "DIRECTORY",
+              "sortOrder": 1,
+              "businessId": "LAPTOP"
+            },
+            {
+              "name": "台式电脑",
+              "nodeType": "DIRECTORY",
+              "sortOrder": 2,
+              "businessId": "DESKTOP"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "家用电器",
+      "nodeType": "DIRECTORY",
+      "sortOrder": 2,
+      "businessId": "HOME_APPLIANCES",
+      "children": [
+        {
+          "name": "大家电",
+          "nodeType": "DIRECTORY",
+          "sortOrder": 1,
+          "businessId": "MAJOR_APPLIANCES"
+        },
+        {
+          "name": "厨房电器",
+          "nodeType": "DIRECTORY",
+          "sortOrder": 2,
+          "businessId": "KITCHEN_APPLIANCES"
+        }
+      ]
+    }
+  ]
+}
