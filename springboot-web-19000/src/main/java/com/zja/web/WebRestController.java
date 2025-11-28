@@ -14,8 +14,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.Data;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -117,6 +119,17 @@ public class WebRestController {
     @ApiOperation(value = "post-对象参数", notes = "返回对象")
     public Object postObject(@RequestBody UserDTO userDto) {
         return userDto;
+    }
+
+    @PostMapping(value = "/post/object/v3")
+    @ApiOperation(value = "post-对象参数", notes = "返回对象")
+    public Object postObject(@RequestBody UserExtensionDTO userExtensionDTO) {
+        return userExtensionDTO;
+    }
+
+    @Data
+    public static class UserExtensionDTO implements Serializable {
+        private String name;
     }
 
     //put
