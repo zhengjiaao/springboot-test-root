@@ -10,10 +10,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
- * a 数据传输
+ * 分页数据传输
  *
  * @author: zhengja
  * @since: 2024/09/27 9:31
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 @Data
 @ApiModel("PageData")
 public final class PageData<T> implements Serializable {
-
     @ApiModelProperty("数据")
     private List<T> data;
     @ApiModelProperty("当前页号")
@@ -62,11 +60,7 @@ public final class PageData<T> implements Serializable {
         return dp;
     }
 
-    public void convert(Function<T, T> mapper) {
-        this.data = data.stream().map(mapper).collect(Collectors.toList());
-    }
-
-    public <R extends Serializable> PageData<R> map(Function<List<T>, List<R>> mapper) {
+    public <R> PageData<R> map(Function<List<T>, List<R>> mapper) {
         return of(mapper.apply(this.getData()), this.getIndex(), this.getSize(), this.getCount());
     }
 }

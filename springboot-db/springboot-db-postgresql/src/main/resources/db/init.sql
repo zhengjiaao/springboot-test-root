@@ -15,3 +15,16 @@ create table if not exists t_project
     sort               int8         NOT NULL UNIQUE,
     "state"              int4 NULL
 );
+
+-- 创建产品表
+cREATE TABLE IF NOT EXISTS t_product_info (
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    product_code VARCHAR(100) NOT NULL UNIQUE,
+    price DECIMAL(10,2) NULL,
+    description TEXT NULL,
+    category VARCHAR(100) NULL,
+    status INTEGER NULL,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date TIMESTAMP NULL
+);

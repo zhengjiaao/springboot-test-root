@@ -19,7 +19,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "t_user_v2")
+@Table(name = "t_user_info")
 @EntityListeners(value = AuditingEntityListener.class)
 public class User {
 
