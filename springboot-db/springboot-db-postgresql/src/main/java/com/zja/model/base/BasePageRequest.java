@@ -23,6 +23,7 @@ public class BasePageRequest implements Serializable {
     private Integer size = 10;
 
     public Integer getPage() {
-        return page - 1; // 注：jpa page 从 0 开始
+        // 确保返回值最小为0，避免负数
+        return Math.max(0, page - 1); // 注：jpa page 从 0 开始
     }
 }

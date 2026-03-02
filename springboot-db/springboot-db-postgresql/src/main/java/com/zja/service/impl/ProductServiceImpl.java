@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageData<ProductDTO> pageList(ProductPageRequest request) {
-        int page = Math.max(0, request.getPage());
+        int page = request.getPage();
         int size = request.getSize();
         Sort sort = Sort.by(Sort.Direction.DESC, "createTime");
 
