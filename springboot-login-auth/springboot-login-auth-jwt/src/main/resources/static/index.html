@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页 - JWT认证系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .user-roles {
+            display: flex;
+            gap: 4px;
+        }
+        .role-tag {
+            background: #eef2ff;
+            color: #667eea;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .role-tag.admin {
+            background: #fef3e2;
+            color: #e67e22;
+        }
+        .btn-logout {
+            padding: 6px 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            background: #fff5f5;
+        }
+
+        /* 主体内容 */
+        .main-content {
+            max-width: 1100px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        /* 欢迎卡片 */
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 40px;
+            color: #fff;
+            margin-bottom: 24px;
+        }
+        .welcome-card h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .welcome-card p {
+            opacity: 0.85;
+            font-size: 15px;
+        }
+
+        /* 卡片网格 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card h3 .icon {
+            font-size: 20px;
+        }
+
+        /* Token 信息 */
+        .token-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .token-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .token-label {
+            font-size: 13px;
+            color: #999;
+            width: 90px;
+            flex-shrink: 0;
+        }
+        .token-value {
+            font-size: 12px;
+            color: #555;
+            font-family: 'Courier New', monospace;
+            background: #f5f7fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 320px;
+        }
+        .btn-copy {
+            padding: 2px 8px;
+            font-size: 11px;
+            background: #f0f2f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #666;
+        }
+        .btn-copy:hover { background: #e8eaed; }
+
+        /* API 测试 */
+        .api-test-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .api-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .api-method {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            min-width: 50px;
+            text-align: center;
+        }
+        .api-method.post { background: #49cc90; }
+        .api-method.get { background: #61dafb; color: #333; }
+        .api-path {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #555;
+            flex: 1;
+        }
+        .btn-test {
+            padding: 4px 12px;
+            font-size: 12px;
+            background: #667eea;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-test:hover { background: #5a6fd6; }
+
+        /* 流程说明 */
+        .flow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .flow-step {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .step-text {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+            padding-top: 3px;
+        }
+        .step-text code {
+            background: #eef2ff;
+            color: #667eea;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        /* 结果面板 */
+        .result-panel {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .result-panel h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .result-content {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .result-content .success { color: #a6e3a1; }
+        .result-content .error { color: #f38ba8; }
+        .result-content .info { color: #89b4fa; }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div style="display:flex;align-items:center;gap:24px;">
+            <div class="navbar-brand">JWT 认证系统</div>
+            <div style="display:flex;gap:4px;">
+                <a href="/index.html" style="padding:8px 16px;border-radius:8px;text-decoration:none;color:#555;font-size:14px;background:#eef2ff;color:#667eea;font-weight:500;">主页</a>
+                <a href="/product.html" style="padding:8px 16px;border-radius:8px;text-decoration:none;color:#555;font-size:14px;transition:background 0.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'">产品管理</a>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div>
+                    <div id="userName" style="font-weight:500;"></div>
+                    <div class="user-roles" id="userRoles"></div>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="Auth.logout()">退出登录</button>
+        </div>
+    </nav>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <!-- 欢迎卡片 -->
+        <div class="welcome-card">
+            <h2 id="welcomeText">欢迎回来！</h2>
+            <p>基于 Spring Security + JWT + Redis 的认证系统，支持双Token机制与Token轮转</p>
+        </div>
+
+        <!-- 卡片网格 -->
+        <div class="card-grid">
+            <!-- Token 信息 -->
+            <div class="card">
+                <h3><span class="icon">🔑</span> Token 信息</h3>
+                <div class="token-info">
+                    <div class="token-row">
+                        <span class="token-label">AccessToken</span>
+                        <span class="token-value" id="accessTokenVal"></span>
+                        <button class="btn-copy" onclick="copyToken('access')">复制</button>
+                    </div>
+                    <div class="token-row">
+                        <span class="token-label">RefreshToken</span>
+                        <span class="token-value" id="refreshTokenVal"></span>
+                        <button class="btn-copy" onclick="copyToken('refresh')">复制</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API 测试 -->
+            <div class="card">
+                <h3><span class="icon">🧪</span> API 测试</h3>
+                <div class="api-test-list">
+                    <div class="api-item">
+                        <span class="api-method post">POST</span>
+                        <span class="api-path">/api/auth/refresh</span>
+                        <button class="btn-test" onclick="testRefresh()">测试刷新</button>
+                    </div>
+                    <div class="api-item">
+                        <span class="api-method post">POST</span>
+                        <span class="api-path">/api/auth/logout</span>
+                        <button class="btn-test" onclick="testLogout()">测试登出</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 认证流程说明 -->
+        <div class="card-grid">
+            <div class="card">
+                <h3><span class="icon">📋</span> 认证流程</h3>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="step-num">1</div>
+                        <div class="step-text">用户提交用户名密码，调用 <code>POST /api/auth/login</code></div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">2</div>
+                        <div class="step-text">服务端验证后返回 <code>AccessToken</code>（30分钟）+ <code>RefreshToken</code>（7天），RefreshToken存入Redis</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">3</div>
+                        <div class="step-text">前端每次请求携带 <code>Authorization: Bearer &lt;accessToken&gt;</code></div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">4</div>
+                        <div class="step-text">AccessToken过期时，用RefreshToken调用 <code>POST /api/auth/refresh</code> 获取新双Token（轮转机制）</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">5</div>
+                        <div class="step-text">登出时AccessToken加入Redis黑名单 + 删除RefreshToken，确保Token立即失效</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 测试结果 -->
+            <div class="card">
+                <h3><span class="icon">📊</span> 测试结果</h3>
+                <div class="result-content" id="resultPanel">等待测试操作...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        // 访问控制：未登录跳转登录页
+        if (!Auth.requireAuth()) {
+            // requireAuth内部已跳转，阻止后续执行
+            throw new Error('未认证');
+        }
+
+        // ===== 初始化页面 =====
+        (function initPage() {
+            const userInfo = Auth.getUserInfo();
+            if (!userInfo) return;
+
+            // 头像
+            document.getElementById('userAvatar').textContent =
+                userInfo.username.charAt(0).toUpperCase();
+
+            // 用户名
+            document.getElementById('userName').textContent = userInfo.username;
+
+            // 欢迎语
+            document.getElementById('welcomeText').textContent =
+                '欢迎回来，' + userInfo.username + '！';
+
+            // 角色
+            const rolesContainer = document.getElementById('userRoles');
+            (userInfo.roles || []).forEach(role => {
+                const tag = document.createElement('span');
+                tag.className = 'role-tag' + (role === 'ADMIN' ? ' admin' : '');
+                tag.textContent = role;
+                rolesContainer.appendChild(tag);
+            });
+
+            // Token展示
+            const accessToken = Auth.getAccessToken();
+            const refreshToken = Auth.getRefreshToken();
+            document.getElementById('accessTokenVal').textContent =
+                accessToken ? accessToken.substring(0, 30) + '...' : '无';
+            document.getElementById('refreshTokenVal').textContent =
+                refreshToken ? refreshToken.substring(0, 30) + '...' : '无';
+        })();
+
+        // ===== 工具方法 =====
+
+        function logResult(title, data, isError) {
+            const panel = document.getElementById('resultPanel');
+            const time = new Date().toLocaleTimeString();
+            const cls = isError ? 'error' : 'success';
+            const json = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+            panel.innerHTML =
+                `<span class="info">[${time}]</span> <span class="${cls}">${title}</span>\n${json}\n\n` +
+                panel.innerHTML;
+        }
+
+        function copyToken(type) {
+            const token = type === 'access'
+                ? Auth.getAccessToken()
+                : Auth.getRefreshToken();
+            if (token) {
+                navigator.clipboard.writeText(token).then(() => {
+                    alert(type === 'access' ? 'AccessToken已复制' : 'RefreshToken已复制');
+                });
+            }
+        }
+
+        // ===== API 测试 =====
+
+        async function testRefresh() {
+            try {
+                logResult('正在刷新Token...', '请稍候', false);
+                const refreshToken = Auth.getRefreshToken();
+                const response = await fetch('/api/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + refreshToken }
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    Auth.saveTokens(data.accessToken, data.refreshToken);
+                    Auth.saveUserInfo({ username: data.username, roles: data.roles });
+                    document.getElementById('accessTokenVal').textContent =
+                        data.accessToken.substring(0, 30) + '...';
+                    document.getElementById('refreshTokenVal').textContent =
+                        data.refreshToken.substring(0, 30) + '...';
+                    logResult('Token刷新成功！', data, false);
+                } else {
+                    logResult('Token刷新失败', data, true);
+                }
+            } catch (e) {
+                logResult('请求异常', e.message, true);
+            }
+        }
+
+        async function testLogout() {
+            if (!confirm('确定要登出吗？登出后需重新登录。')) return;
+
+            try {
+                logResult('正在登出...', '请稍候', false);
+                await Auth.logout();
+            } catch (e) {
+                logResult('登出异常', e.message, true);
+                Auth.clearAll();
+                window.location.href = '/login.html';
+            }
+        }
+    </script>
+</body>
+</html>

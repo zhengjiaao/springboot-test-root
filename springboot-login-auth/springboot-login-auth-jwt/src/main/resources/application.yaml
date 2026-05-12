@@ -1,0 +1,27 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2049MB     # 设置单文件大小 2G
+      max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+  # redis:
+  #   host: localhost
+  #   port: 6379
+  #   timeout: 5000
+  #   database: 0
+  redis:
+    host: 192.168.14.3
+    port: 16379
+    database: 6
+    timeout: 50000
+jwt:
+  # HS512要求密钥至少64字节(512位)，以下为Base64编码的强密钥
+  # 生产环境应从环境变量或配置中心读取，切勿硬编码
+  secret: Y2hhbmdlLXRoaXMtdG8tYS1sb25nLXNlY3JldC1rZXktZm9yLWhzNTEyLWFsZ29yaXRobS1hdC1sZWFzdC02NC1ieXRlcw==
+  access-token-expire: 1800000 # 30分钟 (毫秒)
+  refresh-token-expire: 604800000 # 7天 (毫秒)
