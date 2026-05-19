@@ -16,7 +16,6 @@
 	</properties>
 
 	<modules>
-<!--		<module>springboot-remote-consumer</module>-->
 		<module>springboot-remote-httpclient-apache</module>
 		<module>springboot-remote-httpclient-jdk</module>
 		<module>springboot-remote-okhttp</module>
