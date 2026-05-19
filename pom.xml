@@ -29,10 +29,12 @@
         <module>springboot-file</module>
         <module>springboot-gis</module>
         <module>springboot-git</module>
-        <module>springboot-hanbian</module>
+        <module>springboot-init</module>
+        <!-- <module>springboot-hanbian</module> -->
         <module>springboot-java</module>
         <module>springboot-log</module>
         <module>springboot-login</module>
+        <module>springboot-login-auth</module>
         <module>springboot-mapping</module>
         <module>springboot-monitor</module>
         <module>springboot-mq</module>
@@ -47,6 +49,7 @@
         <module>springboot-sensitive-word</module>
         <module>springboot-task</module>
         <module>springboot-thread</module>
+        <module>springboot-tree</module>
         <module>springboot-unit-testing</module>
         <module>springboot-utils</module>
         <module>springboot-web-19000</module>
@@ -57,7 +60,7 @@
         <java.version>1.8</java.version>
         <!--插件版本-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
         <mavne.surefire.plugin.version>2.19.1</mavne.surefire.plugin.version>
         <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
