@@ -17,6 +17,7 @@
 
     <modules>
         <module>springboot-login-auth-jwt</module>
+        <module>springboot-login-auth-security</module>
     </modules>
 
 </project>
