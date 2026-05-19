@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 30m  # Session超时时间
+
+spring:
+  application:
+    name: springboot-login-auth-security
+  # Redis配置（用于分布式Session共享，单机可不用）
+  # redis:
+  #   host: localhost
+  #   port: 6379
+  #   password:
+  #   database: 0
+  #   timeout: 5000
+  redis:
+    host: 192.168.14.3
+    port: 16379
+    database: 6
+    timeout: 50000
+  # Jackson序列化配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+# Spring Security 配置
+security:
+  # 记住我Token密钥（生产环境应使用随机强密钥）
+  remember-me:
+    key: unique-and-secret-key-for-remember-me

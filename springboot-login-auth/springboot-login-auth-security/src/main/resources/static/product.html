@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品管理 - Security Session认证系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-left { display: flex; align-items: center; gap: 24px; }
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover { background: #f5f5f5; color: #333; }
+        .nav-link.active { background: #e3f2fd; color: #1565C0; font-weight: 500; }
+        .navbar-right { display: flex; align-items: center; gap: 16px; }
+        .user-info { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #555; }
+        .user-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 14px;
+        }
+        .user-roles { display: flex; gap: 4px; }
+        .role-tag {
+            background: #e3f2fd; color: #1565C0; padding: 2px 8px;
+            border-radius: 10px; font-size: 11px; font-weight: 500;
+        }
+        .role-tag.admin { background: #fff3e0; color: #e67e22; }
+        .btn-logout {
+            padding: 6px 16px; background: #fff; border: 1px solid #ddd;
+            border-radius: 6px; font-size: 13px; color: #666; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover { border-color: #e74c3c; color: #e74c3c; background: #fff5f5; }
+
+        /* 主体 */
+        .main-content { max-width: 1200px; margin: 24px auto; padding: 0 24px; }
+
+        /* 工具栏 */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .toolbar-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .toolbar h2 { font-size: 22px; color: #333; }
+        .search-box {
+            display: flex; align-items: center; gap: 8px;
+            background: #fff; border-radius: 8px; padding: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .search-box input, .search-box select {
+            border: 1px solid #e0e0e0; border-radius: 6px; padding: 8px 12px;
+            font-size: 13px; outline: none; transition: border-color 0.2s;
+        }
+        .search-box input:focus, .search-box select:focus { border-color: #2196F3; }
+        .btn-search {
+            padding: 8px 16px; background: #2196F3; color: #fff; border: none;
+            border-radius: 6px; font-size: 13px; cursor: pointer;
+        }
+        .btn-search:hover { background: #1976D2; }
+        .btn-reset {
+            padding: 8px 16px; background: #f5f5f5; color: #666; border: none;
+            border-radius: 6px; font-size: 13px; cursor: pointer;
+        }
+        .btn-reset:hover { background: #eee; }
+
+        .btn-add {
+            padding: 10px 20px; background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            color: #fff; border: none; border-radius: 8px; font-size: 14px;
+            cursor: pointer; font-weight: 500; transition: opacity 0.2s;
+        }
+        .btn-add:hover { opacity: 0.9; }
+
+        /* 表格 */
+        .table-card {
+            background: #fff; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #fafbfc; }
+        th {
+            padding: 14px 16px; text-align: left; font-size: 13px;
+            color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;
+        }
+        td {
+            padding: 14px 16px; font-size: 14px; color: #333;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        tr:hover td { background: #fafbfc; }
+        .status-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 12px;
+            font-size: 12px; font-weight: 500;
+        }
+        .status-badge.on-sale { background: #e8f5e9; color: #2e7d32; }
+        .status-badge.off-shelf { background: #fbe9e7; color: #c62828; }
+        .price { color: #e67e22; font-weight: 600; }
+        .stock { font-weight: 500; }
+        .stock.low { color: #e74c3c; }
+
+        .action-btns { display: flex; gap: 6px; }
+        .btn-edit, .btn-delete {
+            padding: 5px 12px; border: none; border-radius: 4px;
+            font-size: 12px; cursor: pointer; transition: opacity 0.2s;
+        }
+        .btn-edit { background: #e3f2fd; color: #1565C0; }
+        .btn-edit:hover { opacity: 0.8; }
+        .btn-delete { background: #fff5f5; color: #e74c3c; }
+        .btn-delete:hover { opacity: 0.8; }
+
+        .empty-row td { text-align: center; color: #999; padding: 40px; font-size: 14px; }
+
+        /* 弹窗 */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4); z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #fff; border-radius: 16px; padding: 32px;
+            width: 480px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .modal h3 { font-size: 20px; color: #333; margin-bottom: 24px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; color: #666; margin-bottom: 6px; font-weight: 500; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px 12px; border: 1px solid #ddd;
+            border-radius: 8px; font-size: 14px; outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: #2196F3; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+        .btn-cancel {
+            padding: 10px 20px; background: #f5f5f5; color: #666; border: none;
+            border-radius: 8px; font-size: 14px; cursor: pointer;
+        }
+        .btn-cancel:hover { background: #eee; }
+        .btn-submit {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            color: #fff; border: none; border-radius: 8px; font-size: 14px;
+            cursor: pointer; font-weight: 500;
+        }
+        .btn-submit:hover { opacity: 0.9; }
+
+        /* 提示 */
+        .toast {
+            position: fixed; top: 80px; right: 24px; padding: 12px 20px;
+            border-radius: 8px; font-size: 14px; z-index: 2000;
+            transform: translateX(120%); transition: transform 0.3s;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { background: #e8f5e9; color: #2e7d32; }
+        .toast.error { background: #fbe9e7; color: #c62828; }
+        .toast.warn { background: #fff3e0; color: #e65100; }
+
+        /* 权限提示 */
+        .permission-hint {
+            background: #fff3e0; color: #e65100; padding: 12px 16px;
+            border-radius: 8px; font-size: 13px; margin-bottom: 16px;
+            display: none; align-items: center; gap: 8px;
+        }
+        .permission-hint.show { display: flex; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/index.html" class="navbar-brand">Security Session 认证系统</a>
+            <div class="nav-links">
+                <a href="/index.html" class="nav-link">主页</a>
+                <a href="/product.html" class="nav-link active">产品管理</a>
+                <a href="/user.html" id="navUserMgmt" class="nav-link" style="display:none;">用户管理</a>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div>
+                    <div id="userName" style="font-weight:500;"></div>
+                    <div class="user-roles" id="userRoles"></div>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="Auth.logout()">退出登录</button>
+        </div>
+    </nav>
+
+    <!-- 主体 -->
+    <div class="main-content">
+        <!-- 权限提示 -->
+        <div class="permission-hint" id="permissionHint">
+            <strong>&#9888;</strong> 当前为普通用户角色，仅可查看在售产品。如需管理产品，请以管理员身份登录。
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <h2>产品列表</h2>
+                <div class="search-box">
+                    <select id="categoryFilter" onchange="loadProducts()">
+                        <option value="">全部分类</option>
+                    </select>
+                    <input type="text" id="keywordInput" placeholder="搜索产品名称..." onkeydown="if(event.key==='Enter')loadProducts()">
+                    <button class="btn-search" onclick="loadProducts()">搜索</button>
+                    <button class="btn-reset" onclick="resetSearch()">重置</button>
+                </div>
+            </div>
+            <div id="adminActions">
+                <button class="btn-add" onclick="openAddModal()">+ 新增产品</button>
+            </div>
+        </div>
+
+        <!-- 表格 -->
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>产品名称</th>
+                        <th>分类</th>
+                        <th>价格</th>
+                        <th>库存</th>
+                        <th>状态</th>
+                        <th>创建时间</th>
+                        <th id="actionCol">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="productTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 新增/编辑弹窗 -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal">
+            <h3 id="modalTitle">新增产品</h3>
+            <input type="hidden" id="editId">
+            <div class="form-group">
+                <label>产品名称</label>
+                <input type="text" id="formName" placeholder="请输入产品名称">
+            </div>
+            <div class="form-group">
+                <label>价格</label>
+                <input type="number" id="formPrice" placeholder="请输入价格" step="0.01" min="0">
+            </div>
+            <div class="form-group">
+                <label>分类</label>
+                <select id="formCategory">
+                    <option value="电脑">电脑</option>
+                    <option value="手机">手机</option>
+                    <option value="平板">平板</option>
+                    <option value="配件">配件</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>库存</label>
+                <input type="number" id="formStock" placeholder="请输入库存" min="0">
+            </div>
+            <div class="form-group">
+                <label>状态</label>
+                <select id="formStatus">
+                    <option value="ON_SALE">在售</option>
+                    <option value="OFF_SHELF">下架</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">取消</button>
+                <button class="btn-submit" onclick="submitForm()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        Auth.requireAuth();
+
+        var isAdmin = false;
+
+        // ===== 初始化 =====
+        (function init() {
+            var userInfo = Auth.getUserInfo();
+            if (!userInfo) return;
+
+            // 头像
+            document.getElementById('userAvatar').textContent = userInfo.username.charAt(0).toUpperCase();
+            document.getElementById('userName').textContent = userInfo.username;
+
+            // 角色
+            isAdmin = (userInfo.roles || []).includes('ADMIN');
+            var rolesContainer = document.getElementById('userRoles');
+            (userInfo.roles || []).forEach(function(role) {
+                var tag = document.createElement('span');
+                tag.className = 'role-tag' + (role === 'ADMIN' ? ' admin' : '');
+                tag.textContent = role;
+                rolesContainer.appendChild(tag);
+            });
+
+            // 根据角色显示/隐藏管理功能
+            if (!isAdmin) {
+                document.getElementById('adminActions').style.display = 'none';
+                document.getElementById('actionCol').style.display = 'none';
+                document.getElementById('permissionHint').classList.add('show');
+            } else {
+                document.getElementById('navUserMgmt').style.display = 'inline-block';
+            }
+
+            // 加载分类和产品
+            loadCategories();
+            loadProducts();
+        })();
+
+        // ===== 分类 =====
+        async function loadCategories() {
+            try {
+                var res = await Auth.request('/api/products/categories');
+                if (res.ok) {
+                    var categories = await res.json();
+                    var select = document.getElementById('categoryFilter');
+                    categories.forEach(function(c) {
+                        var opt = document.createElement('option');
+                        opt.value = c;
+                        opt.textContent = c;
+                        select.appendChild(opt);
+                    });
+                }
+            } catch (e) { console.error('加载分类失败:', e); }
+        }
+
+        // ===== 产品列表 =====
+        async function loadProducts() {
+            var category = document.getElementById('categoryFilter').value;
+            var keyword = document.getElementById('keywordInput').value;
+            var params = new URLSearchParams();
+            if (category) params.set('category', category);
+            if (keyword) params.set('keyword', keyword);
+
+            try {
+                var res = await Auth.request('/api/products?' + params.toString());
+                if (res.ok) {
+                    var products = await res.json();
+                    renderTable(products);
+                } else {
+                    var err = await res.json().catch(function() { return {}; });
+                    showToast(err.message || '加载失败', 'error');
+                }
+            } catch (e) {
+                showToast('请求失败: ' + e.message, 'error');
+            }
+        }
+
+        function renderTable(products) {
+            var tbody = document.getElementById('productTable');
+            if (!products.length) {
+                tbody.innerHTML = '<tr class="empty-row"><td colspan="8">暂无产品数据</td></tr>';
+                return;
+            }
+            tbody.innerHTML = products.map(function(p) {
+                return '<tr>' +
+                    '<td>' + p.id + '</td>' +
+                    '<td>' + escapeHtml(p.name) + '</td>' +
+                    '<td>' + escapeHtml(p.category) + '</td>' +
+                    '<td class="price">&yen;' + p.price + '</td>' +
+                    '<td class="stock' + (p.stock < 50 ? ' low' : '') + '">' + p.stock + '</td>' +
+                    '<td><span class="status-badge ' + (p.status === 'ON_SALE' ? 'on-sale' : 'off-shelf') + '">' + (p.status === 'ON_SALE' ? '在售' : '下架') + '</span></td>' +
+                    '<td>' + formatTime(p.createTime) + '</td>' +
+                    (isAdmin ? '<td><div class="action-btns">' +
+                        '<button class="btn-edit" onclick="openEditModal(' + p.id + ', \'' + escapeHtml(p.name) + '\', ' + p.price + ', \'' + escapeHtml(p.category) + '\', ' + p.stock + ', \'' + p.status + '\')">编辑</button>' +
+                        '<button class="btn-delete" onclick="deleteProduct(' + p.id + ', \'' + escapeHtml(p.name) + '\')">删除</button>' +
+                    '</div></td>' : '') +
+                '</tr>';
+            }).join('');
+        }
+
+        // ===== 新增/编辑 =====
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = '新增产品';
+            document.getElementById('editId').value = '';
+            document.getElementById('formName').value = '';
+            document.getElementById('formPrice').value = '';
+            document.getElementById('formCategory').value = '电脑';
+            document.getElementById('formStock').value = '';
+            document.getElementById('formStatus').value = 'ON_SALE';
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function openEditModal(id, name, price, category, stock, status) {
+            document.getElementById('modalTitle').textContent = '编辑产品';
+            document.getElementById('editId').value = id;
+            document.getElementById('formName').value = name;
+            document.getElementById('formPrice').value = price;
+            document.getElementById('formCategory').value = category;
+            document.getElementById('formStock').value = stock;
+            document.getElementById('formStatus').value = status;
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        async function submitForm() {
+            var id = document.getElementById('editId').value;
+            var product = {
+                name: document.getElementById('formName').value.trim(),
+                price: parseFloat(document.getElementById('formPrice').value),
+                category: document.getElementById('formCategory').value,
+                stock: parseInt(document.getElementById('formStock').value),
+                status: document.getElementById('formStatus').value
+            };
+
+            if (!product.name) { showToast('请输入产品名称', 'warn'); return; }
+            if (isNaN(product.price) || product.price < 0) { showToast('请输入有效价格', 'warn'); return; }
+            if (isNaN(product.stock) || product.stock < 0) { showToast('请输入有效库存', 'warn'); return; }
+
+            var isEdit = !!id;
+            var url = isEdit ? '/api/products/' + id : '/api/products';
+            var method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                var res = await Auth.request(url, {
+                    method: method,
+                    body: JSON.stringify(product)
+                });
+                if (res.ok) {
+                    showToast(isEdit ? '产品更新成功' : '产品新增成功', 'success');
+                    closeModal();
+                    loadProducts();
+                } else {
+                    var err = await res.json().catch(function() { return {}; });
+                    if (res.status === 403) {
+                        showToast('权限不足，需要管理员角色', 'error');
+                    } else {
+                        showToast(err.message || '操作失败', 'error');
+                    }
+                }
+            } catch (e) {
+                showToast('请求失败: ' + e.message, 'error');
+            }
+        }
+
+        // ===== 删除 =====
+        async function deleteProduct(id, name) {
+            if (!confirm('确定删除产品 "' + name + '" 吗？')) return;
+            try {
+                var res = await Auth.request('/api/products/' + id, { method: 'DELETE' });
+                if (res.ok) {
+                    showToast('产品删除成功', 'success');
+                    loadProducts();
+                } else {
+                    var err = await res.json().catch(function() { return {}; });
+                    if (res.status === 403) {
+                        showToast('权限不足，需要管理员角色', 'error');
+                    } else {
+                        showToast(err.message || '删除失败', 'error');
+                    }
+                }
+            } catch (e) {
+                showToast('请求失败: ' + e.message, 'error');
+            }
+        }
+
+        // ===== 工具方法 =====
+        function resetSearch() {
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('keywordInput').value = '';
+            loadProducts();
+        }
+
+        function formatTime(dt) {
+            if (!dt) return '-';
+            if (Array.isArray(dt)) {
+                var y = dt[0], m = dt[1], d = dt[2], h = dt[3] || 0, min = dt[4] || 0, s = dt[5] || 0;
+                return y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0') + ' ' +
+                       String(h).padStart(2,'0') + ':' + String(min).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+            }
+            return dt.replace('T', ' ').substring(0, 19);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function showToast(msg, type) {
+            var toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast ' + type + ' show';
+            setTimeout(function() { toast.classList.remove('show'); }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页 - Security Session认证系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .user-roles {
+            display: flex;
+            gap: 4px;
+        }
+        .role-tag {
+            background: #e3f2fd;
+            color: #1565C0;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .role-tag.admin {
+            background: #fff3e0;
+            color: #e67e22;
+        }
+        .btn-logout {
+            padding: 6px 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            background: #fff5f5;
+        }
+
+        /* 主体内容 */
+        .main-content {
+            max-width: 1100px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        /* 欢迎卡片 */
+        .welcome-card {
+            background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            border-radius: 16px;
+            padding: 40px;
+            color: #fff;
+            margin-bottom: 24px;
+        }
+        .welcome-card h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .welcome-card p {
+            opacity: 0.85;
+            font-size: 15px;
+        }
+
+        /* 卡片网格 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card h3 .icon {
+            font-size: 20px;
+        }
+
+        /* Session 信息 */
+        .session-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .session-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .session-label {
+            font-size: 13px;
+            color: #999;
+            width: 90px;
+            flex-shrink: 0;
+        }
+        .session-value {
+            font-size: 13px;
+            color: #555;
+            font-family: 'Courier New', monospace;
+            background: #f5f7fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 320px;
+        }
+
+        /* API 测试 */
+        .api-test-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .api-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .api-method {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            min-width: 50px;
+            text-align: center;
+        }
+        .api-method.post { background: #49cc90; }
+        .api-method.get { background: #61dafb; color: #333; }
+        .api-method.delete { background: #f93e3e; }
+        .api-path {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #555;
+            flex: 1;
+        }
+        .api-desc {
+            font-size: 12px;
+            color: #999;
+            margin-left: 4px;
+        }
+        .btn-test {
+            padding: 4px 12px;
+            font-size: 12px;
+            background: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-test:hover { background: #1976D2; }
+
+        /* 流程说明 */
+        .flow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .flow-step {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .step-text {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+            padding-top: 3px;
+        }
+        .step-text code {
+            background: #e3f2fd;
+            color: #1565C0;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        /* 结果面板 */
+        .result-panel {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .result-panel h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .result-content {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .result-content .success { color: #a6e3a1; }
+        .result-content .error { color: #f38ba8; }
+        .result-content .info { color: #89b4fa; }
+
+        /* 修改密码弹窗 */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4); z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #fff; border-radius: 16px; padding: 32px;
+            width: 420px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .modal h3 { font-size: 20px; color: #333; margin-bottom: 24px; }
+        .modal .form-group { margin-bottom: 16px; }
+        .modal .form-group label { display: block; font-size: 13px; color: #666; margin-bottom: 6px; font-weight: 500; }
+        .modal .form-group input {
+            width: 100%; padding: 10px 12px; border: 1px solid #ddd;
+            border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s;
+        }
+        .modal .form-group input:focus { border-color: #2196F3; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+        .btn-cancel {
+            padding: 10px 20px; background: #f5f5f5; color: #666; border: none;
+            border-radius: 8px; font-size: 14px; cursor: pointer;
+        }
+        .btn-cancel:hover { background: #eee; }
+        .btn-submit {
+            padding: 10px 20px; background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            color: #fff; border: none; border-radius: 8px; font-size: 14px;
+            cursor: pointer; font-weight: 500;
+        }
+        .btn-submit:hover { opacity: 0.9; }
+        .btn-change-pwd {
+            padding: 6px 16px; background: #fff; border: 1px solid #ddd;
+            border-radius: 6px; font-size: 13px; color: #666; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-change-pwd:hover { border-color: #2196F3; color: #2196F3; background: #e3f2fd; }
+        .toast {
+            position: fixed; top: 80px; right: 24px; padding: 12px 20px;
+            border-radius: 8px; font-size: 14px; z-index: 2000;
+            transform: translateX(120%); transition: transform 0.3s;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { background: #e8f5e9; color: #2e7d32; }
+        .toast.error { background: #fbe9e7; color: #c62828; }
+
+        /* 权限对比表 */
+        .permission-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        .permission-table th, .permission-table td {
+            padding: 8px 12px;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+            text-align: left;
+        }
+        .permission-table th {
+            background: #fafbfc;
+            color: #888;
+            font-weight: 600;
+        }
+        .permission-table td { color: #555; }
+        .permission-table .check { color: #2196F3; }
+        .permission-table .cross { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div style="display:flex;align-items:center;gap:24px;">
+            <div class="navbar-brand">Security Session 认证系统</div>
+            <div style="display:flex;gap:4px;">
+                <a href="/index.html" style="padding:8px 16px;border-radius:8px;text-decoration:none;color:#555;font-size:14px;background:#e3f2fd;color:#1565C0;font-weight:500;">主页</a>
+                <a href="/product.html" style="padding:8px 16px;border-radius:8px;text-decoration:none;color:#555;font-size:14px;transition:background 0.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'">产品管理</a>
+                <a href="/user.html" id="navUserMgmt" style="padding:8px 16px;border-radius:8px;text-decoration:none;color:#555;font-size:14px;transition:background 0.2s;display:none;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'">用户管理</a>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div>
+                    <div id="userName" style="font-weight:500;"></div>
+                    <div class="user-roles" id="userRoles"></div>
+                </div>
+            </div>
+            <button class="btn-change-pwd" onclick="openChangePwdModal()">修改密码</button>
+            <button class="btn-logout" onclick="Auth.logout()">退出登录</button>
+        </div>
+    </nav>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <!-- 欢迎卡片 -->
+        <div class="welcome-card">
+            <h2 id="welcomeText">欢迎回来！</h2>
+            <p>基于 Spring Security Session + Cookie 的认证系统，支持记住我、并发Session控制、方法级权限控制</p>
+        </div>
+
+        <!-- 卡片网格 -->
+        <div class="card-grid">
+            <!-- Session 信息 -->
+            <div class="card">
+                <h3><span class="icon">&#128273;</span> Session 信息</h3>
+                <div class="session-info">
+                    <div class="session-row">
+                        <span class="session-label">认证模式</span>
+                        <span class="session-value">Session / Cookie</span>
+                    </div>
+                    <div class="session-row">
+                        <span class="session-label">Session ID</span>
+                        <span class="session-value" id="sessionIdVal">-</span>
+                    </div>
+                    <div class="session-row">
+                        <span class="session-label">当前用户</span>
+                        <span class="session-value" id="currentUserVal">-</span>
+                    </div>
+                    <div class="session-row">
+                        <span class="session-label">角色列表</span>
+                        <span class="session-value" id="currentRolesVal">-</span>
+                    </div>
+                    <div class="session-row">
+                        <span class="session-label">记住我</span>
+                        <span class="session-value" id="rememberMeVal">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API 测试 -->
+            <div class="card">
+                <h3><span class="icon">&#129514;</span> API 测试</h3>
+                <div class="api-test-list">
+                    <div class="api-item">
+                        <span class="api-method get">GET</span>
+                        <span class="api-path">/api/demo/public</span>
+                        <span class="api-desc">公开接口</span>
+                        <button class="btn-test" onclick="testPublicApi()">测试</button>
+                    </div>
+                    <div class="api-item">
+                        <span class="api-method get">GET</span>
+                        <span class="api-path">/api/demo/user</span>
+                        <span class="api-desc">用户接口</span>
+                        <button class="btn-test" onclick="testUserApi()">测试</button>
+                    </div>
+                    <div class="api-item">
+                        <span class="api-method get">GET</span>
+                        <span class="api-path">/api/demo/admin</span>
+                        <span class="api-desc">管理员接口</span>
+                        <button class="btn-test" onclick="testAdminApi()">测试</button>
+                    </div>
+                    <div class="api-item">
+                        <span class="api-method get">GET</span>
+                        <span class="api-path">/api/demo/profile</span>
+                        <span class="api-desc">用户详情</span>
+                        <button class="btn-test" onclick="testProfileApi()">测试</button>
+                    </div>
+                    <div class="api-item">
+                        <span class="api-method get">GET</span>
+                        <span class="api-path">/api/auth/info</span>
+                        <span class="api-desc">当前用户</span>
+                        <button class="btn-test" onclick="testAuthInfoApi()">测试</button>
+                    </div>
+                    <div class="api-item">
+                        <span class="api-method post">POST</span>
+                        <span class="api-path">/api/auth/logout</span>
+                        <span class="api-desc">登出</span>
+                        <button class="btn-test" onclick="testLogoutApi()">测试</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 认证流程说明 + 权限对比表 -->
+        <div class="card-grid">
+            <div class="card">
+                <h3><span class="icon">&#128203;</span> 认证流程</h3>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="step-num">1</div>
+                        <div class="step-text">用户提交用户名密码，调用 <code>POST /api/auth/login</code></div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">2</div>
+                        <div class="step-text">服务端验证后创建 <code>HttpSession</code>，返回 <code>JSESSIONID</code> Cookie</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">3</div>
+                        <div class="step-text">浏览器后续请求自动携带 <code>Cookie: JSESSIONID=xxx</code>，无需手动管理</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">4</div>
+                        <div class="step-text">勾选"记住我"后，额外颁发 <code>remember-me</code> Cookie（7天有效期）</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">5</div>
+                        <div class="step-text">同一用户仅允许1个Session，新登录会踢掉旧Session</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">6</div>
+                        <div class="step-text">登出时清除Session和Cookie，确保立即失效</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 权限对比表 -->
+            <div class="card">
+                <h3><span class="icon">&#128274;</span> 角色权限对比</h3>
+                <table class="permission-table">
+                    <thead>
+                        <tr>
+                            <th>接口</th>
+                            <th>ADMIN</th>
+                            <th>USER</th>
+                            <th>未登录</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>/api/demo/public</td>
+                            <td class="check">&#10004;</td>
+                            <td class="check">&#10004;</td>
+                            <td class="check">&#10004;</td>
+                        </tr>
+                        <tr>
+                            <td>/api/demo/user</td>
+                            <td class="check">&#10004;</td>
+                            <td class="check">&#10004;</td>
+                            <td class="cross">&#10008;</td>
+                        </tr>
+                        <tr>
+                            <td>/api/demo/admin</td>
+                            <td class="check">&#10004;</td>
+                            <td class="cross">&#10008;</td>
+                            <td class="cross">&#10008;</td>
+                        </tr>
+                        <tr>
+                            <td>/api/demo/profile</td>
+                            <td class="check">&#10004;</td>
+                            <td class="check">&#10004;</td>
+                            <td class="cross">&#10008;</td>
+                        </tr>
+                        <tr>
+                            <td>/api/products</td>
+                            <td class="check">&#10004; 全部</td>
+                            <td class="check">&#10004; 仅在售</td>
+                            <td class="cross">&#10008;</td>
+                        </tr>
+                        <tr>
+                            <td>/api/products (POST)</td>
+                            <td class="check">&#10004;</td>
+                            <td class="cross">&#10008;</td>
+                            <td class="cross">&#10008;</td>
+                        </tr>
+                        <tr>
+                            <td>/api/auth/logout</td>
+                            <td class="check">&#10004;</td>
+                            <td class="check">&#10004;</td>
+                            <td class="cross">&#10008;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 测试结果 -->
+        <div class="result-panel">
+            <h3><span class="icon">&#128202;</span> 测试结果</h3>
+            <div class="result-content" id="resultPanel">等待测试操作...</div>
+        </div>
+    </div>
+
+    <!-- 修改密码弹窗 -->
+    <div class="modal-overlay" id="changePwdModal">
+        <div class="modal">
+            <h3>修改密码</h3>
+            <div class="form-group">
+                <label>原密码</label>
+                <input type="password" id="oldPassword" placeholder="请输入原密码">
+            </div>
+            <div class="form-group">
+                <label>新密码</label>
+                <input type="password" id="newPassword" placeholder="至少6个字符">
+            </div>
+            <div class="form-group">
+                <label>确认新密码</label>
+                <input type="password" id="confirmPassword" placeholder="再次输入新密码">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeChangePwdModal()">取消</button>
+                <button class="btn-submit" onclick="submitChangePassword()">确认修改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        // ===== 访问控制：未登录跳转登录页 =====
+        Auth.requireAuth();
+
+        // ===== 初始化页面 =====
+        (async function initPage() {
+            // 从服务端获取最新的用户信息
+            const serverUserInfo = await Auth.fetchCurrentUserInfo();
+            const userInfo = serverUserInfo || Auth.getUserInfo();
+            if (!userInfo) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // 头像
+            document.getElementById('userAvatar').textContent =
+                userInfo.username.charAt(0).toUpperCase();
+
+            // 用户名
+            document.getElementById('userName').textContent = userInfo.username;
+
+            // 欢迎语
+            document.getElementById('welcomeText').textContent =
+                '欢迎回来，' + userInfo.username + '！';
+
+            // 角色
+            const rolesContainer = document.getElementById('userRoles');
+            (userInfo.roles || []).forEach(function(role) {
+                var tag = document.createElement('span');
+                tag.className = 'role-tag' + (role === 'ADMIN' ? ' admin' : '');
+                tag.textContent = role;
+                rolesContainer.appendChild(tag);
+            });
+
+            // ADMIN显示用户管理导航
+            if ((userInfo.roles || []).indexOf('ADMIN') >= 0) {
+                document.getElementById('navUserMgmt').style.display = 'inline-block';
+            }
+
+            // Session信息展示
+            document.getElementById('currentUserVal').textContent = userInfo.username;
+            document.getElementById('currentRolesVal').textContent = (userInfo.roles || []).join(', ');
+            document.getElementById('rememberMeVal').textContent =
+                document.cookie.indexOf('remember-me') >= 0 ? '已启用' : '未启用';
+            document.getElementById('sessionIdVal').textContent =
+                getCookie('JSESSIONID') || '(通过HttpOnly Cookie传递，JS无法读取)';
+        })();
+
+        // ===== 工具方法 =====
+
+        function getCookie(name) {
+            var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return match ? match[2] : null;
+        }
+
+        function logResult(title, data, isError) {
+            var panel = document.getElementById('resultPanel');
+            var time = new Date().toLocaleTimeString();
+            var cls = isError ? 'error' : 'success';
+            var json = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+            panel.innerHTML =
+                '<span class="info">[' + time + ']</span> <span class="' + cls + '">' + title + '</span>\n' + json + '\n\n' +
+                panel.innerHTML;
+        }
+
+        // ===== API 测试 =====
+
+        async function testPublicApi() {
+            try {
+                logResult('请求公开接口...', '/api/demo/public', false);
+                var response = await fetch('/api/demo/public', { credentials: 'same-origin' });
+                var data = await response.json();
+                logResult('公开接口 - ' + response.status, data, !response.ok);
+            } catch (e) {
+                logResult('请求异常', e.message, true);
+            }
+        }
+
+        async function testUserApi() {
+            try {
+                logResult('请求用户接口...', '/api/demo/user', false);
+                var response = await Auth.request('/api/demo/user');
+                var data = await response.json();
+                logResult('用户接口 - ' + response.status, data, !response.ok);
+            } catch (e) {
+                logResult('请求异常', e.message, true);
+            }
+        }
+
+        async function testAdminApi() {
+            try {
+                logResult('请求管理员接口...', '/api/demo/admin', false);
+                var response = await Auth.request('/api/demo/admin');
+                var data = await response.json();
+                logResult('管理员接口 - ' + response.status, data, !response.ok);
+            } catch (e) {
+                logResult('请求异常', e.message, true);
+            }
+        }
+
+        async function testProfileApi() {
+            try {
+                logResult('请求用户详情...', '/api/demo/profile', false);
+                var response = await Auth.request('/api/demo/profile');
+                var data = await response.json();
+                logResult('用户详情 - ' + response.status, data, !response.ok);
+            } catch (e) {
+                logResult('请求异常', e.message, true);
+            }
+        }
+
+        async function testAuthInfoApi() {
+            try {
+                logResult('请求当前用户信息...', '/api/auth/info', false);
+                var response = await fetch('/api/auth/info', { credentials: 'same-origin' });
+                var data = await response.json();
+                logResult('当前用户信息 - ' + response.status, data, !response.ok);
+            } catch (e) {
+                logResult('请求异常', e.message, true);
+            }
+        }
+
+        async function testLogoutApi() {
+            if (!confirm('确定要登出吗？登出后需重新登录。')) return;
+            try {
+                logResult('正在登出...', '/api/auth/logout', false);
+                await Auth.logout();
+            } catch (e) {
+                logResult('登出异常', e.message, true);
+                Auth.clearUserInfo();
+                window.location.href = '/login.html';
+            }
+        }
+
+        // ===== 修改密码 =====
+
+        function openChangePwdModal() {
+            document.getElementById('oldPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('changePwdModal').classList.add('active');
+        }
+
+        function closeChangePwdModal() {
+            document.getElementById('changePwdModal').classList.remove('active');
+        }
+
+        async function submitChangePassword() {
+            var oldPwd = document.getElementById('oldPassword').value;
+            var newPwd = document.getElementById('newPassword').value;
+            var confirmPwd = document.getElementById('confirmPassword').value;
+
+            if (!oldPwd) { showToast('请输入原密码', 'error'); return; }
+            if (!newPwd || newPwd.length < 6) { showToast('新密码至少6个字符', 'error'); return; }
+            if (newPwd !== confirmPwd) { showToast('两次密码输入不一致', 'error'); return; }
+
+            try {
+                var response = await Auth.request('/api/auth/password', {
+                    method: 'PUT',
+                    body: JSON.stringify({ oldPassword: oldPwd, newPassword: newPwd })
+                });
+                var data = await response.json();
+                if (response.ok) {
+                    showToast('密码修改成功，请重新登录', 'success');
+                    closeChangePwdModal();
+                    setTimeout(function() { Auth.logout(); }, 1500);
+                } else {
+                    showToast(data.message || '修改失败', 'error');
+                }
+            } catch (e) {
+                showToast('请求失败: ' + e.message, 'error');
+            }
+        }
+
+        function showToast(msg, type) {
+            var toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast ' + type + ' show';
+            setTimeout(function() { toast.classList.remove('show'); }, 3000);
+        }
+    </script>
+</body>
+</html>
