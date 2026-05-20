@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parts5 - 大文件分片上传（断点续传）</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"/>
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- SparkMD5 用于计算文件MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f0f2f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        #app { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .upload-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 32px; }
+        .card-title { font-size: 22px; font-weight: 600; color: #303133; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .card-subtitle { font-size: 13px; color: #909399; margin-bottom: 24px; }
+        .drop-zone { border: 2px dashed #dcdfe6; border-radius: 8px; padding: 48px 20px; text-align: center; cursor: pointer;
+            transition: all 0.3s; background: #fafafa; margin-bottom: 20px; }
+        .drop-zone:hover, .drop-zone.drag-over { border-color: #409eff; background: #ecf5ff; }
+        .drop-zone-icon { font-size: 48px; color: #c0c4cc; margin-bottom: 12px; }
+        .drop-zone-text { font-size: 15px; color: #606266; }
+        .drop-zone-hint { font-size: 12px; color: #909399; margin-top: 8px; }
+        .file-info { background: #f5f7fa; border-radius: 8px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+        .file-icon { font-size: 36px; }
+        .file-detail { flex: 1; }
+        .file-name { font-size: 14px; font-weight: 500; color: #303133; word-break: break-all; }
+        .file-size { font-size: 12px; color: #909399; margin-top: 2px; }
+        .file-remove { cursor: pointer; color: #f56c6c; font-size: 18px; }
+        .progress-section { margin-bottom: 20px; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .progress-label { font-size: 13px; color: #606266; }
+        .progress-percent { font-size: 20px; font-weight: 600; color: #409eff; }
+        .status-row { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+        .status-item { font-size: 12px; color: #909399; }
+        .status-item span { color: #303133; font-weight: 500; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .result-section { margin-top: 20px; padding: 16px; border-radius: 8px; }
+        .result-success { background: #f0f9eb; border: 1px solid #e1f3d8; }
+        .result-link { color: #409eff; text-decoration: none; word-break: break-all; }
+        .result-link:hover { text-decoration: underline; }
+        .md5-section { margin-bottom: 20px; }
+        .chunk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(24px, 1fr)); gap: 3px; margin-top: 12px; }
+        .chunk-block { width: 24px; height: 24px; border-radius: 3px; display: flex; align-items: center; justify-content: center;
+            font-size: 9px; color: #fff; cursor: default; }
+        .chunk-pending { background: #e4e7ed; color: #909399; }
+        .chunk-done { background: #67c23a; }
+        .chunk-uploading { background: #409eff; animation: pulse 1s infinite; }
+        .chunk-error { background: #f56c6c; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .speed-info { font-size: 13px; color: #606266; margin-top: 4px; }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="upload-card">
+        <div class="card-title">&#128229; 大文件分片上传</div>
+        <div class="card-subtitle">支持断点续传 / 秒传 / 暂停继续 / 合并下载，推荐分片大小 3MB</div>
+
+        <!-- 拖拽区域 -->
+        <div class="drop-zone" :class="{ 'drag-over': isDragOver }" v-if="!file"
+             @click="$refs.fileInput.click()" @dragover.prevent="isDragOver=true"
+             @dragleave="isDragOver=false" @drop.prevent="handleDrop">
+            <div class="drop-zone-icon">&#128193;</div>
+            <div class="drop-zone-text">点击选择文件 或 拖拽文件到此区域</div>
+            <div class="drop-zone-hint">支持任意文件类型，无大小限制</div>
+        </div>
+        <input type="file" ref="fileInput" @change="handleFileChange" style="display:none;">
+
+        <!-- 文件信息 -->
+        <div class="file-info" v-if="file">
+            <div class="file-icon">&#128196;</div>
+            <div class="file-detail">
+                <div class="file-name">{{ file.name }}</div>
+                <div class="file-size">{{ formatSize(file.size) }}</div>
+            </div>
+            <div class="file-remove" @click="removeFile" v-if="!isUploading" title="移除文件">&#10005;</div>
+        </div>
+
+        <!-- MD5 计算进度 -->
+        <div class="md5-section" v-if="isCalculatingMD5">
+            <div class="progress-header">
+                <span class="progress-label">&#128270; 正在计算文件MD5（用于断点续传识别）...</span>
+                <span class="progress-percent">{{ md5Progress }}%</span>
+            </div>
+            <el-progress :percentage="md5Progress" :show-text="false" :stroke-width="8" color="#e6a23c"></el-progress>
+        </div>
+
+        <!-- MD5 结果 -->
+        <div v-if="identifier && !isCalculatingMD5 && !uploadResult" style="margin-bottom:16px;">
+            <el-tag type="info" size="small">MD5: {{ identifier }}</el-tag>
+        </div>
+
+        <!-- 上传进度 -->
+        <div class="progress-section" v-if="isUploading || uploadProgress > 0">
+            <div class="progress-header">
+                <span class="progress-label">{{ statusText }}</span>
+                <span class="progress-percent">{{ uploadProgress }}%</span>
+            </div>
+            <el-progress :percentage="uploadProgress" :show-text="false" :stroke-width="12"
+                         :color="isPaused ? '#e6a23c' : '#409eff'"></el-progress>
+            <div class="status-row">
+                <div class="status-item">分片: <span>{{ uploadedChunkCount }}/{{ totalChunks }}</span></div>
+                <div class="status-item">速度: <span>{{ uploadSpeed }}</span></div>
+                <div class="status-item">已用时: <span>{{ elapsedTime }}</span></div>
+                <div class="status-item" v-if="estimatedRemaining">预计剩余: <span>{{ estimatedRemaining }}</span></div>
+            </div>
+
+            <!-- 分片状态可视化 -->
+            <div v-if="totalChunks > 0 && totalChunks <= 200" style="margin-top:12px;">
+                <div style="font-size:12px;color:#909399;margin-bottom:4px;">分片状态:</div>
+                <div class="chunk-grid">
+                    <div v-for="i in totalChunks" :key="i"
+                         class="chunk-block"
+                         :class="getChunkClass(i)"
+                         :title="'分片 ' + i">
+                        {{ i }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="btn-group">
+            <el-button type="primary" @click="startUpload" :disabled="!file || isUploading || isCalculatingMD5 || isMerging"
+                       :loading="isCalculatingMD5" size="large">
+                {{ isCalculatingMD5 ? '计算MD5中...' : '开始上传' }}
+            </el-button>
+            <el-button type="warning" @click="togglePause" v-if="isUploading && !isMerging" size="large">
+                {{ isPaused ? '▶ 继续上传' : '⏸ 暂停上传' }}
+            </el-button>
+            <el-button type="danger" @click="cancelUpload" v-if="isUploading || uploadProgress > 0" size="large">
+                &#10005; 取消上传
+            </el-button>
+        </div>
+
+        <!-- 上传结果 -->
+        <div class="result-section result-success" v-if="uploadResult">
+            <div style="font-size:15px;font-weight:600;color:#67c23a;margin-bottom:8px;">&#9989; {{ uploadResult.message || '上传成功' }}</div>
+            <div style="font-size:13px;color:#606266;margin-bottom:4px;">
+                文件: {{ uploadResult.fileName }} ({{ formatSize(uploadResult.fileSize) }})
+            </div>
+            <div style="margin-top:8px;">
+                <el-button type="primary" size="small" @click="downloadFile">&#128229; 下载文件</el-button>
+                <a :href="uploadResult.fileUrl" class="result-link" style="margin-left:12px;font-size:12px;" target="_blank">
+                    {{ uploadResult.fileUrl }}
+                </a>
+            </div>
+        </div>
+
+        <!-- 秒传结果 -->
+        <div class="result-section result-success" v-if="instantUpload">
+            <div style="font-size:15px;font-weight:600;color:#67c23a;margin-bottom:8px;">&#9889; 秒传成功！文件已存在服务器</div>
+            <div style="margin-top:8px;">
+                <el-button type="primary" size="small" @click="downloadInstantFile">&#128229; 下载文件</el-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const BASE_URL = window.location.origin;
+const CHUNK_SIZE = 3 * 1024 * 1024; // 3MB per chunk
+
+const app = Vue.createApp({
+    data() {
+        return {
+            file: null,
+            identifier: '',
+            isDragOver: false,
+            // MD5
+            isCalculatingMD5: false,
+            md5Progress: 0,
+            // Upload
+            isUploading: false,
+            isPaused: false,
+            isMerging: false,
+            totalChunks: 0,
+            chunkStates: [],        // 0=pending, 1=uploading, 2=done, 3=error
+            currentChunkIndex: 0,
+            uploadProgress: 0,
+            controller: null,
+            // Speed & time
+            startTime: null,
+            uploadedBytes: 0,
+            lastSpeedBytes: 0,
+            lastSpeedTime: null,
+            uploadSpeed: '0 KB/s',
+            elapsedTime: '00:00',
+            estimatedRemaining: '',
+            speedTimer: null,
+            // Result
+            uploadResult: null,
+            instantUpload: null,
+            instantFileUrl: '',
+        };
+    },
+    computed: {
+        uploadedChunkCount() {
+            return this.chunkStates.filter(s => s === 2).length;
+        },
+        statusText() {
+            if (this.isMerging) return '正在合并文件...';
+            if (this.isPaused) return '已暂停';
+            if (this.isUploading) return '上传中...';
+            if (this.uploadProgress === 100) return '上传完成';
+            return '等待上传';
+        }
+    },
+    methods: {
+        // ========== 文件处理 ==========
+        handleFileChange(e) {
+            const files = e.target.files;
+            if (files && files[0]) this.selectFile(files[0]);
+        },
+        handleDrop(e) {
+            this.isDragOver = false;
+            const files = e.dataTransfer.files;
+            if (files && files[0]) this.selectFile(files[0]);
+        },
+        selectFile(file) {
+            this.resetAll();
+            this.file = file;
+            this.totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+            this.chunkStates = new Array(this.totalChunks).fill(0);
+        },
+        removeFile() {
+            this.resetAll();
+            if (this.$refs.fileInput) this.$refs.fileInput.value = '';
+        },
+
+        // ========== MD5 计算 ==========
+        async calculateMD5(file) {
+            return new Promise((resolve, reject) => {
+                this.isCalculatingMD5 = true;
+                this.md5Progress = 0;
+                const chunkSize = 2 * 1024 * 1024; // 2MB chunks for MD5
+                const chunks = Math.ceil(file.size / chunkSize);
+                const spark = new SparkMD5.ArrayBuffer();
+                const reader = new FileReader();
+                let currentChunk = 0;
+
+                reader.onload = (e) => {
+                    spark.append(e.target.result);
+                    currentChunk++;
+                    this.md5Progress = Math.round((currentChunk / chunks) * 100);
+                    if (currentChunk < chunks) {
+                        loadNext();
+                    } else {
+                        this.isCalculatingMD5 = false;
+                        resolve(spark.end());
+                    }
+                };
+                reader.onerror = () => {
+                    this.isCalculatingMD5 = false;
+                    reject(new Error('MD5计算失败'));
+                };
+
+                const loadNext = () => {
+                    const start = currentChunk * chunkSize;
+                    const end = Math.min(start + chunkSize, file.size);
+                    reader.readAsArrayBuffer(file.slice(start, end));
+                };
+                loadNext();
+            });
+        },
+
+        // ========== 上传主流程 ==========
+        async startUpload() {
+            if (!this.file) return;
+            this.uploadResult = null;
+            this.instantUpload = null;
+
+            try {
+                // 1. 计算 MD5
+                this.identifier = await this.calculateMD5(this.file);
+
+                // 2. 检查文件状态（秒传 + 断点续传）
+                const checkRes = await axios.get(`${BASE_URL}/parts5/chunk/check`, {
+                    params: { identifier: this.identifier, fileName: this.file.name, totalChunks: this.totalChunks }
+                });
+                const checkData = checkRes.data;
+
+                if (checkData.uploaded) {
+                    // 秒传
+                    this.instantUpload = true;
+                    this.instantFileUrl = checkData.fileUrl;
+                    this.uploadProgress = 100;
+                    this.chunkStates = new Array(this.totalChunks).fill(2);
+                    ElementPlus.ElMessage.success('文件秒传成功！');
+                    return;
+                }
+
+                // 标记已上传的分片（断点续传）
+                if (checkData.uploadedChunks && checkData.uploadedChunks.length > 0) {
+                    checkData.uploadedChunks.forEach(n => {
+                        if (n >= 1 && n <= this.totalChunks) {
+                            this.chunkStates[n - 1] = 2;
+                        }
+                    });
+                    const skipped = checkData.uploadedChunks.length;
+                    this.uploadedBytes = skipped * CHUNK_SIZE;
+                    this.uploadProgress = Math.round((skipped / this.totalChunks) * 100);
+                    ElementPlus.ElMessage.info(`断点续传：跳过已上传的 ${skipped} 个分片`);
+                }
+
+                // 3. 开始上传
+                this.isUploading = true;
+                this.isPaused = false;
+                this.startTime = Date.now();
+                this.lastSpeedTime = Date.now();
+                this.lastSpeedBytes = this.uploadedBytes;
+                this.controller = new AbortController();
+                this.startSpeedTimer();
+
+                await this.uploadAllChunks();
+
+                if (this.controller && this.controller.signal.aborted) return;
+
+                // 4. 合并分片
+                this.isMerging = true;
+                this.uploadProgress = 99;
+                const mergeRes = await axios.post(`${BASE_URL}/parts5/chunk/merge`, null, {
+                    params: {
+                        identifier: this.identifier,
+                        fileName: this.file.name,
+                        totalChunks: this.totalChunks,
+                        totalSize: this.file.size
+                    }
+                });
+
+                if (mergeRes.data.success) {
+                    this.uploadProgress = 100;
+                    this.uploadResult = mergeRes.data;
+                    ElementPlus.ElMessage.success('文件上传并合并成功！');
+                } else {
+                    ElementPlus.ElMessage.error('合并失败: ' + mergeRes.data.message);
+                }
+            } catch (err) {
+                if (err.name === 'CanceledError' || (err.message && err.message.includes('canceled'))) {
+                    ElementPlus.ElMessage.warning('上传已取消');
+                } else if (!this.controller || !this.controller.signal.aborted) {
+                    console.error('上传失败:', err);
+                    ElementPlus.ElMessage.error('上传失败: ' + (err.response?.data || err.message));
+                }
+            } finally {
+                this.isUploading = false;
+                this.isMerging = false;
+                this.stopSpeedTimer();
+            }
+        },
+
+        async uploadAllChunks() {
+            for (let i = 0; i < this.totalChunks; i++) {
+                // 跳过已上传的分片
+                if (this.chunkStates[i] === 2) continue;
+
+                // 检查取消
+                if (this.controller && this.controller.signal.aborted) return;
+
+                // 暂停等待
+                while (this.isPaused) {
+                    await new Promise(r => setTimeout(r, 300));
+                    if (this.controller && this.controller.signal.aborted) return;
+                }
+
+                // 上传当前分片
+                this.chunkStates[i] = 1; // uploading
+                this.currentChunkIndex = i;
+                const start = i * CHUNK_SIZE;
+                const end = Math.min(start + CHUNK_SIZE, this.file.size);
+                const chunk = this.file.slice(start, end);
+
+                const formData = new FormData();
+                formData.append('file', chunk);
+                formData.append('chunkNumber', i + 1);
+                formData.append('totalChunks', this.totalChunks);
+                formData.append('identifier', this.identifier);
+                formData.append('fileName', this.file.name);
+
+                try {
+                    await axios.post(`${BASE_URL}/parts5/chunk/upload`, formData, {
+                        signal: this.controller.signal,
+                        timeout: 120000
+                    });
+                    this.chunkStates[i] = 2; // done
+                    this.uploadedBytes += (end - start);
+                    this.uploadProgress = Math.round((this.uploadedChunkCount / this.totalChunks) * 100);
+                } catch (err) {
+                    if (err.name === 'CanceledError' || (this.controller && this.controller.signal.aborted)) {
+                        return;
+                    }
+                    this.chunkStates[i] = 3; // error
+                    // 重试一次
+                    console.warn(`分片 ${i + 1} 上传失败，正在重试...`, err);
+                    try {
+                        this.chunkStates[i] = 1;
+                        await axios.post(`${BASE_URL}/parts5/chunk/upload`, formData, {
+                            signal: this.controller.signal,
+                            timeout: 120000
+                        });
+                        this.chunkStates[i] = 2;
+                        this.uploadedBytes += (end - start);
+                        this.uploadProgress = Math.round((this.uploadedChunkCount / this.totalChunks) * 100);
+                    } catch (retryErr) {
+                        this.chunkStates[i] = 3;
+                        throw retryErr;
+                    }
+                }
+            }
+        },
+
+        // ========== 暂停 / 取消 ==========
+        togglePause() {
+            this.isPaused = !this.isPaused;
+            if (this.isPaused) {
+                this.stopSpeedTimer();
+            } else {
+                this.lastSpeedTime = Date.now();
+                this.lastSpeedBytes = this.uploadedBytes;
+                this.startSpeedTimer();
+            }
+        },
+        async cancelUpload() {
+            try {
+                await ElementPlus.ElMessageBox.confirm('确定要取消上传吗？已上传的分片将被清理。', '提示', {
+                    confirmButtonText: '确定取消',
+                    cancelButtonText: '继续上传',
+                    type: 'warning'
+                });
+            } catch { return; }
+
+            if (this.controller) this.controller.abort();
+            // 通知服务端清理
+            if (this.identifier) {
+                try {
+                    await axios.delete(`${BASE_URL}/parts5/chunk/cancel/${this.identifier}`);
+                } catch (e) { console.warn('清理分片失败', e); }
+            }
+            this.resetAll();
+            if (this.$refs.fileInput) this.$refs.fileInput.value = '';
+            ElementPlus.ElMessage.info('上传已取消');
+        },
+
+        // ========== 下载 ==========
+        downloadFile() {
+            if (this.uploadResult && this.uploadResult.fileUrl) {
+                window.open(BASE_URL + this.uploadResult.fileUrl, '_blank');
+            }
+        },
+        downloadInstantFile() {
+            if (this.instantFileUrl) {
+                window.open(BASE_URL + this.instantFileUrl, '_blank');
+            }
+        },
+
+        // ========== 速度计算 ==========
+        startSpeedTimer() {
+            this.speedTimer = setInterval(() => {
+                const now = Date.now();
+                const elapsed = (now - this.lastSpeedTime) / 1000;
+                if (elapsed > 0) {
+                    const bytesDelta = this.uploadedBytes - this.lastSpeedBytes;
+                    const speed = bytesDelta / elapsed;
+                    this.uploadSpeed = this.formatSpeed(speed);
+                    // Estimated remaining
+                    const remaining = this.file.size - this.uploadedBytes;
+                    if (speed > 0) {
+                        this.estimatedRemaining = this.formatDuration(remaining / speed);
+                    }
+                    this.lastSpeedBytes = this.uploadedBytes;
+                    this.lastSpeedTime = now;
+                }
+                // Elapsed time
+                if (this.startTime) {
+                    this.elapsedTime = this.formatDuration((now - this.startTime) / 1000);
+                }
+            }, 1000);
+        },
+        stopSpeedTimer() {
+            if (this.speedTimer) { clearInterval(this.speedTimer); this.speedTimer = null; }
+        },
+
+        // ========== 工具方法 ==========
+        getChunkClass(i) {
+            const state = this.chunkStates[i - 1];
+            if (state === 2) return 'chunk-done';
+            if (state === 1) return 'chunk-uploading';
+            if (state === 3) return 'chunk-error';
+            return 'chunk-pending';
+        },
+        formatSize(bytes) {
+            if (!bytes) return '0 B';
+            const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            let i = 0;
+            while (bytes >= 1024 && i < units.length - 1) { bytes /= 1024; i++; }
+            return bytes.toFixed(2) + ' ' + units[i];
+        },
+        formatSpeed(bytesPerSec) {
+            if (bytesPerSec <= 0) return '0 KB/s';
+            if (bytesPerSec < 1024) return bytesPerSec.toFixed(0) + ' B/s';
+            if (bytesPerSec < 1024 * 1024) return (bytesPerSec / 1024).toFixed(1) + ' KB/s';
+            return (bytesPerSec / (1024 * 1024)).toFixed(2) + ' MB/s';
+        },
+        formatDuration(seconds) {
+            if (!seconds || seconds < 0) return '00:00';
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        },
+        resetAll() {
+            this.file = null;
+            this.identifier = '';
+            this.isCalculatingMD5 = false;
+            this.md5Progress = 0;
+            this.isUploading = false;
+            this.isPaused = false;
+            this.isMerging = false;
+            this.totalChunks = 0;
+            this.chunkStates = [];
+            this.currentChunkIndex = 0;
+            this.uploadProgress = 0;
+            this.controller = null;
+            this.startTime = null;
+            this.uploadedBytes = 0;
+            this.lastSpeedBytes = 0;
+            this.lastSpeedTime = null;
+            this.uploadSpeed = '0 KB/s';
+            this.elapsedTime = '00:00';
+            this.estimatedRemaining = '';
+            this.uploadResult = null;
+            this.instantUpload = null;
+            this.instantFileUrl = '';
+            this.stopSpeedTimer();
+        }
+    }
+});
+app.use(ElementPlus);
+app.mount('#app');
+</script>
+</body>
+</html>
