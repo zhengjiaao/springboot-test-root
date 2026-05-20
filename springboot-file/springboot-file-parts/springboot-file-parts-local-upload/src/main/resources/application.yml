@@ -12,6 +12,17 @@ source:
   fileStorageLocation: D://FileTest//文件存储位置
   fileFragmentationLocation: D://FileTest//文件分片位置
   fileCompositePosition: D://FileTest//文件合成位置
+
+# parts5 大文件分片上传配置
+parts5:
+  chunk-dir: D://FileTest//parts5//chunks   # 分片临时存储目录
+  merge-dir: D://FileTest//parts5//merged   # 合并后文件存储目录
+  cleanup:
+    enabled: true                            # 是否启用定时清理
+    cron: "0 0 * * * ?"                      # 执行频率，默认每小时执行一次
+    chunk-expire-hours: 24                   # 分片过期时间（小时），超过24h未合并的分片将被清理
+    merge-expire-hours: 72                   # 合并文件过期时间（小时），设为0则不清理合并文件
+
 rest:
   resource: /rest/public/resource
 

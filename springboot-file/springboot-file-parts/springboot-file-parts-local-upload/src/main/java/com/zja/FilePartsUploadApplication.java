@@ -4,12 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @swagger3: <a href="http://localhost:8080/swagger-ui/index.html">...</a>
  * @author: zhengja
  * @since: 2024/01/19 16:16
  */
+@EnableScheduling
 @SpringBootApplication
 public class FilePartsUploadApplication extends SpringBootServletInitializer {
 
