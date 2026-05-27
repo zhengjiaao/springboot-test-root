@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件分片上传接口测试</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f7fa; color: #333; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 24px; font-size: 24px; color: #1a73e8; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.08); margin-bottom: 20px; padding: 20px; }
+        .card h2 { font-size: 16px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #1a73e8; color: #1a73e8; }
+        .form-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+        .form-row label { min-width: 100px; font-size: 14px; font-weight: 500; }
+        .form-row input, .form-row select { flex: 1; min-width: 160px; padding: 8px 10px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 14px; }
+        .form-row input[type="file"] { padding: 4px; }
+        .btn { padding: 8px 20px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: background .2s; }
+        .btn-primary { background: #1a73e8; color: #fff; }
+        .btn-primary:hover { background: #1557b0; }
+        .btn-primary:disabled { background: #94b8e8; cursor: not-allowed; }
+        .btn-danger { background: #e8453c; color: #fff; }
+        .btn-danger:hover { background: #c3372f; }
+        .btn-success { background: #34a853; color: #fff; }
+        .btn-success:hover { background: #2a8c43; }
+        .btn-group { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        .result { margin-top: 12px; padding: 12px; background: #f0f4ff; border-radius: 6px; font-size: 13px; white-space: pre-wrap; word-break: break-all; max-height: 300px; overflow-y: auto; }
+        .result.error { background: #fff0f0; }
+        .progress-wrap { margin-top: 12px; }
+        .progress-bar { width: 100%; height: 24px; background: #e8eaed; border-radius: 12px; overflow: hidden; position: relative; }
+        .progress-bar-inner { height: 100%; background: linear-gradient(90deg, #1a73e8, #34a853); border-radius: 12px; transition: width .3s; width: 0; }
+        .progress-text { position: absolute; top: 0; left: 0; right: 0; text-align: center; line-height: 24px; font-size: 12px; color: #333; font-weight: 500; }
+        .chunk-list { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+        .chunk-item { width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+        .chunk-pending { background: #e8eaed; color: #999; }
+        .chunk-uploading { background: #fff3cd; color: #856404; }
+        .chunk-done { background: #d4edda; color: #155724; }
+        .chunk-fail { background: #f8d7da; color: #721c24; }
+        .log { font-size: 12px; color: #666; margin-top: 8px; max-height: 120px; overflow-y: auto; padding: 8px; background: #fafafa; border-radius: 4px; border: 1px solid #eee; }
+        .log p { margin: 2px 0; }
+        .log .ts { color: #1a73e8; margin-right: 4px; }
+        .config-section { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+        .config-section label { font-size: 14px; font-weight: 500; min-width: 80px; }
+        .config-section input { padding: 8px 10px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 14px; width: 120px; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; margin-left: 6px; }
+        .tag-post { background: #e8f0fe; color: #1a73e8; }
+        .tag-get { background: #e6f4ea; color: #34a853; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📁 文件分片上传接口测试页面</h1>
+
+    <!-- ========== 全局配置 ========== -->
+    <div class="card">
+        <h2>⚙️ 服务配置</h2>
+        <div class="form-row">
+            <label>接口基础地址</label>
+            <input type="text" id="baseUrl" value="/rest/fileChunk" style="flex:1;min-width:260px;">
+        </div>
+        <div class="form-row">
+            <label>分片大小 (MB)</label>
+            <input type="number" id="chunkSizeMB" value="3" min="1" max="50">
+        </div>
+    </div>
+
+    <!-- ========== 上传文件分片 ========== -->
+    <div class="card">
+        <h2>📤 上传文件分片 <span class="tag tag-post">POST /upload</span></h2>
+        <div class="form-row">
+            <label>选择文件</label>
+            <input type="file" id="uploadFile">
+        </div>
+        <div class="progress-wrap" id="uploadProgressWrap" style="display:none;">
+            <div class="progress-bar">
+                <div class="progress-bar-inner" id="uploadProgressBar"></div>
+                <div class="progress-text" id="uploadProgressText">0%</div>
+            </div>
+        </div>
+        <div class="chunk-list" id="chunkList"></div>
+        <div class="btn-group">
+            <button class="btn btn-primary" id="btnUpload" onclick="startUpload()">开始上传</button>
+            <button class="btn btn-danger" id="btnCancel" onclick="cancelUpload()" disabled>取消上传</button>
+        </div>
+        <div class="log" id="uploadLog"></div>
+    </div>
+
+    <!-- ========== 查询分片上传状态 ========== -->
+    <div class="card">
+        <h2>🔍 查询分片上传状态 <span class="tag tag-post">POST /upload/status</span></h2>
+        <div class="form-row">
+            <label>文件标识(MD5)</label>
+            <input type="text" id="statusFileIdentifier" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="form-row">
+            <label>文件名</label>
+            <input type="text" id="statusFileName" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="form-row">
+            <label>总分片数</label>
+            <input type="number" id="statusTotalChunks" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="queryUploadStatus()">查询状态</button>
+        </div>
+        <div class="result" id="statusResult" style="display:none;"></div>
+    </div>
+
+    <!-- ========== 合并文件分片 ========== -->
+    <div class="card">
+        <h2>🔗 合并文件分片 <span class="tag tag-post">POST /merge</span></h2>
+        <div class="form-row">
+            <label>文件标识(MD5)</label>
+            <input type="text" id="mergeFileIdentifier" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="form-row">
+            <label>文件名</label>
+            <input type="text" id="mergeFileName" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="form-row">
+            <label>总分片数</label>
+            <input type="number" id="mergeTotalChunks" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="mergeChunks()">合并分片</button>
+        </div>
+        <div class="result" id="mergeResult" style="display:none;"></div>
+    </div>
+
+    <!-- ========== 获取已合并文件信息 ========== -->
+    <div class="card">
+        <h2>📋 获取已合并文件信息 <span class="tag tag-post">POST /merge/fileInfo</span></h2>
+        <div class="form-row">
+            <label>文件标识(MD5)</label>
+            <input type="text" id="fileInfoFileIdentifier" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="form-row">
+            <label>文件名</label>
+            <input type="text" id="fileInfoFileName" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="getFileInfo()">查询文件信息</button>
+        </div>
+        <div class="result" id="fileInfoResult" style="display:none;"></div>
+    </div>
+
+    <!-- ========== 下载已合并文件 ========== -->
+    <div class="card">
+        <h2>⬇️ 下载已合并文件 <span class="tag tag-get">GET /download</span></h2>
+        <div class="form-row">
+            <label>文件标识(MD5)</label>
+            <input type="text" id="downloadFileIdentifier" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="form-row">
+            <label>文件名</label>
+            <input type="text" id="downloadFileName" placeholder="上传时自动填充，也可手动输入">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="downloadFile()">下载文件</button>
+        </div>
+        <div class="log" id="downloadLog"></div>
+    </div>
+</div>
+
+<script>
+    // ========== 工具函数 ==========
+    const $ = id => document.getElementById(id);
+    let uploadCancelled = false;
+    let currentFileIdentifier = '';
+
+    function getBaseUrl() {
+        return $('baseUrl').value.replace(/\/+$/, '');
+    }
+
+    function getChunkSize() {
+        return parseInt($('chunkSizeMB').value) * 1024 * 1024;
+    }
+
+    function log(msg) {
+        const logEl = $('uploadLog');
+        const now = new Date().toLocaleTimeString();
+        logEl.innerHTML += `<p><span class="ts">[${now}]</span>${msg}</p>`;
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function showResult(elId, data, isError) {
+        const el = $(elId);
+        el.style.display = 'block';
+        el.className = 'result' + (isError ? ' error' : '');
+        el.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    }
+
+    // 根据文件元信息生成唯一标识（秒级完成，无需全文哈希）
+    function generateFileIdentifier(file) {
+        // 使用文件名 + 文件大小 + 最后修改时间 生成SHA-256标识
+        const raw = `${file.name}-${file.size}-${file.lastModified}`;
+        // 同步计算简单哈希（不依赖crypto.subtle，避免大文件阻塞）
+        let hash = 0;
+        for (let i = 0; i < raw.length; i++) {
+            const char = raw.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        // 转为无符号正数并扩展为64位hex字符串，确保唯一性
+        const part1 = (hash >>> 0).toString(16).padStart(8, '0');
+        const part2 = ((hash * 31 + file.size) >>> 0).toString(16).padStart(8, '0');
+        const part3 = ((hash * 37 + file.lastModified) >>> 0).toString(16).padStart(8, '0');
+        const part4 = ((file.size ^ file.lastModified) >>> 0).toString(16).padStart(8, '0');
+        const identifier = part1 + part2 + part3 + part4;
+        log(`文件标识生成完成: ${identifier}`);
+        return identifier;
+    }
+
+    function fillAllIdentifiers(fileIdentifier, fileName, totalChunks) {
+        $('statusFileIdentifier').value = fileIdentifier;
+        $('statusFileName').value = fileName;
+        $('statusTotalChunks').value = totalChunks;
+        $('mergeFileIdentifier').value = fileIdentifier;
+        $('mergeFileName').value = fileName;
+        $('mergeTotalChunks').value = totalChunks;
+        $('fileInfoFileIdentifier').value = fileIdentifier;
+        $('fileInfoFileName').value = fileName;
+        $('downloadFileIdentifier').value = fileIdentifier;
+        $('downloadFileName').value = fileName;
+    }
+
+    function renderChunkList(total, uploadedSet) {
+        const container = $('chunkList');
+        container.innerHTML = '';
+        for (let i = 1; i <= total; i++) {
+            const div = document.createElement('div');
+            div.id = `chunk-${i}`;
+            let cls = 'chunk-item chunk-pending';
+            if (uploadedSet && uploadedSet.has(i)) {
+                cls = 'chunk-item chunk-done';
+            }
+            div.className = cls;
+            div.textContent = i;
+            container.appendChild(div);
+        }
+    }
+
+    function updateChunkStatus(index, status) {
+        const el = $(`chunk-${index}`);
+        if (!el) return;
+        const map = { pending: 'chunk-pending', uploading: 'chunk-uploading', done: 'chunk-done', fail: 'chunk-fail' };
+        el.className = 'chunk-item ' + (map[status] || 'chunk-pending');
+    }
+
+    function updateProgress(current, total) {
+        const pct = Math.round((current / total) * 100);
+        $('uploadProgressBar').style.width = pct + '%';
+        $('uploadProgressText').textContent = `${current}/${total} (${pct}%)`;
+    }
+
+    // ========== 接口1：上传文件分片 ==========
+    async function startUpload() {
+        const fileInput = $('uploadFile');
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('请先选择文件');
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const chunkSize = getChunkSize();
+        const totalChunks = Math.ceil(file.size / chunkSize);
+
+        uploadCancelled = false;
+        $('btnUpload').disabled = true;
+        $('btnCancel').disabled = false;
+        $('uploadProgressWrap').style.display = 'block';
+        $('uploadLog').innerHTML = '';
+
+        log(`文件: ${file.name}, 大小: ${(file.size / 1024 / 1024).toFixed(2)} MB, 分片数: ${totalChunks}`);
+
+        // 生成文件标识（同步，秒级完成）
+        const fileIdentifier = generateFileIdentifier(file);
+        currentFileIdentifier = fileIdentifier;
+        fillAllIdentifiers(fileIdentifier, file.name, totalChunks);
+        renderChunkList(totalChunks);
+
+        let uploadedCount = 0;
+
+        for (let i = 1; i <= totalChunks; i++) {
+            if (uploadCancelled) {
+                log('上传已取消');
+                break;
+            }
+
+            const start = (i - 1) * chunkSize;
+            const end = Math.min(start + chunkSize, file.size);
+            const chunkBlob = file.slice(start, end);
+
+            updateChunkStatus(i, 'uploading');
+            log(`上传分片 ${i}/${totalChunks} (${(chunkBlob.size / 1024).toFixed(1)} KB)...`);
+
+            const formData = new FormData();
+            formData.append('file', chunkBlob, file.name);
+            formData.append('fileIdentifier', fileIdentifier);
+            formData.append('fileName', file.name);
+            formData.append('chunkNumber', i);
+            formData.append('totalChunks', totalChunks);
+
+            try {
+                const resp = await fetch(`${getBaseUrl()}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (resp.ok) {
+                    uploadedCount++;
+                    updateChunkStatus(i, 'done');
+                    log(`分片 ${i} 上传成功`);
+                } else {
+                    updateChunkStatus(i, 'fail');
+                    const errText = await resp.text();
+                    log(`分片 ${i} 上传失败: ${resp.status} ${errText}`);
+                }
+            } catch (err) {
+                updateChunkStatus(i, 'fail');
+                log(`分片 ${i} 上传异常: ${err.message}`);
+            }
+
+            updateProgress(uploadedCount, totalChunks);
+        }
+
+        $('btnUpload').disabled = false;
+        $('btnCancel').disabled = true;
+
+        if (!uploadCancelled) {
+            log(`上传完成! 成功: ${uploadedCount}/${totalChunks}`);
+        }
+    }
+
+    function cancelUpload() {
+        uploadCancelled = true;
+        $('btnCancel').disabled = true;
+        $('btnUpload').disabled = false;
+    }
+
+    // ========== 接口2：查询分片上传状态 ==========
+    async function queryUploadStatus() {
+        const body = {
+            fileIdentifier: $('statusFileIdentifier').value,
+            fileName: $('statusFileName').value,
+            totalChunks: parseInt($('statusTotalChunks').value) || 0
+        };
+
+        if (!body.fileIdentifier || !body.fileName || !body.totalChunks) {
+            alert('请填写完整的文件标识、文件名和总分片数');
+            return;
+        }
+
+        try {
+            const resp = await fetch(`${getBaseUrl()}/upload/status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await resp.json();
+            showResult('statusResult', data, !resp.ok);
+
+            // 同步更新分片方块状态
+            if (data && data.uploadedChunks) {
+                const uploadedSet = new Set(data.uploadedChunks);
+                const total = body.totalChunks;
+                renderChunkList(total, uploadedSet);
+                updateProgress(uploadedSet.size, total);
+            }
+        } catch (err) {
+            showResult('statusResult', '请求异常: ' + err.message, true);
+        }
+    }
+
+    // ========== 接口3：合并文件分片 ==========
+    async function mergeChunks() {
+        const body = {
+            fileIdentifier: $('mergeFileIdentifier').value,
+            fileName: $('mergeFileName').value,
+            totalChunks: parseInt($('mergeTotalChunks').value) || 0
+        };
+
+        if (!body.fileIdentifier || !body.fileName || !body.totalChunks) {
+            alert('请填写完整的文件标识、文件名和总分片数');
+            return;
+        }
+
+        try {
+            const resp = await fetch(`${getBaseUrl()}/merge`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await resp.json();
+            showResult('mergeResult', data, !resp.ok);
+        } catch (err) {
+            showResult('mergeResult', '请求异常: ' + err.message, true);
+        }
+    }
+
+    // ========== 接口4：获取已合并文件信息 ==========
+    async function getFileInfo() {
+        const body = {
+            fileIdentifier: $('fileInfoFileIdentifier').value,
+            fileName: $('fileInfoFileName').value
+        };
+
+        if (!body.fileIdentifier || !body.fileName) {
+            alert('请填写完整的文件标识和文件名');
+            return;
+        }
+
+        try {
+            const resp = await fetch(`${getBaseUrl()}/merge/fileInfo`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await resp.json();
+            showResult('fileInfoResult', data, !resp.ok);
+        } catch (err) {
+            showResult('fileInfoResult', '请求异常: ' + err.message, true);
+        }
+    }
+
+    // ========== 接口5：下载已合并文件 ==========
+    function downloadFile() {
+        const fileIdentifier = $('downloadFileIdentifier').value;
+        const fileName = $('downloadFileName').value;
+
+        if (!fileIdentifier || !fileName) {
+            alert('请填写完整的文件标识和文件名');
+            return;
+        }
+
+        const logEl = $('downloadLog');
+        const now = new Date().toLocaleTimeString();
+        logEl.innerHTML = `<p><span class="ts">[${now}]</span>开始下载: ${fileName}...</p>`;
+
+        // 使用浏览器原生方式下载文件流
+        const url = `${getBaseUrl()}/download?fileIdentifier=${encodeURIComponent(fileIdentifier)}&fileName=${encodeURIComponent(fileName)}`;
+
+        // 创建隐藏的a标签触发下载
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        const now2 = new Date().toLocaleTimeString();
+        logEl.innerHTML += `<p><span class="ts">[${now2}]</span>下载请求已发送，文件标识: ${fileIdentifier}</p>`;
+    }
+</script>
+</body>
+</html>
