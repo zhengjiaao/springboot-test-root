@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-log-system-efk
+
+# 日志配置
+logging:
+  level:
+    root: info
+    com.zja.log.efk: debug
+
+# EFK 架构说明：
+# 1. 应用通过 logback-spring.xml 将日志以 JSON 格式输出到文件/stdout
+# 2. Fluentd 采集容器日志或日志文件，解析后转发到 Elasticsearch
+# 3. 通过 Kibana 进行日志查询和可视化分析
+#
+# 与 ELK 的区别：
+# - ELK 使用 Logstash（重量级，Java实现），EFK 使用 Fluentd（轻量级，C+Ruby实现）
+# - EFK 更适合 K8s 容器化环境，Fluentd 以 DaemonSet 方式部署
+#
+# 部署 EFK 环境（Docker Compose 示例）：
+# docker run -d --name elasticsearch -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.17.0
+# docker run -d --name kibana -p 5601:5601 --link elasticsearch kibana:7.17.0
+# docker run -d --name fluentd -p 24224:24224 -v /var/log:/var/log fluent/fluentd:v1.16
+#
+# Fluentd 配置文件 fluent.conf：
+# <source>
+#   @type tail
+#   path /var/log/app/springboot-log-system-efk-json.log
+#   pos_file /var/log/td-agent/springboot.log.pos
+#   tag springboot.app
+#   <parse>
+#     @type json
+#   </parse>
+# </source>
+# <match springboot.**>
+#   @type elasticsearch
+#   host elasticsearch
+#   port 9200
+#   index_name springboot-efk
+#   type_name _doc
+# </match>

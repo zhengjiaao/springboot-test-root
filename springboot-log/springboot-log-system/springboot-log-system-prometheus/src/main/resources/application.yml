@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-log-system-prometheus
+
+# 日志配置
+logging:
+  level:
+    root: info
+    com.zja.log.prometheus: debug
+
+# Actuator + Prometheus 配置
+management:
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+
+# Prometheus 监控说明：
+# 1. 启动应用后，访问 http://localhost:8080/actuator/prometheus 查看指标
+# 2. 在 prometheus.yml 中配置采集目标：
+#    scrape_configs:
+#      - job_name: 'springboot-app'
+#        metrics_path: '/actuator/prometheus'
+#        static_configs:
+#          - targets: ['host.docker.internal:8080']
+#
+# 3. 在 Grafana 中导入 JVM Dashboard（ID: 4701 或 12271）
+#
+# 自定义指标说明：
+# - api_requests_total：Counter，API请求总数
+# - api_errors_total：Counter，API错误总数
+# - online_users：Gauge，在线用户数
+# - api_response_time_seconds：Timer，API响应时间
+# - api_request_size：Summary，请求大小分布
+#
+# 部署 Prometheus + Grafana（Docker 示例）：
+# docker run -d --name prometheus -p 9090:9090 -v prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+# docker run -d --name grafana -p 3000:3000 grafana/grafana:latest

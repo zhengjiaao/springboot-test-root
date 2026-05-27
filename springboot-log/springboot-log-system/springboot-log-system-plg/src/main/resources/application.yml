@@ -1,0 +1,57 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-log-system-plg
+
+# 日志配置
+logging:
+  level:
+    root: info
+    com.zja.log.plg: debug
+
+# Actuator + Prometheus 指标配置
+management:
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+
+# PLG 架构说明：
+# Prometheus + Loki + Grafana = 完整的可观测性方案
+#
+# 三大支柱：
+# 1. Metrics（指标）- Prometheus 采集
+#    - JVM 指标（内存、GC、线程）
+#    - HTTP 请求指标（QPS、响应时间、状态码）
+#    - 自定义业务指标（商品浏览量、搜索量等）
+#    - 访问端点：http://localhost:8080/actuator/prometheus
+#
+# 2. Logs（日志）- Loki 采集
+#    - 应用日志通过 Loki4j Appender 推送
+#    - 在 Grafana 中使用 LogQL 查询
+#
+# 3. Visualization（可视化）- Grafana
+#    - 添加 Prometheus 数据源：http://prometheus:9090
+#    - 添加 Loki 数据源：http://loki:3100
+#    - 导入 JVM Dashboard（ID: 4701）
+#    - 创建自定义业务面板
+#
+# 部署（Docker Compose 示例）：
+# docker run -d --name prometheus -p 9090:9090 prom/prometheus
+# docker run -d --name loki -p 3100:3100 grafana/loki:2.9.0
+# docker run -d --name grafana -p 3000:3000 grafana/grafana:latest

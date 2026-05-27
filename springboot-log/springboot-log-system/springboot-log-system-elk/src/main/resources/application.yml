@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-log-system-elk
+
+# 日志配置
+logging:
+  level:
+    root: info
+    com.zja.log.elk: debug
+
+# ELK 架构说明：
+# 1. 应用通过 logback-spring.xml 中的 LogstashTcpSocketAppender 将日志以 JSON 格式发送到 Logstash
+# 2. Logstash 接收日志并解析后写入 Elasticsearch
+# 3. 通过 Kibana 进行日志查询和可视化分析
+#
+# 部署 ELK 环境（Docker Compose 示例）：
+# docker run -d --name elasticsearch -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.17.0
+# docker run -d --name kibana -p 5601:5601 --link elasticsearch kibana:7.17.0
+# docker run -d --name logstash -p 5044:5044 --link elasticsearch logstash:7.17.0
+#
+# Logstash 配置文件 logstash.conf：
+# input {
+#   tcp {
+#     port => 5044
+#     codec => json_lines
+#   }
+# }
+# output {
+#   elasticsearch {
+#     hosts => ["http://elasticsearch:9200"]
+#     index => "springboot-log-%{+YYYY.MM.dd}"
+#   }
+# }

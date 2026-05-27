@@ -1,0 +1,53 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-log-system-trace
+  # Sleuth 配置
+  sleuth:
+    sampler:
+      # 采样率：1.0 表示 100% 采集（生产环境建议 0.1 即 10%）
+      probability: 1.0
+    # 传播方式：B3（默认）
+    propagation:
+      type: B3
+  # Zipkin 配置
+  zipkin:
+    # Zipkin Server 地址
+    base-url: http://127.0.0.1:9411
+    # 发送方式：web（HTTP）
+    sender:
+      type: web
+
+# 日志配置
+logging:
+  level:
+    root: info
+    com.zja.log.trace: debug
+  pattern:
+    # Sleuth 会自动修改日志格式，添加 [appName, traceId, spanId, exportable]
+    # 如果需要自定义，可以使用以下模式：
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId:-},%X{spanId:-}] %-5level %logger{36} - %msg%n"
+
+# Sleuth + Zipkin 说明：
+#
+# 1. Sleuth 自动完成：
+#    - 在日志中注入 traceId/spanId
+#    - HTTP 请求头中自动传播 B3 格式的 Trace Context
+#    - 自动追踪 RestTemplate、WebClient、Feign、MQ 等
+#
+# 2. Zipkin 收集：
+#    - Sleuth 将链路数据（Span）发送到 Zipkin
+#    - Zipkin 提供可视化 UI 展示链路、依赖图
+#
+# 3. 部署 Zipkin（Docker 示例）：
+#    docker run -d --name zipkin -p 9411:9411 openzipkin/zipkin
+#    Zipkin UI：http://localhost:9411
+#
+# 4. 核心概念：
+#    - Trace：一次完整请求的追踪，由唯一 traceId 标识
+#    - Span：Trace 中的一个工作单元，由 spanId 标识
+#    - Annotation：关键事件标记（cs/cr/ss/sr）
+#    - B3 Propagation：通过 HTTP Header 传播追踪信息
+#      - X-B3-TraceId、X-B3-SpanId、X-B3-ParentSpanId、X-B3-Sampled

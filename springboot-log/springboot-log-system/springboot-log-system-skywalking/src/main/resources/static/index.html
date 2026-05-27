@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyWalking 链路追踪测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #2d3436, #00b4d8); color: #fff; padding: 30px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
+        .card h2 { color: #333; font-size: 18px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #00b4d8; }
+        .form-group { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .form-group label { min-width: 80px; font-weight: 600; color: #555; }
+        .form-group input, .form-group select { flex: 1; min-width: 150px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-group input:focus, .form-group select:focus { border-color: #00b4d8; outline: none; box-shadow: 0 0 0 2px rgba(0,180,216,0.2); }
+        .btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; color: #fff; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, #2d3436, #00b4d8); }
+        .btn-info { background: linear-gradient(135deg, #0984e3, #74b9ff); }
+        .btn-success { background: linear-gradient(135deg, #00b894, #55efc4); }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+        .result { margin-top: 12px; border-radius: 8px; padding: 14px; display: none; font-size: 13px; overflow-x: auto; }
+        .result.show { display: block; }
+        .result.success { background: #f0fff4; border: 1px solid #b7eb8f; }
+        .result.error { background: #fff2f0; border: 1px solid #ffa39e; }
+        .result.loading { background: #e6f7ff; border: 1px solid #91d5ff; }
+        .result pre { white-space: pre-wrap; word-break: break-all; }
+        .tip { background: #fff9e6; border: 1px solid #ffe58f; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: #7c6a00; }
+        .arch { background: #f9f9f9; padding: 16px; border-radius: 8px; margin-top: 10px; font-size: 13px; line-height: 1.8; color: #555; }
+        .arch code { background: #eee; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>SkyWalking 链路追踪测试</h1>
+    <p>Apache SkyWalking APM | @Trace 注解 + TraceContext + ActiveSpan 自定义标签</p>
+</div>
+<div class="container">
+    <div class="tip">
+        <strong>提示：</strong>需要挂载 SkyWalking Java Agent 才能真正生效（-javaagent:skywalking-agent.jar）。
+        不挂载 Agent 时，接口仍可正常调用，但 traceId 为空字符串。
+    </div>
+
+    <!-- 发送通知 -->
+    <div class="card">
+        <h2>1. 发送通知</h2>
+        <div class="form-group">
+            <label>通知类型:</label>
+            <select id="notifyType"><option value="email">邮件 Email</option><option value="sms">短信 SMS</option><option value="push">推送 Push</option></select>
+        </div>
+        <div class="form-group">
+            <label>接收目标:</label><input type="text" id="target" value="test@example.com" placeholder="邮箱/手机号/用户ID">
+        </div>
+        <div class="form-group">
+            <label>通知内容:</label><input type="text" id="content" value="您的订单已发货" placeholder="通知消息内容">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="sendNotification()">发送通知</button>
+        </div>
+        <div class="result" id="notifyResult"></div>
+    </div>
+
+    <!-- 获取 TraceId -->
+    <div class="card">
+        <h2>2. 获取当前 TraceId</h2>
+        <p style="color:#666;margin-bottom:12px;">调用 TraceContext.traceId() 获取当前请求的链路追踪ID，可在 SkyWalking UI 中搜索。</p>
+        <div class="btn-group">
+            <button class="btn btn-info" onclick="getTraceId()">获取 TraceId</button>
+        </div>
+        <div class="result" id="traceIdResult"></div>
+    </div>
+
+    <!-- 完整业务链路 -->
+    <div class="card">
+        <h2>3. 完整业务链路测试</h2>
+        <p style="color:#666;margin-bottom:12px;">模拟完整调用链：同时发送邮件 + 短信 + 推送通知，在 SkyWalking UI 中可查看拓扑图和调用链。</p>
+        <div class="form-group">
+            <label>用户ID:</label><input type="text" id="chainUserId" value="U001" placeholder="用户ID">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="fullChain()">执行完整链路</button>
+        </div>
+        <div class="result" id="chainResult"></div>
+    </div>
+
+    <!-- 架构说明 -->
+    <div class="card">
+        <h2>架构说明</h2>
+        <div class="arch">
+            <p><strong>数据流向：</strong><code>Spring Boot + SkyWalking Agent</code> → <code>gRPC</code> → <code>SkyWalking OAP Server</code> → <code>SkyWalking UI</code></p>
+            <p><strong>Agent 启动：</strong><code>-javaagent:/path/to/skywalking-agent.jar -Dskywalking.agent.service_name=my-app</code></p>
+            <p><strong>追踪注解：</strong><code>@Trace</code> 标记方法、<code>@Tag</code> 标记参数、<code>ActiveSpan.tag()</code> 自定义标签</p>
+            <p><strong>SkyWalking UI：</strong>http://localhost:8080 查看服务拓扑、链路详情、指标仪表盘</p>
+            <p><strong>日志关联：</strong>TraceIdPatternLogbackLayout 自动在日志中注入 traceId</p>
+        </div>
+    </div>
+</div>
+<script>
+function callApi(url, resultId) {
+    var el = document.getElementById(resultId);
+    el.className = 'result show loading';
+    el.innerHTML = '<pre>请求中...</pre>';
+    fetch(url).then(function(r){ return r.json(); }).then(function(data){
+        el.className = 'result show ' + (data.code === 200 ? 'success' : (data.code === 500 ? 'error' : 'success'));
+        el.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    }).catch(function(err){
+        el.className = 'result show error';
+        el.innerHTML = '<pre>请求失败: ' + err.message + '</pre>';
+    });
+}
+function sendNotification() {
+    var type = document.getElementById('notifyType').value;
+    var target = document.getElementById('target').value;
+    var content = document.getElementById('content').value;
+    callApi('/api/skywalking/notify/' + type + '?target=' + encodeURIComponent(target) + '&content=' + encodeURIComponent(content), 'notifyResult');
+}
+function getTraceId() { callApi('/api/skywalking/traceId', 'traceIdResult'); }
+function fullChain() {
+    var userId = document.getElementById('chainUserId').value;
+    callApi('/api/skywalking/full-chain?userId=' + encodeURIComponent(userId), 'chainResult');
+}
+</script>
+</body>
+</html>

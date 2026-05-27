@@ -1,0 +1,50 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-log-system-skywalking
+
+# 日志配置
+logging:
+  level:
+    root: info
+    com.zja.log.skywalking: debug
+
+# SkyWalking 分布式链路追踪说明：
+#
+# 1. SkyWalking 架构：
+#    - SkyWalking Agent（Java Agent，无侵入埋点）
+#    - SkyWalking OAP Server（数据收集和分析后端）
+#    - SkyWalking UI（可视化界面）
+#    - 存储层（ES/H2/MySQL/BanyanDB）
+#
+# 2. 使用方式：
+#    方式一：Java Agent 无侵入（推荐）
+#    java -javaagent:/path/to/skywalking-agent.jar \
+#         -Dskywalking.agent.service_name=springboot-log-system-skywalking \
+#         -Dskywalking.collector.backend_service=127.0.0.1:11800 \
+#         -jar springboot-log-system-skywalking.jar
+#
+#    方式二：Toolkit SDK 手动埋点（本示例方式，与 Agent 配合使用）
+#    - @Trace 注解：将方法加入链路追踪
+#    - @Tag 注解：记录方法参数到 Span
+#    - TraceContext.traceId()：获取当前 traceId
+#    - ActiveSpan.tag()：添加自定义标签
+#    - ActiveSpan.error()：记录错误
+#
+# 3. 部署 SkyWalking（Docker 示例）：
+#    docker run -d --name skywalking-oap -p 11800:11800 -p 12800:12800 \
+#         -e SW_STORAGE=elasticsearch \
+#         -e SW_STORAGE_ES_CLUSTER_NODES=elasticsearch:9200 \
+#         apache/skywalking-oap-server:9.5.0
+#
+#    docker run -d --name skywalking-ui -p 8088:8080 \
+#         -e SW_OAP_ADDRESS=http://skywalking-oap:12800 \
+#         apache/skywalking-ui:9.5.0
+#
+# 4. SkyWalking UI 访问：http://localhost:8088
+#    - Dashboard：服务概览、指标
+#    - Topology：服务拓扑图
+#    - Trace：链路追踪详情
+#    - Log：日志关联查询

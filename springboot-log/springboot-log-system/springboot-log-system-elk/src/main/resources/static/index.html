@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELK 日志系统测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 30px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
+        .card h2 { color: #333; font-size: 18px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+        .form-group { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .form-group label { min-width: 70px; font-weight: 600; color: #555; }
+        .form-group input { flex: 1; min-width: 150px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-group input:focus { border-color: #667eea; outline: none; box-shadow: 0 0 0 2px rgba(102,126,234,0.2); }
+        .btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; color: #fff; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .btn-warning { background: linear-gradient(135deg, #f5af19, #f12711); }
+        .btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+        .result { margin-top: 12px; border-radius: 8px; padding: 14px; display: none; font-size: 13px; overflow-x: auto; }
+        .result.show { display: block; }
+        .result.success { background: #f0fff4; border: 1px solid #b7eb8f; }
+        .result.error { background: #fff2f0; border: 1px solid #ffa39e; }
+        .result.loading { background: #e6f7ff; border: 1px solid #91d5ff; }
+        .result pre { white-space: pre-wrap; word-break: break-all; }
+        .arch { background: #f9f9f9; padding: 16px; border-radius: 8px; margin-top: 10px; font-size: 13px; line-height: 1.8; color: #555; }
+        .arch code { background: #eee; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>ELK 日志系统测试</h1>
+    <p>Elasticsearch + Logstash + Kibana | 日志通过 LogstashTcpSocketAppender 发送到 Logstash</p>
+</div>
+<div class="container">
+    <!-- 创建订单 -->
+    <div class="card">
+        <h2>1. 创建订单（正常业务流程）</h2>
+        <div class="form-group">
+            <label>用户ID:</label><input type="text" id="userId" value="U001" placeholder="请输入用户ID">
+        </div>
+        <div class="form-group">
+            <label>商品:</label><input type="text" id="product" value="iPhone15" placeholder="请输入商品名称">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="createOrder()">创建订单</button>
+        </div>
+        <div class="result" id="orderResult"></div>
+    </div>
+
+    <!-- 日志级别测试 -->
+    <div class="card">
+        <h2>2. 日志级别测试</h2>
+        <p style="color:#666;margin-bottom:12px;">输出 TRACE/DEBUG/INFO/WARN/ERROR 各级别日志，在 Kibana 中可按级别筛选查看。</p>
+        <div class="btn-group">
+            <button class="btn btn-warning" onclick="testLevels()">输出各级别日志</button>
+        </div>
+        <div class="result" id="levelsResult"></div>
+    </div>
+
+    <!-- 异常日志测试 -->
+    <div class="card">
+        <h2>3. 异常日志测试</h2>
+        <p style="color:#666;margin-bottom:12px;">模拟除零异常，错误日志及堆栈信息将通过 Logstash 收集到 Elasticsearch。</p>
+        <div class="btn-group">
+            <button class="btn btn-danger" onclick="testError()">触发异常日志</button>
+        </div>
+        <div class="result" id="errorResult"></div>
+    </div>
+
+    <!-- 架构说明 -->
+    <div class="card">
+        <h2>架构说明</h2>
+        <div class="arch">
+            <p><strong>数据流向：</strong><code>Spring Boot App</code> → <code>LogstashTcpSocketAppender</code> → <code>Logstash:5044</code> → <code>Elasticsearch</code> → <code>Kibana</code></p>
+            <p><strong>日志格式：</strong>JSON（logstash-logback-encoder 自动将日志转为结构化 JSON）</p>
+            <p><strong>Kibana 查看：</strong>http://localhost:5601 创建 Index Pattern 后在 Discover 中搜索日志</p>
+            <p><strong>关键配置：</strong>logback-spring.xml 中的 LogstashTcpSocketAppender 配置 Logstash 地址</p>
+        </div>
+    </div>
+</div>
+<script>
+function callApi(url, resultId) {
+    var el = document.getElementById(resultId);
+    el.className = 'result show loading';
+    el.innerHTML = '<pre>请求中...</pre>';
+    fetch(url).then(function(r){ return r.json(); }).then(function(data){
+        el.className = 'result show ' + (data.code === 200 ? 'success' : 'error');
+        el.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    }).catch(function(err){
+        el.className = 'result show error';
+        el.innerHTML = '<pre>请求失败: ' + err.message + '</pre>';
+    });
+}
+function createOrder() {
+    var userId = document.getElementById('userId').value;
+    var product = document.getElementById('product').value;
+    callApi('/api/elk/order?userId=' + encodeURIComponent(userId) + '&product=' + encodeURIComponent(product), 'orderResult');
+}
+function testLevels() { callApi('/api/elk/levels', 'levelsResult'); }
+function testError() { callApi('/api/elk/error', 'errorResult'); }
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EFK 日志系统测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #11998e, #38ef7d); color: #fff; padding: 30px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
+        .card h2 { color: #333; font-size: 18px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #11998e; }
+        .form-group { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .form-group label { min-width: 70px; font-weight: 600; color: #555; }
+        .form-group input { flex: 1; min-width: 150px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-group input:focus { border-color: #11998e; outline: none; box-shadow: 0 0 0 2px rgba(17,153,142,0.2); }
+        .btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; color: #fff; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .btn-info { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+        .btn-warning { background: linear-gradient(135deg, #f5af19, #f12711); }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+        .result { margin-top: 12px; border-radius: 8px; padding: 14px; display: none; font-size: 13px; overflow-x: auto; }
+        .result.show { display: block; }
+        .result.success { background: #f0fff4; border: 1px solid #b7eb8f; }
+        .result.error { background: #fff2f0; border: 1px solid #ffa39e; }
+        .result.loading { background: #e6f7ff; border: 1px solid #91d5ff; }
+        .result pre { white-space: pre-wrap; word-break: break-all; }
+        .arch { background: #f9f9f9; padding: 16px; border-radius: 8px; margin-top: 10px; font-size: 13px; line-height: 1.8; color: #555; }
+        .arch code { background: #eee; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>EFK 日志系统测试</h1>
+    <p>Elasticsearch + Fluentd + Kibana | JSON 格式日志输出，Fluentd 采集（适合 K8s/Docker）</p>
+</div>
+<div class="container">
+    <!-- 用户注册 -->
+    <div class="card">
+        <h2>1. 用户注册</h2>
+        <div class="form-group">
+            <label>用户名:</label><input type="text" id="username" value="zhangsan" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+            <label>邮箱:</label><input type="text" id="email" value="zhangsan@example.com" placeholder="请输入邮箱">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="register()">注册</button>
+        </div>
+        <div class="result" id="registerResult"></div>
+    </div>
+
+    <!-- 用户登录 -->
+    <div class="card">
+        <h2>2. 用户登录</h2>
+        <div class="form-group">
+            <label>用户名:</label><input type="text" id="loginUser" value="zhangsan" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+            <label>密码:</label><input type="text" id="loginPwd" value="password123" placeholder="请输入密码">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-info" onclick="login()">登录</button>
+        </div>
+        <div class="result" id="loginResult"></div>
+    </div>
+
+    <!-- 批量日志 -->
+    <div class="card">
+        <h2>3. 批量日志生成</h2>
+        <div class="form-group">
+            <label>日志数量:</label><input type="number" id="batchCount" value="10" min="1" max="100" placeholder="日志条数">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-warning" onclick="batchLog()">生成批量日志</button>
+        </div>
+        <div class="result" id="batchResult"></div>
+    </div>
+
+    <!-- 架构说明 -->
+    <div class="card">
+        <h2>架构说明</h2>
+        <div class="arch">
+            <p><strong>数据流向：</strong><code>Spring Boot App</code> → <code>JSON 日志文件/stdout</code> → <code>Fluentd</code> → <code>Elasticsearch</code> → <code>Kibana</code></p>
+            <p><strong>日志格式：</strong>JSON（logstash-logback-encoder 输出结构化 JSON 到文件）</p>
+            <p><strong>适用场景：</strong>K8s 环境中 Fluentd 以 DaemonSet 部署，自动采集容器 stdout 日志</p>
+            <p><strong>对比 ELK：</strong>EFK 用 Fluentd 替代 Logstash，更轻量、K8s 原生支持</p>
+        </div>
+    </div>
+</div>
+<script>
+function callApi(url, resultId) {
+    var el = document.getElementById(resultId);
+    el.className = 'result show loading';
+    el.innerHTML = '<pre>请求中...</pre>';
+    fetch(url).then(function(r){ return r.json(); }).then(function(data){
+        el.className = 'result show ' + (data.code === 200 ? 'success' : 'error');
+        el.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    }).catch(function(err){
+        el.className = 'result show error';
+        el.innerHTML = '<pre>请求失败: ' + err.message + '</pre>';
+    });
+}
+function register() {
+    var u = document.getElementById('username').value;
+    var e = document.getElementById('email').value;
+    callApi('/api/efk/register?username=' + encodeURIComponent(u) + '&email=' + encodeURIComponent(e), 'registerResult');
+}
+function login() {
+    var u = document.getElementById('loginUser').value;
+    var p = document.getElementById('loginPwd').value;
+    callApi('/api/efk/login?username=' + encodeURIComponent(u) + '&password=' + encodeURIComponent(p), 'loginResult');
+}
+function batchLog() {
+    var c = document.getElementById('batchCount').value;
+    callApi('/api/efk/batch?count=' + c, 'batchResult');
+}
+</script>
+</body>
+</html>

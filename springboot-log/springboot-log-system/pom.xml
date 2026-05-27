@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>springboot-test-root</artifactId>
+        <artifactId>springboot-log</artifactId>
         <groupId>com.zja</groupId>
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>springboot-log</artifactId>
+    <artifactId>springboot-log-system</artifactId>
     <packaging>pom</packaging>
 
     <properties>
@@ -16,11 +16,13 @@
     </properties>
 
     <modules>
-        <module>springboot-log-log4j2</module>
-        <module>springboot-log-log4j2-config</module>
-        <module>springboot-log-logback</module>
-        <module>springboot-log-logback-config</module>
-        <!-- <module>springboot-log-system</module> -->
+        <module>springboot-log-system-efk</module>
+        <module>springboot-log-system-elk</module>
+        <module>springboot-log-system-loki</module>
+        <module>springboot-log-system-plg</module>
+        <module>springboot-log-system-prometheus</module>
+        <module>springboot-log-system-skywalking</module>
+        <module>springboot-log-system-trace</module>
     </modules>
 
 </project>

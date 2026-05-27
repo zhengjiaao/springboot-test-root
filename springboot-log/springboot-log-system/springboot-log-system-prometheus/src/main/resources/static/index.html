@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prometheus 指标监控测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #e65100, #ff6d00); color: #fff; padding: 30px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
+        .card h2 { color: #333; font-size: 18px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #e65100; }
+        .form-group { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .form-group label { min-width: 70px; font-weight: 600; color: #555; }
+        .form-group input { flex: 1; min-width: 150px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-group input:focus { border-color: #e65100; outline: none; box-shadow: 0 0 0 2px rgba(230,81,0,0.2); }
+        .btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; color: #fff; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, #e65100, #ff6d00); }
+        .btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .btn-success { background: linear-gradient(135deg, #00b894, #00cec9); }
+        .btn-warning { background: linear-gradient(135deg, #fdcb6e, #e17055); }
+        .btn-info { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+        .result { margin-top: 12px; border-radius: 8px; padding: 14px; display: none; font-size: 13px; overflow-x: auto; }
+        .result.show { display: block; }
+        .result.success { background: #f0fff4; border: 1px solid #b7eb8f; }
+        .result.error { background: #fff2f0; border: 1px solid #ffa39e; }
+        .result.loading { background: #e6f7ff; border: 1px solid #91d5ff; }
+        .result pre { white-space: pre-wrap; word-break: break-all; }
+        .link-list { margin-top: 10px; }
+        .link-list a { display: inline-block; margin: 4px 8px 4px 0; padding: 6px 14px; background: #f0f0f0; border-radius: 6px; color: #333; text-decoration: none; font-size: 13px; }
+        .link-list a:hover { background: #e65100; color: #fff; }
+        .arch { background: #f9f9f9; padding: 16px; border-radius: 8px; margin-top: 10px; font-size: 13px; line-height: 1.8; color: #555; }
+        .arch code { background: #eee; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Prometheus 指标监控测试</h1>
+    <p>Spring Boot Actuator + Micrometer | Counter / Gauge / Timer / DistributionSummary 四种指标类型</p>
+</div>
+<div class="container">
+    <!-- API 调用模拟 -->
+    <div class="card">
+        <h2>1. 模拟 API 调用（Counter + Timer）</h2>
+        <div class="form-group">
+            <label>API路径:</label><input type="text" id="apiPath" value="/user/list" placeholder="模拟的API路径">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="apiCall()">模拟调用</button>
+        </div>
+        <div class="result" id="callResult"></div>
+    </div>
+
+    <!-- 错误模拟 -->
+    <div class="card">
+        <h2>2. 模拟错误（Counter）</h2>
+        <p style="color:#666;margin-bottom:12px;">触发错误计数器 +1，可在 Prometheus 中查看 <code>api_errors_total</code> 指标。</p>
+        <div class="btn-group">
+            <button class="btn btn-danger" onclick="simulateError()">模拟错误</button>
+        </div>
+        <div class="result" id="errorResult"></div>
+    </div>
+
+    <!-- 在线用户 Gauge -->
+    <div class="card">
+        <h2>3. 在线用户管理（Gauge）</h2>
+        <p style="color:#666;margin-bottom:12px;">Gauge 指标随用户上下线实时增减，反映当前在线人数。</p>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="userOnline()">用户上线</button>
+            <button class="btn btn-warning" onclick="userOffline()">用户下线</button>
+        </div>
+        <div class="result" id="userResult"></div>
+    </div>
+
+    <!-- Actuator 端点 -->
+    <div class="card">
+        <h2>4. Actuator 端点</h2>
+        <div class="link-list">
+            <a href="/actuator/prometheus" target="_blank">Prometheus 指标</a>
+            <a href="/actuator/health" target="_blank">健康检查</a>
+            <a href="/actuator" target="_blank">所有端点</a>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-info" onclick="promqlExamples()">查看 PromQL 示例</button>
+        </div>
+        <div class="result" id="promqlResult"></div>
+    </div>
+
+    <!-- 架构说明 -->
+    <div class="card">
+        <h2>架构说明</h2>
+        <div class="arch">
+            <p><strong>数据流向：</strong><code>Spring Boot (Micrometer)</code> → <code>/actuator/prometheus</code> → <code>Prometheus Server 定期抓取</code> → <code>Grafana Dashboard</code></p>
+            <p><strong>指标类型：</strong>Counter（累计值）、Gauge（实时值）、Timer（耗时分布）、DistributionSummary（数据分布）</p>
+            <p><strong>Prometheus：</strong>http://localhost:9090 配置 scrape target 为应用的 /actuator/prometheus</p>
+            <p><strong>Grafana：</strong>http://localhost:3000 导入 Spring Boot 监控面板（ID: 4701 或 12900）</p>
+        </div>
+    </div>
+</div>
+<script>
+function callApi(url, resultId) {
+    var el = document.getElementById(resultId);
+    el.className = 'result show loading';
+    el.innerHTML = '<pre>请求中...</pre>';
+    fetch(url).then(function(r){ return r.json(); }).then(function(data){
+        el.className = 'result show ' + (data.code === 200 ? 'success' : 'error');
+        el.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    }).catch(function(err){
+        el.className = 'result show error';
+        el.innerHTML = '<pre>请求失败: ' + err.message + '</pre>';
+    });
+}
+function apiCall() {
+    var api = document.getElementById('apiPath').value;
+    callApi('/api/prometheus/call?api=' + encodeURIComponent(api), 'callResult');
+}
+function simulateError() { callApi('/api/prometheus/error', 'errorResult'); }
+function userOnline() { callApi('/api/prometheus/online', 'userResult'); }
+function userOffline() { callApi('/api/prometheus/offline', 'userResult'); }
+function promqlExamples() { callApi('/api/prometheus/promql-examples', 'promqlResult'); }
+</script>
+</body>
+</html>

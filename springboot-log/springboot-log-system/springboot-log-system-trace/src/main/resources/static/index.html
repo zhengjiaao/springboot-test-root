@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleuth + Zipkin 链路追踪测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #6c5ce7, #a29bfe); color: #fff; padding: 30px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
+        .card h2 { color: #333; font-size: 18px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #6c5ce7; }
+        .form-group { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .form-group label { min-width: 70px; font-weight: 600; color: #555; }
+        .form-group input { flex: 1; min-width: 150px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-group input:focus { border-color: #6c5ce7; outline: none; box-shadow: 0 0 0 2px rgba(108,92,231,0.2); }
+        .btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; color: #fff; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+        .btn-warning { background: linear-gradient(135deg, #fdcb6e, #e17055); }
+        .btn-info { background: linear-gradient(135deg, #0984e3, #74b9ff); }
+        .btn-success { background: linear-gradient(135deg, #00b894, #55efc4); }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+        .result { margin-top: 12px; border-radius: 8px; padding: 14px; display: none; font-size: 13px; overflow-x: auto; }
+        .result.show { display: block; }
+        .result.success { background: #f0fff4; border: 1px solid #b7eb8f; }
+        .result.error { background: #fff2f0; border: 1px solid #ffa39e; }
+        .result.loading { background: #e6f7ff; border: 1px solid #91d5ff; }
+        .result pre { white-space: pre-wrap; word-break: break-all; }
+        .arch { background: #f9f9f9; padding: 16px; border-radius: 8px; margin-top: 10px; font-size: 13px; line-height: 1.8; color: #555; }
+        .arch code { background: #eee; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Sleuth + Zipkin 链路追踪测试</h1>
+    <p>Spring Cloud Sleuth 自动追踪 + Zipkin 可视化 | traceId/spanId 自动注入日志</p>
+</div>
+<div class="container">
+    <!-- 检查库存 -->
+    <div class="card">
+        <h2>1. 检查库存（自动追踪 + 手动 Span）</h2>
+        <div class="form-group">
+            <label>商品ID:</label><input type="text" id="stockProductId" value="P001" placeholder="请输入商品ID">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="checkStock()">检查库存</button>
+        </div>
+        <div class="result" id="stockResult"></div>
+    </div>
+
+    <!-- 扣减库存 -->
+    <div class="card">
+        <h2>2. 扣减库存</h2>
+        <div class="form-group">
+            <label>商品ID:</label><input type="text" id="deductProductId" value="P001" placeholder="请输入商品ID">
+        </div>
+        <div class="form-group">
+            <label>数量:</label><input type="number" id="quantity" value="5" min="1" placeholder="扣减数量">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-warning" onclick="deductStock()">扣减库存</button>
+        </div>
+        <div class="result" id="deductResult"></div>
+    </div>
+
+    <!-- 跨服务调用 -->
+    <div class="card">
+        <h2>3. 跨服务调用（RestTemplate 自动传播 traceId）</h2>
+        <p style="color:#666;margin-bottom:12px;">RestTemplate 会自动在 HTTP Header 中注入 X-B3-TraceId，目标服务也集成 Sleuth 时可实现链路关联。</p>
+        <div class="btn-group">
+            <button class="btn btn-info" onclick="crossService()">发起跨服务调用</button>
+        </div>
+        <div class="result" id="crossResult"></div>
+    </div>
+
+    <!-- 链路信息 -->
+    <div class="card">
+        <h2>4. 查看当前链路信息</h2>
+        <p style="color:#666;margin-bottom:12px;">获取当前请求的 traceId 以及 Sleuth 自动追踪的说明信息。</p>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="traceInfo()">获取链路信息</button>
+        </div>
+        <div class="result" id="infoResult"></div>
+    </div>
+
+    <!-- 架构说明 -->
+    <div class="card">
+        <h2>架构说明</h2>
+        <div class="arch">
+            <p><strong>数据流向：</strong><code>Spring Boot + Sleuth</code> → <code>HTTP/Kafka</code> → <code>Zipkin Server</code> → <code>Zipkin UI</code></p>
+            <p><strong>自动追踪：</strong>Sleuth 自动追踪 HTTP 请求、RestTemplate、异步方法、MQ 消息等</p>
+            <p><strong>日志格式：</strong><code>[appName, traceId, spanId, exportable]</code> 自动注入每条日志</p>
+            <p><strong>传播机制：</strong>通过 HTTP Header（X-B3-TraceId / X-B3-SpanId）跨服务传播</p>
+            <p><strong>Zipkin UI：</strong>http://localhost:9411 查看链路详情和服务依赖拓扑</p>
+        </div>
+    </div>
+</div>
+<script>
+function callApi(url, resultId) {
+    var el = document.getElementById(resultId);
+    el.className = 'result show loading';
+    el.innerHTML = '<pre>请求中...</pre>';
+    fetch(url).then(function(r){ return r.json(); }).then(function(data){
+        el.className = 'result show ' + (data.code === 200 ? 'success' : 'error');
+        el.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    }).catch(function(err){
+        el.className = 'result show error';
+        el.innerHTML = '<pre>请求失败: ' + err.message + '</pre>';
+    });
+}
+function checkStock() {
+    var id = document.getElementById('stockProductId').value;
+    callApi('/api/trace/stock?productId=' + encodeURIComponent(id), 'stockResult');
+}
+function deductStock() {
+    var id = document.getElementById('deductProductId').value;
+    var qty = document.getElementById('quantity').value;
+    callApi('/api/trace/deduct?productId=' + encodeURIComponent(id) + '&quantity=' + qty, 'deductResult');
+}
+function crossService() { callApi('/api/trace/cross-service', 'crossResult'); }
+function traceInfo() { callApi('/api/trace/info', 'infoResult'); }
+</script>
+</body>
+</html>

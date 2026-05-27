@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-log-system-loki
+
+# 日志配置
+logging:
+  level:
+    root: info
+    com.zja.log.loki: debug
+
+# Loki 日志系统说明：
+# 1. 应用通过 loki4j logback appender 将日志以 HTTP 方式推送到 Loki
+# 2. Loki 存储日志（只索引标签，不索引内容，存储成本低）
+# 3. 通过 Grafana Explore 页面使用 LogQL 查询日志
+#
+# 与 ELK 的区别：
+# - ELK 使用 Elasticsearch 全文索引，查询更灵活但存储成本高
+# - Loki 只索引标签(label)，按流存储，查询用 LogQL（类似 PromQL）
+# - Loki 更轻量、更适合云原生场景
+#
+# 部署 Loki + Grafana（Docker 示例）：
+# docker run -d --name loki -p 3100:3100 grafana/loki:2.9.0
+# docker run -d --name grafana -p 3000:3000 grafana/grafana:latest
+# Grafana 中添加 Loki 数据源：http://loki:3100
