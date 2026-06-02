@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大文件分片下载</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"/>
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+    <!-- SparkMD5 - 前端计算MD5，与后端Java MD5保持一致 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f7fa; }
+        .app-container { max-width: 1100px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 24px; }
+        .header h1 { color: #303133; margin-bottom: 6px; font-size: 26px; }
+        .header p { color: #909399; font-size: 14px; }
+        .card { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .card-title { font-size: 16px; font-weight: 600; color: #303133; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .file-table { width: 100%; }
+        .progress-section { margin-top: 12px; }
+        .speed-info { display: flex; gap: 20px; margin-top: 8px; font-size: 13px; color: #606266; flex-wrap: wrap; }
+        .speed-info span { white-space: nowrap; }
+        .chunk-matrix { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 10px; max-height: 120px; overflow-y: auto; padding: 4px; background: #fafafa; border-radius: 4px; }
+        .chunk-cell { width: 18px; height: 18px; border-radius: 3px; transition: background-color 0.2s; }
+        .chunk-cell.pending { background: #e4e7ed; }
+        .chunk-cell.downloading { background: #e6a23c; animation: pulse 1s infinite; }
+        .chunk-cell.done { background: #67c23a; }
+        .chunk-cell.error { background: #f56c6c; }
+        .chunk-cell.retrying { background: #409eff; animation: pulse 0.8s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .config-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+        .config-row label { font-size: 14px; color: #606266; white-space: nowrap; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .log-area { margin-top: 12px; max-height: 200px; overflow-y: auto; background: #1e1e1e; border-radius: 4px; padding: 10px; font-size: 12px; font-family: 'Consolas', 'Courier New', monospace; line-height: 1.8; }
+        .log-area div { word-break: break-all; }
+        .log-info { color: #dcdcaa; }
+        .log-success { color: #4ec9b0; }
+        .log-warn { color: #dcdcaa; }
+        .log-error { color: #f44747; }
+        .md5-result { margin-top: 8px; font-size: 13px; }
+        .status-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px; }
+        .status-idle { background: #f0f2f5; color: #909399; }
+        .status-downloading { background: #ecf5ff; color: #409eff; }
+        .status-paused { background: #fdf6ec; color: #e6a23c; }
+        .status-done { background: #f0f9eb; color: #67c23a; }
+        .status-error { background: #fef0f0; color: #f56c6c; }
+        /* 文件列表优化 */
+        .file-stats { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+        .file-stat-item { display: flex; align-items: center; gap: 6px; padding: 6px 14px; background: #f5f7fa; border-radius: 6px; font-size: 13px; color: #606266; }
+        .file-stat-item .stat-value { font-weight: 600; color: #303133; }
+        .file-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
+        .file-name-cell { display: flex; align-items: center; gap: 8px; min-width: 0; }
+        .file-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
+        .ext-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 600; line-height: 1.4; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; }
+        .ext-zip { background: #e6f7ff; color: #1890ff; }
+        .ext-rar { background: #fff0e6; color: #fa8c16; }
+        .ext-7z { background: #f0e6ff; color: #722ed1; }
+        .ext-tar { background: #e6fffb; color: #13c2c2; }
+        .ext-gz { background: #e6fffb; color: #13c2c2; }
+        .ext-iso { background: #fff1f0; color: #f5222d; }
+        .ext-dmg { background: #fff0f6; color: #eb2f96; }
+        .ext-exe { background: #f6ffed; color: #52c41a; }
+        .ext-msi { background: #f6ffed; color: #52c41a; }
+        .ext-mp4 { background: #e6f7ff; color: #1890ff; }
+        .ext-avi { background: #e6f7ff; color: #1890ff; }
+        .ext-mkv { background: #e6f7ff; color: #1890ff; }
+        .ext-mov { background: #e6f7ff; color: #1890ff; }
+        .ext-mp3 { background: #fff0e6; color: #fa8c16; }
+        .ext-wav { background: #fff0e6; color: #fa8c16; }
+        .ext-flac { background: #fff0e6; color: #fa8c16; }
+        .ext-pdf { background: #fff1f0; color: #f5222d; }
+        .ext-doc { background: #e6f7ff; color: #1890ff; }
+        .ext-docx { background: #e6f7ff; color: #1890ff; }
+        .ext-xls { background: #f6ffed; color: #52c41a; }
+        .ext-xlsx { background: #f6ffed; color: #52c41a; }
+        .ext-ppt { background: #fff0e6; color: #fa8c16; }
+        .ext-pptx { background: #fff0e6; color: #fa8c16; }
+        .ext-jpg { background: #f0e6ff; color: #722ed1; }
+        .ext-jpeg { background: #f0e6ff; color: #722ed1; }
+        .ext-png { background: #f0e6ff; color: #722ed1; }
+        .ext-gif { background: #f0e6ff; color: #722ed1; }
+        .ext-svg { background: #f0e6ff; color: #722ed1; }
+        .ext-psd { background: #f0e6ff; color: #722ed1; }
+        .ext-default { background: #f0f2f5; color: #909399; }
+        .size-badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 500; }
+        .size-sm { background: #f0f9eb; color: #67c23a; }
+        .size-md { background: #ecf5ff; color: #409eff; }
+        .size-lg { background: #fdf6ec; color: #e6a23c; }
+        .size-xl { background: #fef0f0; color: #f56c6c; }
+        .el-table .selected-row td { background-color: #ecf5ff !important; }
+        .el-table .selected-row:hover > td { background-color: #d9ecff !important; }
+        .el-table .el-table__body tr.current-row > td { background-color: #ecf5ff !important; }
+        .el-table .el-table__body tr.current-row:hover > td { background-color: #d9ecff !important; }
+        .empty-file-list { text-align: center; padding: 40px 20px; color: #c0c4cc; }
+        .empty-file-list .empty-icon { font-size: 48px; margin-bottom: 12px; }
+        .empty-file-list .empty-text { font-size: 14px; margin-bottom: 6px; }
+        .empty-file-list .empty-hint { font-size: 12px; color: #dcdfe6; }
+    </style>
+</head>
+<body>
+<div id="app" class="app-container">
+    <div class="header">
+        <h1>大文件分片下载</h1>
+        <p>多线程并发 · 断点续传 · 暂停/恢复/取消 · 分片重试 · MD5完整性校验</p>
+    </div>
+
+    <!-- 文件列表 -->
+    <div class="card">
+        <div class="card-title" style="justify-content:space-between">
+            <span>📂 可下载文件列表</span>
+            <el-button type="primary" size="small" @click="loadFileList" :loading="loadingList">刷新列表</el-button>
+        </div>
+
+        <!-- 汇总统计 -->
+        <div class="file-stats" v-if="fileList.length > 0">
+            <div class="file-stat-item">
+                📁 文件数: <span class="stat-value">{{ fileList.length }}</span>
+            </div>
+            <div class="file-stat-item">
+                💾 总大小: <span class="stat-value">{{ totalSizeFormatted }}</span>
+            </div>
+        </div>
+
+        <!-- 加载中状态 -->
+        <div v-if="loadingList" v-loading="loadingList" style="min-height:120px"></div>
+
+        <!-- 空状态 -->
+        <div class="empty-file-list" v-if="!loadingList && fileList.length === 0">
+            <div class="empty-icon">📭</div>
+            <div class="empty-text">暂无可下载文件</div>
+            <div class="empty-hint">请将文件放入服务端配置目录，然后点击「刷新列表」</div>
+        </div>
+
+        <!-- 文件表格 -->
+        <el-table :data="fileList" class="file-table"
+                  v-if="!loadingList && fileList.length > 0"
+                  highlight-current-row @current-change="handleFileSelect" ref="fileTableRef"
+                  :row-class-name="tableRowClassName" stripe>
+            <el-table-column label="" width="50" align="center">
+                <template #default="{row}">
+                    <span class="file-icon">{{ fileIcon(row.fileName) }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="文件名" min-width="240">
+                <template #default="{row}">
+                    <div class="file-name-cell">
+                        <span class="ext-badge" :class="extBadgeClass(row.fileName)" v-if="fileExt(row.fileName)">{{ fileExt(row.fileName) }}</span>
+                        <span class="file-name-text" :title="row.fileName">{{ row.fileName }}</span>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="大小" width="130" align="center" sortable :sort-method="sortBySize">
+                <template #default="{row}">
+                    <span class="size-badge" :class="sizeBadgeClass(row.fileSize)">{{ row.fileSizeFormatted }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="修改时间" width="180" align="center" sortable :sort-method="sortByTime">
+                <template #default="{row}">{{ formatTime(row.lastModified) }}</template>
+            </el-table-column>
+            <el-table-column label="操作" width="110" align="center" fixed="right">
+                <template #default="{row}">
+                    <el-button type="primary" size="small" @click.stop="selectAndPrepare(row)"
+                               :disabled="status !== 'idle'">下载</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+
+    <!-- 下载配置与控制 -->
+    <div class="card" v-if="selectedFile">
+        <div class="card-title">
+            <span>⬇️ {{ selectedFile.fileName }}</span>
+            <span style="font-weight:400;font-size:13px;color:#909399">({{ selectedFile.fileSizeFormatted }})</span>
+            <span class="status-tag" :class="'status-' + status">{{ statusLabel }}</span>
+        </div>
+
+        <div class="config-row" v-if="status === 'idle'">
+            <label>分片大小：</label>
+            <el-select v-model="chunkSizeMB" size="small" style="width:120px">
+                <el-option label="1 MB" :value="1"/>
+                <el-option label="2 MB" :value="2"/>
+                <el-option label="5 MB" :value="5"/>
+                <el-option label="10 MB" :value="10"/>
+                <el-option label="20 MB" :value="20"/>
+            </el-select>
+            <label>并发线程：</label>
+            <el-select v-model="concurrency" size="small" style="width:90px">
+                <el-option :label="n" :value="n" v-for="n in [1,2,3,4,5,6]" :key="n"/>
+            </el-select>
+            <label>失败重试：</label>
+            <el-select v-model="maxRetry" size="small" style="width:80px">
+                <el-option label="1次" :value="1"/>
+                <el-option label="2次" :value="2"/>
+                <el-option label="3次" :value="3"/>
+            </el-select>
+        </div>
+
+        <div class="btn-group">
+            <el-button type="primary" @click="startDownload" :disabled="status !== 'idle'" :loading="status === 'preparing'">
+                {{ status === 'preparing' ? '准备中...' : '开始下载' }}
+            </el-button>
+            <el-button type="warning" @click="pauseDownload" :disabled="status !== 'downloading'">暂停</el-button>
+            <el-button type="success" @click="resumeDownload" :disabled="status !== 'paused'">继续下载</el-button>
+            <el-button type="danger" @click="cancelDownload" :disabled="status === 'idle' || status === 'done'">取消</el-button>
+            <el-button type="info" @click="resetAll" v-if="status === 'done' || status === 'error'">重新选择</el-button>
+        </div>
+
+        <!-- 进度 -->
+        <div class="progress-section" v-if="status !== 'idle'">
+            <el-progress :percentage="downloadProgress" :stroke-width="22" :text-inside="true"
+                         :status="progressStatus"/>
+            <div class="speed-info">
+                <span>📈 速度: {{ downloadSpeedText }}</span>
+                <span>📊 进度: {{ downloadedSizeFormatted }} / {{ selectedFile.fileSizeFormatted }}</span>
+                <span>⏱ 剩余: {{ remainingTimeText }}</span>
+                <span>🧵 活跃线程: {{ activeDownloads }}/{{ concurrency }}</span>
+                <span v-if="errorChunks > 0">❌ 失败: {{ errorChunks }}</span>
+            </div>
+        </div>
+
+        <!-- 分片状态矩阵 -->
+        <div v-if="chunks.length > 0" style="margin-top:12px">
+            <div style="font-size:13px;color:#606266;margin-bottom:4px">
+                分片状态 ({{ doneChunks }}/{{ chunks.length }})
+                · <span style="display:inline-block;width:12px;height:12px;background:#e4e7ed;border-radius:2px;vertical-align:middle"></span> 等待
+                · <span style="display:inline-block;width:12px;height:12px;background:#e6a23c;border-radius:2px;vertical-align:middle"></span> 下载中
+                · <span style="display:inline-block;width:12px;height:12px;background:#409eff;border-radius:2px;vertical-align:middle"></span> 重试
+                · <span style="display:inline-block;width:12px;height:12px;background:#67c23a;border-radius:2px;vertical-align:middle"></span> 完成
+                · <span style="display:inline-block;width:12px;height:12px;background:#f56c6c;border-radius:2px;vertical-align:middle"></span> 失败
+            </div>
+            <div class="chunk-matrix">
+                <div v-for="(chunk, idx) in chunks" :key="idx"
+                     class="chunk-cell"
+                     :class="chunk.status"
+                     :title="`分片${idx}: ${chunkStatusLabel(chunk)}`">
+                </div>
+            </div>
+        </div>
+
+        <!-- MD5 校验 -->
+        <div class="md5-result" v-if="status === 'done'">
+            <el-button type="success" size="small" @click="verifyMD5" :loading="verifyingMD5">
+                {{ verifyingMD5 ? '校验中...' : '校验文件完整性(MD5)' }}
+            </el-button>
+            <span v-if="md5Result" style="margin-left:10px">
+                <template v-if="md5Result.match">
+                    ✅ MD5校验通过
+                </template>
+                <template v-else>
+                    ❌ MD5不一致！本地={{ md5Result.local }} / 服务端={{ md5Result.server }}
+                </template>
+            </span>
+        </div>
+    </div>
+
+    <!-- 日志 -->
+    <div class="card" v-if="logs.length > 0">
+        <div class="card-title" style="justify-content:space-between">
+            <span>📋 下载日志</span>
+            <el-button type="info" size="small" @click="logs = []">清空</el-button>
+        </div>
+        <div class="log-area" ref="logArea">
+            <div v-for="(log, i) in logs" :key="i" :class="'log-' + log.level">{{ log.msg }}</div>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * 大文件分片下载前端 - 优化版
+ *
+ * 优化点：
+ * 1. 修复MD5校验：引入SparkMD5，前后端算法一致
+ * 2. 重写暂停/恢复：使用Promise暂停机制，替代abort暴力中断
+ * 3. 分片失败自动重试：支持配置重试次数，指数退避
+ * 4. 内存优化：流式写入合并，分片完成后及时释放blob
+ * 5. 状态机管理：idle → preparing → downloading ⇄ paused → done/error
+ * 6. 速度统计平滑：滑动窗口移动平均
+ */
+const { createApp, nextTick } = Vue;
+
+// ==================== 模块级常量 ====================
+
+// 已定义CSS样式的扩展名集合
+const _STYLED_EXTS = new Set([
+    'zip', 'rar', '7z', 'tar', 'gz', 'iso', 'dmg', 'exe', 'msi',
+    'mp4', 'avi', 'mkv', 'mov', 'mp3', 'wav', 'flac',
+    'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
+    'jpg', 'jpeg', 'png', 'gif', 'svg', 'psd'
+]);
+
+// 扩展名分类映射（未知扩展名按大类归组显示样式）
+const _CATEGORY_MAP = {
+    'archive':  new Set(['7z','arj','cab','lzh','ace','bz2','xz','war','ear','apk','ipa']),
+    'video':    new Set(['wmv','flv','rmvb','3gp','ts','m4v','webm']),
+    'audio':    new Set(['aac','ogg','wma','m4a','aiff']),
+    'image':    new Set(['bmp','webp','ico','tiff','tif','raw','heic']),
+    'document': new Set(['rtf','odt','ods','odp','tex','wps']),
+    'code':     new Set(['java','jar','class','py','js','ts','go','rs','c','cpp','h','rb','php','sh','bat']),
+    'data':     new Set(['sql','db','mdb','sqlite','csv','json','xml','yaml','yml','ini','cfg','properties']),
+    'text':     new Set(['txt','log','md','rst','conf'])
+};
+
+const _CATEGORY_COLOR_MAP = {
+    archive: 'ext-zip', video: 'ext-mp4', audio: 'ext-mp3',
+    image: 'ext-jpg', document: 'ext-doc', code: 'ext-default',
+    data: 'ext-xls', text: 'ext-default'
+};
+
+const app = createApp({
+    data() {
+        return {
+            // 文件列表
+            fileList: [],
+            loadingList: false,
+            selectedFile: null,
+
+            // 下载配置
+            chunkSizeMB: 5,
+            concurrency: 3,
+            maxRetry: 3,
+
+            // 状态机: idle | preparing | downloading | paused | done | error
+            status: 'idle',
+
+            // 分片状态
+            chunks: [],
+            downloadedBytes: 0,
+            downloadProgress: 0,
+
+            // 速度统计 - 滑动窗口
+            speedSamples: [],        // [{time, bytes}]
+            speedWindowMs: 3000,     // 3秒窗口
+
+            // 控制
+            abortController: null,
+            activeDownloads: 0,
+            pausePromise: null,
+            pauseResolve: null,
+            cancelFlag: false,
+
+            // MD5 校验
+            verifyingMD5: false,
+            md5Result: null,
+            localMD5: null,
+
+            // 日志
+            logs: [],
+        };
+    },
+
+    computed: {
+        statusLabel() {
+            const map = { idle: '空闲', preparing: '准备中', downloading: '下载中', paused: '已暂停', done: '已完成', error: '出错' };
+            return map[this.status] || this.status;
+        },
+        progressStatus() {
+            if (this.status === 'done') return 'success';
+            if (this.status === 'error') return 'exception';
+            if (this.status === 'paused') return 'warning';
+            return '';
+        },
+        doneChunks() {
+            return this.chunks.filter(c => c.status === 'done').length;
+        },
+        errorChunks() {
+            return this.chunks.filter(c => c.status === 'error').length;
+        },
+        totalSizeFormatted() {
+            const total = this.fileList.reduce((sum, f) => sum + (f.fileSize || 0), 0);
+            return this.formatSize(total);
+        },
+        chunkSize() {
+            return this.chunkSizeMB * 1024 * 1024;
+        },
+        downloadedSizeFormatted() {
+            return this.formatSize(this.downloadedBytes);
+        },
+        downloadSpeedText() {
+            if (this.status === 'paused') return '已暂停';
+            if (this.status === 'idle' || this.status === 'preparing') return '计算中...';
+            const speed = this.currentSpeed;
+            if (speed <= 0) return '计算中...';
+            return this.formatSize(speed) + '/s';
+        },
+        remainingTimeText() {
+            if (this.status === 'paused') return '--';
+            const speed = this.currentSpeed;
+            if (speed <= 0 || !this.selectedFile) return '--';
+            const remaining = this.selectedFile.fileSize - this.downloadedBytes;
+            if (remaining <= 0) return '0秒';
+            const seconds = remaining / speed;
+            if (seconds < 60) return Math.ceil(seconds) + '秒';
+            if (seconds < 3600) return Math.ceil(seconds / 60) + '分钟';
+            return (seconds / 3600).toFixed(1) + '小时';
+        },
+        currentSpeed() {
+            const now = Date.now();
+            const cutoff = now - this.speedWindowMs;
+            const recent = this.speedSamples.filter(s => s.time >= cutoff);
+            if (recent.length < 2) return 0;
+            const first = recent[0];
+            const last = recent[recent.length - 1];
+            const elapsed = (last.time - first.time) / 1000;
+            if (elapsed <= 0) return 0;
+            return (last.bytes - first.bytes) / elapsed;
+        }
+    },
+
+    methods: {
+        // ==================== 文件列表 ====================
+        async loadFileList() {
+            this.loadingList = true;
+            try {
+                const { data } = await axios.get('/parts5-download/file/list');
+                this.fileList = data || [];
+            } catch (e) {
+                this.addLog('加载文件列表失败: ' + (e.response?.data?.error || e.message), 'error');
+            } finally {
+                this.loadingList = false;
+            }
+        },
+
+        handleFileSelect(row) {
+            if (row && this.status === 'idle') this.selectedFile = row;
+        },
+
+        selectAndPrepare(row) {
+            if (this.status !== 'idle') return;
+            this.selectedFile = row;
+        },
+
+        // ==================== 下载流程 ====================
+        async startDownload() {
+            if (!this.selectedFile || this.status !== 'idle') return;
+            this.resetDownloadState();
+            this.status = 'preparing';
+            this.abortController = new AbortController();
+            this.cancelFlag = false;
+
+            try {
+                // 1. 获取文件信息
+                const { data: info } = await axios.get('/parts5-download/file/info', {
+                    params: { fileName: this.selectedFile.fileName },
+                    signal: this.abortController.signal
+                });
+
+                if (!info.exists) {
+                    this.addLog('文件不存在: ' + this.selectedFile.fileName, 'error');
+                    this.status = 'error';
+                    return;
+                }
+
+                // 用服务端文件大小（更精确）
+                this.selectedFile = { ...this.selectedFile, fileSize: info.fileSize, fileSizeFormatted: this.formatSize(info.fileSize) };
+
+                this.addLog(`文件信息: ${info.fileName}, 大小=${this.formatSize(info.fileSize)}, 服务端建议分片=${this.formatSize(info.chunkSize)}, 服务端建议分片数=${info.totalChunks}`, 'info');
+
+                // 2. 初始化分片状态
+                const totalChunks = Math.ceil(info.fileSize / this.chunkSize);
+                this.chunks = [];
+                for (let i = 0; i < totalChunks; i++) {
+                    const start = i * this.chunkSize;
+                    const end = Math.min(start + this.chunkSize - 1, info.fileSize - 1);
+                    this.chunks.push({
+                        status: 'pending',
+                        size: end - start + 1,
+                        blob: null,
+                        start,
+                        end,
+                        retryCount: 0
+                    });
+                }
+
+                this.status = 'downloading';
+                this.addLog(`开始分片下载: ${totalChunks}个分片, 并发=${this.concurrency}, 分片=${this.chunkSizeMB}MB, 重试=${this.maxRetry}次`, 'info');
+
+                // 3. 速度统计初始化
+                this.speedSamples = [{ time: Date.now(), bytes: 0 }];
+
+                // 4. 启动并发下载
+                await this.runConcurrentDownloads();
+
+                // 5. 检查是否全部完成
+                if (this.cancelFlag) return;
+
+                if (this.chunks.every(c => c.status === 'done')) {
+                    await this.mergeAndSave(info.fileName);
+                } else {
+                    const failed = this.chunks.filter(c => c.status === 'error').length;
+                    const pending = this.chunks.filter(c => c.status !== 'done' && c.status !== 'error').length;
+                    if (failed > 0 || pending > 0) {
+                        this.status = 'error';
+                        this.addLog(`${failed}个分片失败, ${pending}个分片未完成`, 'error');
+                    }
+                }
+            } catch (e) {
+                if (this.cancelFlag) return;
+                if (e.name === 'CanceledError' || e.name === 'AbortError') {
+                    this.addLog('下载已取消', 'warn');
+                } else {
+                    this.addLog('下载失败: ' + (e.response?.data?.error || e.message), 'error');
+                    this.status = 'error';
+                }
+            }
+        },
+
+        /**
+         * 并发下载调度器
+         * - 从待下载队列取分片，支持暂停/恢复
+         * - 每个分片独立重试，指数退避
+         */
+        async runConcurrentDownloads() {
+            const self = this;
+
+            // 全量扫描：找到下一个待下载的分片（避免nextIdx只向前扫描遗漏重试分片）
+            function findNext() {
+                for (let i = 0; i < self.chunks.length; i++) {
+                    const c = self.chunks[i];
+                    if (c.status === 'pending' || c.status === 'retrying') {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            async function worker() {
+                while (true) {
+                    // 暂停检查：所有worker共享同一个pausePromise，确保全部唤醒
+                    if (self.status === 'paused') {
+                        if (self.pausePromise) {
+                            await self.pausePromise;
+                        } else {
+                            // 兜底：如果pausePromise尚未创建，等待创建
+                            await new Promise(resolve => { self.pauseResolve = resolve; });
+                        }
+                    }
+
+                    // 取消检查
+                    if (self.cancelFlag || self.abortController?.signal?.aborted) break;
+
+                    const chunkIdx = findNext();
+                    if (chunkIdx === -1) break;
+
+                    const chunk = self.chunks[chunkIdx];
+                    await self.downloadSingleChunk(chunk, chunkIdx);
+                }
+            }
+
+            // 启动N个并发工作协程
+            const workers = [];
+            for (let i = 0; i < this.concurrency; i++) {
+                workers.push(worker());
+            }
+            await Promise.all(workers);
+        },
+
+        /**
+         * 下载单个分片 - 含自动重试（while循环替代递归）
+         */
+        async downloadSingleChunk(chunk, chunkIdx) {
+            let retryCount = 0;
+
+            while (true) {
+                // 暂停检查：防止暂停后重试路径继续下载
+                if (this.status === 'paused') {
+                    if (this.pausePromise) {
+                        await this.pausePromise;
+                    }
+                }
+
+                chunk.status = 'downloading';
+                this.activeDownloads++;
+
+                try {
+                    const resp = await axios.get('/parts5-download/file/download', {
+                        responseType: 'arraybuffer',
+                        params: { fileName: this.selectedFile.fileName },
+                        headers: { Range: `bytes=${chunk.start}-${chunk.end}` },
+                        signal: this.abortController?.signal,
+                        timeout: 60000  // 单分片60秒超时
+                    });
+
+                    chunk.blob = new Blob([resp.data], { type: 'application/octet-stream' });
+                    chunk.status = 'done';
+                    this.downloadedBytes += chunk.size;
+                    this.downloadProgress = Math.round((this.downloadedBytes / this.selectedFile.fileSize) * 100);
+
+                    // 记录速度采样点
+                    this.speedSamples.push({ time: Date.now(), bytes: this.downloadedBytes });
+                    // 清理过旧采样
+                    const cutoff = Date.now() - this.speedWindowMs * 2;
+                    this.speedSamples = this.speedSamples.filter(s => s.time >= cutoff);
+
+                    return; // 下载成功，退出循环
+
+                } catch (e) {
+                    this.activeDownloads = Math.max(0, this.activeDownloads - 1);
+
+                    if (this.cancelFlag || this.abortController?.signal?.aborted) {
+                        chunk.status = 'pending';
+                        return;
+                    }
+
+                    // 重试逻辑
+                    retryCount++;
+                    if (retryCount <= this.maxRetry) {
+                        const retryDelay = Math.min(1000 * Math.pow(2, retryCount - 1), 10000); // 指数退避，最大10秒
+                        chunk.status = 'retrying';
+                        chunk.retryCount = retryCount;
+                        this.addLog(`分片${chunkIdx}失败，${retryDelay / 1000}秒后第${retryCount}次重试...`, 'warn');
+                        await this.delay(retryDelay);
+
+                        // 重试前检查取消
+                        if (this.cancelFlag) {
+                            chunk.status = 'pending';
+                            return;
+                        }
+                        // 重试前检查暂停
+                        if (this.status === 'paused') {
+                            if (this.pausePromise) {
+                                await this.pausePromise;
+                            }
+                        }
+                        // 继续循环重试
+                        continue;
+                    }
+
+                    // 超过重试次数
+                    chunk.status = 'error';
+                    this.addLog(`分片${chunkIdx}下载失败(已重试${this.maxRetry}次): ${e.message}`, 'error');
+                    return;
+                }
+            }
+        },
+
+        /**
+         * 合并分片并触发浏览器下载
+         */
+        async mergeAndSave(fileName) {
+            const pendingChunks = this.chunks.filter(c => c.status !== 'done');
+            if (pendingChunks.length > 0) {
+                this.addLog(`有 ${pendingChunks.length} 个分片未完成，无法合并`, 'error');
+                this.status = 'error';
+                return;
+            }
+
+            this.addLog('正在合并分片并生成下载...', 'info');
+
+            // 合并前先计算本地MD5（释放blob后无法再计算）
+            try {
+                const spark = new SparkMD5.ArrayBuffer();
+                for (const chunk of this.chunks) {
+                    if (chunk.blob) {
+                        const buffer = await chunk.blob.arrayBuffer();
+                        spark.append(buffer);
+                    }
+                }
+                this.localMD5 = spark.end();
+                this.addLog('本地MD5预计算完成: ' + this.localMD5, 'info');
+            } catch (e) {
+                this.addLog('本地MD5预计算失败: ' + e.message, 'warn');
+            }
+
+            const blobParts = this.chunks.map(c => c.blob);
+            const fileBlob = new Blob(blobParts, { type: 'application/octet-stream' });
+
+            // 触发浏览器下载
+            const url = URL.createObjectURL(fileBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // 延迟释放URL，确保下载已启动
+            setTimeout(() => URL.revokeObjectURL(url), 30000);
+
+            // 释放分片blob内存
+            this.chunks.forEach(c => { c.blob = null; });
+
+            this.downloadProgress = 100;
+            this.status = 'done';
+            this.addLog('文件下载完成: ' + fileName + ' (' + this.formatSize(this.selectedFile.fileSize) + ')', 'success');
+        },
+
+        // ==================== 暂停/恢复/取消 ====================
+
+        pauseDownload() {
+            if (this.status !== 'downloading') return;
+            this.status = 'paused';
+            this.pausePromise = new Promise(resolve => {
+                this.pauseResolve = resolve;
+            });
+            this.addLog('下载已暂停 (已完成 ' + this.doneChunks + '/' + this.chunks.length + ' 个分片)', 'warn');
+        },
+
+        resumeDownload() {
+            if (this.status !== 'paused') return;
+            this.status = 'downloading';
+
+            // 恢复暂停等待的所有worker（共享同一个pausePromise）
+            if (this.pauseResolve) {
+                this.pauseResolve();
+                this.pauseResolve = null;
+                this.pausePromise = null;
+            }
+
+            this.addLog('继续下载...', 'info');
+
+            // 重置速度采样（暂停期间数据不准）
+            this.speedSamples = [{ time: Date.now(), bytes: this.downloadedBytes }];
+            // 原始startDownload流程中的worker会自动继续处理剩余分片，无需启动新worker
+        },
+
+        cancelDownload() {
+            this.cancelFlag = true;
+            this.status = 'idle';
+
+            // 中断所有正在进行的请求
+            if (this.abortController) {
+                this.abortController.abort();
+            }
+
+            // 唤醒暂停的worker使其退出
+            if (this.pauseResolve) {
+                this.pauseResolve();
+                this.pauseResolve = null;
+            }
+
+            this.resetDownloadState();
+            this.addLog('下载已取消', 'warn');
+        },
+
+        resetAll() {
+            this.resetDownloadState();
+            this.selectedFile = null;
+            this.status = 'idle';
+        },
+
+        // ==================== MD5 校验 ====================
+
+        async verifyMD5() {
+            this.verifyingMD5 = true;
+            this.md5Result = null;
+            try {
+                let localMD5;
+
+                // 优先使用合并时预计算的MD5
+                if (this.localMD5) {
+                    localMD5 = this.localMD5;
+                    this.addLog('使用预计算的本地MD5: ' + localMD5, 'info');
+                } else {
+                    // 回退：从blob分片计算
+                    const blobParts = this.chunks.filter(c => c.blob).map(c => c.blob);
+                    if (blobParts.length > 0) {
+                        const spark = new SparkMD5.ArrayBuffer();
+                        for (const blob of blobParts) {
+                            const buffer = await blob.arrayBuffer();
+                            spark.append(buffer);
+                        }
+                        localMD5 = spark.end();
+                    } else {
+                        this.addLog('分片数据已释放且无预计算MD5，无法校验。请重新下载。', 'warn');
+                        this.verifyingMD5 = false;
+                        return;
+                    }
+                }
+
+                this.addLog('本地MD5: ' + localMD5 + '，正在获取服务端MD5...', 'info');
+
+                // 获取服务端 MD5
+                const { data } = await axios.get('/parts5-download/file/md5', {
+                    params: { fileName: this.selectedFile.fileName }
+                });
+
+                this.md5Result = {
+                    local: localMD5,
+                    server: data.md5,
+                    match: localMD5 === data.md5
+                };
+
+                if (this.md5Result.match) {
+                    this.addLog('✅ MD5校验通过: ' + localMD5, 'success');
+                } else {
+                    this.addLog('❌ MD5不一致! 本地=' + localMD5 + ', 服务端=' + data.md5, 'error');
+                }
+            } catch (e) {
+                this.addLog('MD5校验失败: ' + e.message, 'error');
+            } finally {
+                this.verifyingMD5 = false;
+            }
+        },
+
+        // ==================== 工具方法 ====================
+
+        resetDownloadState() {
+            this.chunks = [];
+            this.downloadedBytes = 0;
+            this.downloadProgress = 0;
+            this.speedSamples = [];
+            this.activeDownloads = 0;
+            this.md5Result = null;
+            this.localMD5 = null;
+            this.abortController = null;
+            this.cancelFlag = false;
+            if (this.pauseResolve) {
+                this.pauseResolve();
+                this.pauseResolve = null;
+            }
+            this.pausePromise = null;
+        },
+
+        addLog(msg, level = 'info') {
+            const time = new Date().toLocaleTimeString();
+            this.logs.push({ msg: `[${time}] ${msg}`, level });
+            if (this.logs.length > 500) this.logs = this.logs.slice(-300);
+            nextTick(() => {
+                const el = this.$refs.logArea;
+                if (el) el.scrollTop = el.scrollHeight;
+            });
+        },
+
+        delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        },
+
+        formatSize(bytes) {
+            if (bytes == null || bytes === 0) return '0B';
+            if (bytes < 1024) return bytes + 'B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + 'KB';
+            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + 'MB';
+            return (bytes / (1024 * 1024 * 1024)).toFixed(2) + 'GB';
+        },
+
+        formatTime(ts) {
+            return new Date(ts).toLocaleString();
+        },
+
+        chunkStatusLabel(chunk) {
+            const map = {
+                pending: '等待', downloading: '下载中', done: '完成',
+                error: '失败', retrying: '重试中(' + chunk.retryCount + '/' + this.maxRetry + ')'
+            };
+            return map[chunk.status] || chunk.status;
+        },
+
+        tableRowClassName({ row }) {
+            return row === this.selectedFile ? 'selected-row' : '';
+        },
+
+        /**
+         * 根据文件扩展名返回emoji图标
+         */
+        fileIcon(fileName) {
+            if (!fileName) return '📄';
+            const ext = this.fileExt(fileName);
+            if (!ext) return '📄';
+            const iconMap = {
+                zip: '📦', rar: '📦', '7z': '📦', tar: '📦', gz: '📦',
+                iso: '💿', dmg: '💿',
+                exe: '⚙️', msi: '⚙️',
+                mp4: '🎬', avi: '🎬', mkv: '🎬', mov: '🎬', wmv: '🎬', flv: '🎬',
+                mp3: '🎵', wav: '🎵', flac: '🎵', aac: '🎵', ogg: '🎵',
+                pdf: '📕',
+                doc: '📘', docx: '📘',
+                xls: '📊', xlsx: '📊', csv: '📊',
+                ppt: '📙', pptx: '📙',
+                txt: '📝', log: '📝', md: '📝', json: '📝', xml: '📝', yaml: '📝', yml: '📝',
+                jpg: '🖼️', jpeg: '🖼️', png: '🖼️', gif: '🖼️', svg: '🖼️', bmp: '🖼️', webp: '🖼️', psd: '🖼️',
+                java: '☕', jar: '☕', class: '☕',
+                js: '🟨', ts: '🔷', py: '🐍',
+                sql: '🗃️', db: '🗃️', mdb: '🗃️',
+                apk: '📱', ipa: '📱',
+            };
+            return iconMap[ext] || '📄';
+        },
+
+        /**
+         * 获取文件扩展名
+         */
+        fileExt(fileName) {
+            if (!fileName) return '';
+            const dotIndex = fileName.lastIndexOf('.');
+            // 排除以点开头（如 .gitignore）或没有扩展名的情况
+            if (dotIndex <= 0) return '';
+            return fileName.substring(dotIndex + 1).toLowerCase();
+        },
+
+        extBadgeClass(fileName) {
+            const ext = this.fileExt(fileName);
+            if (!ext) return 'ext-default';
+            if (_STYLED_EXTS.has(ext)) return 'ext-' + ext;
+            for (const [cat, exts] of Object.entries(_CATEGORY_MAP)) {
+                if (exts.has(ext)) {
+                    return _CATEGORY_COLOR_MAP[cat] || 'ext-default';
+                }
+            }
+            return 'ext-default';
+        },
+
+        /**
+         * 文件大小 badge CSS class
+         */
+        sizeBadgeClass(size) {
+            if (size < 10 * 1024 * 1024) return 'size-sm';     // <10MB
+            if (size < 100 * 1024 * 1024) return 'size-md';    // <100MB
+            if (size < 1024 * 1024 * 1024) return 'size-lg';  // <1GB
+            return 'size-xl';                                   // >=1GB
+        },
+
+        /**
+         * 表格排序方法
+         */
+        sortBySize(a, b) {
+            return (a.fileSize || 0) - (b.fileSize || 0);
+        },
+        sortByTime(a, b) {
+            return (a.lastModified || 0) - (b.lastModified || 0);
+        }
+    },
+
+    mounted() {
+        this.loadFileList();
+    }
+});
+
+app.use(ElementPlus);
+app.mount('#app');
+</script>
+</body>
+</html>
