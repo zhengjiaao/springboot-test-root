@@ -8,3 +8,8 @@ spring:
     multipart:
       max-file-size: 2049MB     # 设置单文件大小 2G
       max-request-size: 5121MB  # 设置总上传数据总大小 5G
+
+# Parts5 大文件分片下载配置
+parts5-download:
+  file-dir: D://FileTest//parts5-download    # 下载文件存储根目录
+  chunk-size: 5242880                        # 默认分片大小: 5MB (5*1024*1024)
