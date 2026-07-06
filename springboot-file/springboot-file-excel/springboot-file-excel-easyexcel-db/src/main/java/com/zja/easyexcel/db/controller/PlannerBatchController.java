@@ -10,6 +10,9 @@ package com.zja.easyexcel.db.controller;
 
 import com.zja.easyexcel.db.planner.PlannerEntity;
 import com.zja.easyexcel.db.service.PlannerEntityBatch;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Api(tags = "规划师数据批量写入接口")
 @RestController
 public class PlannerBatchController {
 
@@ -30,7 +34,8 @@ public class PlannerBatchController {
      * http://127.0.0.1:8080/saveAll/1000
      */
     @GetMapping(value = "/saveAll/{size}")
-    public Object saveAll(@PathVariable Integer size) {
+    @ApiOperation(value = "批量 saveAll 写入数据", notes = "生成指定条数的规划师数据并通过 saveAll 批量保存")
+    public Object saveAll(@ApiParam(value = "生成并保存的数据条数", required = true, example = "1000") @PathVariable Integer size) {
         List<PlannerEntity> entityList = generateData(size);
         plannerEntityBatch.saveAll(entityList);
         return true;
@@ -40,7 +45,8 @@ public class PlannerBatchController {
      * http://127.0.0.1:8080/batchInsert/1000
      */
     @GetMapping(value = "/batchInsert/{size}")
-    public Object batchInsert(Integer size) {
+    @ApiOperation(value = "分批 JPA 批量插入数据", notes = "生成指定条数的规划师数据并通过分批 JPA 方式批量插入")
+    public Object batchInsert(@ApiParam(value = "生成并插入的数据条数", required = true, example = "1000") Integer size) {
         List<PlannerEntity> entityList = generateData(size);
         plannerEntityBatch.jpaSaveAllByBatch(entityList);
         return true;

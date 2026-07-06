@@ -3,7 +3,7 @@ spring:
     #本地环境
     username: postgres
     password: postgres
-    url: jdbc:postgresql://localhost:5433/postgres?searchPath=postgres  #&rewriteBatchedStatements=true
+    url: jdbc:postgresql://localhost:5432/postgres?searchPath=postgres  #&rewriteBatchedStatements=true
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
@@ -15,6 +15,7 @@ spring:
           batch_versioned_data: true
         order_inserts: true
         order_updates: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create
       naming:
