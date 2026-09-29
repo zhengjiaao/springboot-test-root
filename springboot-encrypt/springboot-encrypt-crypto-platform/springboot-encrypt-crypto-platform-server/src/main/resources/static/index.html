@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>密码服务平台控制台</title>
+	<link rel="stylesheet" href="/css/console.css">
+</head>
+<body>
+<header class="topbar">
+	<div class="brand">
+		<span class="logo">密</span>
+		<div>
+			<h1>密码服务平台控制台</h1>
+			<p>国密算法 · 密钥托管 · 全程审计</p>
+		</div>
+	</div>
+	<div class="conn">
+		<span id="connStatus" class="badge badge-warn">未验证接入</span>
+	</div>
+</header>
+
+<section class="panel auth-panel">
+	<div class="panel-head">
+		<h2>接入配置</h2>
+		<span class="hint-inline">在线接口（密钥/运算）需携带 HMAC-SM3 接入签名，本页在浏览器端自动完成签名</span>
+	</div>
+	<div class="auth-grid">
+		<label class="field">平台地址
+			<input id="cfgBaseUrl" type="text" placeholder="留空=当前站点（同源）">
+		</label>
+		<label class="field">appKey
+			<input id="cfgAppKey" type="text" placeholder="如 demo-app">
+		</label>
+		<label class="field">appSecret
+			<input id="cfgAppSecret" type="password" placeholder="接入密钥">
+		</label>
+		<div class="auth-actions">
+			<button id="btnToggleSecret" type="button" class="btn">显示密钥</button>
+			<button id="btnSaveCfg" type="button" class="btn">保存配置</button>
+			<button id="btnTestCfg" type="button" class="btn primary">测试连接</button>
+		</div>
+	</div>
+	<p class="hint">演示凭证来自平台 application.yml（默认 demo-app / demo-app-secret-123456）。appSecret 仅保存在本浏览器 localStorage；
+		生产环境请部署于内网并关闭演示凭证，本控制台仅作对接演示与联调使用。</p>
+</section>
+
+<nav class="tabs" id="tabs">
+	<button type="button" data-tab="overview" class="active">平台概览</button>
+	<button type="button" data-tab="digest">摘要</button>
+	<button type="button" data-tab="symmetric">对称加解密</button>
+	<button type="button" data-tab="asymmetric">非对称加解密</button>
+	<button type="button" data-tab="sign">签名验签</button>
+	<button type="button" data-tab="mac">消息认证码</button>
+	<button type="button" data-tab="keys">密钥管理</button>
+	<button type="button" data-tab="apps">应用管理</button>
+	<button type="button" data-tab="audit">审计日志</button>
+	<button type="button" data-tab="signDebug">签名调试</button>
+</nav>
+
+<main>
+	<!-- ===== 平台概览 ===== -->
+	<section id="tab-overview" class="tab-page active">
+		<div class="cards" id="overviewCards">
+			<div class="empty">正在加载平台概览…</div>
+		</div>
+		<div class="panel">
+			<div class="panel-head">
+				<h2>算法矩阵（平台能力）</h2>
+				<button id="btnRefreshOverview" type="button" class="btn small">刷新</button>
+			</div>
+			<div class="table-wrap">
+				<table class="data">
+					<thead>
+					<tr><th>算法</th><th>类别</th><th>可创建托管密钥</th><th>说明</th></tr>
+					</thead>
+					<tbody id="algoTableBody">
+					<tr><td colspan="4" class="empty">等待加载…</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+
+	<!-- ===== 摘要 ===== -->
+	<section id="tab-digest" class="tab-page">
+		<div class="panel">
+			<div class="panel-head"><h2>摘要计算（SM3 / MD5 / SHA-256）</h2></div>
+			<div class="form-row">
+				<label class="field">算法
+					<select id="digestAlgo">
+						<option value="SM3">SM3（国密）</option>
+						<option value="SHA_256">SHA-256</option>
+						<option value="MD5">MD5（仅兼容旧系统）</option>
+					</select>
+				</label>
+			</div>
+			<label class="field block">原始数据
+				<textarea id="digestData" rows="3" placeholder="待计算摘要的文本"></textarea>
+			</label>
+			<div class="actions">
+				<button id="btnDigest" type="button" class="btn primary">计算摘要</button>
+			</div>
+			<div class="result" id="digestResult"><div class="empty">结果将显示在这里</div></div>
+		</div>
+	</section>
+
+	<!-- ===== 对称加解密 ===== -->
+	<section id="tab-symmetric" class="tab-page">
+		<div class="two-col">
+			<div class="panel">
+				<div class="panel-head"><h2>对称加密（SM4 / AES）</h2></div>
+				<label class="field block">密钥
+					<select id="symEncKey"></select>
+				</label>
+				<label class="field block">明文
+					<textarea id="symPlain" rows="3" placeholder="待加密的业务数据"></textarea>
+				</label>
+				<div class="actions">
+					<button id="btnSymEnc" type="button" class="btn primary">加密</button>
+				</div>
+				<div class="result" id="symEncResult"><div class="empty">密文将显示在这里</div></div>
+			</div>
+			<div class="panel">
+				<div class="panel-head"><h2>对称解密</h2></div>
+				<label class="field block">密钥
+					<select id="symDecKey"></select>
+				</label>
+				<label class="field block">密文（Base64）
+					<textarea id="symCipher" rows="3" placeholder="平台加密产生的Base64密文"></textarea>
+				</label>
+				<div class="actions">
+					<button id="btnSymDec" type="button" class="btn primary">解密</button>
+				</div>
+				<div class="result" id="symDecResult"><div class="empty">明文将显示在这里</div></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ===== 非对称加解密 ===== -->
+	<section id="tab-asymmetric" class="tab-page">
+		<div class="two-col">
+			<div class="panel">
+				<div class="panel-head"><h2>公钥加密（SM2 / RSA）</h2></div>
+				<label class="field block">密钥对
+					<select id="asymEncKey"></select>
+				</label>
+				<label class="field block">明文（建议不超过150字节）
+					<textarea id="asymPlain" rows="3" placeholder="适合加密会话密钥等小段数据"></textarea>
+				</label>
+				<div class="actions">
+					<button id="btnAsymEnc" type="button" class="btn primary">加密</button>
+				</div>
+				<div class="result" id="asymEncResult"><div class="empty">密文将显示在这里</div></div>
+			</div>
+			<div class="panel">
+				<div class="panel-head"><h2>私钥解密</h2></div>
+				<label class="field block">密钥对
+					<select id="asymDecKey"></select>
+				</label>
+				<label class="field block">密文（Base64）
+					<textarea id="asymCipher" rows="3" placeholder="平台加密产生的Base64密文"></textarea>
+				</label>
+				<div class="actions">
+					<button id="btnAsymDec" type="button" class="btn primary">解密</button>
+				</div>
+				<div class="result" id="asymDecResult"><div class="empty">明文将显示在这里</div></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ===== 签名验签 ===== -->
+	<section id="tab-sign" class="tab-page">
+		<div class="two-col">
+			<div class="panel">
+				<div class="panel-head"><h2>私钥签名（SM2→SM3withSM2，RSA→SHA256withRSA）</h2></div>
+				<label class="field block">密钥对
+					<select id="signKey"></select>
+				</label>
+				<label class="field block">待签名数据
+					<textarea id="signData" rows="3" placeholder="待签名的报文内容"></textarea>
+				</label>
+				<div class="actions">
+					<button id="btnSign" type="button" class="btn primary">签名</button>
+				</div>
+				<div class="result" id="signResult"><div class="empty">签名值将显示在这里</div></div>
+			</div>
+			<div class="panel">
+				<div class="panel-head"><h2>公钥验签</h2></div>
+				<label class="field block">密钥对
+					<select id="verifyKey"></select>
+				</label>
+				<label class="field block">原始数据
+					<textarea id="verifyData" rows="3" placeholder="与签名时一致的报文内容"></textarea>
+				</label>
+				<label class="field block">签名值（Base64）
+					<textarea id="verifySignature" rows="3" placeholder="平台上一步产生的签名值"></textarea>
+				</label>
+				<div class="actions">
+					<button id="btnVerify" type="button" class="btn primary">验签</button>
+				</div>
+				<div class="result" id="verifyResult"><div class="empty">验签结果将显示在这里</div></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ===== 消息认证码 ===== -->
+	<section id="tab-mac" class="tab-page">
+		<div class="panel">
+			<div class="panel-head"><h2>消息认证码（HMAC-SM3 / HMAC-SHA256）</h2></div>
+			<label class="field block">MAC密钥
+				<select id="macKey"></select>
+			</label>
+			<label class="field block">原始数据
+				<textarea id="macData" rows="3" placeholder="待做完整性校验的数据"></textarea>
+			</label>
+			<div class="actions">
+				<button id="btnMac" type="button" class="btn primary">计算MAC</button>
+			</div>
+			<div class="result" id="macResult"><div class="empty">MAC值将显示在这里</div></div>
+		</div>
+	</section>
+
+	<!-- ===== 密钥管理 ===== -->
+	<section id="tab-keys" class="tab-page">
+		<div class="panel">
+			<div class="panel-head"><h2>创建托管密钥</h2></div>
+			<div class="form-grid">
+				<label class="field">算法
+					<select id="keyAlgo"></select>
+				</label>
+				<label class="field">别名
+					<input id="keyAlias" type="text" placeholder="如：订单字段加密密钥">
+				</label>
+				<label class="field">备注
+					<input id="keyRemark" type="text" placeholder="可选">
+				</label>
+				<div class="auth-actions">
+					<button id="btnCreateKey" type="button" class="btn primary">创建密钥</button>
+				</div>
+			</div>
+			<div class="result" id="createKeyResult"><div class="empty">新密钥信息将显示在这里（密钥材料不出平台，非对称密钥仅返回公钥）</div></div>
+		</div>
+		<div class="panel">
+			<div class="panel-head">
+				<h2>我的密钥（按应用隔离）</h2>
+				<button id="btnReloadKeys" type="button" class="btn small">刷新</button>
+			</div>
+			<div class="table-wrap">
+				<table class="data">
+					<thead>
+					<tr><th>keyId</th><th>算法</th><th>类别</th><th>别名</th><th>状态</th><th>创建时间</th><th>操作</th></tr>
+					</thead>
+					<tbody id="keyTableBody">
+					<tr><td colspan="7" class="empty">配置接入凭证后点击"刷新"加载</td></tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="result" id="keyOpResult"></div>
+		</div>
+	</section>
+
+	<!-- ===== 应用管理 ===== -->
+	<section id="tab-apps" class="tab-page">
+		<div class="panel">
+			<div class="panel-head"><h2>注册三方应用</h2></div>
+			<div class="form-grid">
+				<label class="field">应用名称
+					<input id="appName" type="text" placeholder="如：业务系统A">
+				</label>
+				<label class="field">联系人
+					<input id="appContact" type="text" placeholder="可选">
+				</label>
+				<label class="field">备注
+					<input id="appRemark" type="text" placeholder="可选">
+				</label>
+				<div class="auth-actions">
+					<button id="btnRegisterApp" type="button" class="btn primary">注册应用</button>
+				</div>
+			</div>
+			<div class="result" id="registerAppResult"><div class="empty">appSecret 仅注册时返回一次，请立即保存</div></div>
+		</div>
+		<div class="panel">
+			<div class="panel-head">
+				<h2>应用列表</h2>
+				<button id="btnReloadApps" type="button" class="btn small">刷新</button>
+			</div>
+			<div class="table-wrap">
+				<table class="data">
+					<thead>
+					<tr><th>appKey</th><th>应用名称</th><th>联系人</th><th>状态</th><th>注册时间</th><th>操作</th></tr>
+					</thead>
+					<tbody id="appTableBody">
+					<tr><td colspan="6" class="empty">点击"刷新"加载应用列表</td></tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="result" id="appOpResult"></div>
+		</div>
+	</section>
+
+	<!-- ===== 审计日志 ===== -->
+	<section id="tab-audit" class="tab-page">
+		<div class="panel">
+			<div class="panel-head"><h2>审计日志（密评要求：密码运算全程可审计）</h2></div>
+			<div class="form-row">
+				<label class="field">appKey 过滤
+					<input id="auditAppKey" type="text" placeholder="留空=全部">
+				</label>
+				<label class="field">返回条数
+					<input id="auditLimit" type="number" min="1" max="1000" value="100">
+				</label>
+				<div class="auth-actions">
+					<button id="btnQueryAudit" type="button" class="btn primary">查询</button>
+				</div>
+			</div>
+			<div class="table-wrap tall">
+				<table class="data">
+					<thead>
+					<tr><th>时间</th><th>应用</th><th>操作</th><th>密钥</th><th>算法</th><th>结果</th><th>耗时</th><th>来源IP</th><th>说明</th></tr>
+					</thead>
+					<tbody id="auditTableBody">
+					<tr><td colspan="9" class="empty">点击"查询"加载审计日志</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+
+	<!-- ===== 签名调试 ===== -->
+	<section id="tab-signDebug" class="tab-page">
+		<div class="panel">
+			<div class="panel-head">
+				<h2>接入签名调试（HTTP 对接方参考）</h2>
+				<span class="hint-inline">签名串与请求头均由本页浏览器端 SM3/HMAC-SM3 实时生成</span>
+			</div>
+			<div class="form-row">
+				<label class="field">HTTP方法
+					<select id="dbgMethod">
+						<option>POST</option>
+						<option>GET</option>
+						<option>DELETE</option>
+					</select>
+				</label>
+				<label class="field grow">请求URI（含query）
+					<input id="dbgUri" type="text" value="/api/key/list" placeholder="如 /api/audit/list?limit=100">
+				</label>
+			</div>
+			<label class="field block">请求体（JSON，GET/DELETE 可留空）
+				<textarea id="dbgBody" rows="3" placeholder='如 {"algorithm":"SM3","data":"abc"}'></textarea>
+			</label>
+			<div class="actions">
+				<button id="btnSignDebug" type="button" class="btn primary">生成签名与请求头</button>
+			</div>
+			<div class="result" id="signDebugResult"><div class="empty">生成结果将显示在这里</div></div>
+		</div>
+	</section>
+</main>
+
+<footer class="foot">
+	<span id="sm3SelfCheck" class="badge badge-warn">SM3 自检中…</span>
+	<span>密码服务平台演示工程 · 生产环境请部署于内网并为管理端接口增加管理员认证</span>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<script src="/js/sm3.js"></script>
+<script src="/js/console.js"></script>
+</body>
+</html>

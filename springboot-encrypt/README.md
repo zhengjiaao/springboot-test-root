@@ -10,3 +10,5 @@
 - [springboot-encrypt-rsa RSA非对称算法](./springboot-encrypt-rsa)
 - [springboot-encrypt-sm 国密算法](./springboot-encrypt-sm)
 - [springboot-encrypt-util](./springboot-encrypt-util)
+- [springboot-encrypt-yaml 配置文件加密](./springboot-encrypt-yaml)
+- [springboot-encrypt-crypto-platform 密码服务平台](./springboot-encrypt-crypto-platform)

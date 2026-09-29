@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>springboot-encrypt-crypto-platform</artifactId>
+		<groupId>com.zja</groupId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>springboot-encrypt-crypto-platform-example</artifactId>
+	<name>springboot-encrypt-crypto-platform-example</name>
+	<description>密码服务平台接入示例与测试：在线/离线SDK用法示例 + 全量回归测试（含在线接入集成测试）</description>
+
+	<dependencies>
+		<!--SDK：示例代码与测试均基于SDK公开API-->
+		<dependency>
+			<groupId>com.zja</groupId>
+			<artifactId>springboot-encrypt-crypto-platform-sdk</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!--服务端classes分类包（test）：集成测试需启动真实平台（@SpringBootTest），
+				server为war打包，war中的类无法直接进入classpath，故依赖attachClasses产出的classes包-->
+		<dependency>
+			<groupId>com.zja</groupId>
+			<artifactId>springboot-encrypt-crypto-platform-server</artifactId>
+			<version>${project.version}</version>
+			<classifier>classes</classifier>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>

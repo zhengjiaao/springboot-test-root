@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>springboot-encrypt-crypto-platform</artifactId>
+		<groupId>com.zja</groupId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>springboot-encrypt-crypto-platform-sdk</artifactId>
+	<name>springboot-encrypt-crypto-platform-sdk</name>
+	<description>密码服务平台SDK：算法核心 + DTO + 接入签名工具 + 在线/离线SDK，独立打包发布给三方系统引入</description>
+
+	<dependencies>
+		<!--算法核心与SDK使用lombok生成样板代码（仅编译期，不传递给三方）-->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!--Base64/Hex编解码、摘要工具-->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+
+		<!--国密算法底层实现：SM2/SM3/SM4（算法封装自主实现）-->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15to18</artifactId>
+			<version>1.86</version>
+		</dependency>
+
+		<!--在线SDK的请求/响应JSON序列化-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
+		<!--DTO文档注解（与服务端springfox-boot-starter 3.0.0所用版本一致，避免版本仲裁差异）-->
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.5.20</version>
+		</dependency>
+	</dependencies>
+
+</project>

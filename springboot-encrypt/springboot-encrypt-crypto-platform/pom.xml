@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>springboot-encrypt</artifactId>
+		<groupId>com.zja</groupId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.zja</groupId>
+	<artifactId>springboot-encrypt-crypto-platform</artifactId>
+	<packaging>pom</packaging>
+
+	<description>密码服务平台（聚合）：sdk（三方SDK）/ server（服务端+Web控制台）/ example（接入示例与测试）</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<!--遵循仓库默认跳过测试的约定；需要执行测试时：mvn test -Dmaven.test.skip=false-->
+		<maven.test.skip>true</maven.test.skip>
+	</properties>
+
+	<modules>
+		<module>springboot-encrypt-crypto-platform-sdk</module>
+		<module>springboot-encrypt-crypto-platform-server</module>
+		<module>springboot-encrypt-crypto-platform-example</module>
+	</modules>
+
+	<build>
+		<plugins>
+			<!--surefire 2.19不支持JUnit 5，升级到2.22.2并统一作用于全部子模块；
+				覆盖根pom pluginManagement继承的<skip>true</skip>，改为属性驱动：
+				默认跳过测试（仓库约定），需要执行时：mvn test -Dmaven.test.skip=false -->
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+				<configuration>
+					<skip>${maven.test.skip}</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

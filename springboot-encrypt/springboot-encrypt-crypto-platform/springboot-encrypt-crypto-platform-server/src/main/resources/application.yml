@@ -1,0 +1,23 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: springboot-encrypt-crypto-platform
+
+# 密码服务平台配置
+crypto:
+  platform:
+    # 是否在启动时初始化演示应用（生产环境请置为 false，三方应用一律走注册接口申请）
+    init-demo-app: true
+    # 演示应用凭证（仅演示用；使用公开演示凭证时启动会输出安全告警）
+    demo-app-key: demo-app
+    demo-app-secret: demo-app-secret-123456
+    # 在线接入请求签名的时间戳校验窗口（分钟），超出窗口视为重放攻击
+    auth-timestamp-window: 5
+    # nonce防重放缓存容量上限（条），容量满且无可清理记录时拒绝新请求（fail-closed）
+    nonce-cache-capacity: 100000
+    # 请求体大小上限（字节），超过返回413，默认1MB
+    max-body-size: 1048576
+    # 审计日志内存保留上限（条，范围1000-1000000），生产环境应落库/上报审计平台
+    audit-log-capacity: 10000

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>springboot-encrypt-crypto-platform</artifactId>
+		<groupId>com.zja</groupId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>springboot-encrypt-crypto-platform-server</artifactId>
+	<name>springboot-encrypt-crypto-platform-server</name>
+	<description>密码服务平台服务端：接入认证、应用/密钥/运算/审计服务、REST接口与Web控制台</description>
+	<packaging>war</packaging>
+
+	<dependencies>
+		<!--平台SDK：算法核心、DTO、签名工具、在线/离线SDK实现（服务端直接复用算法层）-->
+		<dependency>
+			<groupId>com.zja</groupId>
+			<artifactId>springboot-encrypt-crypto-platform-sdk</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!--集成swagger-API-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
+		<!--使用lombok简化实体类样板代码-->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!--war打包时附加classes分类包（*-classes.jar），供example模块的集成测试复用服务端类与配置；
+				版本继承根pom pluginManagement的maven-war-plugin 3.3.2 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<attachClasses>true</attachClasses>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
